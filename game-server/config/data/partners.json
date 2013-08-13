@@ -1,0 +1,15 @@
+[
+	["id","heroId","heroName","level","_id"],
+	["id","heroId","heroName","level","_id"],
+	[1,1,"Hero1",1,1],
+	[2,2,"Hero2",1,2],
+	[3,3,"Moon Princess",18,3],
+	[4,4,"Sun princess",6,4],
+	[5,5,"Chief",9,5],
+	[6,6,"Pupil",12,6],
+	[7,7,"Doctor sister",18,7],
+	[8,8,"Witch",25,8],
+	[9,9,"Fountain protector",29,9],
+	[10,10,"Time machine protector",36,10],
+	[11,11,"Volcano spirit",40,11]
+]

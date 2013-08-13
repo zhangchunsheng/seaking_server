@@ -1,0 +1,26 @@
+{
+    "name":"kouwanju",
+    "version":"0.0.1",
+    "private":false,
+    "dependencies":{
+        "pomelo":"0.4.3",
+        "redis": "*",
+        "connect-redis": "*",
+        "connect": "*",
+        "generic-pool": "*",
+        "async": "*",
+        "socket.io": "*",
+        "socket.io-client": "*",
+        "pomelo-aoi": "*",
+        "crc": "*",
+        "pomelo-bt": "*",
+        "pomelo-pathfinding": "*",
+        "pomelo-collection": "*",
+        "pomelo-logger": "0.0.3"
+    },
+    "devDependencies": {
+        "should": "*",
+        "mocha": "*"
+    }
+}
+

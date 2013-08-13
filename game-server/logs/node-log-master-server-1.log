@@ -1,0 +1,3487 @@
+[2013-06-20 19:32:29.747] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-20 19:32:31.691] [INFO] console - info: 'socket.io started'
+[2013-06-20 19:32:31.695] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-20 19:32:31.705] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 3005
+[2013-06-20 19:32:32.529] [INFO] [default] - [32m[2013-06-20 19:32:32.196] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-20 19:32:34.900] [INFO] [default] - [32m[2013-06-20 19:32:34.838] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-20 19:32:34.946] [INFO] [default] - [32m[2013-06-20 19:32:34.877] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 3005
+
+[2013-06-20 19:36:46.767] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-20 19:36:47.388] [INFO] console - info: 'socket.io started'
+[2013-06-20 19:36:47.393] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-20 19:36:47.404] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 3005
+[2013-06-20 19:36:48.494] [INFO] [default] - [32m[2013-06-20 19:36:48.023] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-20 19:36:49.489] [INFO] [default] - [32m[2013-06-20 19:36:49.412] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-20 19:36:49.539] [INFO] [default] - [32m[2013-06-20 19:36:49.458] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 3005
+
+[2013-06-20 19:44:08.758] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-20 19:44:09.526] [INFO] console - info: 'socket.io started'
+[2013-06-20 19:44:09.533] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-20 19:44:09.548] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 3005
+[2013-06-20 19:44:10.749] [INFO] [default] - [32m[2013-06-20 19:44:10.266] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-20 19:44:12.037] [INFO] [default] - [32m[2013-06-20 19:44:11.921] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-20 19:44:12.094] [INFO] [default] - [32m[2013-06-20 19:44:11.980] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 3005
+
+[2013-06-20 19:44:12.141] [INFO] [default] - [32m[2013-06-20 19:44:12.139] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" enter after start...
+
+[2013-06-20 19:44:12.175] [INFO] [default] - [32m[2013-06-20 19:44:12.148] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" finish start
+
+[2013-06-28 05:11:37.753] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:11:37.855] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:11:37.855] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  redisclient: undefined }
+[2013-06-28 05:11:37.860] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:11:38.589] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:11:38.592] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:11:38.600] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 3005
+[2013-06-28 05:11:40.406] [INFO] [default] - [32m[2013-06-28 05:11:39.263] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:11:44.300] [INFO] [default] - [32m[2013-06-28 05:11:39.361] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:11:44.308] [INFO] [default] - [32m[2013-06-28 05:11:39.362] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  redisclient: undefined }
+
+[2013-06-28 05:11:44.337] [INFO] [default] - [32m[2013-06-28 05:11:39.366] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:11:44.346] [INFO] [default] - [32m[2013-06-28 05:11:44.171] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:11:44.360] [INFO] [default] - [32m[2013-06-28 05:11:44.273] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 3005
+
+[2013-06-28 05:11:44.374] [INFO] [default] - [32m[2013-06-28 05:11:44.373] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" enter after start...
+
+[2013-06-28 05:11:44.381] [INFO] [default] - [32m[2013-06-28 05:11:44.379] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" finish start
+
+[2013-06-28 05:14:17.224] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:14:17.324] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:14:17.325] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:14:17.331] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:14:17.708] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:14:17.711] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:14:17.718] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 3005
+[2013-06-28 05:14:18.399] [INFO] [default] - [32m[2013-06-28 05:14:18.393] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:14:19.310] [INFO] [default] - [32m[2013-06-28 05:14:18.491] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:14:19.345] [INFO] [default] - [32m[2013-06-28 05:14:18.492] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:14:19.348] [INFO] [default] - [32m[2013-06-28 05:14:18.498] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:14:19.350] [INFO] [default] - [32m[2013-06-28 05:14:19.234] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:14:19.355] [INFO] [default] - [32m[2013-06-28 05:14:19.287] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 3005
+
+[2013-06-28 05:43:14.005] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:43:14.568] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:43:14.568] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:43:14.575] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:43:15.165] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:43:15.170] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:43:15.176] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 05:43:15.178] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 05:43:15.181] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 05:43:15.183] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 05:43:15.188] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 05:43:15.190] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 05:43:15.192] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 05:43:15.224] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 05:43:15.228] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 05:43:15.772] [INFO] console - [33m[2013-06-28 05:43:15.771] [WARN] D:\creative\aws\kouwanju\game-server\node_modules\pomelo\node_modules\pomelo-admin\node_modules\pomelo-schedule\lib\job.js - [39mrun Job count 1 late :604 lateCount 1
+[2013-06-28 05:43:15.774] [INFO] console - [33m[2013-06-28 05:43:15.773] [WARN] D:\creative\aws\kouwanju\game-server\node_modules\pomelo\node_modules\pomelo-admin\node_modules\pomelo-schedule\lib\job.js - [39mrun Job count 2 late :605 lateCount 2
+[2013-06-28 05:43:18.643] [INFO] [default] - [32m[2013-06-28 05:43:16.684] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 05:43:18.644] [INFO] [default] - [32m[2013-06-28 05:43:16.858] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 05:43:18.645] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\config\map\fresh_villege.sn:2
+	"collisionPaths":[
+	                ^
+SyntaxError: Unexpected token :
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+
+[2013-06-28 05:43:18.647] [INFO] [default] - [32m[2013-06-28 05:43:17.520] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 05:43:18.647] [INFO] [default] - [32m[2013-06-28 05:43:17.559] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:43:18.651] [INFO] [default] - [32m[2013-06-28 05:43:17.682] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 05:43:18.651] [INFO] [default] - [32m[2013-06-28 05:43:18.370] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 05:43:18.651] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\config\map\fresh_villege.sn:2
+	"collisionPaths":[
+	                ^
+SyntaxError: Unexpected token :
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+
+[2013-06-28 05:43:19.480] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\config\map\fresh_villege.sn:2
+	"collisionPaths":[
+	                ^
+SyntaxError: Unexpected token :
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+
+[2013-06-28 05:43:19.702] [INFO] [default] - [32m[2013-06-28 05:43:19.679] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 05:43:22.088] [INFO] [default] - [32m[2013-06-28 05:43:16.991] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:43:22.227] [INFO] [default] - [32m[2013-06-28 05:43:16.991] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:43:22.228] [INFO] [default] - [32m[2013-06-28 05:43:21.867] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:43:22.276] [INFO] [default] - [32m[2013-06-28 05:43:16.999] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:43:22.370] [INFO] [default] - [32m[2013-06-28 05:43:21.970] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:43:22.372] [INFO] [default] - [32m[2013-06-28 05:43:22.071] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 05:43:22.413] [INFO] [default] - [32m[2013-06-28 05:43:22.004] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 05:43:22.461] [INFO] [default] - [32m[2013-06-28 05:43:21.948] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:43:22.571] [INFO] [default] - [32m[2013-06-28 05:43:22.169] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 05:43:22.572] [INFO] [default] - [32m[2013-06-28 05:43:22.553] [INFO] \node_modules\pomelo\lib\application.js - [39m"chat-server-1" enter after start...
+
+[2013-06-28 05:43:22.583] [INFO] [default] - [32m[2013-06-28 05:43:22.554] [INFO] \node_modules\pomelo\lib\application.js - [39m"chat-server-1" finish start
+
+[2013-06-28 05:43:22.762] [INFO] [default] - [32m[2013-06-28 05:43:22.662] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 05:43:23.071] [INFO] [default] - [32m[2013-06-28 05:43:17.883] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:43:23.071] [INFO] [default] - [32m[2013-06-28 05:43:17.697] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:43:23.080] [INFO] [default] - [32m[2013-06-28 05:43:17.884] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:43:23.120] [INFO] [default] - [32m[2013-06-28 05:43:17.711] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:43:23.126] [INFO] [default] - [32m[2013-06-28 05:43:17.893] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:43:23.134] [INFO] [default] - [32m[2013-06-28 05:43:22.733] [INFO] console - [39minfo: 'socket.io started'
+[32m[2013-06-28 05:43:23.004] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:43:23.155] [INFO] [default] - [32m[2013-06-28 05:43:17.760] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:43:23.157] [INFO] [default] - [32m[2013-06-28 05:43:22.723] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:43:23.158] [INFO] [default] - [32m[2013-06-28 05:43:23.005] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:43:23.159] [INFO] [default] - [32m[2013-06-28 05:43:23.125] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" enter after start...
+
+[2013-06-28 05:43:23.161] [INFO] [default] - [32m[2013-06-28 05:43:23.145] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" finish start
+
+[2013-06-28 05:46:05.376] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:46:05.475] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:46:05.476] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:46:05.483] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:46:05.859] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:46:05.862] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:46:05.868] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 05:46:05.870] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 05:46:05.873] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 05:46:05.876] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 05:46:05.880] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 05:46:05.882] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 05:46:05.885] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 05:46:05.887] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 05:46:05.892] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 05:46:07.465] [INFO] [default] - [32m[2013-06-28 05:46:07.436] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 05:46:07.704] [INFO] [default] - [32m[2013-06-28 05:46:07.637] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:46:09.294] [INFO] [default] - [32m[2013-06-28 05:46:09.154] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 05:46:09.325] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:46:09.414] [INFO] [default] - [32m[2013-06-28 05:46:09.333] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 05:46:09.598] [INFO] [default] - [32m[2013-06-28 05:46:09.563] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 05:46:09.964] [INFO] [default] - [32m[2013-06-28 05:46:09.934] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 05:46:10.442] [INFO] [default] - [32m[2013-06-28 05:46:10.384] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 05:46:10.831] [INFO] [default] - [32m[2013-06-28 05:46:10.729] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 05:46:10.864] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:46:10.868] [INFO] [default] - [32m[2013-06-28 05:46:10.683] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 05:46:11.026] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:46:11.282] [INFO] [default] - [32m[2013-06-28 05:46:11.031] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:46:11.502] [INFO] [default] - [32m[2013-06-28 05:46:11.062] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 05:46:11.503] [INFO] [default] - [32m[2013-06-28 05:46:11.456] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" enter after start...
+
+[2013-06-28 05:46:11.565] [INFO] [default] - [32m[2013-06-28 05:46:08.002] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:46:11.669] [INFO] [default] - [32m[2013-06-28 05:46:11.457] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" finish start
+
+[2013-06-28 05:46:11.713] [INFO] [default] - [32m[2013-06-28 05:46:08.003] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:46:11.714] [INFO] [default] - [32m[2013-06-28 05:46:08.010] [INFO] console - [39m[data sync component] load mapping file done.
+[32m[2013-06-28 05:46:11.069] [INFO] console - [39minfo: 'socket.io started'
+[32m[2013-06-28 05:46:11.452] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+[32m[2013-06-28 05:46:11.646] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" enter after start...
+[32m[2013-06-28 05:46:11.650] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" finish start
+
+[2013-06-28 05:46:11.840] [INFO] [default] - [32m[2013-06-28 05:46:11.722] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 05:46:12.154] [INFO] [default] - [32m[2013-06-28 05:46:09.750] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:46:12.191] [INFO] [default] - [32m[2013-06-28 05:46:09.751] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:46:12.299] [INFO] [default] - [32m[2013-06-28 05:46:09.759] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:46:12.337] [INFO] [default] - [32m[2013-06-28 05:46:11.942] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:46:12.341] [INFO] [default] - [32m[2013-06-28 05:46:12.243] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:46:12.379] [INFO] [default] - [32m[2013-06-28 05:46:12.121] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:46:12.416] [INFO] [default] - [32m[2013-06-28 05:46:12.283] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 05:46:12.620] [INFO] [default] - [32m[2013-06-28 05:46:10.848] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:46:12.701] [INFO] [default] - [32m[2013-06-28 05:46:10.848] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:46:12.751] [INFO] [default] - [32m[2013-06-28 05:46:10.981] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:46:12.779] [INFO] [default] - [32m[2013-06-28 05:46:12.569] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:46:12.780] [INFO] [default] - [32m[2013-06-28 05:46:12.592] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+[32m[2013-06-28 05:46:12.777] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" enter after start...
+[32m[2013-06-28 05:46:12.778] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" finish start
+
+[2013-06-28 05:50:29.778] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:50:29.876] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:50:29.877] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:50:29.884] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:50:30.259] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:50:30.264] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:50:30.271] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 05:50:30.273] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 05:50:30.293] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 05:50:30.296] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 05:50:30.301] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 05:50:30.304] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 05:50:30.306] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 05:50:30.308] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 05:50:30.312] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 05:50:32.814] [INFO] [default] - [32m[2013-06-28 05:50:32.628] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 05:50:32.986] [INFO] [default] - [32m[2013-06-28 05:50:32.954] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 05:50:32.986] [INFO] [default] - [32m[2013-06-28 05:50:32.927] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 05:50:33.107] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:50:33.108] [INFO] [default] - [32m[2013-06-28 05:50:32.975] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:50:33.297] [INFO] [default] - [32m[2013-06-28 05:50:33.182] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 05:50:33.381] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:50:33.424] [INFO] [default] - [32m[2013-06-28 05:50:33.401] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 05:50:34.148] [INFO] [default] - [32m[2013-06-28 05:50:34.034] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 05:50:35.888] [INFO] [default] - [32m[2013-06-28 05:50:33.068] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:50:35.946] [INFO] [default] - [32m[2013-06-28 05:50:35.665] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:50:36.044] [INFO] [default] - [32m[2013-06-28 05:50:33.069] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:50:36.046] [INFO] [default] - [32m[2013-06-28 05:50:35.774] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 05:50:36.047] [INFO] [default] - [32m[2013-06-28 05:50:36.038] [INFO] \node_modules\pomelo\lib\application.js - [39m"chat-server-1" enter after start...
+
+[2013-06-28 05:50:36.048] [INFO] [default] - [32m[2013-06-28 05:50:36.039] [INFO] \node_modules\pomelo\lib\application.js - [39m"chat-server-1" finish start
+
+[2013-06-28 05:50:36.101] [INFO] [default] - [32m[2013-06-28 05:50:33.145] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:50:36.289] [INFO] [default] - [32m[2013-06-28 05:50:35.599] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:50:36.322] [INFO] [default] - [32m[2013-06-28 05:50:36.098] [INFO] console - [39minfo: 'socket.io started'
+[32m[2013-06-28 05:50:36.158] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 05:50:36.415] [INFO] [default] - [32m[2013-06-28 05:50:36.408] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" enter after start...
+
+[2013-06-28 05:50:36.416] [INFO] [default] - [32m[2013-06-28 05:50:36.410] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" finish start
+
+[2013-06-28 05:50:36.425] [INFO] [default] - [32m[2013-06-28 05:50:35.697] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 05:50:36.457] [INFO] [default] - [32m[2013-06-28 05:50:33.388] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:50:36.468] [INFO] [default] - [32m[2013-06-28 05:50:34.537] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:50:36.539] [INFO] [default] - [32m[2013-06-28 05:50:34.538] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:50:36.549] [INFO] [default] - [32m[2013-06-28 05:50:34.546] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:50:36.550] [INFO] [default] - [32m[2013-06-28 05:50:36.007] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:50:36.551] [INFO] [default] - [32m[2013-06-28 05:50:36.264] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:50:36.558] [INFO] [default] - [32m[2013-06-28 05:50:33.389] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:50:36.563] [INFO] [default] - [32m[2013-06-28 05:50:33.396] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:50:36.566] [INFO] [default] - [32m[2013-06-28 05:50:36.172] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:50:36.567] [INFO] [default] - [32m[2013-06-28 05:50:36.375] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:50:36.568] [INFO] [default] - [32m[2013-06-28 05:50:36.526] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" enter after start...
+
+[2013-06-28 05:50:36.569] [INFO] [default] - [32m[2013-06-28 05:50:36.531] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" finish start
+
+[2013-06-28 05:50:36.769] [INFO] [default] - [32m[2013-06-28 05:50:36.723] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 05:50:37.043] [INFO] [default] - [32m[2013-06-28 05:50:37.032] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 05:50:37.088] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:52:37.752] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:52:37.854] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:52:37.854] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:52:37.862] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:52:38.239] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:52:38.242] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:52:38.247] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 05:52:38.250] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 05:52:38.253] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 05:52:38.256] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 05:52:38.274] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 05:52:38.276] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 05:52:38.280] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 05:52:38.282] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 05:52:38.286] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 05:52:39.828] [INFO] [default] - [32m[2013-06-28 05:52:39.773] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 05:52:41.092] [INFO] [default] - [32m[2013-06-28 05:52:41.056] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 05:52:41.211] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\config\map\fresh_villege.sn:1
+(function (exports, require, module, __filename, __dirname) { { "height":1,
+                                                                        ^
+SyntaxError: Unexpected token :
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+
+[2013-06-28 05:52:41.496] [INFO] [default] - [32m[2013-06-28 05:52:41.412] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 05:52:41.533] [INFO] [default] - [32m[2013-06-28 05:52:41.440] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 05:52:42.010] [INFO] [default] - [32m[2013-06-28 05:52:41.981] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:52:42.320] [INFO] [default] - [32m[2013-06-28 05:52:42.170] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 05:52:42.492] [INFO] [default] - [32m[2013-06-28 05:52:42.435] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 05:52:42.510] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\config\map\fresh_villege.sn:1
+(function (exports, require, module, __filename, __dirname) { { "height":1,
+                                                                        ^
+SyntaxError: Unexpected token :
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+
+[2013-06-28 05:52:44.147] [INFO] [default] - [32m[2013-06-28 05:52:41.803] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:52:44.193] [INFO] [default] - [32m[2013-06-28 05:52:44.044] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:52:44.254] [INFO] [default] - [32m[2013-06-28 05:52:42.620] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:52:44.260] [INFO] [default] - [32m[2013-06-28 05:52:42.621] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:52:44.260] [INFO] [default] - [32m[2013-06-28 05:52:42.632] [INFO] console - [39m[data sync component] load mapping file done.
+[32m[2013-06-28 05:52:44.017] [INFO] console - [39minfo: 'socket.io started'
+[32m[2013-06-28 05:52:44.153] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:52:44.261] [INFO] [default] - [32m[2013-06-28 05:52:44.247] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" enter after start...
+[32m[2013-06-28 05:52:44.252] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" finish start
+
+[2013-06-28 05:52:44.354] [INFO] [default] - [32m[2013-06-28 05:52:41.829] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:52:44.400] [INFO] [default] - [32m[2013-06-28 05:52:41.845] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:52:44.400] [INFO] [default] - [32m[2013-06-28 05:52:43.998] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:52:44.410] [INFO] [default] - [32m[2013-06-28 05:52:44.063] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 05:52:44.410] [INFO] [default] - [32m[2013-06-28 05:52:44.339] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" enter after start...
+[32m[2013-06-28 05:52:44.345] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" finish start
+
+[2013-06-28 05:52:44.432] [INFO] [default] - [32m[2013-06-28 05:52:44.124] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 05:52:45.031] [INFO] [default] - [32m[2013-06-28 05:52:39.930] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:52:45.067] [INFO] [default] - [32m[2013-06-28 05:52:39.931] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:52:45.155] [INFO] [default] - [32m[2013-06-28 05:52:39.941] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:52:45.193] [INFO] [default] - [32m[2013-06-28 05:52:44.706] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:52:45.233] [INFO] [default] - [32m[2013-06-28 05:52:45.210] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 05:52:45.247] [INFO] [default] - [32m[2013-06-28 05:52:44.975] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:52:45.282] [INFO] [default] - [32m[2013-06-28 05:52:45.256] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 05:52:45.322] [INFO] [default] - [32m[2013-06-28 05:52:45.107] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" enter after start...
+
+[2013-06-28 05:52:45.332] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\config\map\fresh_villege.sn:1
+(function (exports, require, module, __filename, __dirname) { { "height":1,
+                                                                        ^
+SyntaxError: Unexpected token :
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+
+[2013-06-28 05:52:45.332] [INFO] [default] - [32m[2013-06-28 05:52:45.113] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" finish start
+
+[2013-06-28 05:52:45.530] [INFO] [default] - [32m[2013-06-28 05:52:45.421] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:52:45.604] [INFO] [default] - [32m[2013-06-28 05:52:45.458] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 05:52:46.313] [INFO] [default] - [32m[2013-06-28 05:52:46.286] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 05:52:46.401] [INFO] [default] - [32m[2013-06-28 05:52:46.400] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" enter after start...
+
+[2013-06-28 05:52:46.413] [INFO] [default] - [32m[2013-06-28 05:52:46.412] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" finish start
+
+[2013-06-28 05:53:17.416] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:53:17.539] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:53:17.540] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:53:17.549] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:53:18.044] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:53:18.049] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:53:18.057] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 05:53:18.061] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 05:53:18.066] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 05:53:18.070] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 05:53:18.076] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 05:53:18.105] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 05:53:18.108] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 05:53:18.112] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 05:53:18.117] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 05:53:20.470] [INFO] [default] - [32m[2013-06-28 05:53:20.281] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 05:53:20.912] [INFO] [default] - [32m[2013-06-28 05:53:20.853] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 05:53:22.270] [INFO] [default] - [32m[2013-06-28 05:53:20.625] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:53:22.332] [INFO] [default] - [32m[2013-06-28 05:53:20.625] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:53:22.470] [INFO] [default] - [32m[2013-06-28 05:53:20.636] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:53:22.511] [INFO] [default] - [32m[2013-06-28 05:53:22.066] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:53:22.512] [INFO] [default] - [32m[2013-06-28 05:53:22.136] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 05:53:22.512] [INFO] [default] - [32m[2013-06-28 05:53:22.476] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" enter after start...
+
+[2013-06-28 05:53:22.512] [INFO] [default] - [32m[2013-06-28 05:53:22.477] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" finish start
+
+[2013-06-28 05:53:22.608] [INFO] [default] - [32m[2013-06-28 05:53:22.405] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:53:22.798] [INFO] [default] - [32m[2013-06-28 05:53:22.520] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 05:53:24.654] [INFO] [default] - [32m[2013-06-28 05:53:24.603] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 05:53:25.045] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:53:25.461] [INFO] [default] - [32m[2013-06-28 05:53:25.439] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:53:25.683] [INFO] [default] - [32m[2013-06-28 05:53:25.668] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 05:53:26.050] [INFO] [default] - [32m[2013-06-28 05:53:26.033] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 05:53:26.257] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:53:26.774] [INFO] [default] - [32m[2013-06-28 05:53:26.622] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 05:53:26.877] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'D:\creative\aws\kouwanju\game-server/config/map/fresh_villege.sn'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:36:15)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\world.js:28:31)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:76:11)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+
+[2013-06-28 05:53:27.150] [INFO] [default] - [32m[2013-06-28 05:53:27.132] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 05:53:27.370] [INFO] [default] - [32m[2013-06-28 05:53:27.342] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 05:53:30.137] [INFO] [default] - [32m[2013-06-28 05:53:30.038] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 05:53:30.180] [INFO] [default] - [32m[2013-06-28 05:53:26.170] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:53:30.241] [INFO] [default] - [32m[2013-06-28 05:53:26.172] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:53:30.242] [INFO] [default] - [32m[2013-06-28 05:53:26.184] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:53:30.242] [INFO] [default] - [32m[2013-06-28 05:53:29.904] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:53:30.243] [INFO] [default] - [32m[2013-06-28 05:53:30.096] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:53:30.685] [INFO] [default] - [32m[2013-06-28 05:53:26.615] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:53:30.744] [INFO] [default] - [32m[2013-06-28 05:53:26.616] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:53:30.835] [INFO] [default] - [32m[2013-06-28 05:53:26.629] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:53:30.845] [INFO] [default] - [32m[2013-06-28 05:53:30.392] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:53:30.855] [INFO] [default] - [32m[2013-06-28 05:53:30.625] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:53:30.861] [INFO] [default] - [32m[2013-06-28 05:53:30.803] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" enter after start...
+
+[2013-06-28 05:53:30.885] [INFO] [default] - [32m[2013-06-28 05:53:30.843] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" finish start
+
+[2013-06-28 05:53:30.901] [INFO] [default] - [32m[2013-06-28 05:53:30.716] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:53:31.015] [INFO] [default] - [32m[2013-06-28 05:53:30.810] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 05:53:31.092] [INFO] [default] - [32m[2013-06-28 05:53:31.091] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" enter after start...
+
+[2013-06-28 05:53:31.100] [INFO] [default] - [32m[2013-06-28 05:53:31.093] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" finish start
+
+[2013-06-28 05:55:05.058] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:55:05.182] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:55:05.184] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:55:05.193] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:55:05.600] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:55:05.605] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:55:05.613] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 05:55:05.616] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 05:55:05.619] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 05:55:05.622] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 05:55:05.627] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 05:55:05.630] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 05:55:05.633] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 05:55:05.636] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 05:55:05.646] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 05:55:09.191] [INFO] [default] - [32m[2013-06-28 05:55:09.076] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 05:55:09.527] [INFO] [default] - [32m[2013-06-28 05:55:09.457] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 05:55:09.532] [INFO] [default] - [32m[2013-06-28 05:55:09.417] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:55:09.539] [INFO] [default] - [32m[2013-06-28 05:55:09.467] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 05:55:09.593] [INFO] [default] - [32m[2013-06-28 05:55:09.557] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 05:55:09.852] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\app.js:77
+    area.init(dataApi.area.findById(areaId));
+         ^
+TypeError: Object #<Object> has no method 'init'
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+    at node.js:901:3
+
+[2013-06-28 05:55:10.016] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\app.js:77
+    area.init(dataApi.area.findById(areaId));
+         ^
+TypeError: Object #<Object> has no method 'init'
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+    at node.js:901:3
+
+[2013-06-28 05:55:10.081] [INFO] [default] - [32m[2013-06-28 05:55:10.046] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 05:55:10.237] [INFO] [default] - [32m[2013-06-28 05:55:10.171] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 05:55:10.355] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\app.js:77
+    area.init(dataApi.area.findById(areaId));
+         ^
+TypeError: Object #<Object> has no method 'init'
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+    at node.js:901:3
+
+[2013-06-28 05:55:10.401] [INFO] [default] - [32m[2013-06-28 05:55:10.171] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 05:55:10.729] [INFO] [default] - [32m[2013-06-28 05:55:10.648] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 05:55:12.644] [INFO] [default] - [32m[2013-06-28 05:55:12.338] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:55:12.725] [INFO] [default] - [32m[2013-06-28 05:55:12.404] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 05:55:12.942] [INFO] [default] - [32m[2013-06-28 05:55:12.580] [INFO] \node_modules\pomelo\lib\application.js - [39m"chat-server-1" enter after start...
+
+[2013-06-28 05:55:12.946] [INFO] [default] - [32m[2013-06-28 05:55:12.581] [INFO] \node_modules\pomelo\lib\application.js - [39m"chat-server-1" finish start
+
+[2013-06-28 05:55:13.845] [INFO] [default] - [32m[2013-06-28 05:55:13.749] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 05:55:13.846] [INFO] [default] - [32m[2013-06-28 05:55:13.660] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:55:13.978] [INFO] [default] - [32m[2013-06-28 05:55:13.717] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 05:55:14.066] [INFO] [default] - [32m[2013-06-28 05:55:10.013] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:55:14.089] [INFO] [default] - [32m[2013-06-28 05:55:10.014] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:55:14.097] [INFO] [default] - [32m[2013-06-28 05:55:10.026] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:55:14.098] [INFO] [default] - [32m[2013-06-28 05:55:13.733] [INFO] console - [39minfo: 'socket.io started'
+[32m[2013-06-28 05:55:13.997] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:55:14.223] [INFO] [default] - [32m[2013-06-28 05:55:09.781] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:55:14.253] [INFO] [default] - [32m[2013-06-28 05:55:09.782] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:55:14.282] [INFO] [default] - [32m[2013-06-28 05:55:09.793] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:55:14.292] [INFO] [default] - [32m[2013-06-28 05:55:13.957] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:55:14.293] [INFO] [default] - [32m[2013-06-28 05:55:14.167] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:55:14.345] [INFO] [default] - [32m[2013-06-28 05:55:10.854] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:55:14.439] [INFO] [default] - [32m[2013-06-28 05:55:10.855] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:55:14.441] [INFO] [default] - [32m[2013-06-28 05:55:10.866] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:55:14.492] [INFO] [default] - [32m[2013-06-28 05:55:14.208] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:55:14.505] [INFO] [default] - [32m[2013-06-28 05:55:14.248] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 05:55:14.506] [INFO] [default] - [32m[2013-06-28 05:55:14.497] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" enter after start...
+
+[2013-06-28 05:55:14.506] [INFO] [default] - [32m[2013-06-28 05:55:14.503] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" finish start
+
+[2013-06-28 05:56:20.358] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:56:20.482] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:56:20.482] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:56:20.494] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:56:21.165] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:56:21.171] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:56:21.179] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 05:56:21.183] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 05:56:21.187] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 05:56:21.192] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 05:56:21.241] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 05:56:21.245] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 05:56:21.249] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 05:56:21.253] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 05:56:21.260] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 05:56:26.956] [INFO] [default] - [32m[2013-06-28 05:56:26.935] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 05:56:27.490] [INFO] [default] - [32m[2013-06-28 05:56:27.459] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 05:56:27.671] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\app\domain\area\area.js:49
+    id = opts.id;
+             ^
+TypeError: Cannot read property 'id' of undefined
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\area\area.js:49:14)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+
+[2013-06-28 05:56:28.141] [INFO] [default] - [32m[2013-06-28 05:56:28.121] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 05:56:28.434] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+D:\creative\aws\kouwanju\game-server\app\domain\area\area.js:49
+    id = opts.id;
+             ^
+TypeError: Cannot read property 'id' of undefined
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\area\area.js:49:14)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+
+[2013-06-28 05:56:29.509] [INFO] [default] - [32m[2013-06-28 05:56:29.451] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 05:56:29.594] [INFO] [default] - [32m[2013-06-28 05:56:29.555] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 05:56:29.860] [INFO] [default] - [32m[2013-06-28 05:56:29.811] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 05:56:29.861] [INFO] [default] - [32m[2013-06-28 05:56:29.793] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 05:56:29.923] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+fs.js:427
+  return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+                 ^
+Error: ENOENT, no such file or directory 'D:\creative\aws\kouwanju\game-server\tmp\map.json'
+    at Object.fs.openSync (fs.js:427:18)
+    at Object.fs.writeFileSync (fs.js:966:15)
+    at Map.init (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:64:20)
+    at new Map (D:\creative\aws\kouwanju\game-server\app\domain\map\map.js:24:10)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\area\area.js:53:11)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+
+[2013-06-28 05:56:30.939] [INFO] [default] - [32m[2013-06-28 05:56:30.922] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:56:31.979] [INFO] [default] - [32m[2013-06-28 05:56:27.359] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:56:32.057] [INFO] [default] - [32m[2013-06-28 05:56:31.911] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 05:56:32.147] [INFO] [default] - [32m[2013-06-28 05:56:27.360] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:56:32.149] [INFO] [default] - [32m[2013-06-28 05:56:27.373] [INFO] console - [39m[data sync component] load mapping file done.
+[32m[2013-06-28 05:56:29.529] [INFO] console - [39minfo: 'socket.io started'
+[32m[2013-06-28 05:56:31.739] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+[32m[2013-06-28 05:56:32.124] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" enter after start...
+[32m[2013-06-28 05:56:32.132] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" finish start
+
+[2013-06-28 05:56:34.574] [INFO] [default] - [32m[2013-06-28 05:56:34.299] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 05:56:34.977] [INFO] [default] - [32m[2013-06-28 05:56:34.648] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:56:35.082] [INFO] [default] - [32m[2013-06-28 05:56:31.395] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:56:35.259] [INFO] [default] - [32m[2013-06-28 05:56:31.396] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:56:35.265] [INFO] [default] - [32m[2013-06-28 05:56:31.410] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:56:35.266] [INFO] [default] - [32m[2013-06-28 05:56:34.803] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 05:56:35.266] [INFO] [default] - [32m[2013-06-28 05:56:34.784] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:56:35.298] [INFO] [default] - [32m[2013-06-28 05:56:34.939] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 05:56:35.452] [INFO] [default] - [32m[2013-06-28 05:56:35.265] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:56:35.573] [INFO] [default] - [32m[2013-06-28 05:56:35.350] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 05:56:35.689] [INFO] [default] - [32m[2013-06-28 05:56:31.772] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:56:35.722] [INFO] [default] - [32m[2013-06-28 05:56:31.772] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:56:35.798] [INFO] [default] - [32m[2013-06-28 05:56:31.786] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:56:35.808] [INFO] [default] - [32m[2013-06-28 05:56:35.440] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:56:35.821] [INFO] [default] - [32m[2013-06-28 05:56:35.646] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:59:06.198] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 05:59:06.337] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 05:59:06.338] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 05:59:06.348] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 05:59:06.855] [INFO] console - info: 'socket.io started'
+[2013-06-28 05:59:06.860] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 05:59:06.866] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 05:59:06.870] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 05:59:06.873] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 05:59:06.876] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 05:59:06.883] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 05:59:06.886] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 05:59:06.889] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 05:59:06.893] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 05:59:06.899] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 05:59:08.868] [INFO] [default] - [32m[2013-06-28 05:59:08.764] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 05:59:10.992] [INFO] [default] - [32m[2013-06-28 05:59:10.880] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 05:59:11.186] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+fs.js:654
+  return binding.readdir(pathModule._makeLong(path));
+                 ^
+Error: ENOENT, no such file or directory 'D:\creative\aws\kouwanju\game-server\app\ai\brain'
+    at Object.fs.readdirSync (fs.js:654:18)
+    at Object.exp.createManager (D:\creative\aws\kouwanju\game-server\app\ai\ai.js:17:8)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\area\area.js:62:20)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+
+[2013-06-28 05:59:11.438] [INFO] [default] - [32m[2013-06-28 05:59:11.293] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 05:59:11.794] [INFO] [default] - [32m[2013-06-28 05:59:11.773] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 05:59:11.875] [INFO] [default] - [32m[2013-06-28 05:59:11.765] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 05:59:12.005] [INFO] [default] - [32m[2013-06-28 05:59:11.879] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 05:59:12.086] [INFO] [default] - [32m[2013-06-28 05:59:11.975] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 05:59:12.200] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+fs.js:654
+  return binding.readdir(pathModule._makeLong(path));
+                 ^
+Error: ENOENT, no such file or directory 'D:\creative\aws\kouwanju\game-server\app\ai\brain'
+    at Object.fs.readdirSync (fs.js:654:18)
+    at Object.exp.createManager (D:\creative\aws\kouwanju\game-server\app\ai\ai.js:17:8)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\area\area.js:62:20)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+
+[2013-06-28 05:59:14.217] [INFO] [default] - [32m[2013-06-28 05:59:09.291] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+[32m[2013-06-28 05:59:09.292] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[32m[2013-06-28 05:59:09.305] [INFO] console - [39m[data sync component] load mapping file done.
+[32m[2013-06-28 05:59:13.918] [INFO] console - [39minfo: 'socket.io started'
+[32m[2013-06-28 05:59:14.167] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:59:15.464] [INFO] [default] - [32m[2013-06-28 05:59:15.445] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 05:59:15.608] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+fs.js:654
+  return binding.readdir(pathModule._makeLong(path));
+                 ^
+Error: ENOENT, no such file or directory 'D:\creative\aws\kouwanju\game-server\app\ai\brain'
+    at Object.fs.readdirSync (fs.js:654:18)
+    at Object.exp.createManager (D:\creative\aws\kouwanju\game-server\app\ai\ai.js:17:8)
+    at Object.exp.init (D:\creative\aws\kouwanju\game-server\app\domain\area\area.js:62:20)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:77:10)
+    at Object.Application.configure (D:\creative\aws\kouwanju\game-server\node_modules\pomelo\lib\application.js:398:10)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app.js:68:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+
+[2013-06-28 05:59:15.637] [INFO] [default] - [32m[2013-06-28 05:59:15.601] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 05:59:15.807] [INFO] [default] - [32m[2013-06-28 05:59:15.732] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 05:59:15.926] [INFO] [default] - [32m[2013-06-28 05:59:15.912] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" enter after start...
+
+[2013-06-28 05:59:15.927] [INFO] [default] - [32m[2013-06-28 05:59:15.924] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" finish start
+
+[2013-06-28 05:59:16.090] [INFO] [default] - [32m[2013-06-28 05:59:15.955] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:59:16.191] [INFO] [default] - [32m[2013-06-28 05:59:16.029] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 05:59:16.272] [INFO] [default] - [32m[2013-06-28 05:59:16.266] [INFO] \node_modules\pomelo\lib\application.js - [39m"chat-server-1" enter after start...
+
+[2013-06-28 05:59:16.278] [INFO] [default] - [32m[2013-06-28 05:59:16.271] [INFO] \node_modules\pomelo\lib\application.js - [39m"chat-server-1" finish start
+
+[2013-06-28 05:59:16.458] [INFO] [default] - [32m[2013-06-28 05:59:12.586] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:59:16.562] [INFO] [default] - [32m[2013-06-28 05:59:12.588] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:59:16.580] [INFO] [default] - [32m[2013-06-28 05:59:12.600] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:59:16.583] [INFO] [default] - [32m[2013-06-28 05:59:16.351] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:59:16.584] [INFO] [default] - [32m[2013-06-28 05:59:16.390] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 05:59:16.966] [INFO] [default] - [32m[2013-06-28 05:59:12.020] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 05:59:17.028] [INFO] [default] - [32m[2013-06-28 05:59:12.021] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 05:59:17.029] [INFO] [default] - [32m[2013-06-28 05:59:12.076] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 05:59:17.030] [INFO] [default] - [32m[2013-06-28 05:59:16.715] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:59:17.034] [INFO] [default] - [32m[2013-06-28 05:59:16.908] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 05:59:17.170] [INFO] [default] - [32m[2013-06-28 05:59:17.044] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 05:59:17.269] [INFO] [default] - [32m[2013-06-28 05:59:17.115] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 06:01:02.059] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 06:01:02.249] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 06:01:02.249] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 06:01:02.260] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 06:01:03.057] [INFO] console - info: 'socket.io started'
+[2013-06-28 06:01:03.061] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 06:01:03.069] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 06:01:03.073] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 06:01:03.077] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 06:01:03.081] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 06:01:03.089] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 06:01:03.092] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 06:01:03.149] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 06:01:03.152] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 06:01:03.159] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 06:01:06.148] [INFO] [default] - [32m[2013-06-28 06:01:06.091] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 06:01:06.896] [INFO] [default] - [32m[2013-06-28 06:01:06.839] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 06:01:06.928] [INFO] [default] - [32m[2013-06-28 06:01:06.893] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 06:01:07.194] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module '../node/tryAndAdjust'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app\ai\brain\player.js:8:20)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at D:\creative\aws\kouwanju\game-server\app\ai\ai.js:22:21
+
+[2013-06-28 06:01:09.912] [INFO] [default] - [32m[2013-06-28 06:01:09.472] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 06:01:10.303] [INFO] [default] - [32m[2013-06-28 06:01:10.125] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 06:01:10.447] [INFO] [default] - [32m[2013-06-28 06:01:10.269] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 06:01:10.537] [INFO] [default] - [32m[2013-06-28 06:01:10.439] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 06:01:10.592] [INFO] [default] - [32m[2013-06-28 06:01:10.361] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 06:01:10.606] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module '../node/tryAndAdjust'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app\ai\brain\player.js:8:20)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at D:\creative\aws\kouwanju\game-server\app\ai\ai.js:22:21
+
+[2013-06-28 06:01:10.796] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module '../node/tryAndAdjust'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app\ai\brain\player.js:8:20)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at D:\creative\aws\kouwanju\game-server\app\ai\ai.js:22:21
+
+[2013-06-28 06:01:11.092] [INFO] [default] - [32m[2013-06-28 06:01:11.037] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 06:01:11.187] [INFO] [default] - [32m[2013-06-28 06:01:10.700] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:01:11.427] [INFO] [default] - [32m[2013-06-28 06:01:10.973] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 06:01:11.761] [INFO] [default] - [32m[2013-06-28 06:01:07.216] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:01:11.860] [INFO] [default] - [32m[2013-06-28 06:01:07.217] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:01:11.877] [INFO] [default] - [32m[2013-06-28 06:01:07.229] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 06:01:12.047] [INFO] [default] - [32m[2013-06-28 06:01:10.727] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:01:12.169] [INFO] [default] - [32m[2013-06-28 06:01:11.573] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 06:01:12.228] [INFO] [default] - [32m[2013-06-28 06:01:12.034] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" enter after start...
+
+[2013-06-28 06:01:12.331] [INFO] [default] - [32m[2013-06-28 06:01:12.042] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" finish start
+
+[2013-06-28 06:01:13.740] [INFO] [default] - [32m[2013-06-28 06:01:11.268] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:01:13.852] [INFO] [default] - [32m[2013-06-28 06:01:11.269] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:01:13.853] [INFO] [default] - [32m[2013-06-28 06:01:11.284] [INFO] console - [39m[data sync component] load mapping file done.
+[32m[2013-06-28 06:01:13.606] [INFO] console - [39minfo: 'socket.io started'
+[32m[2013-06-28 06:01:13.652] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 06:01:14.092] [INFO] [default] - [32m[2013-06-28 06:01:13.982] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:01:14.189] [INFO] [default] - [32m[2013-06-28 06:01:14.030] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 06:01:14.245] [INFO] [default] - [32m[2013-06-28 06:01:14.244] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" enter after start...
+
+[2013-06-28 06:01:14.249] [INFO] [default] - [32m[2013-06-28 06:01:14.247] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" finish start
+
+[2013-06-28 06:01:14.376] [INFO] [default] - [32m[2013-06-28 06:01:14.324] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 06:01:14.525] [INFO] [default] - [32m[2013-06-28 06:01:14.497] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" enter after start...
+
+[2013-06-28 06:01:14.532] [INFO] [default] - [32m[2013-06-28 06:01:14.530] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" finish start
+
+[2013-06-28 06:01:14.806] [INFO] [default] - [32m[2013-06-28 06:01:11.798] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:01:14.867] [INFO] [default] - [32m[2013-06-28 06:01:11.911] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:01:14.883] [INFO] [default] - [32m[2013-06-28 06:01:11.931] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 06:01:14.910] [INFO] [default] - [32m[2013-06-28 06:01:14.572] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:01:14.911] [INFO] [default] - [32m[2013-06-28 06:01:14.762] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 06:02:34.317] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 06:02:34.444] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 06:02:34.445] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 06:02:34.473] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 06:02:35.074] [INFO] console - info: 'socket.io started'
+[2013-06-28 06:02:35.080] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 06:02:35.087] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 06:02:35.092] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 06:02:35.096] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 06:02:35.099] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 06:02:35.108] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 06:02:35.112] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 06:02:35.115] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 06:02:35.119] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 06:02:35.126] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 06:02:37.706] [INFO] [default] - [32m[2013-06-28 06:02:37.137] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 06:02:37.707] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module '../action/tryAttack'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app\ai\brain\player.js:9:17)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at D:\creative\aws\kouwanju\game-server\app\ai\ai.js:22:21
+
+[2013-06-28 06:02:37.884] [INFO] [default] - [32m[2013-06-28 06:02:37.741] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 06:02:37.910] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module '../action/tryAttack'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app\ai\brain\player.js:9:17)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at D:\creative\aws\kouwanju\game-server\app\ai\ai.js:22:21
+
+[2013-06-28 06:02:40.299] [INFO] [default] - [32m[2013-06-28 06:02:40.256] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 06:02:40.310] [INFO] [default] - [32m[2013-06-28 06:02:40.286] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 06:02:40.785] [INFO] [default] - [32m[2013-06-28 06:02:40.693] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 06:02:41.085] [INFO] [default] - [32m[2013-06-28 06:02:40.917] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 06:02:41.113] [INFO] [default] - [32m[2013-06-28 06:02:41.090] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 06:02:41.606] [ERROR] [default] - Execute command C:\Program Files\nodejs\node.exefail. error code: 
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module '../action/tryAttack'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (D:\creative\aws\kouwanju\game-server\app\ai\brain\player.js:9:17)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at D:\creative\aws\kouwanju\game-server\app\ai\ai.js:22:21
+
+[2013-06-28 06:02:41.718] [INFO] [default] - [32m[2013-06-28 06:02:41.526] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 06:02:41.814] [INFO] [default] - [32m[2013-06-28 06:02:41.676] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 06:02:45.967] [INFO] [default] - [32m[2013-06-28 06:02:45.867] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 06:02:46.013] [INFO] [default] - [32m[2013-06-28 06:02:45.738] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:02:46.101] [INFO] [default] - [32m[2013-06-28 06:02:46.065] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" enter after start...
+
+[2013-06-28 06:02:46.102] [INFO] [default] - [32m[2013-06-28 06:02:46.079] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" finish start
+
+[2013-06-28 06:02:46.258] [INFO] [default] - [32m[2013-06-28 06:02:45.882] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 06:02:46.264] [INFO] [default] - [32m[2013-06-28 06:02:46.253] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" enter after start...
+
+[2013-06-28 06:02:46.267] [INFO] [default] - [32m[2013-06-28 06:02:46.255] [INFO] \node_modules\pomelo\lib\application.js - [39m"path-server-1" finish start
+
+[2013-06-28 06:02:46.399] [INFO] [default] - [32m[2013-06-28 06:02:42.301] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:02:46.435] [INFO] [default] - [32m[2013-06-28 06:02:42.302] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:02:46.568] [INFO] [default] - [32m[2013-06-28 06:02:42.314] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 06:02:46.569] [INFO] [default] - [32m[2013-06-28 06:02:41.863] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:02:46.606] [INFO] [default] - [32m[2013-06-28 06:02:46.303] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:02:46.607] [INFO] [default] - [32m[2013-06-28 06:02:41.863] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:02:46.642] [INFO] [default] - [32m[2013-06-28 06:02:46.346] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 06:02:46.643] [INFO] [default] - [32m[2013-06-28 06:02:41.884] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 06:02:46.691] [INFO] [default] - [32m[2013-06-28 06:02:46.140] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:02:46.694] [INFO] [default] - [32m[2013-06-28 06:02:46.432] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 06:02:46.926] [INFO] [default] - [32m[2013-06-28 06:02:41.275] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:02:46.991] [INFO] [default] - [32m[2013-06-28 06:02:46.817] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:02:47.000] [INFO] [default] - [32m[2013-06-28 06:02:41.276] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:02:47.020] [INFO] [default] - [32m[2013-06-28 06:02:41.290] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 06:02:47.049] [INFO] [default] - [32m[2013-06-28 06:02:46.598] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:02:47.057] [INFO] [default] - [32m[2013-06-28 06:02:46.876] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 06:02:47.090] [INFO] [default] - [32m[2013-06-28 06:02:46.894] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 06:05:42.229] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 06:05:42.409] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 06:05:42.410] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 06:05:42.422] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 06:05:43.066] [INFO] console - info: 'socket.io started'
+[2013-06-28 06:05:43.073] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=3150,clientPort=3010,frontend=true,serverType=connector locally
+[2013-06-28 06:05:43.081] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=3151,clientPort=3011,frontend=true,serverType=connector locally
+[2013-06-28 06:05:43.085] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=3250,area=1,serverType=area locally
+[2013-06-28 06:05:43.091] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=3251,area=2,serverType=area locally
+[2013-06-28 06:05:43.095] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=3252,area=3,serverType=area locally
+[2013-06-28 06:05:43.103] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=3450,serverType=chat locally
+[2013-06-28 06:05:43.107] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=3550,serverType=path locally
+[2013-06-28 06:05:43.116] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=3650,serverType=auth locally
+[2013-06-28 06:05:43.121] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=3014,frontend=true,serverType=gate locally
+[2013-06-28 06:05:43.183] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 06:05:43.615] [INFO] console - [33m[2013-06-28 06:05:43.613] [WARN] D:\creative\aws\kouwanju\game-server\node_modules\pomelo\node_modules\pomelo-admin\node_modules\pomelo-schedule\lib\job.js - [39mrun Job count 1 late :546 lateCount 1
+[2013-06-28 06:05:43.620] [INFO] console - [33m[2013-06-28 06:05:43.619] [WARN] D:\creative\aws\kouwanju\game-server\node_modules\pomelo\node_modules\pomelo-admin\node_modules\pomelo-schedule\lib\job.js - [39mrun Job count 2 late :551 lateCount 2
+[2013-06-28 06:05:46.345] [INFO] [default] - [32m[2013-06-28 06:05:46.320] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 06:05:46.605] [INFO] [default] - [32m[2013-06-28 06:05:46.589] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 06:05:46.772] [INFO] [default] - [32m[2013-06-28 06:05:46.638] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 06:05:48.415] [INFO] [default] - [32m[2013-06-28 06:05:48.224] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:05:48.520] [INFO] [default] - [32m[2013-06-28 06:05:48.285] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 06:05:51.081] [INFO] [default] - [32m[2013-06-28 06:05:51.008] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 06:05:51.259] [INFO] [default] - [32m[2013-06-28 06:05:51.204] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 06:05:51.327] [INFO] [default] - [32m[2013-06-28 06:05:51.291] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 06:05:51.527] [INFO] [default] - [32m[2013-06-28 06:05:51.424] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 06:05:51.534] [INFO] [default] - [32m[2013-06-28 06:05:51.347] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 06:05:51.870] [INFO] [default] - [32m[2013-06-28 06:05:51.778] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 06:05:55.922] [INFO] [default] - [32m[2013-06-28 06:05:55.824] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 06:05:56.012] [INFO] [default] - [32m[2013-06-28 06:05:55.972] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" enter after start...
+
+[2013-06-28 06:05:56.013] [INFO] [default] - [32m[2013-06-28 06:05:55.986] [INFO] \node_modules\pomelo\lib\application.js - [39m"gate-server-1" finish start
+
+[2013-06-28 06:05:56.499] [INFO] [default] - [32m[2013-06-28 06:05:47.049] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:05:56.547] [INFO] [default] - [32m[2013-06-28 06:05:47.050] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:05:56.549] [INFO] [default] - [32m[2013-06-28 06:05:47.065] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 06:05:56.549] [INFO] [default] - [32m[2013-06-28 06:05:56.184] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:05:56.550] [INFO] [default] - [32m[2013-06-28 06:05:56.424] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 06:05:56.787] [INFO] [default] - [32m[2013-06-28 06:05:46.982] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:05:56.982] [INFO] [default] - [32m[2013-06-28 06:05:46.983] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:05:56.983] [INFO] [default] - [32m[2013-06-28 06:05:46.998] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 06:05:56.999] [INFO] [default] - [32m[2013-06-28 06:05:56.682] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:05:57.003] [INFO] [default] - [32m[2013-06-28 06:05:56.733] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 06:06:01.657] [INFO] [default] - [32m[2013-06-28 06:05:51.982] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 06:06:01.737] [INFO] [default] - [32m[2013-06-28 06:06:01.155] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:06:01.780] [INFO] [default] - [32m[2013-06-28 06:05:51.983] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 06:06:01.968] [INFO] [default] - [32m[2013-06-28 06:05:52.063] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 06:06:02.019] [INFO] [default] - [32m[2013-06-28 06:06:00.649] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 06:06:02.119] [INFO] [default] - [32m[2013-06-28 06:06:01.483] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 06:06:02.181] [INFO] [default] - [32m[2013-06-28 06:06:01.996] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" enter after start...
+
+[2013-06-28 06:06:02.187] [INFO] [default] - [32m[2013-06-28 06:06:01.447] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 06:06:02.276] [INFO] [default] - [32m[2013-06-28 06:06:02.006] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-2" finish start
+
+[2013-06-28 09:58:31.702] [INFO] \node_modules\pomelo\lib\application.js - application inited: "master-server-1"
+[2013-06-28 09:58:32.147] [INFO] \node_modules\pomelo\lib\components\sync.js - test
+[2013-06-28 09:58:32.149] [INFO] \node_modules\pomelo\lib\components\sync.js - { path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+[2013-06-28 09:58:32.165] [INFO] console - [data sync component] load mapping file done.
+[2013-06-28 09:58:33.177] [INFO] console - info: 'socket.io started'
+[2013-06-28 09:58:33.184] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-1,host=127.0.0.1,port=4150,clientPort=4010,frontend=true,serverType=connector locally
+[2013-06-28 09:58:33.192] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=connector-server-2,host=127.0.0.1,port=4151,clientPort=4011,frontend=true,serverType=connector locally
+[2013-06-28 09:58:33.197] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-1,host=127.0.0.1,port=4250,area=1,serverType=area locally
+[2013-06-28 09:58:33.203] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-2,host=127.0.0.1,port=4251,area=2,serverType=area locally
+[2013-06-28 09:58:33.211] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=area-server-3,host=127.0.0.1,port=4252,area=3,serverType=area locally
+[2013-06-28 09:58:33.220] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=chat-server-1,host=127.0.0.1,port=4450,serverType=chat locally
+[2013-06-28 09:58:33.225] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=path-server-1,host=127.0.0.1,port=4550,serverType=path locally
+[2013-06-28 09:58:33.231] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=auth-server-1,host=127.0.0.1,port=4650,serverType=auth locally
+[2013-06-28 09:58:33.300] [INFO] [default] - Executing C:\Program Files\nodejs\node.exe D:\creative\aws\kouwanju\game-server\app.js,env=development,id=gate-server-1,host=127.0.0.1,clientPort=4014,frontend=true,serverType=gate locally
+[2013-06-28 09:58:33.311] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - try to connect master: "master", "127.0.0.1", 4005
+[2013-06-28 09:58:38.311] [INFO] [default] - [32m[2013-06-28 09:58:37.947] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-1"
+
+[2013-06-28 09:58:38.311] [INFO] [default] - [32m[2013-06-28 09:58:38.031] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-1"
+
+[2013-06-28 09:58:38.677] [INFO] [default] - [32m[2013-06-28 09:58:38.629] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-2"
+
+[2013-06-28 09:58:38.694] [INFO] [default] - [32m[2013-06-28 09:58:38.679] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "area-server-3"
+
+[2013-06-28 09:58:39.510] [INFO] [default] - [32m[2013-06-28 09:58:39.254] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "path-server-1"
+
+[2013-06-28 09:58:39.738] [INFO] [default] - [32m[2013-06-28 09:58:39.555] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "chat-server-1"
+
+[2013-06-28 09:58:40.265] [INFO] [default] - [32m[2013-06-28 09:58:40.197] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "gate-server-1"
+
+[2013-06-28 09:58:40.356] [INFO] [default] - [32m[2013-06-28 09:58:40.189] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "auth-server-1"
+
+[2013-06-28 09:58:40.976] [INFO] [default] - [32m[2013-06-28 09:58:40.744] [INFO] \node_modules\pomelo\lib\application.js - [39mapplication inited: "connector-server-2"
+
+[2013-06-28 09:58:53.243] [INFO] [default] - [32m[2013-06-28 09:58:41.485] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 09:58:53.445] [INFO] [default] - [32m[2013-06-28 09:58:41.486] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 09:58:53.638] [INFO] [default] - [32m[2013-06-28 09:58:41.667] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 09:58:53.708] [INFO] [default] - [32m[2013-06-28 09:58:52.815] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 09:58:53.752] [INFO] [default] - [32m[2013-06-28 09:58:53.024] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "auth", "127.0.0.1", 4005
+
+[2013-06-28 09:58:53.811] [INFO] [default] - [32m[2013-06-28 09:58:53.391] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" enter after start...
+
+[2013-06-28 09:58:53.903] [INFO] [default] - [32m[2013-06-28 09:58:53.393] [INFO] \node_modules\pomelo\lib\application.js - [39m"auth-server-1" finish start
+
+[2013-06-28 09:59:04.168] [INFO] [default] - [32m[2013-06-28 09:59:03.974] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "gate", "127.0.0.1", 4005
+
+[2013-06-28 09:59:07.622] [INFO] [default] - [32m[2013-06-28 09:59:07.219] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 09:59:07.900] [INFO] [default] - [32m[2013-06-28 09:59:07.439] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "path", "127.0.0.1", 4005
+
+[2013-06-28 09:59:08.279] [INFO] [default] - [32m[2013-06-28 09:58:41.433] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 09:59:08.613] [INFO] [default] - [32m[2013-06-28 09:58:41.435] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 09:59:08.653] [INFO] [default] - [32m[2013-06-28 09:59:08.196] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 09:59:08.694] [INFO] [default] - [32m[2013-06-28 09:58:41.448] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 09:59:08.745] [INFO] [default] - [32m[2013-06-28 09:59:07.454] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 09:59:08.842] [INFO] [default] - [32m[2013-06-28 09:59:08.091] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 09:59:08.843] [INFO] [default] - [32m[2013-06-28 09:59:08.353] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "chat", "127.0.0.1", 4005
+
+[2013-06-28 09:59:09.352] [INFO] [default] - [32m[2013-06-28 09:58:38.993] [INFO] \node_modules\pomelo\lib\components\sync.js - [39mtest
+
+[2013-06-28 09:59:09.421] [INFO] [default] - [32m[2013-06-28 09:58:38.994] [INFO] \node_modules\pomelo\lib\components\sync.js - [39m{ path: 'D:\\creative\\aws\\kouwanju\\game-server/app/dao/mapping',
+  dbclient: 
+   { init: [Function],
+     shutdown: [Function],
+     client: 
+      { stream: [Object],
+        options: [Object],
+        connection_id: 1,
+        connected: false,
+        ready: false,
+        connections: 0,
+        should_buffer: false,
+        command_queue_high_water: 1000,
+        command_queue_low_water: 0,
+        max_attempts: null,
+        command_queue: [Object],
+        offline_queue: [Object],
+        commands_sent: 0,
+        connect_timeout: false,
+        enable_offline_queue: true,
+        retry_max_delay: null,
+        retry_timer: null,
+        retry_totaltime: 0,
+        retry_delay: 150,
+        retry_backoff: 1.7,
+        attempts: 1,
+        pub_sub_mode: false,
+        subscription_set: {},
+        monitoring: false,
+        closing: false,
+        server_info: {},
+        auth_pass: null,
+        parser_module: null,
+        selected_db: null,
+        old_state: null,
+        domain: null,
+        _events: {},
+        _maxListeners: 10,
+        port: '6379',
+        host: 'localhost' } } }
+
+[2013-06-28 09:59:09.522] [INFO] [default] - [32m[2013-06-28 09:58:39.198] [INFO] console - [39m[data sync component] load mapping file done.
+
+[2013-06-28 09:59:09.545] [INFO] [default] - [32m[2013-06-28 09:59:08.621] [INFO] console - [39minfo: 'socket.io started'
+
+[2013-06-28 09:59:09.627] [INFO] [default] - [32m[2013-06-28 09:59:09.200] [INFO] \node_modules\pomelo\node_modules\pomelo-admin\lib\consoleService.js - [39mtry to connect master: "connector", "127.0.0.1", 4005
+
+[2013-06-28 09:59:09.749] [INFO] [default] - [32m[2013-06-28 09:59:09.531] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" enter after start...
+
+[2013-06-28 09:59:09.804] [INFO] [default] - [32m[2013-06-28 09:59:09.544] [INFO] \node_modules\pomelo\lib\application.js - [39m"connector-server-1" finish start
+

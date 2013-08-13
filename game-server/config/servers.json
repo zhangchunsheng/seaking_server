@@ -1,0 +1,128 @@
+{
+	"development" : {
+		"connector" : [{
+				"id" : "connector-server-1",
+				"host" : "127.0.0.1",
+				"port" : 4150,
+				"clientPort" : 4010,
+				"frontend" : true
+			}, {
+				"id" : "connector-server-2",
+				"host" : "127.0.0.1",
+				"port" : 4151,
+				"clientPort" : 4011,
+				"frontend" : true
+			}
+		],
+		"area" : [{
+				"id" : "area-server-1",
+				"host" : "127.0.0.1",
+				"port" : 4250,
+				"area" : "city01"
+			}, {
+				"id" : "area-server-2",
+				"host" : "127.0.0.1",
+				"port" : 4251,
+				"area" : "city02"
+			}, {
+				"id" : "area-server-3",
+				"host" : "127.0.0.1",
+				"port" : 4252,
+				"area" : "city03"
+			}
+		],
+        "battle": [{
+            "id": "battle-server-1",
+            "host": "127.0.0.1",
+            "port": 4551,
+            "battle": 1
+        }],
+        "scene": [{
+            "id": "scene-server-1",
+            "host": "127.0.0.1",
+            "port": 4552
+        }],
+		"chat" : [{
+				"id" : "chat-server-1",
+				"host" : "127.0.0.1",
+				"port" : 4450
+			}
+		],
+		"auth" : [{
+				"id" : "auth-server-1",
+				"host" : "127.0.0.1",
+				"port" : 4650
+			}
+		],
+		"gate" : [{
+				"id" : "gate-server-1",
+				"host" : "127.0.0.1",
+				"clientPort" : 4014,
+				"frontend" : true
+			}
+		]
+	},
+	"production" : {
+		"connector" : [{
+				"id" : "connector-server-1",
+				"host" : "127.0.0.1",
+				"port" : 6150,
+				"clientPort" : 6010,
+				"frontend" : true
+			}, {
+				"id" : "connector-server-2",
+				"host" : "127.0.0.1",
+				"port" : 6151,
+				"clientPort" : 6011,
+				"frontend" : true
+			}
+		],
+		"area" : [{
+				"id" : "area-server-1",
+				"host" : "127.0.0.1",
+				"port" : 6250,
+				"area" : "city01"
+			}, {
+				"id" : "area-server-2",
+				"host" : "127.0.0.1",
+				"port" : 6251,
+				"area" : "city02"
+			}, {
+				"id" : "area-server-3",
+				"host" : "127.0.0.1",
+				"port" : 6252,
+				"area" : "city03"
+			}
+		],
+        "battle": [{
+            "id": "battle-server-1",
+            "host": "127.0.0.1",
+            "port": 6551,
+            "battle": 1
+        }],
+        "scene": [{
+            "id": "scene-server-1",
+            "host": "127.0.0.1",
+            "port": 6552
+        }],
+		"chat" : [{
+				"id" : "chat-server-1",
+				"host" : "127.0.0.1",
+				"port" : 6450
+			}
+		],
+		"auth" : [{
+				"id" : "auth-server-1",
+				"host" : "127.0.0.1",
+				"port" : 6650
+			}
+		],
+		"gate" : [{
+				"id" : "gate-server-1",
+				"host" : "127.0.0.1",
+				"clientPort" : 6014,
+				"frontend" : true
+			}
+		]
+	}
+}

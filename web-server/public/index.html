@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>
+        Pomelo
+    </title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-style-type" content="text/css" />
+    <meta http-equiv="content-scripte-type" content="text/javascript" />
+    <meta name="author" content="netease" />
+    <meta name="version" content="1.0" />
+    <meta name="keywords" content="pomelo" />
+    <link type="text/css" rel="stylesheet" href="css/base.css" />
+    <link href="css/tbstyle.css" rel="stylesheet" media="all" type="text/css">
+    <link href="css/style.css" rel="stylesheet" media="all" type="text/css">
+    <script src="js/lib/build/build.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        require('boot');
+    </script>
+    <script type="text/javascript" src="js/duopao.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript">
+        var pomelo = window.pomelo;
+        var host = "127.0.0.1";
+        var port = "3010";
+        function show() {
+            pomelo.init({
+                host: host,
+                port: port,
+                log: true
+            }, function() {
+                pomelo.request("connector.entryHandler.entry", "hello pomelo", function(data) {
+                    alert(data.msg);
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+<div id="dptb">
+    <div id="topbar">
+        <h1 class="dplogo"><a href="http://www.duopao.com/">多泡游戏</a></h1>
+        <div class="dploginarea">
+            <a href="#" class="dplogin">登录</a>
+            <a href="register.html" class="dpsign">注册</a>
+            <a href="javascript:;" class="dpgame" id="dpgamebtn">多泡游戏<span></span></a>
+        </div>
+    </div>
+    <div id="tbdown">
+        <!-- div class="dpuc">
+            <a href="http://www.duopao.com/uc">用户中心>></a>
+        </div-->
+        <ul class="dpgamelist">
+            <li>
+                <a href="http://g.duopao.com/" title="光辉战纪">
+                    <section>
+                        <img width="38" height="38" src="image/8feddd94-fe98-4e23-92ae-03605631d334.png">
+                        <div class="dpcontent">
+                            <h3>光辉战纪</h3>
+                            <div class="dpcat">角色扮演</div>
+                        </div>
+                    </section>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <script type="text/javascript">
+        (function($){
+            $(function(){
+                $('#dpgamebtn').click(function(){
+                    $('#tbdown').stop().slideToggle();
+                    $('.dpgame').toggleClass('dpdown');
+                });
+            });
+        })(Duopao);
+    </script>
+</div>
+<!-- 托盘结束 -->
+<div id="wrap">
+<div id="header">
+    <h1 id="logo"><a href="http://g.duopao.com/pc/" rel="home" title="光辉战纪">光辉战纪</a></h1>
+    <div id="menus">
+        <ul>
+            <li class="active">
+                <a href="http://g.duopao.com/pc/">官网首页</a>
+            </li>
+            <li>
+                <a href="http://g.duopao.com/pc/gameinfo">游戏资料</a>
+            </li>
+            <li>
+                <a href="http://g.duopao.com/pc/infos?type=6">游戏公告</a>
+            </li>
+            <li>
+                <a href="http://www.duopao.com/paycenter">游戏充值</a>
+            </li>
+            <li>
+                <a href="http://www.duopao.com/pay-kefu">客服中心</a>
+            </li>
+        </ul>
+    </div>
+</div><!-- header end -->
+<div id="container">
+<div id="sidebar">
+    <div id="play">
+        <a href="http://g.duopao.com/pc/startgame">开始游戏</a>
+        <span class="fire" style="background-position: -500px 0px;"></span>
+    </div>
+    <div id="user">
+        <!-- 登录前 -->
+        <div class="item1">
+            <div id="login">
+                <div class="area">
+                    <input type="text" id="loginName" name="loginName" value="" placeholder="通行证账号">
+                    <input type="password" id="password" name="password" value="" placeholder="通行证密码">
+                </div>
+                <div class="go">
+                    <input type="image" src="image/login.jpg" id="login_submit">
+                    <input name="url" type="hidden" value="http://g.duopao.com/pc/">
+                </div>
+            </div>
+        </div>
+        <div class="item2">
+            <a href="http://g.duopao.com/keylogin/pcserver" title="试玩" class="sign"><img src="image/try.png" alt="试玩"></a>
+            <a href="register.html" title="立即注册" class="sign"><img src="image/sign.jpg" alt="注册"></a>
+        </div>
+    </div>
+    <div id="tc">
+        <a href="http://www.duopao.com/paycenter" title="账户充值"><img src="image/s1.jpg" alt="账户充值"></a>
+        <a href="https://itunes.apple.com/cn/app/lie-mo-yong-bing./id605684016?mt=8" title="新手卡"><img src="image/s2.jpg" alt="新手卡"></a>
+        <a href="http://g.duopao.com/apk/download?utm_source=ghzj_v1.2.1" title="客户端下载"><img src="image/s3.jpg" alt="客户端下载"></a>
+    </div>
+    <div id="td">
+        <h3><img src="image/s4.jpg" alt="服务器列表"></h3>
+        <div class="ct">
+            <ul class="list">
+                <a href="http://g.duopao.com/net/entergame.do?state=server%20status1&wz_id=583a8403-a1cf-4315-825b-066ba8e15b30"><li><span>7区魔戒</span><span class="status status1" style="color:#00b050">畅通</span></li></a>
+                <a href="http://g.duopao.com/net/entergame.do?state=server%20status1&wz_id=97f16950-0996-46b8-93c9-00b7a82cf41c"><li><span>6区逆天</span><span class="status status1" style="color:#00b050">畅通</span></li></a>
+                <a href="http://g.duopao.com/net/entergame.do?state=server%20status1&wz_id=666ee4d5-7386-4348-8b22-df9827c67e30"><li><span>5区众神</span><span class="status status1" style="color:#00b050">畅通</span></li></a>
+            </ul>
+        </div>
+    </div>
+    <div id="te">
+        <h3><img src="image/s5.jpg" alt="客服中心"></h3>
+        <div class="ct">
+            <div class="phone">400-650-7196</div>
+            <img src="image/kefu.jpg">
+            <div class="sg" style="text-align:right;">
+                7x24小时客服全心服务<br>
+                玩家群：1群：229254072<br>2群：229254008<br>3群：275900850<br>
+                客服邮箱：kefu@leiyoo.com<br>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    window.dpform=[
+        {
+            'field':'username',
+            'valid':{
+                'noempty':'用户名不能为空！'
+            }
+        },
+        {
+            'field':'password',
+            'valid':{
+                'noempty':'密码不能为空！'
+            }
+        }
+    ];
+</script>
+<div id="content">
+    <div id="slider">
+        <div id="sliderlist" style="overflow: hidden; visibility: visible; list-style: none; position: relative;">
+            <ul style="position: relative; -webkit-transition: left 0ms ease-out; transition: left 0ms ease-out; width: 1680px; left: -420px;">
+                <li style="width: 420px; height: 250px; display: table-cell; padding: 0px; margin: 0px; float: left; vertical-align: top;"><a href="http://g.duopao.com/pc/info?id=279489da-77f9-4a1d-940e-995a18a33cd3"><img src="image/ef5c1343-f0d0-4aa5-b84f-e97e205ebdd9.jpg" data-pinit="registered"></a></li>
+                <li style="display: table-cell; width: 420px; height: 250px; padding: 0px; margin: 0px; float: left; vertical-align: top;"><a href="http://g.duopao.com/pc/info?id=bc24b6e1-acad-4ba4-820d-32041f8275e9"><img src="image/1a9638a6-916b-48f1-a722-1fd5c2f37c51.jpg" data-pinit="registered"></a></li>
+                <li style="display: table-cell; width: 420px; height: 250px; padding: 0px; margin: 0px; float: left; vertical-align: top;"><a href="http://g.duopao.com/pc/info?id=b5f7cd9d-4b88-4f93-9c40-e88e6758e0b6"><img src="image/3390d959-b6bc-48b1-a673-54d859306439.jpg" data-pinit="registered"></a></li>
+                <li style="display: table-cell; width: 420px; height: 250px; padding: 0px; margin: 0px; float: left; vertical-align: top;"><a href="http://g.duopao.com/pc/info?id=0ca5b630-2b33-4f0e-99ed-3d28cbd10ca4"><img src="image/4ee8205a-bb09-4821-aa82-19e478c3b130.jpg" data-pinit="registered"></a></li>
+            </ul>
+        </div>
+        <div id="slidernavi"><span class=" ">1</span><span class="  active">2</span><span class=" ">3</span><span class=" ">4</span></div>
+    </div>
+    <div id="news">
+        <h3><img src="image/s8.jpg"><a href="http://g.duopao.com/pc/infos">更多&gt;&gt;</a></h3>
+        <!-- 焦点图 -->
+        <div class="ct">
+            <ul>
+                <li>
+                    <a target="_blank" href="http://g.duopao.com/pc/info?id=51b06ab1-3bac-462f-b822-f7dee66acce2">
+                        <span class="title">光辉战纪6月25日例行维护公告</span>
+                        <span class="date">[06-24]</span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="http://g.duopao.com/pc/info?id=72170016-8908-43d1-9859-fc01fea19ce6">
+                        <span class="title">光辉战纪6月4日例行维护公告</span>
+                        <span class="date">[06-04]</span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="http://g.duopao.com/pc/info?id=1b5f2340-e2b8-48f2-88d5-ad95e40a3186">
+                        <span class="title">光辉战纪5月28日例行维护公告</span>
+                        <span class="date">[05-27]</span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="http://g.duopao.com/pc/info?id=a9d3976d-04b5-4eb8-967a-14684291256e">
+                        <span class="title">5月23日例行维护推迟公告</span>
+                        <span class="date">[05-23]</span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="http://g.duopao.com/pc/info?id=ec3024e4-bdc4-4042-997c-b4a419596538">
+                        <span class="title">光辉战纪5月23日例行维护公告</span>
+                        <span class="date">[05-22]</span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="http://g.duopao.com/pc/info?id=b18cd531-79dc-4415-a462-2ef670bc66f8">
+                        <span class="title">光辉战纪合服公告</span>
+                        <span class="date">[05-13]</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <!-- 专题图 -->
+    <div id="tf">
+        <div id="imgs1" class="imglist">
+            <div><a href="http://g.duopao.com/pc/info?id=a5feb307-1e97-4b2e-a33e-07b47b1da0db"><img src="image/acbdab1b-f4e0-4f83-989c-f0985dee8347.jpg" data-pinit="registered"></a></div>
+            <div><a href="http://g.duopao.com/pc/info?id=91f2555a-3d94-4ebe-b4a2-a36ce7b44563"><img src="image/48caa526-855f-4d6f-9a29-c99322df4484.jpg" data-pinit="registered"></a></div>
+            <div class="last"><a href="http://g.duopao.com/pc/info?id=fa159eb5-ae03-45cf-a98b-a91d1a718782"><img src="image/09e64142-e51e-4d0c-aed8-fb6a9b8ac03b.jpg" data-pinit="registered"></a></div>
+        </div>
+        <div id="data">
+            <h3><img src="image/s9.jpg"></h3>
+            <div class="sg">
+                <div class="item">
+                    <h4>新手入门</h4>
+                    <div class="ct">
+                        <a href="http://g.duopao.com/pc/info?id=c21fc874-bc0e-4b33-a433-378986f5292c">&gt;装备介绍</a>
+                        <a href="http://g.duopao.com/pc/info?id=c1aa251b-e6d1-440c-bd1e-8009ba513aa6">&gt;游戏背景</a>
+                        <a href="http://g.duopao.com/pc/info?id=4e3b3d52-ca97-4ac7-9855-83920b80eb52">&gt;职业介绍</a>
+                        <a href="http://g.duopao.com/pc/info?id=1b5ab820-447b-450a-b5d9-9034da5eec15">&gt;常见问题</a>
+                    </div>
+                </div>
+                <div class="item">
+                    <h4>玩家攻略</h4>
+                    <div class="ct">
+                        <a href="http://g.duopao.com/pc/info?id=e25c1f78-6612-44c6-ac64-350415e2e2a4">&gt;战士攻略</a>
+                        <a href="http://g.duopao.com/pc/info?id=56ecbb15-6d20-453d-a92f-e73f743d54f8">&gt;法师攻略</a>
+                        <a href="http://g.duopao.com/pc/info?id=b5f50a4e-94a4-4901-b63c-370916df6d8b">&gt;游侠攻略</a>
+                        <a href="http://g.duopao.com/pc/info?id=f3a987f8-e44e-4963-9826-125b067ac0bd">&gt;新人攻略</a>
+                    </div>
+                </div>
+                <div class="item">
+                    <h4>特色玩法</h4>
+                    <div class="ct">
+                        <a href="http://g.duopao.com/pc/info?id=accc445f-4b65-49e2-8412-3d2a0afc43e7">&gt;伙伴系统</a>
+                        <a href="http://g.duopao.com/pc/info?id=e672a0fe-43a6-40a6-b18c-1757b31f8337">&gt;神器系统</a>
+                        <a href="http://g.duopao.com/pc/info?id=d0baa731-f49f-4ce5-999e-2f62c61f7925">&gt;战斗模式</a>
+                        <a href="http://g.duopao.com/pc/info?id=00abbd7d-5f1b-4c26-a04a-4ff878eaa302">&gt;纹身系统</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tg">
+        <div id="ph">
+            <h3>排行榜</h3>
+            <form action="http://g.duopao.com/pc/rank" method="get" id="select">
+                <select name="server">
+                    <option selected="" value="1">一区</option>
+                    <option value="2">二区</option>
+                    <option value="3">三区</option>
+                    <option value="4">四区</option>
+                    <option value="5">五区</option>
+                    <option value="10">六区</option>
+                    <option value="11">七区</option>
+                </select>
+            </form>
+            <div id="phtab" class="tabs">
+                <div class="btn">
+                    <a href="javascript:;" class="active">等级排行</a>
+                    <a href="javascript:;">装备评分</a>
+                </div>
+                <div class="cts">
+                    <div>
+                        <div class="ct">
+                            <div><span>60</span> 杀戮机器</div>
+                            <div><span>60</span> 崔希丝</div>
+                            <div><span>60</span> 我就是風</div>
+                            <div><span>60</span> 达汗</div>
+                            <div><span>60</span> 朱莉娅皮特曼</div>
+                            <div><span>60</span> 弹指流沙</div>
+                            <div><span>60</span> shine</div>
+                        </div>
+                    </div>
+                    <div style="display:none;">
+                        <div class="ct">
+                            <div><span>198657</span> 杀戮机器</div>
+                            <div><span>198541</span> 孤单寂寞冷</div>
+                            <div><span>194416</span> 我很在乎</div>
+                            <div><span>193378</span> 崔希丝</div>
+                            <div><span>190118</span> 好开森</div>
+                            <div><span>187381</span> 好忧桑</div>
+                            <div><span>187221</span> 我就是風</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="th">
+        <h3><img src="image/s11.jpg"></h3>
+        <div class="navi">
+            <a href="http://g.duopao.com/pc#1" class="active">游戏截图</a>
+            <a href="http://g.duopao.com/pc#2">游戏视频</a>
+            <a href="http://g.duopao.com/pc#3">游戏壁纸</a>
+            <a href="http://g.duopao.com/pc#4">美女玩家</a>
+        </div>
+        <div class="slider">
+            <div id="sliderlist1" style="overflow: hidden; visibility: visible; list-style: none; position: relative;">
+                <ul style="position: relative; -webkit-transition: 0ms; transition: 0ms; width: 2920px; left: 0px;">
+                    <li style="width: 730px; height: 170px; display: table-cell; padding: 0px; margin: 0px; float: left; vertical-align: top;">
+                        <a href="http://g.duopao.com/pc/info?id=185515fc-759b-41b1-8f88-3626e070d84d"><img src="image/d21d04be-7551-4244-82b5-3974edddc65b.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=185515fc-759b-41b1-8f88-3626e070d84d"><img src="image/9426b230-7c09-44c0-a60a-554155cd4d58.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=185515fc-759b-41b1-8f88-3626e070d84d"><img src="image/aa4cd483-b59d-42de-8489-2b2baf498885.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=185515fc-759b-41b1-8f88-3626e070d84d"><img src="image/244bfa9f-53c0-4c31-a0ef-7de53c1047f1.jpg" data-pinit="registered"></a>
+                    </li>
+                    <li style="display: table-cell; width: 730px; height: 170px; padding: 0px; margin: 0px; float: left; vertical-align: top;">
+                        <a href="http://g.duopao.com/pc/info?id=0f650d28-e6b9-47d1-b74d-871716f9ea8f"><img src="image/31426648-8334-43ea-9943-b401bbb322c6.jpg" data-pinit="registered"></a>
+                    </li>
+                    <li style="display: table-cell; width: 730px; height: 170px; padding: 0px; margin: 0px; float: left; vertical-align: top;">
+                        <a href="http://g.duopao.com/pc/info?id=1b2e5f39-bfb0-42d1-92b2-3f8867500925"><img src="image/685f3b77-19cd-40f4-a65d-bcf267246d56.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=1b2e5f39-bfb0-42d1-92b2-3f8867500925"><img src="image/ec6151b7-adfb-4840-91f3-0b9f605dc2fe.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=1b2e5f39-bfb0-42d1-92b2-3f8867500925"><img src="image/4273245e-4534-4d29-8101-5cdfca84678d.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=1b2e5f39-bfb0-42d1-92b2-3f8867500925"><img src="image/390e467e-b04c-4e13-8f96-7effe100f87b.jpg" data-pinit="registered"></a>
+                    </li>
+                    <li style="display: table-cell; width: 730px; height: 170px; padding: 0px; margin: 0px; float: left; vertical-align: top;">
+                        <a href="http://g.duopao.com/pc/info?id=3c282554-1e3e-4022-84ae-5e8ea10bbcc9"><img src="image/372e81e5-0927-4bab-9ca9-cac5526ee171.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=aa99230a-039d-4ad8-92e6-b62c3233a46d"><img src="image/2b25533f-3435-4530-971c-d329eca877e0.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=4c5a2f86-0567-43a5-923f-9b6ad40370dc"><img src="image/265bf0e3-17f1-45ea-a748-c989752c9116.jpg" data-pinit="registered"></a>
+                        <a href="http://g.duopao.com/pc/info?id=2df8b0c5-fbdc-4f5d-8b43-5b00f5b1051c"><img src="image/0545ef83-63d8-4a4a-ad96-76971afd46d8.jpg" data-pinit="registered"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="js/touchslider.js"></script>
+<div class="clear"></div>
+</div>
+<div id="footer">
+    <div class="inner">
+        <div class="d">
+            <a href="http://www.duopao.com/"><img src="image/dp.jpg"></a>
+        </div>
+        <div class="f">
+            <div class="g">
+                <a href="http://www.duopao.com/contact">关于我们</a> |
+                <a href="http://www.duopao.com/mz">免责声明</a> |
+                <a href="http://www.duopao.com/pay-kefu">客服中心</a> |
+                <a href="http://g.duopao.com/www.leiyoo.com">磊友科技</a> |
+                <a href="javascript:scroll(0,0)">返回顶部</a> |
+            </div>
+            <div class="small">
+                Copyright © 2010-2012 多泡游戏版权所有  京ICP备12022260号-2
+            </div>
+        </div>
+    </div>
+    <div class="small">
+        抵制不良游戏    拒绝盗版游戏    注意自我保护    谨防受骗上当    适度游戏益脑    沉迷游戏伤身    合理安排时间    享受健康生活
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    window._CONFIG=window._CONFIG||{
+        blank:'http://uc.duopao.com/uc/blank.html?s=1'
+    }
+</script>
+<script type="text/javascript" src="js/common.js"></script>
+<div class="g-doc">
+    <div class="g-banner" style="border:none">
+        <div class="logo">
+            <div class="img"></div>
+        </div>
+    </div>
+    <div class="g-background">
+        <div class="g-content">
+            Welcome to Pomelo
+        </div>
+    </div>
+    <div class="g-link">
+        Home:
+        <a href="https://github.com/NetEase/pomelo">https://github.com/NetEase/pomelo</a>
+    </div>
+    <div class="g-button">
+        <input id="test" type="button" value="Test Game Server" onclick="show()"/>
+    </div>
+</div>
+</body>
+</html>
