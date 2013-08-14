@@ -61,8 +61,6 @@ Task.prototype._initTaskInfo = function() {
             this[key] = info[key];
         }
 
-        this.taskGoal = this._parseJson(this.taskGoal);
-        this.taskTalk = this._parseJson(this.taskTalk);
         this.completeCondition = this._parseJson(info.completeCondition);
     }
 };
@@ -80,9 +78,16 @@ Task.prototype.checkTask = function(taskId) {
  * @param monsters
  */
 Task.prototype.updateRecord = function(player, monsters) {
+    logger.info(this.taskGoal);
+    logger.info(monsters);
     if(this.taskGoal.type == consts.TaskType.KILL_MONSTER) {
         for(var i in monsters) {
             if(this.taskGoal.itemId == monsters[i].id) {
+                if(this.status == consts.TaskStatus.START_TASK) {
+                    this.status = consts.TaskStatus.NOT_COMPLETED;
+                    this.taskRecord = {};
+                    this.taskRecord.itemNum = 0;
+                }
                 this.taskRecord.itemNum++;
                 if(this.taskRecord.itemNum == this.taskGoal.itemNum) {
                     player.completeTask(consts.taskType[this.type]);
