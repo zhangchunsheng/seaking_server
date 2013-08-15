@@ -389,7 +389,7 @@ Player.prototype.updateTask = function() {
 
 Player.prototype.updateTaskRecord = function(monsters) {
     var task = {};
-    for(var type in this.curTasksEntity) {
+    for(var type in this.curTasksEntity.strip()) {
         task = this.curTasksEntity[type];
         task.updateRecord(this, monsters);
     }

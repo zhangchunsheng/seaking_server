@@ -49,7 +49,8 @@ module.exports = {
 
     TASK: {
         NO_CUR_TASK: 1401,
-        HAS_ACCEPTED: 1402
+        HAS_ACCEPTED: 1402,
+        NOT_COMPLETE: 1403
     },
 
     INDU: {

@@ -561,8 +561,8 @@ function createEPTInfo(character, serverId, registerType, loginName, characterId
     var curTasks = new Tasks({
         currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId),
         currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId),
-        currentDayTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId),
-        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId)
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask, serverId, registerType, loginName, characterId),
+        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId)
     });
     character.packageEntity = package;
     character.equipmentsEntity = equipments;

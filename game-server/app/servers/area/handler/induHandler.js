@@ -135,7 +135,7 @@ handler.triggerEvent = function(msg, session, next) {
                         }
                         next(null, result);
                     });
-                    player.updateTaskRecord(fight.monsters);
+                    character.updateTaskRecord(fight.monsters);
                     // update task
                 } else {
                     var result = {

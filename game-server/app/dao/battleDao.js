@@ -46,7 +46,7 @@ battleDao.savePlayerBattleData = function(player, owners, monsters, battleData, 
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             battleDao.getBattleId(client, function(err, battleId) {
                 var array = [];
-                var key = "S" + player.sid + "_Battle" + battleId;
+                var key = "S" + player.sid + "_Battle";
                 var _owners = [];
                 var _monsters = [];
                 for(var i = 0 ; i < owners.length ; i++) {
@@ -60,7 +60,7 @@ battleDao.savePlayerBattleData = function(player, owners, monsters, battleData, 
                     monsters: _monsters,
                     battleData: battleData
                 };
-                array.push(["set", key, JSON.stringify(data)]);
+                array.push(["hset", key, battleId, JSON.stringify(data)]);
                 var characterId = utils.getRealCharacterId(player.id);
                 var key = dbUtil.getBattleKey(player.sid, player.registerType, player.loginName, characterId)
                 array.push(["lpush", key, battleId]);

@@ -6,6 +6,7 @@
  * Description: utils
  */
 var message = require('../i18n/zh_CN.json');
+var consts = require('../consts/consts');
 var utils = module.exports;
 
 /**
@@ -147,4 +148,18 @@ utils.getRealPartnerId = function(partnerId) {
 utils.getRealCharacterId = function(characterId) {
     characterId = characterId.substr(characterId.indexOf("C") + 1);
     return characterId;
+}
+
+utils.getTaskType = function(task) {
+    var type = "";//1 - 主线任务 2 - 支线任务 3 - 日常任务 4 - 活动任务
+    if(task.type == 1) {
+        type = consts.curTaskType.CURRENT_MAIN_TASK;
+    } else if(task.type == 2) {
+        type = consts.curTaskType.CURRENT_BRANCH_TASK;
+    } else if(task.type == 3) {
+        type = consts.curTaskType.CURRENT_DAY_TASK;
+    } else if(task.type == 4) {
+        type = consts.curTaskType.CURRENT_EXERCISE_TASK;
+    }
+    return type;
 }

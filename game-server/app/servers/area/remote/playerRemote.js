@@ -42,17 +42,9 @@ exp.playerLeave = function(args, cb) {
     userDao.updatePlayerAttribute(player);
     packageDao.update(player.packageEntity.strip());
     equipmentsDao.update(player.equipmentsEntity.strip());
-    tasksUpdate(player.curTasksEntity.strip());
+    taskDao.updateTask(player.curTasksEntity.strip());
 
     area.removePlayer(playerId);
     messageService.pushMessage({route: 'onUserLeave', code: consts.MESSAGE.RES, playerId: playerId});
     utils.invokeCallback(cb);
-};
-
-// Persistent tasks' data in the database.
-var tasksUpdate = function(tasks) {
-    for (var task in tasks) {
-        var task = tasks[task];
-        taskDao.update(task.strip());
-    }
 };

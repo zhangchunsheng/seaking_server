@@ -91,9 +91,82 @@ taskDao.createTask = function(character, taskId, cb) {
  * @param {Object} val The update parameters
  * @param {Function} cb
  */
-taskDao.update = function(val, cb) {
+taskDao.update = function(type, val, cb) {
+    var redisConfig = pomelo.app.get('redis');
+    var redis = pomelo.app.get('redisclient');
 
+    logger.info(val);
+    var key = dbUtil.getPlayerKey(val.serverId, val.registerType, val.loginName, val.characterId);
+    var value = {
+        taskId: val.taskId,
+        status: val.status,
+        startTime: val.startTime,
+        finishTime: val.finishTime,
+        taskRecord: val.taskRecord
+    };
+    if(typeof value.startTime == "undefined" || value.startTime == null) {
+        value.startTime = 0;
+    }
+    if(typeof value.finishTime == "undefined" || value.finishTime == null) {
+        value.finishTime = 0;
+    }
+    if(typeof value.taskRecord == "undefined" || value.taskRecord == null) {
+        value.taskRecord = {};
+    }
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
+
+        }).hset(key, type, JSON.stringify(value), function(err, reply) {
+                if(typeof cb == "function")
+                    cb(!!err);
+            })
+            .exec(function (err, replies) {
+                console.log(replies);
+            });
+    });
 };
+
+taskDao.updateTask = function(tasks, cb) {
+    var redisConfig = pomelo.app.get('redis');
+    var redis = pomelo.app.get('redisclient');
+
+    var task = {};
+    var key = "";
+    var value = {};
+    var array = [];
+    for (var type in tasks) {
+        task = tasks[type].strip();
+        key = dbUtil.getPlayerKey(task.serverId, task.registerType, task.loginName, task.characterId);
+        value = {
+            taskId: task.taskId,
+            status: task.status,
+            startTime: task.startTime,
+            finishTime: task.finishTime,
+            taskRecord: task.taskRecord
+        };
+        if(typeof value.startTime == "undefined" || value.startTime == null) {
+            value.startTime = 0;
+        }
+        if(typeof value.finishTime == "undefined" || value.finishTime == null) {
+            value.finishTime = 0;
+        }
+        if(typeof value.taskRecord == "undefined" || value.taskRecord == null) {
+            value.taskRecord = {};
+        }
+        array.push(["hset", key, type, JSON.stringify(value)]);
+    }
+    logger.info(array);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
+            client.multi(array).exec(function(err, replies) {
+                if(typeof cb == "function")
+                    cb(!!err);
+            });
+        }).exec(function (err, replies) {
+                console.log(replies);
+            });
+    });
+}
 
 /**
  * destroy task

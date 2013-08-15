@@ -28,34 +28,7 @@ var taskReward = module.exports;
  * @api public
  */
 taskReward.reward = function(player, ids) {
-    if (ids.length < 1) {
-        return;
-    }
 
-    var i, l;
-    var tasks = player.curTasks;
-    var pos = player.getState();
-    var totalItems = [], totalExp = 0;
-
-    for (i = 0, l = ids.length; i < l; i++) {
-        var id = ids[i];
-        var task = tasks[id];
-        var items = task.item.split(';');
-        var exp = task.getExp;
-        for (var j = 0; j < items.length; j++) {
-            totalItems.push(items[j]);
-        }
-        totalExp += exp;
-    }
-
-    var equipments = this._rewardItem(totalItems, pos);
-    this._rewardExp(player, totalExp);
-
-    for (i = 0, l=equipments.length; i < l; i ++) {
-        area.addEntity(equipments[i]);
-    }
-
-    messageService.pushMessageToPlayer({uid:player.userId, sid : player.serverId}, 'onRewards', equipments);
 };
 
 /**

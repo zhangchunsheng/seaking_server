@@ -12,6 +12,7 @@
 var dataApi = require('../../../util/dataApi');
 var area = require('../../../domain/area/area');
 var consts = require('../../../consts/consts');
+var utils = require('../../../util/utils');
 var taskDao = require('../../../dao/taskDao');
 var logger = require('pomelo-logger').getLogger(__filename);
 var taskReward = require('../../../domain/taskReward');
@@ -41,21 +42,9 @@ handler.startTask = function(msg, session, next) {
     var player = area.getPlayer(session.get('playerId'));
     var curTasks = player.curTasksEntity;
 
-    logger.info(player.curTasksEntity);
-
-    var task = null;
-    // 已存在task
-    for (var i in curTasks) {
-        if (curTasks[i].taskId == taskId) {
-            task = curTasks[i];
-            break;
-        }
-    }
+    var task = getTask(taskId, curTasks, next);
 
     if(task == null) {
-        next(null, {
-            code: Code.TASK.NO_CUR_TASK
-        });
         return;
     }
 
@@ -66,17 +55,7 @@ handler.startTask = function(msg, session, next) {
         return;
     }
 
-    var type = "";//1 - 主线任务 2 - 支线任务 3 - 日常任务 4 - 活动任务
-
-    if(task.type == 1) {
-        type = consts.curTaskType.CURRENT_MAIN_TASK;
-    } else if(task.type == 2) {
-        type = consts.curTaskType.CURRENT_BRANCH_TASK;
-    } else if(task.type == 3) {
-        type = consts.curTaskType.CURRENT_DAY_TASK;
-    } else if(task.type == 4) {
-        type = consts.curTaskType.CURRENT_EXERCISE_TASK;
-    }
+    var type = utils.getTaskType(task);
 
     player.startTask(type, task);
     var date = new Date();
@@ -92,6 +71,25 @@ handler.startTask = function(msg, session, next) {
     });
 };
 
+function getTask(taskId, curTasks, next) {
+    var task = null;
+    // 已存在task
+    for (var i in curTasks) {
+        if (curTasks[i].taskId == taskId) {
+            task = curTasks[i];
+            break;
+        }
+    }
+
+    if(task == null) {
+        next(null, {
+            code: Code.TASK.NO_CUR_TASK
+        });
+    }
+
+    return task;
+}
+
 /**
  * 交任务
  *
@@ -105,14 +103,27 @@ handler.handOverTask = function(msg, session, next) {
     var taskId = msg.taskId;
 
     var player = area.getPlayer(session.get('playerId'));
-    var tasks = player.curTasksEntity;
-    var taskIds = [];
-    for (var type in tasks) {
-        var task = tasks[type];
-        if (task.status === consts.TaskStatus.COMPLETED) {
-            taskIds.push(type);
-        }
+    var curTasks = player.curTasksEntity;
+
+    var task = getTask(taskId, curTasks, next);
+    if(task == null) {
+        return;
     }
+
+    var type = utils.getTaskType(task);
+
+    var taskIds = [];
+    if (task.status === consts.TaskStatus.COMPLETED) {
+        taskIds.push(type);
+    }
+
+    if(taskIds.length == 0) {
+        next(null, {
+            code: Code.TASK.NOT_COMPLETE
+        });
+        return;
+    }
+
     taskReward.reward(player, taskIds);
     player.handOverTask(taskIds);
     next(null, {
