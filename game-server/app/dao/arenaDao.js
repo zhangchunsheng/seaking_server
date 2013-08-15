@@ -113,68 +113,99 @@ arenaDao.exchange = function(player, opponent, cb) {
         });
     });
 }
-arenaDao.getOpponents=function(player,cb){
-    this.getRank(player,function(reply){
-        var array = new Array();
-        for(var i =0;i<8;i++){
-            if((reply=getRandom(reply)) <= 0){
+arenaDao.getOpponents=function(player, cb) {
+    this.getRank(player,function(err, reply) {
+        logger.debug(reply);
+        var randoms = new Array();
+        for(var i = 0 ; i < 8 ; i++){
+            if((reply = getRandom(reply)) < 0) {
                  break;
             }
-            array.push(reply);
+            //array.unshift(reply);添加到开头和添加到末尾 最后在反转
+            randoms.push(reply);
         }
-        logger.debug(array);
-        if(array.length !=0){
+        randoms = randoms.reverse();
+        logger.debug(randoms);
+        if(randoms.length != 0) {
             var redisConfig = pomelo.app.get('redis');
             var redis = pomelo.app.get('redisclient');
             var key = "S" + player.sid + "_ARENA";
             redis.command(function(client){
-               client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply){
+               client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
-               }).zrange(key,array[0],array[array.length-1],function(err,data){
-                     logger.info(data);
-                     var frist = array[0];
+               }).zrange(key, randoms[0],randoms[randoms.length-1], function(err,data) {
+                    // logger.info(data);
+                     var frist = randoms[0];
                      var list = new Array();
-                     for(var i =0;i<array.length-1;i++){
-                         client.hgetall(data[array[i]-frist],function(err,result){
-                              list.push(
-                                  {
-                                      cid:result.cid,
-                                      playId:result.playId,
-                                      nickname:result.nickname,
-                                      rank:array[i]
-                                  }
-                              );
-                         });
-                         utils.invokeCallback(cb, null, opponent_score);
+                     for(var i = 0 ; i < randoms.length ; i++ ) {
+                          list.push(["get", data[randoms[i]-frist]]);
                      }
 
-                });
+                       client.multi(list).exec(function(err, playerIds) {
+                         if( !!err ) {
+                            logger.error(err);
+                            utils.invokeCallback(cb, null);
+                            return;
+                         }
+
+                         logger.info(playerIds);
+                         var array = new Array();
+                         for(var i = 0 ; i < playerIds.length ; i++ ) {
+                             array.push(["hgetall", playerIds[i]]);
+                         }
+                           client.multi(array).exec(function(err, hgetallresult) {
+                             if( !!err ) {
+                                 logger.error(err);
+                                 utils.invokeCallback(cb, null);
+                                 return;
+                             }
+
+                             var opponents = new Array();
+                             for(var i = 0; i < hgetallresult.length ;i ++){
+                                 opponents.push({
+                                      cid      : hgetallresult[i].cId,
+                                      playId   : hgetallresult[i].id,
+                                      nickname : hgetallresult[i].nickname,
+                                      rank     : randoms[i]
+                                  });
+                             }
+                             //  logger.debug("list:"+opponents);
+                             utils.invokeCallback(cb, null, opponents);
+                         });
+
+                     });
+
+                }).exec(function (err, replies) {
+                      // logger.error(replies);
+                   });
             });
+        }else {
+            utils.invokeCallback(cb, null,[]);
         }
     });
 
 }
 function getRandom(reply){
-    if(reply > 2000){
-        return   util.random(reply - 100,reply);
-    }else if(reply > 1500){
+    if( reply > 2000 ) {
+        return   util.random(reply - 100, reply);
+    }else if( reply > 1500 ) {
         return   util.random(reply - 80 , reply);
-    }else if(reply > 1000){
-        return   util.random(reply - 50,reply);
-    }else if(reply > 500){
-        return   util.random(reply - 30,reply);
-    }else if(reply > 200){
-        return   util.random(reply - 20,reply);
-    }else if(reply > 100){
-        return   util.random(reply - 10,reply);
-    }else if(reply > 50){
-        return   util.random(reply - 5,reply);
-    }else if(reply > 15){
-        return util.random(reply - 2,reply);
-    }else if(reply > 0){
+    }else if( reply > 1000 ) {
+        return   util.random(reply - 50, reply);
+    }else if( reply > 500 ) {
+        return   util.random(reply - 30, reply);
+    }else if( reply > 200 ) {
+        return   util.random(reply - 20, reply);
+    }else if( reply > 100 ) {
+        return   util.random(reply - 10, reply);
+    }else if( reply > 50 ) {
+        return   util.random(reply - 5, reply);
+    }else if( reply > 15 ) {
+        return util.random(reply - 2, reply);
+    }else if( reply > 0 ) {
         return reply-1;
-    }else{
-        return 0;
+    }else {
+        return -1;
     }
 
 }
