@@ -126,7 +126,7 @@ taskDao.update = function(type, val, cb) {
     });
 };
 
-taskDao.updateTask = function(tasks, cb) {
+taskDao.updateTask = function(player, tasks, cb) {
     var redisConfig = pomelo.app.get('redis');
     var redis = pomelo.app.get('redisclient');
 
@@ -152,6 +152,11 @@ taskDao.updateTask = function(tasks, cb) {
         }
         if(typeof value.taskRecord == "undefined" || value.taskRecord == null) {
             value.taskRecord = {};
+        }
+        if(type == consts.curTaskType.CURRENT_DAY_TASK) {
+            var temp = player.curTasks[type];
+            temp[0] = value;
+            value = temp;
         }
         array.push(["hset", key, type, JSON.stringify(value)]);
     }

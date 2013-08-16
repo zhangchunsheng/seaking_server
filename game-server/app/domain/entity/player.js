@@ -371,6 +371,15 @@ Player.prototype.startTask = function(type, task) {
 
 Player.prototype.getNextTask = function(type, task) {
     var nextTaskId = task.nextTaskId;
+    if(type == consts.curTaskType.CURRENT_DAY_TASK) {
+        if(this.curTasks.length > 1) {
+            this.curTasks.shift();
+            nextTaskId = this.curTasks[0].taskId;
+        }
+    }
+    if(nextTaskId == null || nextTaskId == 0) {
+        return false;
+    }
     var date = new Date();
     var task = {
         "taskId": nextTaskId,
@@ -381,6 +390,7 @@ Player.prototype.getNextTask = function(type, task) {
     var characterId = utils.getRealCharacterId(this.id);
     task = taskDao.createNewTask(task, this.sid, this.registerType, this.loginName, characterId);
     this.curTasksEntity[type] = task;
+    return true;
 }
 
 Player.prototype.updateTask = function() {
@@ -406,6 +416,7 @@ Player.prototype.handOverTask = function(taskIds) {
     var length = taskIds.length;
     var type = "";
     var date = new Date();
+    var nextTasks = {};
     for (var i = 0; i < length; i++) {
         var type = taskIds[i];
         var task = this.curTasksEntity[type];
@@ -413,8 +424,11 @@ Player.prototype.handOverTask = function(taskIds) {
         task.handOverTime = date.getTime();
         task.save();
         this.logTaskData(type);
-        this.getNextTask(type, task);
+        if(this.getNextTask(type, task)) {
+            nextTasks[type] = task.getInfo();
+        }
     }
+    return nextTasks;
 };
 
 /**
@@ -432,7 +446,11 @@ Player.prototype.completeTask = function(type) {
     task.status = TaskStatus.COMPLETED;
     task.finishTime = date.getTime();
     task.save();
-    this.emit('completeTask', task.strip());//pushMessage
+};
+
+Player.prototype.taskProgress = function(type) {
+    var task = this.curTasksEntity[type];
+    this.emit('taskProgress', task.taskInfo());//pushMessage
 };
 
 Player.prototype.logTaskData = function(type) {

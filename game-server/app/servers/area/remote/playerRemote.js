@@ -42,7 +42,7 @@ exp.playerLeave = function(args, cb) {
     userDao.updatePlayerAttribute(player);
     packageDao.update(player.packageEntity.strip());
     equipmentsDao.update(player.equipmentsEntity.strip());
-    taskDao.updateTask(player.curTasksEntity.strip());
+    taskDao.updateTask(player, player.curTasksEntity.strip());
 
     area.removePlayer(playerId);
     messageService.pushMessage({route: 'onUserLeave', code: consts.MESSAGE.RES, playerId: playerId});

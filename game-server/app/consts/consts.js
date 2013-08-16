@@ -100,7 +100,7 @@ module.exports = {
         CURRENT_EXERCISE_TASK: "currentExerciseTask"
     },
 
-    taskType: {
+    correspondingCurTaskType: {
         1: "currentMainTask",
         2: "currentBranchTask",
         3: "currentDayTask",

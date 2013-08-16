@@ -39,6 +39,16 @@ exp.addEventForPlayer = function (player) {
         messageService.pushMessageToPlayer(uid, 'onCompleteTask', task);
     });
 
+    player.on('taskProgress', function(task) {
+        logger.debug('event.taskProgress: ' + player.level + ' id: ' + player.id);
+        var uid = {
+            uid: player.userId,
+            sid: player.serverId
+        };
+        logger.info(uid);
+        messageService.pushMessageToPlayer(uid, 'taskProgress', task);
+    });
+
     player.on('addHP', function() {
         var uid = {
             uid: player.userId,

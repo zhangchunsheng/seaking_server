@@ -315,7 +315,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                     var curTasks = {
                         currentMainTask: {"taskId": 10100, "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
                         currentBranchTask: {"taskId": 20201, "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
-                        currentDayTask: [{"taskId": 30201,"status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}, 30202, 30203],
+                        currentDayTask: [{"taskId": 30201,"status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}, {"taskId": 30202}, {"taskId": 30203}],
                         currentExerciseTask: {"taskId": 40201, "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
                     };
                     var character = {
@@ -431,7 +431,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                             if(o == "currentDayTask") {
                                 taskInfo = dataApi.task.findById(character.curTasks[o][0].taskId);
                                 for(var o1 in taskInfo) {
-                                    character.curTasks[o][0][o1] = taskInfo[o1];
+                                    character.curTasks[o][o1] = taskInfo[o1];
                                 }
                             } else {
                                 taskInfo = dataApi.task.findById(character.curTasks[o].taskId);
@@ -561,7 +561,7 @@ function createEPTInfo(character, serverId, registerType, loginName, characterId
     var curTasks = new Tasks({
         currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId),
         currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId),
-        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask, serverId, registerType, loginName, characterId),
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId),
         currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId)
     });
     character.packageEntity = package;
@@ -798,14 +798,14 @@ userDao.getPlayerById = function(playerId, cb) {
                             });
                         }
                     ],
-                        function(err, results) {
-                            var partners = results[0];
-                            var player = new Opponent(character);
-                            player.partners = partners;
-                            userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
-                                utils.invokeCallback(cb, null, player);
-                            });
+                    function(err, results) {
+                        var partners = results[0];
+                        var player = new Opponent(character);
+                        player.partners = partners;
+                        userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
+                            utils.invokeCallback(cb, null, player);
                         });
+                    });
                 });
             });
         }).exec(function(err, replies) {

@@ -78,8 +78,10 @@ Task.prototype.checkTask = function(taskId) {
  * @param monsters
  */
 Task.prototype.updateRecord = function(player, monsters) {
-    logger.info(this.taskGoal);
+    logger.info(this);
     logger.info(monsters);
+    if(typeof this.id == "undefined")
+        return;
     if(this.taskGoal.type == consts.TaskType.KILL_MONSTER) {
         for(var i in monsters) {
             if(this.taskGoal.itemId == monsters[i].id) {
@@ -90,8 +92,9 @@ Task.prototype.updateRecord = function(player, monsters) {
                 }
                 this.taskRecord.itemNum++;
                 if(this.taskRecord.itemNum == this.taskGoal.itemNum) {
-                    player.completeTask(consts.taskType[this.type]);
+                    player.completeTask(consts.correspondingCurTaskType[this.type]);
                 }
+                player.taskProgress(consts.correspondingCurTaskType[this.type]);
             }
         }
         this.save();
@@ -125,6 +128,19 @@ Task.prototype.strip = function() {
         serverId: this.serverId,
         registerType: this.registerType,
         loginName: this.loginName,
+        taskId: this.kindId,
+        status: this.status,
+        startTime: this.startTime,
+        finishTime: this.finishTime,
+        taskRecord: this.taskRecord
+    }
+};
+
+/**
+ * taskInfo
+ */
+Task.prototype.taskInfo = function() {
+    return {
         taskId: this.kindId,
         status: this.status,
         startTime: this.startTime,

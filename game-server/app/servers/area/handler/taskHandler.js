@@ -124,11 +124,14 @@ handler.handOverTask = function(msg, session, next) {
         return;
     }
 
-    taskReward.reward(player, taskIds);
-    player.handOverTask(taskIds);
-    next(null, {
-        code: consts.MESSAGE.RES,
-        ids: taskIds
+    var players = [];
+    players.push(player);
+    taskReward.reward(player, players, taskIds, function(err, reply) { //奖励
+        var nextTasks = player.handOverTask(taskIds); //下一次任务
+        next(null, {
+            code: consts.MESSAGE.RES,
+            nextTasks: nextTasks
+        });
     });
 };
 
