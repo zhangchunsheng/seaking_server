@@ -75,16 +75,17 @@ Task.prototype.checkTask = function(taskId) {
 
 /**
  * updateRecord
- * @param monsters
+ * @param player
+ * @param items
  */
-Task.prototype.updateRecord = function(player, monsters) {
+Task.prototype.updateRecord = function(player, type, items) {
     logger.info(this);
-    logger.info(monsters);
+    logger.info(items);
     if(typeof this.id == "undefined")
         return;
-    if(this.taskGoal.type == consts.TaskType.KILL_MONSTER) {
-        for(var i in monsters) {
-            if(this.taskGoal.itemId == monsters[i].id) {
+    if(type == consts.TaskType.KILL_MONSTER) {// 击杀怪物数量
+        for(var i in items) {
+            if(this.taskGoal.itemId == items[i].id) {
                 if(this.status == consts.TaskStatus.START_TASK) {
                     this.status = consts.TaskStatus.NOT_COMPLETED;
                     this.taskRecord = {};
@@ -98,8 +99,45 @@ Task.prototype.updateRecord = function(player, monsters) {
             }
         }
         this.save();
+    } else if(type == consts.TaskType.GET_ITEM) {// 获得道具
+
+    } else if(type == consts.TaskType.PASS_INDU) {// 通关副本
+
+    } else if(type == consts.TaskType.PVP) {// PVP战斗
+
+    } else if(type == consts.TaskType.EQUIPMENT) {// 装备
+
+    } else if(type == consts.TaskType.TO_LEVEL) {// 等级
+
+    } else if(type == consts.TaskType.UPGRADE_EQUIPMENT) {// 升级装备
+
+    } else if(type == consts.TaskType.BUY_ITEM) {// 购买道具
+
+    } else if(type == consts.TaskType.CONSUMER_GAMECURRENCY) {// 消费
+
+    } else if(type == consts.TaskType.LEARN_SKILL) {// 技能
+
+    } else if(type == consts.TaskType.CHANGE_FORMATION) {// 阵型
+        this.updateStatus(player);
     }
 }
+
+/**
+ *
+ * @param player
+ */
+Task.prototype.updateStatus = function(player) {
+    if(this.status == consts.TaskStatus.START_TASK) {
+        this.status = consts.TaskStatus.NOT_COMPLETED;
+        this.taskRecord = {};
+        this.taskRecord.itemNum = 0;
+    }
+    this.taskRecord.itemNum++;
+    if(this.taskRecord.itemNum == this.taskGoal.itemNum) {
+        player.completeTask(consts.correspondingCurTaskType[this.type]);
+    }
+    player.taskProgress(consts.correspondingCurTaskType[this.type]);
+};
 
 /**
  * Parse String to json.

@@ -114,18 +114,11 @@ handler.leaveIndu = function(msg, session, next) {
     player.isEnterIndu = 0;
     userDao.leaveIndu(serverId, registerType, loginName, induId, function(err, induInfo) {
         player.currentIndu = induInfo;
+
+        player.updateTaskRecord(consts.TaskType.PASS_INDU, induId);
+
         next(null, {code: consts.MESSAGE.RES, induInfo: induInfo});
     });
-}
-
-/**
- * 调整阵型
- * @param msg
- * @param session
- * @param next
- */
-handler.changeFormation = function(msg, session, next) {
-
 }
 
 handler.getPartner = function(msg, session, next) {

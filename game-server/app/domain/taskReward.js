@@ -63,6 +63,7 @@ taskReward.reward = function(mainPlayer, players, ids, cb) {
             money: money,
             items: items
         };
+        logger.info(rewards);
         utils.invokeCallback(cb, null, rewards);
 
         messageService.pushMessageToPlayer({uid:mainPlayer.userId, sid : mainPlayer.serverId}, 'onRewards', rewards);

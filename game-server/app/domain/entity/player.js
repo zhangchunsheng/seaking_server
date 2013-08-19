@@ -372,9 +372,9 @@ Player.prototype.startTask = function(type, task) {
 Player.prototype.getNextTask = function(type, task) {
     var nextTaskId = task.nextTaskId;
     if(type == consts.curTaskType.CURRENT_DAY_TASK) {
-        if(this.curTasks.length > 1) {
-            this.curTasks.shift();
-            nextTaskId = this.curTasks[0].taskId;
+        if(this.curTasks[type].length > 1) {
+            this.curTasks[type].shift();
+            nextTaskId = this.curTasks[type][0].taskId;
         }
     }
     if(nextTaskId == null || nextTaskId == 0) {
@@ -397,11 +397,13 @@ Player.prototype.updateTask = function() {
     userDao.updatePlayer(this, "curTasksEntity");
 }
 
-Player.prototype.updateTaskRecord = function(monsters) {
+Player.prototype.updateTaskRecord = function(taskType, items) {
     var task = {};
     for(var type in this.curTasksEntity.strip()) {
         task = this.curTasksEntity[type];
-        task.updateRecord(this, monsters);
+        if(task.taskGoal.type == taskType) {
+            task.updateRecord(this, taskType, items);
+        }
     }
 }
 
