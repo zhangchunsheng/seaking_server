@@ -122,16 +122,15 @@ handler.add = function(msg, session, next) {
 handler.getOpponents = function(msg, session, next) {
     var player = area.getPlayer(session.get('playerId'));
     arenaDao.getOpponents(player, function(err, result) {
-     //   logger.info(result);
         if( result == null ) {
             next(null,{
                 code: Code.FAIL
             });
             return;
-        }else{
+        } else {
             next(null,{
-                code      : Code.OK,
-                Opponents : result
+                code: Code.OK,
+                Opponents: result
             });
         }
     });

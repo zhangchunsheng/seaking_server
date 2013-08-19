@@ -81,12 +81,10 @@ Package.prototype.getData = function(type) {
  * @api public
  */
 Package.prototype.addItem = function(type, item, rIndex) {
-    //var index =-1;
     var index = new Array();
     logger.info(item);
     if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
         //返回{}并没有返回null 容易判断
-    //    logger.info("1:"+index);
         return index;
     }
 
@@ -104,9 +102,7 @@ Package.prototype.addItem = function(type, item, rIndex) {
                     itemNum: item.itemNum,
                     level: item.level
                 };
-               // index = i;
-                index = [{index:i,itemNum:item.itemNum}];
-               // logger.info("2:"+index);
+                index = [{index: i, itemNum: item.itemNum}];
                 break;
             }
         }
@@ -138,67 +134,90 @@ Package.prototype.addItem = function(type, item, rIndex) {
             }
         }
         */
-        for(var i  in  this[type].items){
-            if(this[type].items[i].itemId == item.itemId ){
-                console.log(parseInt(this[type].items[i].itemNum)+parseInt(item.itemNum));
-                if(parseInt(this[type].items[i].itemNum)+parseInt(item.itemNum) > 99 && this[type].items[i].itemNum<99){
-                      var spaceCount=0;
+        for(var i  in  this[type].items) {
+            if(this[type].items[i].itemId == item.itemId ) {
+                if(parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum) > 99 && this[type].items[i].itemNum < 99) {
+                      var spaceCount = 0;
                       //数格子,如果是数组的话可以用this[type].items.length，可抽出方法来
-                      for(var n in this[type].items){
-                          spaceCount ++;
+                      for(var n in this[type].items) {
+                          spaceCount++;
                       }
                       //限定了最多99个 所以只要简单的判断是否有个空格子就可以了
-                      if(spaceCount + 1>this[type].itemCount){
-                         // logger.info("3:"+index);
+                      if(spaceCount + 1 > this[type].itemCount) {
                           return index;
                       }
-                      item.itemNum = parseInt(this[type].items[i].itemNum)+parseInt(item.itemNum)-99;
+                      item.itemNum = parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum) - 99;
                       this[type].items[i].itemNum = 99;
-                      index.push({index:i,itemNum:99});
-             //       logger.info("4:"+index);
-                }else if(this[type].items[i].itemNum<99){
-                     this[type].items[i].itemNum = parseInt(this[type].items[i].itemNum)+parseInt(item.itemNum);
+                      index.push({
+                          index: i,
+                          itemNum: 99
+                      });
+                } else if(this[type].items[i].itemNum < 99) {
+                     this[type].items[i].itemNum = parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum);
 
-                     index.push({index:i,itemNum:this[type].items[i].itemNum});
-            //        logger.info("5:"+index);
+                     index.push({
+                         index: i,
+                         itemNum: this[type].items[i].itemNum
+                     });
                      flag = true;
                      break;
                 }
 
             }
         }
-        if(!flag){
-            var spaceCount=0;
-            for(var n in this[type].items){
-                spaceCount ++;
+        if(!flag) {
+            var spaceCount = 0;
+            for(var n in this[type].items) {
+                spaceCount++;
             }
-            if(spaceCount +1 >this[type].itemCount){
-            //    logger.info("6:"+index);
+            if(spaceCount + 1 > this[type].itemCount) {
                 return index;
             }
-            for(var i=1;i<=this[type].itemCount;i++){
-                if(!this[type].items[i]){
-                    //一定小于99个所以直接添加就好了
-                    this[type].items[i]={
+            for(var i = 1 ; i <= this[type].itemCount ; i++) {
+                if(!this[type].items[i]) {
+                    // 一定小于99个所以直接添加就好了，传入数值最大99
+                    this[type].items[i] = {
                         itemId: item.itemId,
                         itemNum: item.itemNum,
                         level: item.level
                     };
-                    index.push({index:i,itemNum:item.itemNum});
-                //    logger.info("7:"+index);
+                    index.push({
+                        index: i,
+                        itemNum: item.itemNum
+                    });
+
                     break;
                 }
             }
         }
     }
 
-    //if (index > 0) {
-    if(index.length>0){
+    if(index.length > 0) {
         this.save();
     }
-   // logger.info("8:"+index);
     return index;
 };
+
+/**
+ * 判断包裹内是否有符合条件的items(id和数量)
+ * @param items
+ */
+Package.prototype.hasItems = function(items) {
+    var flag = false;
+    for(var i = 0 ; i < dict.length ; i++) {
+        for (var j = 1; j <= this[dict[i]].itemCount; j++) {
+            if (!!this[dict[i]].items[j]) {
+                if(this[dict[i]].items[j].itemId == items.itemId) {
+                    if(this[dict[i]].items[j].itemNum >= items.itemNum) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return flag;
+}
 
 /**
  * addEquipment

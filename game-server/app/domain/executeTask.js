@@ -40,7 +40,7 @@ executeTask.updateTaskData = function(player, itemId) {
         var taskType = task.type;
         var taskGoal = task.taskGoal;
         var killedNum = task.completeCondition[taskDesc[1]];
-        if(taskType === consts.TaskType.KILL_MONSTER && taskGoal.itemId == itemId) {
+        if(taskType === consts.TaskGoalType.KILL_MONSTER && taskGoal.itemId == itemId) {
             task.taskRecord.itemNum += 1;
             reData = reData || {};
             reData[id] = task.taskRecord;

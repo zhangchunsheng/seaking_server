@@ -365,6 +365,7 @@ Player.prototype.startTask = function(type, task) {
         itemNum: 0
     };
     task.startTime = formula.timestamp(new Date());
+    task.pretreatmentTask(this);
     task.save();
     this.curTasksEntity[type] = task;
 };

@@ -180,9 +180,9 @@ orderlist.delmail = function(mailId) {
     shasum.update(lua_script);
     lua_script_sha = shasum.digest('hex');
     console.log(lua_script_sha);
-    client.EVALSHA(lua_script_sha, 3, "db", "key", "mailId", 1, "S1_T1_wozlla_C10_ER", 1, function(err, reply) {
+    client.EVALSHA(lua_script_sha, 3, "db", "key", "mailId", 1, "S1_T1_wozlla_C10_ER", mailId, function(err, reply) {
         if(err) {
-            client.EVAL(lua_script, 3, "db", "key", "mailId", 1, "S1_T1_wozlla_C10_ER", 1, function(err, reply) {
+            client.EVAL(lua_script, 3, "db", "key", "mailId", 1, "S1_T1_wozlla_C10_ER", mailId, function(err, reply) {
                 console.log(reply);
             });
         } else {
@@ -193,7 +193,7 @@ orderlist.delmail = function(mailId) {
 
 function main() {
     orderlist.ordermail();
-    orderlist.delmail();
+    orderlist.delmail(1);
 }
 
 main();

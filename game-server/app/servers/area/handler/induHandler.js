@@ -135,7 +135,7 @@ handler.triggerEvent = function(msg, session, next) {
                         }
                         next(null, result);
                     });
-                    character.updateTaskRecord(consts.TaskType.KILL_MONSTER, fight.monsters);
+                    character.updateTaskRecord(consts.TaskGoalType.KILL_MONSTER, fight.monsters);
                     // update task
                 } else {
                     var result = {

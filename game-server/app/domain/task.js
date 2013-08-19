@@ -83,7 +83,7 @@ Task.prototype.updateRecord = function(player, type, items) {
     logger.info(items);
     if(typeof this.id == "undefined")
         return;
-    if(type == consts.TaskType.KILL_MONSTER) {// 击杀怪物数量
+    if(type == consts.TaskGoalType.KILL_MONSTER) {// 击杀怪物数量
         for(var i in items) {
             if(this.taskGoal.itemId == items[i].id) {
                 if(this.status == consts.TaskStatus.START_TASK) {
@@ -99,26 +99,41 @@ Task.prototype.updateRecord = function(player, type, items) {
             }
         }
         this.save();
-    } else if(type == consts.TaskType.GET_ITEM) {// 获得道具
-
-    } else if(type == consts.TaskType.PASS_INDU) {// 通关副本
-
-    } else if(type == consts.TaskType.PVP) {// PVP战斗
-
-    } else if(type == consts.TaskType.EQUIPMENT) {// 装备
-
-    } else if(type == consts.TaskType.TO_LEVEL) {// 等级
-
-    } else if(type == consts.TaskType.UPGRADE_EQUIPMENT) {// 升级装备
-
-    } else if(type == consts.TaskType.BUY_ITEM) {// 购买道具
-
-    } else if(type == consts.TaskType.CONSUMER_GAMECURRENCY) {// 消费
-
-    } else if(type == consts.TaskType.LEARN_SKILL) {// 技能
-
-    } else if(type == consts.TaskType.CHANGE_FORMATION) {// 阵型
+    } else if(type == consts.TaskGoalType.GET_ITEM) {// 获得道具
         this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.PASS_INDU) {// 通关副本
+        this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.PVP) {// PVP战斗
+        this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.EQUIPMENT) {// 装备
+        this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.TO_LEVEL) {// 等级
+        this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.UPGRADE_EQUIPMENT) {// 升级装备
+        this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.BUY_ITEM) {// 购买道具
+        this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.CONSUMER_GAMECURRENCY) {// 消费
+        this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.LEARN_SKILL) {// 技能
+        this.updateStatus(player);
+    } else if(type == consts.TaskGoalType.CHANGE_FORMATION) {// 阵型
+        this.updateStatus(player);
+    }
+}
+
+/**
+ * 任务预处理
+ */
+Task.prototype.pretreatmentTask = function(player) {
+    if(this.taskGoal.type == consts.TaskGoalType.GET_ITEM) {// 判断包裹物品
+        if(player.packageEntity.hasItems(this.taskGoal)) {
+            this.updateRecord(player, consts.TaskGoalType.GET_ITEM, this.taskGoal);
+        }
+    } else if(this.taskGoal.type == consts.TaskGoalType.BUY_ITEM) {
+        if(player.packageEntity.hasItems(this.taskGoal)) {
+            this.updateRecord(player, consts.TaskGoalType.BUY_ITEM, this.taskGoal);
+        }
     }
 }
 

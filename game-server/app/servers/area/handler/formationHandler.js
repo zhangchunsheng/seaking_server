@@ -53,7 +53,7 @@ handler.change = function(msg, session, next) {
             status: 1
         };
 
-        player.updateTaskRecord(consts.TaskType.CHANGE_FORMATION, {});
+        player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});
 
         next(null, status);
     })
