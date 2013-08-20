@@ -100,25 +100,41 @@ Task.prototype.updateRecord = function(player, type, items) {
         }
         this.save();
     } else if(type == consts.TaskGoalType.GET_ITEM) {// 获得道具
-        this.updateStatus(player);
+        this.updateStatus(player, items.itemNum);
     } else if(type == consts.TaskGoalType.PASS_INDU) {// 通关副本
-        this.updateStatus(player);
+        if(this.taskGoal.itemId == items.itemId) {
+            this.updateStatus(player, 1);
+        }
     } else if(type == consts.TaskGoalType.PVP) {// PVP战斗
-        this.updateStatus(player);
+        if(this.taskGoal.needWin) {
+            if(items.itemId == 1) {
+                this.updateStatus(player, 1);
+            }
+        } else {
+            this.updateStatus(player, 1);
+        }
     } else if(type == consts.TaskGoalType.EQUIPMENT) {// 装备
-        this.updateStatus(player);
+        if(this.taskGoal.itemId == items.itemId) {
+            this.updateStatus(player, 1);
+        }
     } else if(type == consts.TaskGoalType.TO_LEVEL) {// 等级
-        this.updateStatus(player);
+        if(this.taskGoal.itemId == items.itemId) {
+            this.updateStatus(player, 1);
+        }
     } else if(type == consts.TaskGoalType.UPGRADE_EQUIPMENT) {// 升级装备
-        this.updateStatus(player);
+        if(this.taskGoal.itemId == items.itemId) {
+            this.updateStatus(player, 1);
+        }
     } else if(type == consts.TaskGoalType.BUY_ITEM) {// 购买道具
-        this.updateStatus(player);
+        this.updateStatus(player, items.itemNum);
     } else if(type == consts.TaskGoalType.CONSUMER_GAMECURRENCY) {// 消费
-        this.updateStatus(player);
+        this.updateStatus(player, 1);
     } else if(type == consts.TaskGoalType.LEARN_SKILL) {// 技能
-        this.updateStatus(player);
+        if(this.taskGoal.itemId == items.itemId) {
+            this.updateStatus(player, 1);
+        }
     } else if(type == consts.TaskGoalType.CHANGE_FORMATION) {// 阵型
-        this.updateStatus(player);
+        this.updateStatus(player, 1);
     }
 }
 
@@ -126,13 +142,15 @@ Task.prototype.updateRecord = function(player, type, items) {
  * 任务预处理
  */
 Task.prototype.pretreatmentTask = function(player) {
-    if(this.taskGoal.type == consts.TaskGoalType.GET_ITEM) {// 判断包裹物品
+    if(this.taskGoal.type == consts.TaskGoalType.DIALOG) {//接取即完成
+        this.complete(player);
+    } else if(this.taskGoal.type == consts.TaskGoalType.GET_ITEM) {// 判断包裹物品
         if(player.packageEntity.hasItems(this.taskGoal)) {
-            this.updateRecord(player, consts.TaskGoalType.GET_ITEM, this.taskGoal);
+            this.complete(player);
         }
     } else if(this.taskGoal.type == consts.TaskGoalType.BUY_ITEM) {
         if(player.packageEntity.hasItems(this.taskGoal)) {
-            this.updateRecord(player, consts.TaskGoalType.BUY_ITEM, this.taskGoal);
+            this.complete(player);
         }
     }
 }
@@ -141,13 +159,32 @@ Task.prototype.pretreatmentTask = function(player) {
  *
  * @param player
  */
-Task.prototype.updateStatus = function(player) {
+Task.prototype.updateStatus = function(player, itemNum) {
+    if(this.status == TaskStatus.COMPLETED)
+        return;
     if(this.status == consts.TaskStatus.START_TASK) {
         this.status = consts.TaskStatus.NOT_COMPLETED;
         this.taskRecord = {};
         this.taskRecord.itemNum = 0;
     }
-    this.taskRecord.itemNum++;
+    this.taskRecord.itemNum += itemNum;
+    if(this.taskRecord.itemNum >= this.taskGoal.itemNum) {
+        player.completeTask(consts.correspondingCurTaskType[this.type]);
+    }
+    player.taskProgress(consts.correspondingCurTaskType[this.type]);
+};
+
+/**
+ *
+ * @param player
+ */
+Task.prototype.complete = function(player) {
+    if(this.status == consts.TaskStatus.START_TASK) {
+        this.status = consts.TaskStatus.NOT_COMPLETED;
+        this.taskRecord = {};
+        this.taskRecord.itemNum = 0;
+    }
+    this.taskRecord.itemNum = this.taskGoal.itemNum;
     if(this.taskRecord.itemNum == this.taskGoal.itemNum) {
         player.completeTask(consts.correspondingCurTaskType[this.type]);
     }

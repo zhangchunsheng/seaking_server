@@ -47,7 +47,7 @@ taskReward.reward = function(mainPlayer, players, ids, cb) {
         }
         if(task.rewardItems != "") {
             items.push(task.rewardItems);
-            index = mainPlayer.packageEntity.addItemWithNoType(task.rewardItems);
+            index = mainPlayer.packageEntity.addItemWithNoType(mainPlayer, task.rewardItems);
         }
     }
     //mainPlayer.addExp(exp);

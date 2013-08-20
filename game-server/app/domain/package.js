@@ -11,6 +11,7 @@ var EntityType = require('../consts/consts').EntityType;
 var Persistent = require('./persistent');
 var logger = require('pomelo-logger').getLogger(__filename);
 var PackageType = require('../consts/consts').PackageType;
+var consts = require('../consts/consts');
 
 /**
  * Initialize a new 'Package' with the given 'opts'
@@ -76,23 +77,27 @@ Package.prototype.getData = function(type) {
 /**
  * add item
  *
- * @param {obj} item {itemId: "W0101", itemNum: 3}
- * @return {number}
- * @api public
+ * @param player
+ * @param type
+ * @param item {itemId: "W0101", itemNum: 3}
+ * @param rIndex
+ * @returns {*}
  */
-Package.prototype.addItem = function(type, item, rIndex) {
-    var index = new Array();
+Package.prototype.addItem = function(player, type, item, rIndex) {
+    var index = [];
     logger.info(item);
+    var _items = item;
     if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
         //返回{}并没有返回null 容易判断
-        return index;
+        return {
+            index: index
+        };
     }
 
     if(rIndex) {
         if(this[type].items[rIndex]) {
             delete this[type].items[rIndex];
         }
-        return;
     }
 
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
@@ -136,7 +141,8 @@ Package.prototype.addItem = function(type, item, rIndex) {
         }
         */
         for(var i  in  this[type].items) {
-            if(this[type].items[i].itemId == item.itemId ) {
+            if(this[type].items[i].itemId == item.itemId) {
+                _items.itemNum += this[type].items[i].itemNum;
                 if(parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum) > 99 && this[type].items[i].itemNum < 99) {
                       var spaceCount = 0;
                       //数格子,如果是数组的话可以用this[type].items.length，可抽出方法来
@@ -145,7 +151,9 @@ Package.prototype.addItem = function(type, item, rIndex) {
                       }
                       //限定了最多99个 所以只要简单的判断是否有个空格子就可以了
                       if(spaceCount + 1 > this[type].itemCount) {
-                          return index;
+                          return {
+                              index: index
+                          };
                       }
                       item.itemNum = parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum) - 99;
                       this[type].items[i].itemNum = 99;
@@ -172,7 +180,9 @@ Package.prototype.addItem = function(type, item, rIndex) {
                 spaceCount++;
             }
             if(spaceCount + 1 > this[type].itemCount) {
-                return index;
+                return {
+                    index: index
+                };
             }
             for(var i = 1 ; i <= this[type].itemCount ; i++) {
                 if(!this[type].items[i]) {
@@ -195,8 +205,13 @@ Package.prototype.addItem = function(type, item, rIndex) {
 
     if(index.length > 0) {
         this.save();
+        if(result.index.length > 0) {
+            player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+        }
     }
-    return index;
+    return {
+        index: index
+    };
 };
 
 /**
@@ -262,7 +277,7 @@ Package.prototype.addItems = function(type, item) {
     return index;
 }
 
-Package.prototype.addItemWithNoType = function(item) {
+Package.prototype.addItemWithNoType = function(mainPlayer, item) {
     var type = "";
     if(item.itemId.indexOf("W") >= 0) {
         type = PackageType.WEAPONS;
@@ -271,7 +286,7 @@ Package.prototype.addItemWithNoType = function(item) {
     } else {
         type = PackageType.ITEMS;
     }
-    return this.addItem(type, item);
+    return this.addItem(mainPlayer, type, item);
 }
 
 /**

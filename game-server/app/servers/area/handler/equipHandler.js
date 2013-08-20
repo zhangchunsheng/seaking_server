@@ -14,9 +14,11 @@ var area = require('../../../domain/area/area');
 var dataApi = require('../../../util/dataApi');
 var logger = require('pomelo-logger').getLogger(__filename);
 var PackageType = require('../../../consts/consts').PackageType;
+var utils = require('../../../util/utils');
+var consts = require('../../../consts/consts');
 
 /**
- * 转载武器
+ * 装载武器
  * @param msg
  * @param session
  * @param next
@@ -24,15 +26,15 @@ var PackageType = require('../../../consts/consts').PackageType;
 handler.wearWeapon = function(msg, session, next) {
     var index = msg.index;
     var weaponId = msg.weaponId;
-    var type = PackageType.WEAPONS;
+    var pkgType = PackageType.WEAPONS;
 
     var player = area.getPlayer(session.get('playerId'));
     var status = 0;
 
     logger.info(player.packageEntity);
     var packageIndex = -1;
-    if(player.packageEntity.checkItem(type, index, weaponId) > 0) {
-        var item = player.packageEntity[type].items[index];
+    if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
+        var item = player.packageEntity[pkgType].items[index];
         logger.info(item);
         var eq = dataApi.equipment.findById(item.itemId);
         logger.info(eq);
@@ -43,7 +45,10 @@ handler.wearWeapon = function(msg, session, next) {
             return;
         }
 
-        packageIndex = player.equip(type, item, index);
+        packageIndex = player.equip(pkgType, item, index);
+        player.updateTaskRecord(consts.TaskGoalType.EQUIPMENT, {
+            itemId: item.itemId
+        });
 
         status = 1;
     } else {
@@ -62,20 +67,36 @@ handler.wearWeapon = function(msg, session, next) {
  * @param next
  */
 handler.unWearWeapon = function(msg, session, next) {
+    var weaponId = msg.weaponId;
+    var type = consts.EqType.WEAPON;
+
     var player = area.getPlayer(session.get('playerId'));
     var status = false;
+    var result = {};
     var packageIndex = -1;
-    if (msg.putInBag) {
-        packageIndex = player.packageEntity.addItem({
-            id: player.equipmentsEntity.get(msg.type),
-            type: 'equipment'
+
+    if(player.equipmentsEntity.get(type).epid == 0) {// 没有武器
+        next(null, {
+            status: -2
         });
-        if (packageIndex > 0) {
-            player.unEquip(msg.type);
-            status = true;
-        }
-    } else {
-        player.unEquip(msg.type);
+        return;
+    }
+
+    if(player.equipmentsEntity.get(type).epid != weaponId) {// 武器不正确
+        next(null, {
+            status: -1
+        });
+        return;
+    }
+
+    result = player.packageEntity.addItem(player, PackageType.WEAPONS, {
+        itemId: player.equipmentsEntity.get(type).epid,
+        itemNum: 1,
+        level: player.equipmentsEntity.get(type).level
+    });
+    packageIndex = result.index;
+    if(packageIndex.length > 0) {
+        player.unEquip(type);
         status = true;
     }
 
@@ -94,24 +115,50 @@ handler.unWearWeapon = function(msg, session, next) {
  */
 
 handler.equip = function(msg, session, next) {
+    var pkgType = msg.pkgType;
+    var index = msg.index;
+    var eqId = msg.eqId;
+
     var player = area.getPlayer(session.get('playerId'));
-    var status = false;
+    var status = 0;
 
-    var item = player.packageEntity.items[msg.index];
-    var packageIndex = -1;
-    if (item) {
-        var eq =  dataApi.equipment.findById(item.id);
-        if(!eq || player.level < eq.heroLevel) {
-            next(null, {status: false});
-            return;
-        }
+    var item = player.packageEntity[pkgType].items[index];
 
-        packageIndex = player.equip(eq.kind, eq.id);
-        player.packageEntity.removeItem(msg.index);
-
-        status = true;
+    if(typeof item == "undefined") {
+        next(null, {
+            status: -3
+        });
+        return;
     }
-    next(null, {status: status, packageIndex: packageIndex});
+
+    if(item.itemId != eqId) {//no item in package
+        next(null, {
+            status: -2
+        });
+        return;
+    }
+
+    var packageIndex = -1;
+
+    var eq =  dataApi.equipment.findById(item.itemId);
+    if(!eq || player.level < eq.useLevel) {
+        next(null, {
+            status: -1
+        });
+        return;
+    }
+
+    packageIndex = player.equip(pkgType, item, index);
+    player.updateTaskRecord(consts.TaskGoalType.EQUIPMENT, {
+        itemId: item.itemId
+    });
+
+    status = 1;
+
+    next(null, {
+        status: status,
+        packageIndex: packageIndex
+    });
 };
 
 /**
@@ -122,23 +169,49 @@ handler.equip = function(msg, session, next) {
  * @api public
  */
 handler.unEquip = function(msg, session, next) {
+    var epId = msg.eqId;
+    var type = msg.type;
+
     var player = area.getPlayer(session.get('playerId'));
-    var status = false;
+    var status = 0;
+    var result = {};
     var packageIndex = -1;
-    if (msg.putInBag) {
-        packageIndex = player.packageEntity.addItem({
-            id: player.equipmentsEntity.get(msg.type),
-            type: 'equipment'
+
+    if(player.equipmentsEntity.get(type).epid == 0) {// 没有装备
+        next(null, {
+            status: -2
         });
-        if (packageIndex > 0) {
-            player.unEquip(msg.type);
-            status = true;
-        }
-    } else {
-        player.unEquip(msg.type);
-        status = true;
+        return;
     }
 
-    next(null, {status: status, packageIndex: packageIndex});
+    if(player.equipmentsEntity.get(type).epid != epId) {// 装备不正确
+        next(null, {
+            status: -1
+        });
+        return;
+    }
+
+    var pkgType = "";
+    if(epId.length == 5) {
+        pkgType = consts.PackageType.WEAPONS;
+    } else {
+        pkgType = consts.PackageType.EQUIPMENTS;
+    }
+
+    result = player.packageEntity.addItem(player, pkgType, {
+        itemId: player.equipmentsEntity.get(type).epid,
+        itemNum: 1,
+        level: player.equipmentsEntity.get(type).level
+    });
+    packageIndex = result.index;
+    if (packageIndex.length > 0) {
+        player.unEquip(type);
+        status = 1;
+    }
+
+    next(null, {
+        status: status,
+        packageIndex: packageIndex
+    });
 };
 

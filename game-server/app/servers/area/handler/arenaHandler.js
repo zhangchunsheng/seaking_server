@@ -90,6 +90,9 @@ function pk(msg, session, next, opponent) {
     });
     fight.pk(function(err, reply) {
         var battle = reply;
+        player.updateTaskRecord(consts.TaskGoalType.PVP, {
+            itemId: reply.battleResult.isWin == true ? 1 : 0
+        });
         if(reply.battleResult.isWin == true) {
             arenaDao.exchange(character, opponent, function(err, reply) {
                 next(null, {

@@ -115,7 +115,9 @@ handler.leaveIndu = function(msg, session, next) {
     userDao.leaveIndu(serverId, registerType, loginName, induId, function(err, induInfo) {
         player.currentIndu = induInfo;
 
-        player.updateTaskRecord(consts.TaskGoalType.PASS_INDU, induId);
+        player.updateTaskRecord(consts.TaskGoalType.PASS_INDU, {
+            itemId: induId
+        });
 
         next(null, {code: consts.MESSAGE.RES, induInfo: induInfo});
     });

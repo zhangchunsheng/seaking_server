@@ -148,14 +148,23 @@ module.exports = {
         ITEMS: "items"
     },
 
+    EqType: {
+        WEAPON: 'weapon',//武器
+        NECKLACE: 'necklace',//项链
+        HELMET: 'helmet',//头盔
+        ARMOR: 'armor' ,//护甲 衣服
+        BELT: 'belt',//腰带
+        LEGGUARD: 'legguard',//护腿 裤子
+        AMULET: 'amulet',//护符
+        SHOES: 'shoes',//鞋
+        RING: 'ring'//戒指
+    },
+
     MailType: {
-        SYSTEM      : 1,
-        PLAYER      : 2,
-        TASK        : 3,
-        BATTLEFIELD : 4,
-
-
-
+        SYSTEM: 1,
+        PLAYER: 2,
+        TASK: 3,
+        BATTLEFIELD: 4
     },
 
     MailKeyType:{

@@ -11,8 +11,8 @@ var area = require('../../../domain/area/area');
 var utils = require('../../../util/utils');
 var dbUtil = require('../../../util/dbUtil');
 var mailDao = require('../../../dao/mailDao');
-var pomelo =  require('pomelo');
-var MailKeyType =require('../../../consts/consts').MailKeyType;
+var pomelo = require('pomelo');
+var MailKeyType = require('../../../consts/consts').MailKeyType;
 var messageService = require('../../../domain/messageService');
 var handler = module.exports;
 
@@ -22,170 +22,158 @@ var handler = module.exports;
  * @param session
  * @param next
  */
-handler.systemSendMail = function(msg, session, next){
-    logger.error(msg);
-    if( msg.to == null && msg.toName == null  ) {
-        next(null,{
-            err:"没有收件人"
-        });
-        return;
-    }
-    //需要验证是否是管理员
+handler.systemSendMail = function (msg, session, next) {
+	logger.error(msg);
+	if (msg.to == null && msg.toName == null) {
+		next(null, {
+			err : "没有收件人"
+		});
+		return;
+	}
+	//需要验证是否是管理员
 
-    //*****************
-    mailDao.Fill(msg,function(err, all ) {
-        var Key = all.toKey;
-        mailDao.ToMailCount([Key+"_ERN",Key+"_ERW",Key+"_ERR"],function(err, reply) {
-            if(reply == 200){
-                logger.error("对方收件箱满了");
-                mailDao.DelInboxMail(all.toKey,function(err, reply) {
-
-                });
-            }
-            var mail = mailDao.createMail(all);
-            logger.info(mail);
-            mailDao.systemSendMail(all.toKey,mail,function(err, reply){
-                next(null,{
-                    code:"OK",
-                    mail:reply
-                });
-                var player;
-                if((player = area.getPlayer(mail.to)) != null) {
-                    messageService.pushMessageByUids(
-                        [
-                            {
-                                uid:player.userId,
-                                sid:player.serverId
-                            }
-                        ],
-                        "onNewMail",
-                        {
-                            fromName:"系统",
-                            title:mail.title
-                        }
-                    );
-                }
-            });
-        });
-    });
+	//*****************
+	mailDao.Fill(msg, function (err, all) {
+		var Key = all.toKey;
+		mailDao.ToMailCount([Key + "_ERN", Key + "_ERW", Key + "_ERR"], function (err, reply) {
+			if (reply == 200) {
+				logger.error("对方收件箱满了");
+				mailDao.DelInboxMail(all.toKey, function (err, reply) {});
+			}
+			var mail = mailDao.createMail(all);
+			logger.info(mail);
+			mailDao.systemSendMail(all.toKey, mail, function (err, reply) {
+				next(null, {
+					code : "OK",
+					mail : reply
+				});
+				var player;
+				if ((player = area.getPlayer(mail.to)) != null) {
+					messageService.pushMessageByUids(
+						[{
+								uid : player.userId,
+								sid : player.serverId
+							}
+						],
+						"onNewMail", {
+						fromName : "系统",
+						title : mail.title
+					});
+				}
+			});
+		});
+	});
 }
 /* 测试自动删除邮件
 handler.systemDelR = function(msg, session, next) {
-    var Key  = picecBoxName(session);
-    mailDao.DelInboxMail(Key,function(err, reply) {
-        next(null, {
-            result:reply
-        });
-    })
+var Key  = picecBoxName(session);
+mailDao.DelInboxMail(Key,function(err, reply) {
+next(null, {
+result:reply
+});
+})
 }
 handler.systemDelS = function(msg, session, next) {
-    var Key = picecBoxName(session);
-    mailDao.DelOutboxMail(Key, function(err, reply) {
-       next(null, {
-           result:reply
-       });
-    });
+var Key = picecBoxName(session);
+mailDao.DelOutboxMail(Key, function(err, reply) {
+next(null, {
+result:reply
+});
+});
 
 }
-*/
+ */
 /**
  * 发送邮件
  * @param msg
  * @param session
  * @param next
  */
-handler.sendMail=function(msg, session, next){
-    logger.error(msg);
-    if(msg.content.length>50){
-        next(null,{
-           err:'内容长度过长'
-        });
-        return;
-    }
-    if(msg.to == null && msg.toName == null){
-        next(null,{
-           err:'没有收件人'
-        });
-        return;
-    }
+handler.sendMail = function (msg, session, next) {
+	logger.error(msg);
+	if (msg.content.length > 50) {
+		next(null, {
+			err : '内容长度过长'
+		});
+		return;
+	}
+	if (msg.to == null && msg.toName == null) {
+		next(null, {
+			err : '没有收件人'
+		});
+		return;
+	}
 
-    var playerId = session.get('playerId');
-    var player = area.getPlayer(playerId);
-    if(msg.to == playerId || msg.toName == player.nickname){
-        next(null,{
-            err:"不能发给自己"
-        });
-        return;
-    }
-    //如果发送来的没有from属性可以设置
-    // msg.from = session.get('playerId');
-    /*
-    var fromMail = mailDao.createMail(session.get('playerId'), msg);
-    var fromKey = picecBoxName(session,"_ES");
-    mailDao.addMail(fromKey, msg.to, Mail, function(err,reply){
+	var playerId = session.get('playerId');
+	var player = area.getPlayer(playerId);
+	if (msg.to == playerId || msg.toName == player.nickname) {
+		next(null, {
+			err : "不能发给自己"
+		});
+		return;
+	}
+	//如果发送来的没有from属性可以设置
+	// msg.from = session.get('playerId');
+	/*
+	var fromMail = mailDao.createMail(session.get('playerId'), msg);
+	var fromKey = picecBoxName(session,"_ES");
+	mailDao.addMail(fromKey, msg.to, Mail, function(err,reply){
 
 
-    });
-    console.log(pomelo.app);
-    next(null,{
-        code:"200"
-    });*/
-    msg.from = playerId;
-    msg.fromName = player.nickname;
-    var fromKey = picecBoxName(session);
-    logger.debug(fromKey);
-    mailDao.SendMailCount(fromKey,function(err, reply) {
-        logger.debug(reply);
-        if(reply == 50 ) {
-            logger.error("发送箱太多");
-            mailDao.DelOutboxMail(fromKey,function(err, reply){
+	});
+	console.log(pomelo.app);
+	next(null,{
+	code:"200"
+	});*/
+	msg.from = playerId;
+	msg.fromName = player.nickname;
+	var fromKey = picecBoxName(session);
+	logger.debug(fromKey);
+	mailDao.SendMailCount(fromKey, function (err, reply) {
+		logger.debug(reply);
+		if (reply == 50) {
+			logger.error("发送箱太多");
+			mailDao.DelOutboxMail(fromKey, function (err, reply) {});
+		}
+		mailDao.Fill(msg, function (err, all) {
+			var Key = all.toKey;
+			mailDao.ToMailCount([Key + "_" + MailKeyType.NOREAD, Key + "_" + MailKeyType.HASITEM, Key + "_" + MailKeyType.READ], function (err, reply) {
+				if (reply == 200) {
+					logger.error("对方收件箱满了");
+					mailDao.DelInboxMail(all.toKey, function (err, reply) {});
+				}
+				var mail = mailDao.createMail(all);
+				logger.info(mail);
 
-            });
-        }
-        mailDao.Fill(msg,function(err, all ) {
-           var Key = all.toKey;
-           mailDao.ToMailCount([Key+"_"+MailKeyType.NOREAD,Key+"_"+MailKeyType.HASITEM,Key+"_"+MailKeyType.READ],function(err, reply) {
-               if(reply == 200){
-                    logger.error("对方收件箱满了");
-                    mailDao.DelInboxMail(all.toKey,function(err, reply) {
-
-                    });
-               }
-               var mail = mailDao.createMail(all);
-               logger.info(mail);
-
-               mailDao.addMail(fromKey+MailKeyType.SEND,all.toKey+MailKeyType.NOREAD,mail,function(err, reply ) {
-                    if( !!err ){
-                        logger.debug(err);
-                        next(null,{
-                           code:Code.FAIL
-                        });
-                        return;
-                    }
-                    next(null,{
-                        code:Code.OK,
-                        mailId:mail.mailId
-                    });
-                   if(area.getPlayer(all.to) != null){
-                        //推送到收件人
-                       messageService.pushMessageByUids(
-                           [
-                               {
-                               uid:player.userId,
-                               sid:player.serverId
-                                }
-                           ],
-                           "onNewMail",
-                           {
-                               fromName:mail.fromName,
-                               title:mail.title
-                           }
-                       );
-                   }
-               });
-           });
-        });
-    });
+				mailDao.addMail(fromKey + MailKeyType.SEND, all.toKey + MailKeyType.NOREAD, mail, function (err, reply) {
+					if (!!err) {
+						logger.debug(err);
+						next(null, {
+							code : Code.FAIL
+						});
+						return;
+					}
+					next(null, {
+						code : Code.OK,
+						mailId : mail.mailId
+					});
+					if (area.getPlayer(all.to) != null) {
+						//推送到收件人
+						messageService.pushMessageByUids(
+							[{
+									uid : player.userId,
+									sid : player.serverId
+								}
+							],
+							"onNewMail", {
+							fromName : mail.fromName,
+							title : mail.title
+						});
+					}
+				});
+			});
+		});
+	});
 }
 /**
  * 获得收件邮箱
@@ -193,16 +181,16 @@ handler.sendMail=function(msg, session, next){
  * @param session
  * @param next
  */
-handler.getInbox = function(msg, session, next) {
-//    logger.info(session);
-    var Key = picecBoxName(session);
-    //var player = area.getPlayer(playerId);
-    mailDao.getInbox(Key,msg.start,msg.end,function(err, reply) {
-        next(null,{
-            code:Code.OK,
-            inbox:reply
-        });
-    });
+handler.getInbox = function (msg, session, next) {
+	//    logger.info(session);
+	var Key = picecBoxName(session);
+	//var player = area.getPlayer(playerId);
+	mailDao.getInbox(Key, msg.start, msg.end, function (err, reply) {
+		next(null, {
+			code : Code.OK,
+			inbox : reply
+		});
+	});
 
 }
 /**
@@ -211,30 +199,29 @@ handler.getInbox = function(msg, session, next) {
  * @param session
  * @param next
  */
-handler.getOutbox = function(msg, session, next) {
-    var key = picecBoxName(session);
-    mailDao.getOutbox(key,msg.start,msg.end,function(err,reply) {
-        next(null,{
-            code:Code.OK,
-            Outbox:reply
-        });
-    });
+handler.getOutbox = function (msg, session, next) {
+	var key = picecBoxName(session);
+	mailDao.getOutbox(key, msg.start, msg.end, function (err, reply) {
+		next(null, {
+			code : Code.OK,
+			Outbox : reply
+		});
+	});
 }
 /**
  * 获得字符串
  * @param session
  * @returns {string}
  */
-function picecBoxName(session){
-    var playerId = session.get('playerId'),
-        serverId = session.get('serverId'),
-        registerType = session.get('registerType'),
-        loginName = session.get('loginName');
-    var characterId = utils.getRealCharacterId(playerId);
-    return dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
-        //+ end;
+function picecBoxName(session) {
+	var playerId = session.get('playerId'),
+	serverId = session.get('serverId'),
+	registerType = session.get('registerType'),
+	loginName = session.get('loginName');
+	var characterId = utils.getRealCharacterId(playerId);
+	return dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+	//+ end;
 }
-
 
 /**
  * 从未读到已读
@@ -242,30 +229,29 @@ function picecBoxName(session){
  * @param session
  * @param next
  */
-handler.readMail = function(msg, session, next) {
-    var mailId = msg.mailId;
-    var mails = [mailId.substring(0,3),mailId.substring(3)];
-    if( MailKeyType.NOREAD != mails[0] ) {
-        next(null,{
-            err:"不是未读邮件"
-        });
-        return;
-    }
-    var Key = picecBoxName(session);
-    logger.info(mails);
-    mailDao.readMail(mails,Key,function(err,reply){
-        if(!!err){
-           next(null,{
-                err:err
-           });
-           return;
-        }
-        next(null,{
-           code:Code.OK
-        });
+handler.readMail = function (msg, session, next) {
+	var mailId = msg.mailId;
+	var mails = [mailId.substring(0, 3), mailId.substring(3)];
+	if (MailKeyType.NOREAD != mails[0]) {
+		next(null, {
+			err : "不是未读邮件"
+		});
+		return;
+	}
+	var Key = picecBoxName(session);
+	logger.info(mails);
+	mailDao.readMail(mails, Key, function (err, reply) {
+		if (!!err) {
+			next(null, {
+				err : err
+			});
+			return;
+		}
+		next(null, {
+			code : Code.OK
+		});
 
-
-    });
+	});
 }
 /**
  * 删除邮件
@@ -273,22 +259,22 @@ handler.readMail = function(msg, session, next) {
  * @param session
  * @param next
  */
-handler.delMail = function(msg, session, next ) {
-    var mailId = msg.mailId;
-    var mails = [mailId.substring(0,3),mailId.substring(3)];
+handler.delMail = function (msg, session, next) {
+	var mailId = msg.mailId;
+	var mails = [mailId.substring(0, 3), mailId.substring(3)];
 
-    var Key = picecBoxName(session);
-    mailDao.delMail(mails,Key,function(err, reply) {
-        if(!!err){
-            next(null,{
-                code:Code.FAIL
-            });
-            return;
-        }
-        next(null,{
-           code:Code.OK
-        });
-    });
+	var Key = picecBoxName(session);
+	mailDao.delMail(mails, Key, function (err, reply) {
+		if (!!err) {
+			next(null, {
+				code : Code.FAIL
+			});
+			return;
+		}
+		next(null, {
+			code : Code.OK
+		});
+	});
 }
 /**
  * 查未读以及有物品邮件个数
@@ -296,20 +282,20 @@ handler.delMail = function(msg, session, next ) {
  * @param session
  * @param next
  */
-handler.hasNewMail = function(msg, session, next){
-    var Key = picecBoxName(session);
-    mailDao.ToMailCount([Key+"_"+MailKeyType.NOREAD,Key+"_"+MailKeyType.HASITEM],function(err, reply) {
-        if(!!err){
-            next(null,{
-               code:Code.FAIL
-            });
-            return;
-        }
-       next(null,{
-           code:Code.OK,
-          count:reply
-       });
-    });
+handler.hasNewMail = function (msg, session, next) {
+	var Key = picecBoxName(session);
+	mailDao.ToMailCount([Key + "_" + MailKeyType.NOREAD, Key + "_" + MailKeyType.HASITEM], function (err, reply) {
+		if (!!err) {
+			next(null, {
+				code : Code.FAIL
+			});
+			return;
+		}
+		next(null, {
+			code : Code.OK,
+			count : reply
+		});
+	});
 }
 /**
  * 取物品
@@ -317,22 +303,22 @@ handler.hasNewMail = function(msg, session, next){
  * @param session
  * @param next
  */
-handler.collectItem = function(msg, session, next){
-    var itemIndex = msg.itemIndex;
-    var mailId = msg.mailId;
-    var Key = picecBoxName(session);
-    var mails = [mailId.substring(0,3),mailId.substring(3)];
-    if(mails[0] != MailKeyType.HASITEM){
-        next(null,{
-            err:""
-        });
-    }
-    var player = area.getPlayer(session.get("playerId"));
-    mailDao.collectItem(Key,mails,itemIndex,player,function(err, reply){
-        next(null,{
-            code:Code.OK,
-            err:err,
-            item:reply
-        });
-    });
+handler.collectItem = function (msg, session, next) {
+	var itemIndex = msg.itemIndex;
+	var mailId = msg.mailId;
+	var Key = picecBoxName(session);
+	var mails = [mailId.substring(0, 3), mailId.substring(3)];
+	if (mails[0] != MailKeyType.HASITEM) {
+		next(null, {
+			err : ""
+		});
+	}
+	var player = area.getPlayer(session.get("playerId"));
+	mailDao.collectItem(Key, mails, itemIndex, player, function (err, reply) {
+		next(null, {
+			code : Code.OK,
+			err : err,
+			item : reply
+		});
+	});
 }

@@ -163,3 +163,44 @@ utils.getTaskType = function(task) {
     }
     return type;
 }
+
+/**
+ * get equipment type
+ * 第3位表示位置序号
+ * 1 - 衣服
+ * 2 - 裤子
+ * 3 - 鞋子
+ * 4 - 护符
+ * 5 - 项链
+ * 6 - 戒指
+ * @param eqId
+ */
+utils.getEqType = function(eqId) {
+    var type = "";
+    if(eqId.length == 5) {
+        type = consts.EqType.WEAPON;
+    } else {
+        var num = eqId.substr(3, 1);
+        switch(num) {
+            case 1:
+                type = consts.EqType.ARMOR;
+                break;
+            case 2:
+                type = consts.EqType.LEGGUARD;
+                break;
+            case 3:
+                type = consts.EqType.SHOES;
+                break;
+            case 4:
+                type = consts.EqType.AMULET;
+                break;
+            case 5:
+                type = consts.EqType.NECKLACE;
+                break;
+            case 6:
+                type = consts.EqType.RING;
+                break;
+        }
+    }
+    return type;
+}

@@ -222,16 +222,15 @@ Player.prototype.updateAttribute = function() {
 /**
  * Equip equipment.
  *
- * @param {String} type
+ * @param {String} pkgType
  * @param {Number} equipId
  * @api public
  */
-Player.prototype.equip = function(type, item, pIndex) {
+Player.prototype.equip = function(pkgType, item, pIndex) {
     var index = 0;
-    var epType = "";
-    if(type == "weapons") {
-        epType = "weapon";
-    }
+
+    var epType = utils.getEqType(item.itemId);
+
     var curEquipment = this.equipmentsEntity.get(epType);
     logger.info(curEquipment);
     this.equipmentsEntity.equip(epType, {
@@ -240,13 +239,13 @@ Player.prototype.equip = function(type, item, pIndex) {
     });
 
     if (curEquipment.epid != 0) {
-        index = this.packageEntity.addItem(type, {
+        index = this.packageEntity.addItem(this, pkgType, {
             itemId: curEquipment.epid,
             itemNum: 1,
             level: curEquipment.level
-        }, pIndex);
+        }, pIndex).index;
     } else {
-        this.packageEntity.removeItem(type, pIndex);
+        this.packageEntity.removeItem(pkgType, pIndex);
     }
     this.updateAttribute();
 
@@ -254,23 +253,15 @@ Player.prototype.equip = function(type, item, pIndex) {
 };
 
 Player.prototype.buyItem = function(type, item, costMoney) {
-   //this.money = this.money - costMoney;
-   // var packageIndex = this.packageEntity.addItem(type, item);
-    var packageChange =   this.packageEntity.addItem(type, item);
+    var packageChange = this.packageEntity.addItem(this, type, item).index;
 
-  //this.save();    没有判断格式是否够用,还没确定物品是否改变
-    /*
-    return {
-        money: this.money,
-        packageIndex: packageIndex
-    } */
-    if(packageChange.length != 0){
+    if(packageChange.length != 0) {
         this.money = this.money - costMoney;
         this.save();
     }
     return {
-        money:this.money,
-        packageChange:packageChange
+        money: this.money,
+        packageChange: packageChange
     }
 }
 
@@ -398,12 +389,12 @@ Player.prototype.updateTask = function() {
     userDao.updatePlayer(this, "curTasksEntity");
 }
 
-Player.prototype.updateTaskRecord = function(taskType, items) {
+Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
     var task = {};
     for(var type in this.curTasksEntity.strip()) {
         task = this.curTasksEntity[type];
-        if(task.taskGoal.type == taskType) {
-            task.updateRecord(this, taskType, items);
+        if(task.taskGoal.type == TaskGoalType) {
+            task.updateRecord(this, TaskGoalType, items);
         }
     }
 }

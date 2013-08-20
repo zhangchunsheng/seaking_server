@@ -54,7 +54,7 @@ fightReward.reward = function(mainPlayer, players, monsters, isWin, cb) {
         }
         if(monster.items != "") {
             items.push(monster.items);
-            index = mainPlayer.packageEntity.addItemWithNoType(monster.items);
+            index = mainPlayer.packageEntity.addItemWithNoType(mainPlayer, monster.items);
         }
     }
     //mainPlayer.addExp(exp);

@@ -56,5 +56,9 @@ module.exports = {
     INDU: {
         NOT_AT_INDU: 1501,
         NO_EVENT_EXIST: 1502
+    },
+
+    EQUIPMENT: {
+
     }
 };

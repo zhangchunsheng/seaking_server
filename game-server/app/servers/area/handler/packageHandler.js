@@ -48,11 +48,11 @@ handler.addItem = function(msg, session, next) {
         level: itemLevel
     }
     var player = area.getPlayer(session.get('playerId'));
-    var packageIndex = player.packageEntity.addItem(type, item);
+    var result = player.packageEntity.addItem(player, type, item);
 
     next(null, {
         code: consts.MESSAGE.RES,
-        packageIndex: packageIndex
+        packageIndex: result.index
     });
 };
 
@@ -97,84 +97,90 @@ handler.sellItem = function(msg, session, next) {
         itemId = msg.itemId,
         itemNum = msg.itemNum;
     var player = area.getPlayer(session.get('playerId'));
-    var itemInfo={};
-    if("items"==type){
+    var itemInfo = {};
+    if("items" == type) {
         itemInfo = dataApi.item.findById(itemId);
-    }else{
+    } else {
         itemInfo = dataApi.equipment.findById(itemId);
     }
     logger.info(itemInfo);
-    if(!itemInfo){
-        next(null,{
+    if(!itemInfo) {
+        next(null, {
             code:code.PACKAGE.NOT_EXIST_ITEM
         });
         return;
     }
     var price = itemInfo.price;
     var incomeMoney = price * itemNum;
-    var result = removeItem(msg,player,next);
-    if(!!result){
+    var result = removeItem(msg, player, next);
+    if(!!result) {
         player.money += incomeMoney;
         player.save();
         next(null,{
-            code:consts.MESSAGE.RES,
-            money:player.money,
-            item:{
-                type:type,
-                index:msg.index,
-                itemNum:result,
-                itemId:itemId
+            code: consts.MESSAGE.RES,
+            money: player.money,
+            item: {
+                type: type,
+                index: msg.index,
+                itemNum: result,
+                itemId: itemId
             }
         });
     }
-
-
 }
-function removeItem(msg,player,next){
+
+function removeItem(msg,player,next) {
     var type = msg.type
         ,index = msg.index
         ,itemId = msg.itemId
-        ,itemNum = msg.itemNum
-        ;
-    var checkResult = player.packageEntity.checkItem(type,index,itemId);
-    if(!checkResult ){
+        ,itemNum = msg.itemNum;
+    var checkResult = player.packageEntity.checkItem(type, index, itemId);
+    if(!checkResult ) {
         next(null,{
             code:code.PACKAGE.NOT_EXIST_ITEM
         });
         return 0;
     }
-    if(checkResult < itemNum){
+    if(checkResult < itemNum) {
         next(null,{
             code:code.PACKAGE.NOT_ENOUGH_ITEM
         });
         return 0;
     }
-    /*
-     var item={
-     type:type,
-     index:index,
-     itemNum:itemNum
-     }
-     //抽出方法
-     player.sellItem(item,costMoney);
-     */
-    if(player.packageEntity.removeItem(type,index,itemNum)){
-        return   checkResult-itemNum;
+    if(player.packageEntity.removeItem(type, index, itemNum)) {
+        return checkResult - itemNum;
     }
     return  0;
 }
-handler.discardItem= function(msg, session, next){
+
+/**
+ * 丢弃
+ * @param msg
+ * @param session
+ * @param next
+ */
+handler.discardItem = function(msg, session, next) {
     var player = area.getPlayer(session.get('playerId'));
-    var result = removeItem(msg,player,next);
-    if(!!result){
-        next(null,{
+    var result = removeItem(msg, player, next);
+    if(!!result) {
+        next(null, {
             code:consts.MESSAGE.RES,
-            item:{
-                type:msg.type,
-                index:msg.index,
-                itemNum:result,
-                itemId:msg.itemId
+            item: {
+                type: msg.type,
+                index: msg.index,
+                itemNum: result,
+                itemId: msg.itemId
             }
         });
     }
+}
+
+/**
+ * 重排位置
+ * @param msg
+ * @param session
+ * @param next
+ */
+handler.resetItem = function(msg, session, next) {
+
 }

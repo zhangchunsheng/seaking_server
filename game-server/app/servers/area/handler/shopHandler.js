@@ -86,16 +86,15 @@ handler.buyItem = function(msg, session, next) {
         });
     }
     */
-    if(result.packageChange.length == 0 ){
-         next(null,{
-             code:Code.PACKAGE.NOT_ENOUGHT_SPACE
+    if(result.packageChange.length == 0) {
+         next(null, {
+             code: Code.PACKAGE.NOT_ENOUGHT_SPACE
          });
-    }else{
+    } else {
         next(null,{
-           code:consts.MESSAGE.RES,
+            code:consts.MESSAGE.RES,
             money:result.money,
             packageChange:result.packageChange
         });
     }
-
 };

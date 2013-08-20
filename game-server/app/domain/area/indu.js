@@ -25,7 +25,7 @@ exp.triggerEvent = function(mainPlayer, eid, cb) {
             } else if(key == "experience") {
                 mainPlayer.addExp(eventData[key]);
             } else if(key == "items") {
-                var index = mainPlayer.packageEntity.addItemWithNoType(eventData[key]);
+                var index = mainPlayer.packageEntity.addItemWithNoType(mainPlayer, eventData[key]);
             }
             // player.save();
             mainPlayer.updatePlayerAttribute(cb);
