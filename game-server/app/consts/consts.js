@@ -148,6 +148,23 @@ module.exports = {
         ITEMS: "items"
     },
 
+    MailType: {
+        SYSTEM      : 1,
+        PLAYER      : 2,
+        TASK        : 3,
+        BATTLEFIELD : 4,
+
+
+
+    },
+
+    MailKeyType:{
+        NOREAD:"ERN",
+        HASITEM:"ERW",
+        READ:"ERR",
+        SEND:"ES"
+    },
+
     EventType: {
         GET: 1,
         DESTROY: 2,

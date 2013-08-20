@@ -51,7 +51,8 @@ Handler.prototype.queryServerList = function(msg, session, next) {
             array.push({
                 id: serverLists[i].id,
                 connectors: {
-                    host: res.host,
+                   // host: res.host,
+                    host:"127.0.0.1",
                     port: res.port
                 },
                 showName: serverLists[i].showName

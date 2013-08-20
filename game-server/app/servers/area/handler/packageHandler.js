@@ -18,7 +18,6 @@ var consts = require('../../../consts/consts');
 var code = require('../../../../../shared/code');
 var dataApi = require('../../../util/dataApi');
 var channelUtil = require('../../../util/channelUtil');
-var logger = require('pomelo-logger').getLogger(__filename);
 var PackageType = require('../../../consts/consts').PackageType;
 
 var handler = module.exports;

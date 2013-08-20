@@ -10,7 +10,8 @@ var pomelo = require('pomelo');
 var Package = require('../domain/package');
 var utils = require('../util/utils');
 var dbUtil = require('../util/dbUtil');
-
+var PackageType = require('../consts/consts').PackageType;
+var dataApi = require('../util/dataApi');
 var packageDao = module.exports;
 
 /**
@@ -80,4 +81,29 @@ packageDao.createNewPackage = function(packageInfo, serverId, registerType, logi
     var package = new Package(packageInfo);
     return package;
 };
-
+packageDao.getType = function(item) {
+    var itemId = item.itemId;
+    var type = "";
+    logger.debug(itemId.indexOf("W"));
+    if(itemId.indexOf("W") != -1) {
+        type = PackageType.WEAPONS;
+    } else if(itemId.indexOf("E") != -1) {
+        type = PackageType.EQUIPMENTS;
+    } else if(itemId.indexOf("D") != -1) {
+        type = PackageType.ITEMS;
+    }
+    return type;
+}
+packageDao.fullItem  = function(item){
+    var itemId = item.itemId;
+    var type = this.getType(item);
+    logger.info(type);
+    var itemInfo;
+    if("items" == type) {
+        itemInfo = dataApi.item.findById(itemId);
+    } else {
+        itemInfo = dataApi.equipment.findById(itemId);
+    }
+    item.level = itemInfo.level;
+    return item;
+}

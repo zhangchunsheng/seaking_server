@@ -92,6 +92,7 @@ Package.prototype.addItem = function(type, item, rIndex) {
         if(this[type].items[rIndex]) {
             delete this[type].items[rIndex];
         }
+        return;
     }
 
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
@@ -270,7 +271,7 @@ Package.prototype.addItemWithNoType = function(item) {
     } else {
         type = PackageType.ITEMS;
     }
-    this.addItem(type, item);
+    return this.addItem(type, item);
 }
 
 /**

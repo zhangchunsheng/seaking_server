@@ -25,6 +25,7 @@ var dbUtil = require('../util/dbUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
 var redis  = require("redis");
+var area = require('../domain/area/area');
 
 var userDao = module.exports;
 
@@ -256,6 +257,40 @@ userDao.has_nickname_player = function(app, serverId, nickname, next) {
 
             });
     });
+}
+
+/**
+ * 通过id查找nickname
+ * @param playerId
+ * @param cb
+ */
+userDao.getNicknameByPlayerId = function(playerId, cb ) {
+    var player = area.getPlayer(playerId);
+    if(player != null){
+        utils.invokeCallback(cb,null,player.nickname);
+    }else{
+        var redisConfig = pomelo.app.get('redis');
+        var redis = pomelo.app.get('redisclient');
+        redis.command(function(client) {
+            client.multi().select(redisConfig.database.SEAKING_REDIS_DB,function(){
+
+            }).get(playerId,function(err,reply) {
+                    if(!!err){
+                        utils.invokeCallback(cb,"不存在playerId");
+                        return;
+                    }
+                    client.hget(reply,"nickname",function(err,reply) {
+                        if(!!err){
+                            utils.invokeCallback(cb,err);
+                            return;
+                        }
+                        utils.invokeCallback(cb,null,reply);
+                    });
+                }).exec(function(err,reply) {
+
+                });
+        });
+    }
 }
 
 /**
