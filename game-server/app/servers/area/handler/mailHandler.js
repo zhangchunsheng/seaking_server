@@ -93,13 +93,17 @@ handler.sendMail = function (msg, session, next) {
 	logger.error(msg);
 	if (msg.content.length > 50) {
 		next(null, {
-			err : '内容长度过长'
+            code:Code.FAIL,
+			err : '内容长度过长',
+            route:"area.mailHandler.sendMail"
 		});
 		return;
 	}
 	if (msg.to == null && msg.toName == null) {
 		next(null, {
-			err : '没有收件人'
+            code:Code.FAIL,
+			err : '没有收件人',
+            route:"area.mailHandler.sendMail"
 		});
 		return;
 	}
@@ -108,7 +112,9 @@ handler.sendMail = function (msg, session, next) {
 	var player = area.getPlayer(playerId);
 	if (msg.to == playerId || msg.toName == player.nickname) {
 		next(null, {
-			err : "不能发给自己"
+            code:Code.FAIL,
+			err : "不能发给自己",
+            route:"area.mailHandler.sendMail"
 		});
 		return;
 	}
@@ -149,7 +155,9 @@ handler.sendMail = function (msg, session, next) {
 					if (!!err) {
 						logger.debug(err);
 						next(null, {
-							code : Code.FAIL
+							code : Code.FAIL,
+                            err:err,
+                            route:"area.mailHandler.sendMail"
 						});
 						return;
 					}
@@ -186,6 +194,14 @@ handler.getInbox = function (msg, session, next) {
 	var Key = picecBoxName(session);
 	//var player = area.getPlayer(playerId);
 	mailDao.getInbox(Key, msg.start, msg.end, function (err, reply) {
+        if(!!err) {
+            next(null, {
+                code : Code.FAIL,
+                err:err,
+                route:"area.mailHandler.getInbox"
+            });
+            return;
+        }
 		next(null, {
 			code : Code.OK,
 			inbox : reply
@@ -202,6 +218,14 @@ handler.getInbox = function (msg, session, next) {
 handler.getOutbox = function (msg, session, next) {
 	var key = picecBoxName(session);
 	mailDao.getOutbox(key, msg.start, msg.end, function (err, reply) {
+        if( !!err ) {
+            next(null, {
+                code : Code.FAIL,
+                err:err,
+                route:"area.mailHandler.getOutbox"
+            });
+            return;
+        }
 		next(null, {
 			code : Code.OK,
 			Outbox : reply
@@ -243,7 +267,9 @@ handler.readMail = function (msg, session, next) {
 	mailDao.readMail(mails, Key, function (err, reply) {
 		if (!!err) {
 			next(null, {
-				err : err
+                code:Code.FAIL,
+				err : err,
+                route:"area.mailHandler.readMail"
 			});
 			return;
 		}
@@ -267,7 +293,9 @@ handler.delMail = function (msg, session, next) {
 	mailDao.delMail(mails, Key, function (err, reply) {
 		if (!!err) {
 			next(null, {
-				code : Code.FAIL
+				code : Code.FAIL,
+                err: err,
+                route:"area.mailHandler.delMail"
 			});
 			return;
 		}
@@ -287,7 +315,9 @@ handler.hasNewMail = function (msg, session, next) {
 	mailDao.ToMailCount([Key + "_" + MailKeyType.NOREAD, Key + "_" + MailKeyType.HASITEM], function (err, reply) {
 		if (!!err) {
 			next(null, {
-				code : Code.FAIL
+				code : Code.FAIL,
+                err: err,
+                route:"area.mailHandler.hasNewMail"
 			});
 			return;
 		}
@@ -310,14 +340,24 @@ handler.collectItem = function (msg, session, next) {
 	var mails = [mailId.substring(0, 3), mailId.substring(3)];
 	if (mails[0] != MailKeyType.HASITEM) {
 		next(null, {
-			err : ""
+            code: Code.FAIL,
+			err : "邮件号有错误",
+            route:"area.mailHandler.collectItem"
 		});
+        return;
 	}
 	var player = area.getPlayer(session.get("playerId"));
 	mailDao.collectItem(Key, mails, itemIndex, player, function (err, reply) {
-		next(null, {
+		if( !!err ) {
+            next(null, {
+                code: Code.FAIL,
+                err : err,
+                route:"area.mailHandler.collectItem"
+            });
+            return;
+        }
+        next(null, {
 			code : Code.OK,
-			err : err,
 			item : reply
 		});
 	});

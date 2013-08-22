@@ -182,5 +182,30 @@ handler.discardItem = function(msg, session, next) {
  * @param next
  */
 handler.resetItem = function(msg, session, next) {
-
+    var start = msg.start;
+    var end = msg.end;
+    var type = msg.type;
+    var player = area.getPlayer(session.get('playerId'));
+    var startItem  =  player.packageEntity[type].items[start];
+    var endItem =  player.packageEntity[type].items[end];
+    if(startItem == null) {
+        next(null,{
+            err:"没有该物品",
+            route:"area.packageHandler.resetItem"
+        });
+        return;
+    }
+    player.packageEntity[type].items[start] = endItem;
+    player.packageEntity[type].items[end] = startItem;
+    player.packageEntity.save();
+    next(null, {
+        code:code.OK,
+        items:[{
+            index:start,
+            item:endItem
+        },{
+            index:end,
+            item:startItem
+        }]
+    });
 }
