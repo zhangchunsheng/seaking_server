@@ -97,7 +97,7 @@ handler.unWearWeapon = function(msg, session, next) {
     packageIndex = result.index;
     if(packageIndex.length > 0) {
         player.unEquip(type);
-        status = true;
+        status = 1;
     }
 
     next(null, {
@@ -126,7 +126,7 @@ handler.equip = function(msg, session, next) {
 
     if(typeof item == "undefined") {
         next(null, {
-            status: -3
+            status: -2
         });
         return;
     }
@@ -176,6 +176,9 @@ handler.unEquip = function(msg, session, next) {
     var status = 0;
     var result = {};
     var packageIndex = -1;
+
+    logger.info(type);
+    logger.info(player.equipmentsEntity);
 
     if(player.equipmentsEntity.get(type).epid == 0) {// 没有装备
         next(null, {

@@ -185,6 +185,8 @@ Player.prototype.updateAttribute = function() {
     for(var key in equipments) {
         if(equipments[key].epid != 0) {
             equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            if(typeof equipment == "undefined")
+                continue;
             if(equipment.attackPercentage != 0)
                 attack += this.attack * equipment.attackPercentage;
             if(equipment.defensePercentage != 0)
@@ -393,6 +395,7 @@ Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
     var task = {};
     for(var type in this.curTasksEntity.strip()) {
         task = this.curTasksEntity[type];
+        logger.info(task);
         if(task.taskGoal.type == TaskGoalType) {
             task.updateRecord(this, TaskGoalType, items);
         }
