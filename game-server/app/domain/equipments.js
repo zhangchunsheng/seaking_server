@@ -107,6 +107,42 @@ Equipments.prototype.unEquip = function(type) {
 };
 
 /**
+ *
+ * @param type
+ * @param equipment_levelup
+ * @returns {number}
+ */
+Equipments.prototype.upgradeByMaterial = function(player, type, equipment_levelup) {
+    var status = 0;
+    return status;
+}
+
+/**
+ *
+ * @param type
+ * @param equipment_levelup
+ * @returns {number}
+ */
+Equipments.prototype.upgradeByMoney = function(player, type, equipment_levelup) {
+    var status = 0;
+    logger.info(equipment_levelup);
+    if(player.money >= equipment_levelup.upgradeMoney) {
+        player.money -= equipment_levelup.upgradeMoney;
+        status = 1;
+        this[type].level += 1;
+        player.updateTask1、新功能：完成装备升级任务判断Record(consts.TaskGoalType.UPGRADE_EQUIPMENT, {
+            itemId: this[type].epid,
+            itemNum: this[type].level
+        });
+        this.save();
+        player.save();
+    } else {
+        status = 0;
+    }
+    return status;
+}
+
+/**
  * strip
  */
 Equipments.prototype.strip = function() {

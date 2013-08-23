@@ -123,7 +123,7 @@ Task.prototype.updateRecord = function(player, type, items) {
         }
     } else if(type == consts.TaskGoalType.UPGRADE_EQUIPMENT) {// 升级装备
         if(this.taskGoal.itemId == items.itemId) {
-            this.updateStatus(player, 1);
+            this.updateStatus(player, items.itemNum, true);
         }
     } else if(type == consts.TaskGoalType.BUY_ITEM) {// 购买道具
         this.updateStatus(player, items.itemNum);
@@ -159,7 +159,7 @@ Task.prototype.pretreatmentTask = function(player) {
  *
  * @param player
  */
-Task.prototype.updateStatus = function(player, itemNum) {
+Task.prototype.updateStatus = function(player, itemNum, flag) {
     if(this.status == TaskStatus.COMPLETED)
         return;
     if(this.status == consts.TaskStatus.START_TASK) {
@@ -167,7 +167,13 @@ Task.prototype.updateStatus = function(player, itemNum) {
         this.taskRecord = {};
         this.taskRecord.itemNum = 0;
     }
-    this.taskRecord.itemNum += itemNum;
+
+    if(flag) {
+        this.taskRecord.itemNum = itemNum;
+    } else {
+        this.taskRecord.itemNum += itemNum;
+    }
+
     if(this.taskRecord.itemNum >= this.taskGoal.itemNum) {
         player.completeTask(consts.correspondingCurTaskType[this.type]);
     }

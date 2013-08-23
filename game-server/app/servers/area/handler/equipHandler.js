@@ -218,3 +218,48 @@ handler.unEquip = function(msg, session, next) {
     });
 };
 
+/**
+ * 升级
+ * @param msg
+ * @param session
+ * @param next
+ */
+handler.upgrade = function(msg, session, next) {
+    var epId = msg.eqId;
+    var type = msg.type;
+
+    var player = area.getPlayer(session.get('playerId'));
+    var status = 0;
+
+    logger.info(type);
+    logger.info(player.equipmentsEntity);
+
+    if(player.equipmentsEntity.get(type).epid == 0) {// 没有装备
+        next(null, {
+            status: -2
+        });
+        return;
+    }
+
+    if(player.equipmentsEntity.get(type).epid != epId) {// 装备不正确
+        next(null, {
+            status: -1
+        });
+        return;
+    }
+
+    var level = player.equipmentsEntity.get(type).level;
+    level += 1;
+    var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
+
+    if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
+        status = player.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
+    } else {
+        status = player.equipmentsEntity.upgradeByMoney(player, type, equipment_levelup);
+    }
+
+    next(null, {
+        status: status
+    });
+}
+
