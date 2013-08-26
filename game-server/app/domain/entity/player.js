@@ -180,10 +180,12 @@ Player.prototype.updateAttribute = function() {
     counter = this.counter;
 
     equipments = this.equipmentsEntity.getInfo();
-
+    logger.debug(equipments);
     // 百分比加成和数值加成
     for(var key in equipments) {
         if(equipments[key].epid != 0) {
+            logger.info(equipments[key].epid+equipments[key].level);
+            logger.debug(dataApi.equipmentLevelup.findById);
             equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
             if(typeof equipment == "undefined")
                 continue;

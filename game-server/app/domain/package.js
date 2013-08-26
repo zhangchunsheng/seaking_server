@@ -86,7 +86,8 @@ Package.prototype.getData = function(type) {
 Package.prototype.addItem = function(player, type, item, rIndex) {
     var index = [];
     logger.info(item);
-    var _items = item;
+    //_items是值传递 会影响到item的运行,最好clone item 赋值给_items
+  //  var _items = item;
     if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
         //返回{}并没有返回null 容易判断
         return {
@@ -142,7 +143,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         */
         for(var i  in  this[type].items) {
             if(this[type].items[i].itemId == item.itemId) {
-                _items.itemNum += this[type].items[i].itemNum;
+                //_items.itemNum += this[type].items[i].itemNum;
                 if(parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum) > 99 && this[type].items[i].itemNum < 99) {
                       var spaceCount = 0;
                       //数格子,如果是数组的话可以用this[type].items.length，可抽出方法来
@@ -205,7 +206,9 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
 
     if(index.length > 0) {
         this.save();
-        player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+    //    if(result.index.length > 0) {
+    //        player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+    //    }
     }
     return {
         index: index

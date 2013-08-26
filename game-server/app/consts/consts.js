@@ -184,6 +184,20 @@ module.exports = {
     Event: {
         chat: 'onChat'
     },
+    Item:{
+        canUser:"10",
+        canNotUser:"11",
+        Increase:"01",
+        HPreply:"02",
+        UpgradeMaterial:"03",
+        DesignDrawings:"04",
+        TreasureChest:"05",
+        Keys:"06",
+        NoAttributeItem:"07",
+        TaskItem:"08",
+        Activity:"09"
+    },
+
 
     /**
      * check a entity that whether can be picked
