@@ -77,20 +77,6 @@ handler.enterScene = function(msg, session, next) {
 };
 
 /**
- * 测试血量
- * @param msg
- * @param session
- * @param next
- */
-handler.hpreply = function(msg, session, next) {
-    var player = area.getPlayer(session.get('playerId')) ;
-    player.hp += parseInt(msg.hp);
-    player.save();
-    next(null,{
-        code:player.hp
-    }) ;
-}
-/**
  * 进入副本
  * @param msg
  * @param session

@@ -108,16 +108,14 @@ handler.sellItem = function(msg, session, next) {
     if(!itemInfo) {
         next(null, {
             code:code.PACKAGE.NOT_EXIST_ITEM,
-            err:"没有该物品",
-            route:"area.packageHandler.sellItem"
+            err:"没有该物品"
         });
         return;
     }
     if(!itemInfo.canSell) {
         next(null,{
             code:code.FAIL,
-            err:"不能卖",
-            route:"area.packageHandler.removeItem"
+            err:"不能卖"
         })
     }
     var price = itemInfo.price;
@@ -153,8 +151,7 @@ function removeItem(msg,player,next) {
     if(!itemInfo.canDestroy) {
         next(null,{
             code:code.FAIL,
-            err:"不能丢弃",
-            route:"area.packageHandler.removeItem"
+            err:"不能丢弃"
         })
     }
 
@@ -162,16 +159,14 @@ function removeItem(msg,player,next) {
     if(!checkResult ) {
         next(null,{
             code:code.PACKAGE.NOT_EXIST_ITEM,
-            err:"没有该物品",
-            route:"area.packageHandler.removeItem"
+            err:"没有该物品"
         });
         return 0;
     }
     if(checkResult < itemNum) {
         next(null,{
             code:code.PACKAGE.NOT_ENOUGH_ITEM,
-            err:"数量不足",
-            route:"area.packageHandler.removeItem"
+            err:"数量不足"
         });
         return 0;
     }
@@ -219,8 +214,7 @@ handler.resetItem = function(msg, session, next) {
     if(startItem == null) {
         next(null,{
             code:code.FAIL,
-            err:"没有该物品",
-            route:"area.packageHandler.resetItem"
+            err:"没有该物品"
         });
         return;
     }
@@ -238,17 +232,17 @@ handler.resetItem = function(msg, session, next) {
         }]
     });
 }
+
 handler.userItem = function (msg, session, next) {
     var index = msg.index;
     var type = msg.type;
     var player = (area.getPlayer(session.get("playerId")));
     var Item = player.packageEntity[type].items[index];
     logger.error(player);
-    if(Item == null){
-        next(null,{
-            code:code.FAIL,
-            err:"没有该物品",
-            route:"area.packageHandler.userItem"
+    if(Item == null) {
+        next(null, {
+            code: code.FAIL,
+            err: "没有该物品"
         });
         return;
     }
@@ -258,100 +252,86 @@ handler.userItem = function (msg, session, next) {
     } else {
         itemInfo = dataApi.equipment.findById(Item.itemId);
     }
-    if(player.level < itemInfo.needLevel){
-        next(null,{
-            code:code.FAIL,
-            err:"等級不足",
-            route:"area.packageHandler.userItem"
+    if(player.level < itemInfo.needLevel) {
+        next(null, {
+            code: code.FAIL,
+            err: "等級不足"
         });
         return;
     }
     logger.debug(itemInfo);
     var ifUser = Item.itemId.substr(1,2);
-    if(consts.Item.canNotUser == ifUser) {
-        next(null,{
-            code:code.FAIL,
-            err:"物品不能用",
-            route:"area.packageHandler.userItem"
+    if(consts.ItemType.canNotUser == ifUser) {
+        next(null, {
+            code: code.FAIL,
+            err: "物品不能用"
         });
         return;
     }
-    var itemClass = Item.itemId.substr(3,2);
+    var itemClass = Item.itemId.substr(3, 2);
     var package = player.packageEntity;
-    switch(itemClass){
-        case consts.Item.Increase:
-            //临时属性提高
-           // if(player.buffs != null){
-                player.buffs.push({useEffectId:itemInfo.useEffectId,startTime:new Date().getTime()});
-          //  }else{
-          //      player.buffs = [{useEffectId:itemInfo.useEffectId,startTime:new Date()}];
-           // }
+    switch(itemClass) {
+        case consts.ItemCategory.Increase:
+            player.buffs.push({
+                useEffectId: itemInfo.useEffectId,
+                startTime: new Date().getTime()
+            });
+
             logger.info(player.buffs);
-            package.removeItem(type,index,1);
+            package.removeItem(type, index, 1);
             package.save();
-            next(null,{
-               code:code.OK
+            next(null, {
+               code: code.OK
             });
             break;
-        case consts.Item.HPreply:
-            //恢复HP
-            var hpType = Item.itemId.substr(5,2);
-            switch( hpType){
-                case "01":
-                    //直接恢复hp
+        case consts.ItemCategory.HPreply://恢复HP
+            var hpType = Item.itemId.substr(5, 2);
+            switch(hpType) {
+                case "01"://直接恢复hp
                     var hpMatch = /([0-9]+)(HP)/ig;
                     hpMatch.exec(itemInfo.effectDescription);
                     var hp = parseInt(RegExp.$1);
                     if(player.hp < player.maxHp) {
                         player.hp += hp;
-                    }else  {
+                    } else {
                         player.hp = player.maxHp;
                     }
-                    logger.info("hp:"+player.hp);
-                    userDao.updatePlayer(player, "hp", function(err,reply){
-                       package.removeItem(type,index,1);
-                       package.save();
-                       next(null,{
-                          code:code.OK
-                       });
+                    logger.info("hp:" + player.hp);
+                    userDao.updatePlayer(player, "hp", function(err,reply) {
+                        package.removeItem(type, index, 1);
+                        package.save();
+                        next(null, {
+                          code: code.OK
+                        });
                     });
-                    return;
-                break;
-                case "02":
-                    //持续恢复hp
-                    player.buff.push({useEffectId:itemInfo.useEffectId,startTime:new Date()});
-                    package.removeItem(type,index,1);
+                    break;
+                case "02"://持续恢复hp
+                    player.buff.push({
+                        useEffectId: itemInfo.useEffectId,
+                        startTime: new Date()
+                    });
+                    package.removeItem(type, index, 1);
                     package.save();
-                    next(null,{
-                       code:code.OK
+                    next(null, {
+                        code: code.OK
                     });
-
-                break;
+                    break;
             }
             break;
-        case consts.Item.UpgradeMaterial:
-            //升级材料
-            //暂时前端判断
-
-        case consts.Item.TreasureChest:
-            //设计图纸
-
-        case consts.Item.Keys:
-            //钥匙
+        case consts.ItemCategory.UpgradeMaterial://升级材料
+        case consts.ItemCategory.TreasureChest: //设计图纸
+        case consts.ItemCategory.Keys://钥匙
             package.removeItem(type,index,1);
             package.save();
             next(null,{
                 code:code.OK
             });
             break;
-        case consts.Item.NoAttributeItem:
-            //无属性
+        case consts.ItemCategory.NoAttributeItem://无属性
             break;
-        case consts.Item.TaskItem:
-            //任务物品
+        case consts.ItemCategory.TaskItem://任务物品
             break;
-        case consts.Item.Activity:
-            //活动物品
+        case consts.ItemCategory.Activity://活动物品
             break;
     }
 }
