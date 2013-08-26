@@ -209,10 +209,9 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
 
     if(index.length > 0) {
         this.save();
-        if(result.index.length > 0) {
-            player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
-        }
+        player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
     }
+
     return {
         index: index
     };

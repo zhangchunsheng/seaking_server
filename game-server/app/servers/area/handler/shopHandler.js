@@ -92,9 +92,9 @@ handler.buyItem = function(msg, session, next) {
          });
     } else {
         next(null,{
-            code:consts.MESSAGE.RES,
-            money:result.money,
-            packageChange:result.packageChange
+            code: consts.MESSAGE.RES,
+            money: result.money,
+            packageChange: result.packageChange
         });
     }
 };
