@@ -73,6 +73,7 @@ handler.buyItem = function(msg, session, next) {
     }
 
     var result = player.buyItem(type, item, costMoney);
+
     /*
     if(result.packageIndex == -1) {
         next(null, {
@@ -86,6 +87,7 @@ handler.buyItem = function(msg, session, next) {
         });
     }
     */
+
     if(result.packageChange.length == 0) {
          next(null, {
              code: Code.PACKAGE.NOT_ENOUGHT_SPACE
