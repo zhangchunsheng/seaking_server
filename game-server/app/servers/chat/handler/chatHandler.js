@@ -55,7 +55,9 @@ ChannelHandler.prototype.send = function(msg, session, next) {
                 code = Code.OK;
             }
 
-            next(null, {code: code});
+            next(null, {
+                code: code
+            });
         });
     } else {
         this.chatService.pushByPlayerName(msg.toName, content, function(err, res) {
@@ -67,7 +69,9 @@ ChannelHandler.prototype.send = function(msg, session, next) {
             } else {
                 code = Code.OK;
             }
-            next(null, {code: code});
+            next(null, {
+                code: code
+            });
         });
     }
 };

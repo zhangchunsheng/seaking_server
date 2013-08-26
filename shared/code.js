@@ -58,6 +58,11 @@ module.exports = {
         NO_EVENT_EXIST: 1502
     },
 
+    MAIL: {
+        HAVE_READ: 1601,
+        NO_RECEIVE_ID: 1602
+    },
+
     EQUIPMENT: {
 
     }

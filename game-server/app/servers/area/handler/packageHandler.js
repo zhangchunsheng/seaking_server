@@ -107,15 +107,13 @@ handler.sellItem = function(msg, session, next) {
     logger.info(itemInfo);
     if(!itemInfo) {
         next(null, {
-            code:code.PACKAGE.NOT_EXIST_ITEM,
-            err:"没有该物品"
+            code:code.PACKAGE.NOT_EXIST_ITEM
         });
         return;
     }
     if(!itemInfo.canSell) {
         next(null,{
-            code:code.FAIL,
-            err:"不能卖"
+            code:code.FAIL
         })
     }
     var price = itemInfo.price;
@@ -150,23 +148,20 @@ function removeItem(msg,player,next) {
     }
     if(!itemInfo.canDestroy) {
         next(null,{
-            code:code.FAIL,
-            err:"不能丢弃"
+            code: code.FAIL
         })
     }
 
     var checkResult = player.packageEntity.checkItem(type, index, itemId);
     if(!checkResult ) {
         next(null,{
-            code:code.PACKAGE.NOT_EXIST_ITEM,
-            err:"没有该物品"
+            code: code.PACKAGE.NOT_EXIST_ITEM
         });
         return 0;
     }
     if(checkResult < itemNum) {
         next(null,{
-            code:code.PACKAGE.NOT_ENOUGH_ITEM,
-            err:"数量不足"
+            code: code.PACKAGE.NOT_ENOUGH_ITEM
         });
         return 0;
     }
@@ -213,8 +208,7 @@ handler.resetItem = function(msg, session, next) {
     var endItem =  player.packageEntity[type].items[end];
     if(startItem == null) {
         next(null,{
-            code:code.FAIL,
-            err:"没有该物品"
+            code: code.FAIL
         });
         return;
     }
@@ -224,25 +218,31 @@ handler.resetItem = function(msg, session, next) {
     next(null, {
         code:code.OK,
         items:[{
-            index:start,
-            item:endItem
+            index: start,
+            item: endItem
         },{
-            index:end,
-            item:startItem
+            index: end,
+            item: startItem
         }]
     });
 }
 
+/**
+ * 使用道具
+ * @param msg
+ * @param session
+ * @param next
+ */
 handler.userItem = function (msg, session, next) {
     var index = msg.index;
     var type = msg.type;
+
     var player = (area.getPlayer(session.get("playerId")));
     var Item = player.packageEntity[type].items[index];
     logger.error(player);
     if(Item == null) {
         next(null, {
-            code: code.FAIL,
-            err: "没有该物品"
+            code: code.FAIL
         });
         return;
     }
@@ -254,17 +254,15 @@ handler.userItem = function (msg, session, next) {
     }
     if(player.level < itemInfo.needLevel) {
         next(null, {
-            code: code.FAIL,
-            err: "等級不足"
+            code: code.FAIL
         });
         return;
     }
     logger.debug(itemInfo);
-    var ifUser = Item.itemId.substr(1,2);
+    var ifUser = Item.itemId.substr(1, 2);
     if(consts.ItemType.canNotUser == ifUser) {
         next(null, {
-            code: code.FAIL,
-            err: "物品不能用"
+            code: code.FAIL
         });
         return;
     }
@@ -297,7 +295,7 @@ handler.userItem = function (msg, session, next) {
                         player.hp = player.maxHp;
                     }
                     logger.info("hp:" + player.hp);
-                    userDao.updatePlayer(player, "hp", function(err,reply) {
+                    userDao.updatePlayer(player, "hp", function(err, reply) {
                         package.removeItem(type, index, 1);
                         package.save();
                         next(null, {
@@ -323,7 +321,7 @@ handler.userItem = function (msg, session, next) {
         case consts.ItemCategory.Keys://钥匙
             package.removeItem(type,index,1);
             package.save();
-            next(null,{
+            next(null, {
                 code:code.OK
             });
             break;

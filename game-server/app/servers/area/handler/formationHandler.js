@@ -40,7 +40,7 @@ handler.change = function(msg, session, next) {
 
     if(!formation && Object.prototype.toString.call(formation) !== '[object Array]') {
         next(null, {
-            status: -1
+            code: consts.MESSAGE.ARGUMENT_EXCEPTION
         });
         return;
     }
@@ -50,7 +50,7 @@ handler.change = function(msg, session, next) {
     player.formation = formation;
     playerDao.changeFormation(player, function(err, reply) {
         var status = {
-            status: 1
+            code: consts.MESSAGE.RES
         };
 
         player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});

@@ -112,7 +112,10 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     itemNum: item.itemNum,
                     level: item.level
                 };
-                index = [{index: i, itemNum: item.itemNum}];
+                index = [{
+                    index: i,
+                    itemNum: item.itemNum
+                }];
                 break;
             }
         }

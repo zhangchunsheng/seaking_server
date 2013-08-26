@@ -113,7 +113,7 @@ arenaDao.exchange = function(player, opponent, cb) {
         });
     });
 }
-arenaDao.getOpponents=function(player, cb) {
+arenaDao.getOpponents = function(player, cb) {
     this.getRank(player, function(err, reply) {
         logger.debug(reply);
         reply = 11;// test

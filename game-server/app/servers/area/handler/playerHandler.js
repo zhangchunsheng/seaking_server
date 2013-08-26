@@ -93,7 +93,10 @@ handler.enterIndu = function(msg, session, next) {
     player.isEnterIndu = 1;
     userDao.enterIndu(serverId, registerType, loginName, induId, function(err, induInfo) {
         player.currentIndu = induInfo;
-        next(null, {code: consts.MESSAGE.RES, induInfo: induInfo});
+        next(null, {
+            code: consts.MESSAGE.RES,
+            induInfo: induInfo
+        });
     });
 }
 
@@ -119,7 +122,10 @@ handler.leaveIndu = function(msg, session, next) {
             itemId: induId
         });
 
-        next(null, {code: consts.MESSAGE.RES, induInfo: induInfo});
+        next(null, {
+            code: consts.MESSAGE.RES,
+            induInfo: induInfo
+        });
     });
 }
 

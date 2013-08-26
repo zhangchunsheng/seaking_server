@@ -12,8 +12,8 @@ var logger = require('pomelo-logger').getLogger(__filename);
 var userDao = require('./userDao');
 var lua = require('./lua/redisLua').mailLua;
 var crypto = require('crypto');
-var MailKeyType = require('../consts/consts').MailKeyType
-	var mailDao = module.exports;
+var MailKeyType = require('../consts/consts').MailKeyType;
+var mailDao = module.exports;
 /**
  * 获得邮件对象
  * @param msg
@@ -22,6 +22,7 @@ var MailKeyType = require('../consts/consts').MailKeyType
 mailDao.createMail = function (msg) {
 	return new Mail(msg);
 };
+
 /**
  * 补齐邮件信息
  * @param msg
@@ -31,6 +32,7 @@ mailDao.createMail = function (msg) {
 mailDao.Fill = function (msg, cb) {
 	mailDao.setTo(msg, cb); //可以写一个函数让他成为链式执行
 }
+
 /**
  * 设置接收人的信息
  * @param msg
@@ -49,6 +51,7 @@ mailDao.setTo = function (msg, cb) {
 		});
 	}
 }
+
 /**
  * 设置接收对象的Key
  * @param msg
@@ -61,9 +64,12 @@ mailDao.setToKey = function (msg, cb) {
 		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {}).get(msg.to, function (err, reply) {
 			msg.toKey = reply;
 			mailDao.setMailId(msg, cb);
-		}).exec(function (err, reply) {});
+		}).exec(function (err, reply) {
+
+        });
 	});
 }
+
 /**
  * 设置mailId
  * @param msg
@@ -73,13 +79,17 @@ mailDao.setMailId = function (msg, cb) {
 	var redisConfig = pomelo.app.get('redis');
 	var redis = pomelo.app.get('redisclient');
 	redis.command(function (client) {
-		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {}).incr("mailId", function (err, reply) {
+		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
 
+        }).incr("mailId", function (err, reply) {
 			msg.mailId = reply;
 			utils.invokeCallback(cb, null, msg);
-		}).exec(function (err, reply) {});
+		}).exec(function (err, reply) {
+
+        });
 	});
 }
+
 /**
  * 获得发送邮箱
  * @param key
@@ -91,14 +101,17 @@ mailDao.getOutbox = function (key, start, end, cb) {
 	var redisConfig = pomelo.app.get('redis');
 	var redis = pomelo.app.get('redisclient');
 	redis.command(function (client) {
-		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {})
-		.lrange(key + "_" + MailKeyType.SEND, start, end, function (err, reply) {
+		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
+
+        }).lrange(key + "_" + MailKeyType.SEND, start, end, function (err, reply) {
 			utils.invokeCallback(cb, null, reply);
 		})
-		.exec(function (err, reply) {});
+		.exec(function (err, reply) {
 
+        });
 	});
 }
+
 /**
  * 获得接收邮箱
  * @param key
@@ -127,7 +140,6 @@ mailDao.getMailList = function (msg, cb) {
 	var client = msg.client;
 	var key = msg.keys.shift();
 	if (key == null || typeof key == undefined) {
-		logger.error(msg.list);
 		utils.invokeCallback(cb, null, msg.list);
 		return;
 	}
@@ -149,10 +161,9 @@ mailDao.getMailList = function (msg, cb) {
 			}
 			mailDao.getMailList(msg, cb);
 		});
-
 	});
-
 }
+
 /**
  * 系统发送给玩家
  * @param toBox
@@ -184,8 +195,8 @@ mailDao.systemSendMail = function (toBox, mail, cb) {
 			utils.invokeCallback(cb, null, mail);
 		});
 	});
-
 }
+
 /**
  * 玩家发送给玩家
  * @param fromBox
@@ -207,7 +218,6 @@ mailDao.addMail = function (fromBox, toBox, mail, cb) {
 				utils.invokeCallback(cb, "添加发送人邮箱有错误");
 				return;
 			}
-
 		}).lpush(toBox, receive, function (err, reply) {
 			if (!!err) {
 				utils.invokeCallback(cb, "添加收件人邮箱时有错误");
@@ -219,9 +229,7 @@ mailDao.addMail = function (fromBox, toBox, mail, cb) {
 				return;
 			}
 			utils.invokeCallback(cb, null, mail);
-
 		});
-
 	});
 }
 
@@ -235,12 +243,17 @@ mailDao.SendMailCount = function (Key, cb) {
 	var redisConfig = pomelo.app.get('redis');
 	var redis = pomelo.app.get('redisclient');
 	redis.command(function (client) {
-		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {}).llen(Key + "_" + MailKeyType.SEND, function (err, reply) {
+		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
+
+        }).llen(Key + "_" + MailKeyType.SEND, function (err, reply) {
 			logger.info(reply);
 			utils.invokeCallback(cb, null, reply);
-		}).exec(function (err, reply) {});
+		}).exec(function (err, reply) {
+
+        });
 	});
 }
+
 /**
  * 系统删除发送邮箱里的邮件
  */
@@ -248,11 +261,16 @@ mailDao.DelOutboxMail = function (Key, cb) {
 	var redisConfig = pomelo.app.get('redis');
 	var redis = pomelo.app.get('redisclient');
 	redis.command(function (client) {
-		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {}).rpop(Key + "_" + MailKeyType.SEND, function (err, reply) {
+		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
+
+        }).rpop(Key + "_" + MailKeyType.SEND, function (err, reply) {
 			utils.invokeCallback(cb, null, reply);
-		}).exec(function (err, reply) {});
+		}).exec(function (err, reply) {
+
+        });
 	});
 }
+
 /**
  * 收件箱子邮件个数
  */
@@ -274,6 +292,7 @@ mailDao.ToMailCount = function (Keys, cb) {
 		});
 	});
 }
+
 /**
  *删除接收邮件
  */
@@ -299,7 +318,9 @@ mailDao.DelInboxMail = function (Key, cb) {
 				return;
 			}
 			utils.invokeCallback(cb, null, reply);
-		}).exec(function (err, reply) {});
+		}).exec(function (err, reply) {
+
+        });
 	});
 }
 
@@ -326,9 +347,9 @@ mailDao.delMail = function (mails, Key, cb) {
 			}
 			utils.invokeCallback(cb, err, reply);
 		});
-
 	});
 }
+
 /**
  * lua 加密sha1
  * @param lua_script
@@ -341,6 +362,7 @@ function LuaSha(lua_script) {
 	var lua_script_sha = shasum.digest('hex');
 	return lua_script_sha;
 }
+
 /**
  * 未读到已读
  * @param mails
@@ -363,6 +385,7 @@ mailDao.readMail = function (mails, Key, cb) {
 		insertMail(Key + "_" + MailKeyType.READ, mailStr, cb);
 	});
 }
+
 /**
  * 插入mail
  * @param Key
@@ -384,10 +407,10 @@ function insertMail(Key, mailStr, cb) {
 				return;
 			}
 			utils.invokeCallback(cb, err, reply);
-
 		});
 	});
 }
+
 /**
  * 领取物品
  * @param Key
@@ -449,7 +472,6 @@ mailDao.collectItem = function (Key, mails, itemIndex, player, cb) {
 					utils.invokeCallback(cb, null, item);
 				}
 			});
-
 		}
 	});
 }
