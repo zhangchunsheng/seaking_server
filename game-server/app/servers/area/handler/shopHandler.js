@@ -35,7 +35,30 @@ handler.buyItem = function(msg, session, next) {
         , loginName = session.get("loginName")
         , wid = msg.wid
         , num = msg.num;
+    var player = area.getPlayer(session.get('playerId'));
+    var result=false;
+    logger.debug(wid);
+    items = dataApi.shops.findById(player.currentScene).shopData;
+    for(var i=0;i<items.length;i++){
+        if(items[i].indexOf(wid) == 0){
+            result = true;
+            break;
+        }
+    }
+    if(!result){
+        next(null,{
+            code:Code.FAIL
+        })  ;
+        return;
+    }
 
+
+   // if(!){
+   //     next(null,{
+   //        code:Code.FAIL
+    //    });
+    //    return;
+   // }
     var itemInfo = {};
     var type = "";
     if(wid.indexOf("D") >= 0) {
@@ -58,7 +81,7 @@ handler.buyItem = function(msg, session, next) {
 
     var costMoney = price * num;
 
-    var player = area.getPlayer(session.get('playerId'));
+
     if(player.money < costMoney) {
         next(null, {
             code: Code.SHOP.NOT_ENOUGHT_MONEY
@@ -73,7 +96,6 @@ handler.buyItem = function(msg, session, next) {
     }
 
     var result = player.buyItem(type, item, costMoney);
-
     /*
     if(result.packageIndex == -1) {
         next(null, {
@@ -87,7 +109,6 @@ handler.buyItem = function(msg, session, next) {
         });
     }
     */
-
     if(result.packageChange.length == 0) {
          next(null, {
              code: Code.PACKAGE.NOT_ENOUGHT_SPACE

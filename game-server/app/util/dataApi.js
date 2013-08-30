@@ -23,7 +23,8 @@ var equipmentLevelup = require('../../config/data/equipmentLevelup');
 var partners = require('../../config/data/partners');
 var city = require('../../config/data/city');
 var indu_event = require('../../config/data/indu_event');
-
+var shops = require('../../config/data/shops')
+var casino = require('../../config/data/casino')
 /**
  * Data model `new Data()`
  *
@@ -145,5 +146,7 @@ module.exports = {
     equipmentLevelup: new Data(equipmentLevelup),
     partners: new Data(partners),
     city: new Data(city),
-    indu_event: new Data(indu_event)
+    indu_event: new Data(indu_event)  ,
+    shops:new Data(shops),
+    casino : new Data(casino)
 };

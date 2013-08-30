@@ -9,9 +9,9 @@ var consts = require('../consts/consts');
 var packageDao = require('../dao/packageDao');
 var Mail = function(opts){
     this.mailId = opts.mailId;
-    if( !!(opts.from) ){
-        this.from = opts.from;
-    }
+
+    this.from = opts.from || 0 ;
+
     this.to = opts.to;
     this.title = opts.title;
     this.time = new Date().getTime();
@@ -28,9 +28,9 @@ var Mail = function(opts){
     if( !!(opts.replyId) ) {
         this.replyId = opts.replyId ;
     }
-    if(!!(opts.fromName)) {
-        this.fromName = opts.fromName;
-    }
+
+    this.fromName = opts.fromName || "管理员";
+
     this.toName = opts.toName;
 }
 module.exports = Mail;

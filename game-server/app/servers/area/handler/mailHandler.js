@@ -182,22 +182,39 @@ handler.sendMail = function (msg, session, next) {
  * @param session
  * @param next
  */
+var packageNum = 10;
 handler.getInbox = function (msg, session, next) {
 	var Key = picecBoxName(session);
 	//var player = area.getPlayer(playerId);
-	mailDao.getInbox(Key, msg.start, msg.end, function (err, reply) {
-        if(!!err) {
-            next(null, {
-                code : Code.FAIL
-            });
-            return;
-        }
-		next(null, {
-			code : Code.OK,
-			inbox : reply
-		});
-	});
-
+       var index = msg.index;
+       var start = index  * packageNum;
+       var end ;
+        mailDao.ToMailCount([
+            Key + "_" + MailKeyType.NOREAD,
+            Key + "_" + MailKeyType.HASITEM,
+            Key + "_" + MailKeyType.READ],
+            function(err,allCount){
+                if(start>allCount){
+                    index = allCount /packageNum;
+                    start = index * packageNum;
+                }
+                end = (index+1)*packageNum;
+                mailDao.getInbox(Key, start, end, function (err, reply) {
+                    if(!!err) {
+                        next(null, {
+                            code : Code.FAIL
+                        });
+                        return;
+                    }
+                    next(null,{
+                        code:Code.OK,
+                        inbox:reply,
+                        P:packageNum,
+                        C:allCount,
+                        I:index
+                    })
+                });
+        });
 }
 
 /**
@@ -208,18 +225,37 @@ handler.getInbox = function (msg, session, next) {
  */
 handler.getOutbox = function (msg, session, next) {
 	var key = picecBoxName(session);
-	mailDao.getOutbox(key, msg.start, msg.end, function (err, reply) {
-        if( !!err ) {
-            next(null, {
-                code : Code.FAIL
+        var index = msg.index;
+        var start = index  * packageNum;
+        var end ;
+        mailDao.SendMailCount(key,function(err,allCount){
+            if(start>allCount){
+                index = allCount/packageNum;
+                start = index * packageNum;
+            }
+            end = (index+1) * packageNum;
+            mailDao.getOutbox(key, start, end, function (err, reply) {
+                if( !!err ) {
+                    next(null, {
+                        code : Code.FAIL,
+                        err:err,
+                        route:"area.mailHandler.getOutbox"
+                    });
+                    return;
+                }
+                next(null,{
+                    code:Code.OK,
+                    outbox:reply,
+                    P:packageNum,
+                    C:allCount,
+                    I:index
+                })
+
+
+
             });
-            return;
-        }
-		next(null, {
-			code : Code.OK,
-			outbox : reply
-		});
-	});
+
+        });
 }
 
 /**
