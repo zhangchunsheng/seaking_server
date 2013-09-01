@@ -39,26 +39,26 @@ handler.buyItem = function(msg, session, next) {
     var result=false;
     logger.debug(wid);
     items = dataApi.shops.findById(player.currentScene).shopData;
-    for(var i=0;i<items.length;i++){
-        if(items[i].indexOf(wid) == 0){
+    for(var i = 0 ; i < items.length ; i++) {
+        if(items[i].indexOf(wid) == 0) {
             result = true;
             break;
         }
     }
-    if(!result){
-        next(null,{
-            code:Code.FAIL
-        })  ;
+    if(!result) {
+        next(null, {
+            code: Code.FAIL
+        }) ;
         return;
     }
 
 
-   // if(!){
-   //     next(null,{
-   //        code:Code.FAIL
-    //    });
-    //    return;
-   // }
+//    if(!) {
+//        next(null,{
+//            code:Code.FAIL
+//        });
+//        return;
+//    }
     var itemInfo = {};
     var type = "";
     if(wid.indexOf("D") >= 0) {
