@@ -25,6 +25,19 @@ module.exports.create = function(userInfo, timestamp, pwd) {
 };
 
 /**
+ *
+ * @param msg
+ * @param pwd
+ * @returns {*}
+ */
+module.exports.make = function(msg, pwd) {
+    var cipher = crypto.createCipher('aes256', pwd);
+    var enc = cipher.update(msg, 'utf8', 'hex');
+    enc += cipher.final('hex');
+    return enc;
+};
+
+/**
  * Parse token to validate it and get the uid and timestamp.
  *
  * @param  {String} token token string
