@@ -1,0 +1,22 @@
+{
+    "area": {
+        "arenaHandler": {
+            "pk": {
+                "key": 1000,
+                "name": "pk"
+            }
+        },
+        "battleHandler": {
+
+        },
+        "casinoHandler": {
+
+        },
+        "equipHandler": {
+            "wearWeapon": {
+                "key": 1001,
+                "name": "装载武器"
+            }
+        }
+    }
+}

@@ -15,6 +15,7 @@ var dataApi = require('../../../util/dataApi');
 var logger = require('pomelo-logger').getLogger(__filename);
 var PackageType = require('../../../consts/consts').PackageType;
 var utils = require('../../../util/utils');
+var logUtil = require('../../../util/logUtil');
 var consts = require('../../../consts/consts');
 
 /**
@@ -24,9 +25,12 @@ var consts = require('../../../consts/consts');
  * @param next
  */
 handler.wearWeapon = function(msg, session, next) {
+    logUtil.info(logger, session, msg);
+
     var index = msg.index;
     var weaponId = msg.weaponId;
     var pkgType = PackageType.WEAPONS;
+    logger.info(msg);
 
     var player = area.getPlayer(session.get('playerId'));
     var status = 0;

@@ -13,6 +13,7 @@ var arenaDao = require('../../../dao/arenaDao');
 var async = require('async');
 var utils = require('../../../util/utils');
 var channelUtil = require('../../../util/channelUtil');
+var logUtil = require('../../../util/logUtil');
 var logger = require('pomelo-logger').getLogger(__filename);
 var dataApi = require('../../../util/dataApi');
 var formula = require('../../../consts/formula');
