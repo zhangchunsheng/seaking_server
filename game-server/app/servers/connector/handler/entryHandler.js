@@ -65,6 +65,8 @@ pro.entry = function(msg, session, next) {
         }, function(res, cb) {
             // generate session and register chat status
             players = res;
+            self.app.get('sessionService').isReconnect(session, uid);
+            logger.info(session);
             self.app.get('sessionService').kick(uid, cb);
         }, function(cb) {
             if(!players) {
