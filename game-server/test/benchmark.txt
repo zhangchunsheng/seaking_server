@@ -498,3 +498,68 @@ Percentage of the requests served within a certain time (ms)
   98%   3356
   99%   7111
  100%   7838 (longest request)   
+ 
+2013-09-14
+ab -n 1000 -c 100 http://192.168.1.22:8080/
+cat /proc/sys/fs/file-max 199122
+
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 192.168.1.22 (be patient)
+Completed 100 requests
+Completed 200 requests
+Completed 300 requests
+Completed 400 requests
+Completed 500 requests
+Completed 600 requests
+Completed 700 requests
+Completed 800 requests
+Completed 900 requests
+Completed 1000 requests
+Finished 1000 requests
+
+
+Server Software:        
+Server Hostname:        192.168.1.22
+Server Port:            8080
+
+Document Path:          /
+Document Length:        11 bytes
+
+Concurrency Level:      100
+Time taken for tests:   0.517 seconds
+Complete requests:      1000
+Failed requests:        0
+Write errors:           0
+Total transferred:      112000 bytes
+HTML transferred:       11000 bytes
+Requests per second:    1933.26 [#/sec] (mean)
+Time per request:       51.726 [ms] (mean)
+Time per request:       0.517 [ms] (mean, across all concurrent requests)
+Transfer rate:          211.45 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   1.0      0       5
+Processing:    26   50   6.8     49     101
+Waiting:       26   50   6.8     49     101
+Total:         26   50   6.3     49     103
+
+Percentage of the requests served within a certain time (ms)
+  50%     49
+  66%     50
+  75%     52
+  80%     52
+  90%     60
+  95%     60
+  98%     61
+  99%     61
+ 100%    103 (longest request)
+ 
+程序更新后，192.168.1.22测试结果，1000的请求100的并发
+1000/100
+Rps	1933.26
+Tpq	0.517
+fail 0
