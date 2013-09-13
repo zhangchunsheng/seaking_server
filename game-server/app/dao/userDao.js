@@ -873,6 +873,8 @@ userDao.getPlayerById = function(playerId, cb) {
  */
 userDao.getUserByLoginName = function (app, registerType, loginName, cb) {
     var redisConfig = app.get('redis');
+    var redis = pomelo.app.get('redisclient');
+
     dbUtil.selectDb(redisConfig.database.UC_USER_REDIS_DB, function(client) {
         var key = "T" + registerType + "_" + loginName;
         client.exists(key, function(err, reply) {
