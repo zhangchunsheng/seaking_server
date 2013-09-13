@@ -41,7 +41,7 @@ taskDao.savePlayerTaskData = function(player, taskData, cb) {
             var array = [];
             array.push(["hset", key, taskData.taskId, JSON.stringify(taskData)]);
             client.multi(array).exec(function(err, replies) {
-
+                redis.release(client);
             });
         });
     });
@@ -119,6 +119,7 @@ taskDao.update = function(type, val, cb) {
         }).hset(key, type, JSON.stringify(value), function(err, reply) {
                 if(typeof cb == "function")
                     cb(!!err);
+                redis.release(client);
             })
             .exec(function (err, replies) {
                 console.log(replies);
@@ -166,6 +167,7 @@ taskDao.updateTask = function(player, tasks, cb) {
             client.multi(array).exec(function(err, replies) {
                 if(typeof cb == "function")
                     cb(!!err);
+                redis.release(client);
             });
         }).exec(function (err, replies) {
                 console.log(replies);

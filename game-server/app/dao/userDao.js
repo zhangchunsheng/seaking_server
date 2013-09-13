@@ -35,7 +35,7 @@ userDao.login = function (registerType, loginName, password, cb) {
 
     var key = "T" + registerType + "_" + loginName;
 
-    redis.command(function(client) {
+     redis.command(function(client) {
         client.multi().select(redisConfig.database.UC_USER_REDIS_DB, function() {
 
         }).hgetall(key, function(err, reply) {
@@ -46,6 +46,7 @@ userDao.login = function (registerType, loginName, password, cb) {
                         errCode: 101
                     });
                 }
+                redis.release(client);
             })
             .exec(function (err, replies) {
 
@@ -70,6 +71,7 @@ userDao.getUserInfo = function (serverId, registerType, loginName, cb) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
 
         }).hgetall(key, function(err, reply) {
+            redis.release(client);
             utils.invokeCallback(cb, null, reply);
         })
         .exec(function (err, replies) {
@@ -188,6 +190,7 @@ userDao.saveUserInfo = function(userInfo, serverId, registerType, loginName, cb)
                 array.push(["hset", key, o, userInfo[o]]);
             }
             client.multi(array).exec(function(err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, replies);
             });
         }) .exec(function (err, replies) {
@@ -227,6 +230,7 @@ userDao.is_exists_nickname = function(app, serverId, nickname, next) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
 
         }).sismember(key, nickname, function(err, reply) {
+            redis.release(client);
             next(reply);
         })
         .exec(function (err, replies) {
@@ -251,6 +255,7 @@ userDao.has_nickname_player = function(app, serverId, nickname, next) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
 
         }).exists(key, function(err, reply) {
+                redis.release(client);
                 next(reply);
             })
             .exec(function (err, replies) {
@@ -276,15 +281,18 @@ userDao.getNicknameByPlayerId = function(playerId, cb ) {
 
             }).get(playerId,function(err,reply) {
                     if(!!err){
-                        utils.invokeCallback(cb,"不存在playerId");
+                        redis.release(client);
+                        utils.invokeCallback(cb, "不存在playerId");
                         return;
                     }
-                    client.hget(reply,"nickname",function(err,reply) {
-                        if(!!err){
-                            utils.invokeCallback(cb,err);
+                    client.hget(reply, "nickname", function(err, reply) {
+                        if(!!err) {
+                            redis.release(client);
+                            utils.invokeCallback(cb, err);
                             return;
                         }
-                        utils.invokeCallback(cb,null,reply);
+                        redis.release(client);
+                        utils.invokeCallback(cb, null, reply);
                     });
                 }).exec(function(err,reply) {
 
@@ -310,9 +318,11 @@ userDao.getPlayerIdByNickname=function(serverId, nickname, cb) {
         }).get(key, function(err, reply) {
             client.hget(reply, "id", function(err, reply) {
                 if(!!err) {
+                    redis.release(client);
                     utils.invokeCallback(cb, null);
                     return;
                 }
+                redis.release(client);
                 utils.invokeCallback(cb, null, reply);
             });
         }).exec(function (err, replies) {
@@ -515,11 +525,13 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                             currentIndu: character.currentIndu
                         });
                         createEPTInfo(player, serverId, registerType, loginName, characterId);
+                        redis.release(client);
                         utils.invokeCallback(cb, null, player);
                     });
                 });
             } else {
                 //userDao.getCharacterInfo(serverId, registerType, loginName, cb);
+                redis.release(client);
                 userDao.getCharacterAllInfo(serverId, registerType, loginName, reply, cb);
             }
         })
@@ -618,6 +630,8 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
         client.hget(key, "characters", function(err, characterId) {
             if(characterId == null) {
                 var result = null;
+
+                redis.release(client);
                 utils.invokeCallback(cb, null, result);
             } else {
                 key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
@@ -747,6 +761,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                             currentIndu: character.currentIndu
                         });
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
+                            redis.release(client);
                             utils.invokeCallback(cb, null, player);
                         });
                     });
@@ -838,6 +853,7 @@ userDao.getPlayerById = function(playerId, cb) {
                         var player = new Opponent(character);
                         player.partners = partners;
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
+                            redis.release(client);
                             utils.invokeCallback(cb, null, player);
                         });
                     });
@@ -861,11 +877,13 @@ userDao.getUserByLoginName = function (app, registerType, loginName, cb) {
         var key = "T" + registerType + "_" + loginName;
         client.exists(key, function(err, reply) {
             if (reply == 0) {
+                redis.release(client);
                 utils.invokeCallback(cb, message.notexists_loginName, null);
                 return;
             } else {
                 client.hgetall(key, function(err, userInfo) {
                     if(err !== null) {
+                        redis.release(client);
                         utils.invokeCallback(cb, err.message, null);
                     } else {
                         console.log(userInfo);
@@ -875,6 +893,7 @@ userDao.getUserByLoginName = function (app, registerType, loginName, cb) {
                             loginName: userInfo.loginName,
                             password: userInfo.password
                         });
+                        redis.release(client);
                         utils.invokeCallback(cb, null, user);
                     }
                 });
@@ -944,16 +963,22 @@ userDao.updatePlayer = function (player, field, cb) {
                         obj[field[i]] = player[field[i]];
                     }
                     client.multi(array).exec(function(err, replies) {
+                        redis.release(client);
                         utils.invokeCallback(cb, null, obj);
                     });
                 } else {
                     var array = dbUtil.getFieldValue(field, player);
+                    var _array = [];
                     for(var i = 0 ; i < array.length ; i++) {
-                        client.hset(key, array[i].field, array[i].value);
+                        _array.push(["hset", key, array[i].field, array[i].value]);
                     }
-                    utils.invokeCallback(cb, null, player[field]);
+                    client.multi(_array).exec(function(err, replies) {
+                        redis.release(client);
+                        utils.invokeCallback(cb, null, player[field]);
+                    });
                 }
             } else {
+                redis.release(client);
                 utils.invokeCallback(cb, {
                     errCode: 101
                 });
@@ -985,6 +1010,7 @@ userDao.updatePlayerAttribute = function(player, cb) {
                         array.push(["hset", key, o, column[o]]);
                     }
                     client.multi(array).exec(function(err, replies) {
+                        redis.release(client);
                         utils.invokeCallback(cb, null, column);
                     });
                 }
@@ -1017,6 +1043,7 @@ userDao.upgrade = function(player, columns, cb) {
                 player[o] = column[o];
             }
             client.multi(array).exec(function(err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, column);
             });
         }).exec(function (err, replies) {
@@ -1044,9 +1071,12 @@ userDao.enterScene = function(serverId, registerType, loginName, sceneId, cb) {
         }).hget(key, "characters", function(err, reply) {
                 if(reply) {
                     key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + reply;
-                    client.hset(key, "currentScene", sceneId);
+                    client.hset(key, "currentScene", sceneId, function(err, reply) {
+                        redis.release(client);
+                    });
                     utils.invokeCallback(cb, null, sceneId);
                 } else {
+                    redis.release(client);
                     utils.invokeCallback(cb, {
                         errCode: 101
                     });
@@ -1092,8 +1122,11 @@ userDao.enterIndu = function(serverId, registerType, loginName, induId, cb) {
                             currentIndu.induId = induId;
                             currentIndu.induData = induData.induData;
                             currentIndu.enterDate = date.getTime();
-                            client.hset(key, "currentIndu", JSON.stringify(currentIndu));
+                            client.hset(key, "currentIndu", JSON.stringify(currentIndu), function(err, reply) {
+                                redis.release(client);
+                            });
                         }
+
                         utils.invokeCallback(cb, null, currentIndu);
                     });
 
@@ -1142,7 +1175,9 @@ userDao.updatePlayerInduInfo = function(player, eid, cb) {
                         }
                     }
                     player.currentIndu.induData = currentIndu.induData = induData;
-                    client.hset(key, "currentIndu", JSON.stringify(currentIndu));
+                    client.hset(key, "currentIndu", JSON.stringify(currentIndu), function(err, reply) {
+                        redis.release(client);
+                    });
                     utils.invokeCallback(cb, null, currentIndu);
                 } else {
                     utils.invokeCallback(cb, {
@@ -1206,7 +1241,9 @@ userDao.leaveIndu = function(serverId, registerType, loginName, induId, cb) {
                                 isFinished: isFinished
                             };
                             key = key + "_" + induId;
-                            client.lpush(key, JSON.stringify(induLog));
+                            client.lpush(key, JSON.stringify(induLog), function(err, reply) {
+                                redis.release(client);
+                            });
 
                             utils.invokeCallback(cb, null, _currentIndu);
                         } else {//不是同一个副本
@@ -1235,11 +1272,15 @@ userDao.enterCity = function(serverId, registerType, loginName, cityId, cb) {
 /**
  * 更新角色金钱和经验
  */
-userDao.updateMoneyAndExp = function(data) {
+userDao.updateMoneyAndExp = function(data, cb) {
+    var redisConfig = pomelo.app.get('redis');
+    var redis = pomelo.app.get('redisclient');
+
     var key = "S" + data.serverId + "_T" + data.registerType + "_" + data.loginName;
     dbUtil.selectDb(redisConfig.database.SEAKING_REDIS_DB, function(client) {
         client.hget(key, "characters", function(err, reply) {
             if(reply == 0) {
+                redis.release(client);
                 utils.invokeCallback(cb, {
                     errCode: 101
                 });
@@ -1280,6 +1321,7 @@ userDao.updateMoneyAndExp = function(data) {
                         level: level,
                         needExp: 200 * (level + 1)
                     };
+                    redis.release(client);
                     utils.invokeCallback(cb, null, result);
                 });
             }

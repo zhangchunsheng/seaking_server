@@ -41,6 +41,7 @@ friendDao.addFriend = function(player, f_playerId, cb) {
             client.exists(f_playerId, function(err, reply) {
                 if(reply == 1) {
                     client.multi(array).exec(function (err, replies) {
+                        redis.release(client);
                         utils.invokeCallback(cb, null, {
                             reply: replies
                         });

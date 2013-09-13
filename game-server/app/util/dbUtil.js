@@ -154,6 +154,7 @@ dbUtil.executeCommand = function(redis, redisConfig, array, obj, cb) {
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             client.multi(array).exec(function (err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, {
                     obj: obj,
                     reply: replies
@@ -169,6 +170,7 @@ dbUtil.getObject = function(redis, redisConfig, array, cb) {
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             client.multi(array).exec(function (err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, replies);
             });
         }).exec(function (err, replies) {

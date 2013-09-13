@@ -71,11 +71,13 @@ partnerDao.getPartner = function(serverId, registerType, loginName, characterId,
 };
 
 function _getPartner(client, serverId, registerType, loginName, characterId, partnerId, cb) {
+    var redis = pomelo.app.get('redisclient');
     var key = dbUtil.getPartnerKey(serverId, registerType, loginName, characterId, partnerId);
     client.hgetall(key, function(err, replies) {
         console.log(replies);
         var partner = generalPartner(serverId, registerType, loginName, characterId, partnerId, replies);
 
+        redis.release(client);
         utils.invokeCallback(cb, null, partner);
     });
 };
@@ -243,10 +245,12 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                     client.multi(array).exec(function(err, replies) {
                         character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
                         var partner = new Partner(character);
+                        redis.release(client);
                         utils.invokeCallback(cb, null, partner);
                     });
                 });
             } else {
+                redis.release(client);
                 utils.invokeCallback(cb, {
                     errCode: 101
                 });
@@ -336,6 +340,7 @@ partnerDao.updatePartners = function (player, field, cb) {
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             client.multi(array).exec(function (err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, partners);
             });
         }).exec(function (err, replies) {

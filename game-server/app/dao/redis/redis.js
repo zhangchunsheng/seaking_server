@@ -24,15 +24,19 @@ G.command = function(func) {
             return;
         }
         if(typeof func == "function") {
-            func.call(null, client);
+            func.call(_pool, client);
         } else {
             _pool.release(client);
         }
     });
 }
 
+G.release = function(client) {
+    _pool.release(client);
+}
+
 G.shutdown = function() {
-    _pool.destroyAllNow()
+    _pool.destroyAllNow();
 }
 
 /**
@@ -45,6 +49,7 @@ redisclient.init = function(app) {
     } else {
         G.init(app);
         redisclient.command = G.command;
+        redisclient.release = G.release;
         return redisclient;
     }
 }

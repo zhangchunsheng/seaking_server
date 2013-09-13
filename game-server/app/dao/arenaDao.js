@@ -46,6 +46,7 @@ arenaDao.add = function(player, cb) {
             }
             array.push(["zadd", key, score, player.id]);
             client.multi(array).exec(function (err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, score);
             });
         }).exec(function (err, replies) {
@@ -71,6 +72,7 @@ arenaDao.getRank = function(player, cb) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
         }).zrank(key, player.id, function(err, reply) {
+            redis.release(client);
             utils.invokeCallback(cb, null, reply);
         }).exec(function (err, replies) {
 
@@ -108,6 +110,7 @@ arenaDao.exchange = function(player, opponent, cb) {
             array.push(["zadd", key, player_score, opponent.id]);
 
             client.multi(array).exec(function(err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, opponent_score);
             });
         });
@@ -147,6 +150,7 @@ arenaDao.getOpponents = function(player, cb) {
                         client.multi(list).exec(function(err, playerIds) {
                             if(!!err) {
                                 logger.error(err);
+                                redis.release(client);
                                 utils.invokeCallback(cb, null);
                                 return;
                             }
@@ -158,6 +162,7 @@ arenaDao.getOpponents = function(player, cb) {
                             }
                             client.multi(array).exec(function(err, hgetallresult) {
                                 if(!!err) {
+                                    redis.release(client);
                                     utils.invokeCallback(cb, null);
                                     return;
                                 }
@@ -171,6 +176,7 @@ arenaDao.getOpponents = function(player, cb) {
                                         rank: randoms[i]
                                     });
                                 }
+                                redis.release(client);
                                 utils.invokeCallback(cb, null, opponents);
                             });
                         });

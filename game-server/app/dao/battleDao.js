@@ -65,7 +65,7 @@ battleDao.savePlayerBattleData = function(player, owners, monsters, battleData, 
                 var key = dbUtil.getBattleKey(player.sid, player.registerType, player.loginName, characterId)
                 array.push(["lpush", key, battleId]);
                 client.multi(array).exec(function(err, replies) {
-
+                    redis.release(client);
                 });
             });
         }).exec(function (err, replies) {

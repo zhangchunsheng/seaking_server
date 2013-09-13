@@ -35,6 +35,7 @@ session.getSession = function(data, callback) {
     this.selectDb(function(client) {
         var key = "session_" + data.sessionId;
         client.get(key, function(err, reply) {
+            redis.release(client);
             callback.call(data, err, reply);
         });
     });
@@ -49,7 +50,7 @@ session.saveSession = function(sessionId, userInfo) {
         var key = "session_" + sessionId;
         var value = "T" + userInfo.registerType + "_" + userInfo.loginName;
         client.set(key, value, function(err, reply) {
-
+            redis.release(client);
         });
     });
 };
@@ -61,7 +62,7 @@ session.expireSession = function(sessionId, expireTime) {
     this.selectDb(function(client) {
         var key = "session_" + sessionId;
         client.expire(key, expireTime, function(err, reply) {
-
+            redis.release(client);
         });
     });
 }
@@ -73,7 +74,7 @@ session.removeSession = function(sessionId) {
     this.selectDb(function(client) {
         var key = "session_" + sessionId;
         client.del(key, function(err, reply) {
-
+            redis.release(client);
         });
     });
 };

@@ -63,6 +63,7 @@ mailDao.setToKey = function (msg, cb) {
 	redis.command(function (client) {
 		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {}).get(msg.to, function (err, reply) {
 			msg.toKey = reply;
+            redis.release(client);
 			mailDao.setMailId(msg, cb);
 		}).exec(function (err, reply) {
 
@@ -83,6 +84,7 @@ mailDao.setMailId = function (msg, cb) {
 
         }).incr("mailId", function (err, reply) {
 			msg.mailId = reply;
+            redis.release(client);
 			utils.invokeCallback(cb, null, msg);
 		}).exec(function (err, reply) {
 
@@ -104,6 +106,7 @@ mailDao.getOutbox = function (key, start, end, cb) {
 		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
 
         }).lrange(key + "_" + MailKeyType.SEND, start, end, function (err, reply) {
+            redis.release(client);
 			utils.invokeCallback(cb, null, reply);
 		})
 		.exec(function (err, reply) {
@@ -131,22 +134,23 @@ mailDao.getInbox = function (key, start, end, cb) {
 				start : start,
 				end : end
 			};
-			mailDao.getMailList(msg, cb);
+			mailDao.getMailList(redis, msg, cb);
 		});
 	});
 }
 
-mailDao.getMailList = function (msg, cb) {
+mailDao.getMailList = function (redis, msg, cb) {
 	var client = msg.client;
 	var key = msg.keys.shift();
 	if (key == null || typeof key == undefined) {
+        redis.release(client);
 		utils.invokeCallback(cb, null, msg.list);
 		return;
 	}
 	client.llen(key, function (err, reply) {
 		if (msg.start > reply) {
 			msg.start -= reply;
-			mailDao.getMailList(msg, cb);
+			mailDao.getMailList(redis, msg, cb);
 			return;
 		}
 		client.lrange(key, msg.start, msg.end, function (err, reply) {
@@ -159,7 +163,7 @@ mailDao.getMailList = function (msg, cb) {
 			} else {
 				msg.keys = [];
 			}
-			mailDao.getMailList(msg, cb);
+			mailDao.getMailList(redis, msg, cb);
 		});
 	});
 }
@@ -189,9 +193,11 @@ mailDao.systemSendMail = function (toBox, mail, cb) {
 			}
 		}).exec(function (err, reply) {
 			if (!!err) {
+                redis.release(client);
 				utils.invokeCallback(cb, err);
 				return;
 			}
+            redis.release(client);
 			utils.invokeCallback(cb, null, mail);
 		});
 	});
@@ -225,9 +231,11 @@ mailDao.addMail = function (fromBox, toBox, mail, cb) {
 			}
 		}).exec(function (err, reply) {
 			if (!!err) {
+                redis.release(client);
 				logger.info(err);
 				return;
 			}
+            redis.release(client);
 			utils.invokeCallback(cb, null, mail);
 		});
 	});
@@ -247,6 +255,7 @@ mailDao.SendMailCount = function (Key, cb) {
 
         }).llen(Key + "_" + MailKeyType.SEND, function (err, reply) {
 			logger.info(reply);
+            redis.release(client);
 			utils.invokeCallback(cb, null, reply);
 		}).exec(function (err, reply) {
 
@@ -264,6 +273,7 @@ mailDao.DelOutboxMail = function (Key, cb) {
 		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
 
         }).rpop(Key + "_" + MailKeyType.SEND, function (err, reply) {
+            redis.release(client);
 			utils.invokeCallback(cb, null, reply);
 		}).exec(function (err, reply) {
 
@@ -288,6 +298,7 @@ mailDao.ToMailCount = function (Keys, cb) {
 			for (var i = 1; i <= Keys.length; i++) {
 				all += reply[i];
 			}
+            redis.release(client);
 			utils.invokeCallback(cb, null, all);
 		});
 	});
@@ -306,13 +317,16 @@ mailDao.DelInboxMail = function (Key, cb) {
 					if (!!err) {
 						client.rpop(Key + "_" + MailKeyType.HASITEM, function (err, reply) {
 							if (!!err) {
+                                redis.release(client);
 								utils.invokeCallback(cb, "删除失败");
 								return;
 							}
+                            redis.release(client);
 							utils.invokeCallback(cb, null, reply);
 						});
 						return;
 					}
+                    redis.release(client);
 					utils.invokeCallback(cb, null, reply);
 				});
 				return;
@@ -341,10 +355,12 @@ mailDao.delMail = function (mails, Key, cb) {
 		client.EVALSHA(LuaSha(lua.delMailLua), 3, redisConfig.database.SEAKING_REDIS_DB, Key + "_" + mails[0], mails[0] + mails[1], function (err, reply) {
 			if (err) {
 				client.eval(lua.delMailLua, 3, redisConfig.database.SEAKING_REDIS_DB, Key + "_" + mails[0], mails[0] + mails[1], function (err, reply) {
+                    redis.release(client);
 					utils.invokeCallback(cb, err, reply);
 				});
 				return;
 			}
+            redis.release(client);
 			utils.invokeCallback(cb, err, reply);
 		});
 	});
@@ -402,10 +418,12 @@ function insertMail(Key, mailStr, cb) {
 		client.EVALSHA(LuaSha(lua.insertMailLua), 3, redisConfig.database.SEAKING_REDIS_DB, Key, mailStr, function (err, reply) {
 			if (!!err) {
 				client.EVAL(lua.insertMailLua, 3, redisConfig.database.SEAKING_REDIS_DB, Key, mailStr, function (err, reply) {
+                    redis.release(client);
 					utils.invokeCallback(cb, err, reply);
 				});
 				return;
 			}
+            redis.release(client);
 			utils.invokeCallback(cb, err, reply);
 		});
 	});

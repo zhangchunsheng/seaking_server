@@ -165,6 +165,7 @@ playerDao.updateAllPlayers = function (player, field, cb) {
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             client.multi(array).exec(function (err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, obj);
             });
         }).exec(function (err, replies) {
@@ -220,6 +221,7 @@ playerDao.updatePlayers = function (mainPlayer, players, field, cb) {
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             client.multi(array).exec(function (err, replies) {
+                redis.release(client);
                 utils.invokeCallback(cb, null, obj);
             });
         }).exec(function (err, replies) {

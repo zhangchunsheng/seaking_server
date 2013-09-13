@@ -31,6 +31,10 @@ G.command = function(func) {
     });
 }
 
+G.release = function(client) {
+    _pool.release(client);
+}
+
 G.shutdown = function() {
     _pool.destroyAllNow()
 }
@@ -45,6 +49,7 @@ redisclient.init = function() {
     } else {
         G.init();
         redisclient.command = G.command;
+        redisclient.release = G.release;
         return redisclient;
     }
 }

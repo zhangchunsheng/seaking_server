@@ -154,15 +154,18 @@ userDao.addUser = function(client, userInfo) {
 /**
  * initUserId
  */
-userDao.initUserId = function(client) {
+userDao.initUserId = function() {
     /*dbUtil.selectDb(redisConfig.UC_USER_REDIS_DB, function() {
         var key = "userId";
         redis.command(function(client) {
             client.setnx(key, 100000);
         });
     });*/
-    client.multi().select(redisConfig.UC_USER_REDIS_DB).setnx(key, 100000).exec(function(err, replies) {
-        console.log(replies);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.UC_USER_REDIS_DB).setnx(key, 100000).exec(function(err, replies) {
+            redis.release(client);
+            console.log(replies);
+        });
     });
 };
 
@@ -178,6 +181,7 @@ userDao.saveSessionId = function(client, sessionId, userInfo) {
     });*/
     var key = "T" + userInfo.registerType + "_" + userInfo.loginName;
     client.multi().select(redisConfig.UC_USER_REDIS_DB).hset(key, "sessionId", sessionId).exec(function(err, replies) {
+        redis.release(client);
         console.log(replies);
     });
 };

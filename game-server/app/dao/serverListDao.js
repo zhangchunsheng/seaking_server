@@ -32,6 +32,7 @@ serverListDao.getServerLists = function(app, playerId, next) {
                 for(var i = 0 ; i < replies.length ; i++) {
                     key = replies[i];
                     client.hgetall(key, function(err, result) {
+                        redis.release(client);
                         serverList.push(result);
                         if(serverList.length == replies.length) {
                             next(err, serverList);

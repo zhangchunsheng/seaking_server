@@ -56,6 +56,7 @@ packageDao.update = function(val, cb) {
         }).hset(key, "package", JSON.stringify(value), function(err, reply) {
                 if(typeof cb == "function")
                     cb(!!err);
+                redis.release(client);
             })
             .exec(function (err, replies) {
                 console.log(replies);
