@@ -76,6 +76,7 @@ pro.entry = function(msg, session, next) {
             session.set('serverId', userInfo.serverId);
             session.set('registerType', userInfo.registerType);
             session.set('loginName', userInfo.loginName);
+            session.set('ip', session.__session__.__socket__.remoteAddress.ip);
         }, function(cb) {
             if(!players || players.length === 0) {
                 next(null, {code: Code.OK});

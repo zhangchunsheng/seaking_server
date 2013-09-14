@@ -6,6 +6,8 @@
  * Description: logUtil
  */
 var logs = require('../../config/logs');
+var logger = require('pomelo-logger').getLogger(__filename);
+var pomelo = require('pomelo');
 
 var logUtil = module.exports;
 
@@ -17,6 +19,10 @@ logUtil.info = function(logger, session, msg) {
 
     info += logUtil.logUserInfo(session);
     info += logUtil.logParamInfo(msg);
+
+    info += " ";
+
+    info += logUtil.getRemoteAddress(session);
 
     logger.info(info);
 }
@@ -67,4 +73,13 @@ logUtil.logParamInfo = function(msg) {
         }
     }
     return paramInfo;
+}
+
+/**
+ * getRemoteAddress
+ * @param session
+ */
+logUtil.getRemoteAddress = function(session) {
+    var ip = session.get("ip");
+    return ip;
 }
