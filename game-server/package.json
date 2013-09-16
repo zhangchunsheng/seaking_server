@@ -16,7 +16,8 @@
         "pomelo-bt": "*",
         "pomelo-pathfinding": "*",
         "pomelo-collection": "*",
-        "pomelo-logger": "0.0.3"
+        "pomelo-logger": "0.0.3",
+        "request": "*"
     },
     "devDependencies": {
         "should": "*",
