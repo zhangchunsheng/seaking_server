@@ -34,6 +34,8 @@ ucenter.saveTaskLog = function(data) {
     var path = "/taskLog/save";
     var headers = {};
 
+    data.taskRecord = JSON.stringify(data.taskRecord);
+
     httpHelper.post(host, port, path, headers, {}, data, function() {
 
     });

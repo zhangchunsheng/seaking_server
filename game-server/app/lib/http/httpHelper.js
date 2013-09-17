@@ -107,3 +107,14 @@ httpHelper.post = function(host, port, path, headers, params, post_body, cb) {
     req.write(data);
     req.end();
 }
+
+httpHelper.test = function() {
+    var request = require('request');
+    request.post({
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+        url: 'http://192.168.1.99:8090/induLog/save',
+        body: ""
+    }, function(error, response, body){
+        console.log(body);
+    });
+}

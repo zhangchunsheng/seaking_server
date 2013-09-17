@@ -22,6 +22,7 @@ var dbUtil = require('../util/dbUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
 var redis  = require("redis");
+var ucenter = require('../lib/ucenter/ucenter');
 
 var battleDao = module.exports;
 
@@ -45,7 +46,6 @@ battleDao.savePlayerBattleData = function(player, owners, monsters, battleData, 
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             battleDao.getBattleId(client, function(err, battleId) {
-                var array = [];
                 var key = "S" + player.sid + "_Battle";
                 var _owners = [];
                 var _monsters = [];
@@ -60,16 +60,40 @@ battleDao.savePlayerBattleData = function(player, owners, monsters, battleData, 
                     monsters: _monsters,
                     battleData: battleData
                 };
-                array.push(["hset", key, battleId, JSON.stringify(data)]);
-                var characterId = utils.getRealCharacterId(player.id);
-                var key = dbUtil.getBattleKey(player.sid, player.registerType, player.loginName, characterId)
-                array.push(["lpush", key, battleId]);
-                client.multi(array).exec(function(err, replies) {
-                    redis.release(client);
-                });
+
+                // battleDao.saveLogData(redis, client, player, battleId, data);
+                var logData = battleDao.getLogData(player, battleId, data);
+                ucenter.saveBattleLog(logData);
             });
         }).exec(function (err, replies) {
 
         });
     });
+}
+
+battleDao.saveLogData = function(redis, client, player, battleId, data) {
+    var array = [];
+    array.push(["hset", key, battleId, JSON.stringify(data)]);
+    var characterId = utils.getRealCharacterId(player.id);
+    var key = dbUtil.getBattleKey(player.sid, player.registerType, player.loginName, characterId)
+    array.push(["lpush", key, battleId]);
+    client.multi(array).exec(function(err, replies) {
+        redis.release(client);
+    });
+}
+
+battleDao.getLogData = function(player, battleId, battleData) {
+    var date = new Date();
+    var characterId = utils.getRealCharacterId(player.id);
+    var logData = {
+        serverId: player.sid,
+        registerType: player.registerType,
+        loginName: player.loginName,
+        playerId: player.id,
+        characterId: characterId,
+        battleId: battleId,
+        battleData: JSON.stringify(battleData),
+        date: date.getTime()
+    }
+    return logData;
 }

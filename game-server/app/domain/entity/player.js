@@ -24,6 +24,7 @@ var fightskill = require('./../fightskill');
 var logger = require('pomelo-logger').getLogger(__filename);
 var area = require('./../area/area');
 var utils = require('../../util/utils');
+var ucenter = require('../../lib/ucenter/ucenter');
 
 /**
  * Initialize a new 'Player' with the given 'opts'.
@@ -452,7 +453,8 @@ Player.prototype.taskProgress = function(type) {
 
 Player.prototype.logTaskData = function(type) {
     var task = this.curTasksEntity[type];
-    taskDao.savePlayerTaskData(this, task.logTask());
+    // taskDao.savePlayerTaskData(this, task.logTask());
+    ucenter.saveTaskLog(task.logTask());
 }
 
 //Convert player' state to json and return

@@ -15,7 +15,7 @@ var User = require('../domain/user');
 var consts = require('../consts/consts');
 var equipmentsDao = require('./equipmentsDao');
 var packageDao = require('./packageDao');
-var fightskillDao = require('./fightskillDao');
+var induDao = require('./induDao');
 var taskDao = require('./taskDao');
 var partnerDao = require('./partnerDao');
 var playerDao = require('./playerDao');
@@ -26,6 +26,7 @@ var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
 var redis  = require("redis");
 var area = require('../domain/area/area');
+var ucenter = require('../lib/ucenter/ucenter');
 
 var userDao = module.exports;
 
@@ -1231,21 +1232,9 @@ userDao.leaveIndu = function(serverId, registerType, loginName, induId, cb) {
                                     break;
                                 }
                             }
-                            var induLog = {
-                                registerType: registerType,
-                                loginName: loginName,
-                                characterId: characterId,
-                                induId: induId,
-                                induData: currentIndu.induData,
-                                date: date.getTime(),
-                                enterDate: currentIndu.enterDate,
-                                finishDate: date.getTime(),
-                                isFinished: isFinished
-                            };
-                            key = key + "_" + induId;
-                            client.lpush(key, JSON.stringify(induLog), function(err, reply) {
-                                redis.release(client);
-                            });
+                            // induDao.logData(redis, client, serverId, registerType, loginName, characterId, induId, currentIndu, isFinished);
+                            var logData = induDao.getLogData(serverId, registerType, loginName, characterId, induId, currentIndu, isFinished);
+                            ucenter.saveInduLog(logData);
 
                             utils.invokeCallback(cb, null, _currentIndu);
                         } else {//不是同一个副本
