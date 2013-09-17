@@ -23,8 +23,8 @@ var createRedisPool = function(app) {
         destroy: function(client) {
             client.quit();
         },
-        max: 100,
-        idleTimeoutMillis: 30000,
+        max: redisConfig.maxPoolNum,
+        idleTimeoutMillis: redisConfig.idleTimeoutMillis,
         log: false
     });
 }
