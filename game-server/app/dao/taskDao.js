@@ -143,7 +143,8 @@ taskDao.updateTask = function(player, tasks, cb) {
             status: task.status,
             startTime: task.startTime,
             finishTime: task.finishTime,
-            taskRecord: task.taskRecord
+            taskRecord: task.taskRecord,
+            handOverTime: task.handOverTime
         };
         if(typeof value.startTime == "undefined" || value.startTime == null) {
             value.startTime = 0;
@@ -189,11 +190,12 @@ taskDao.destroy = function(characterId, cb) {
  * @param {Object} taskInfo
  * @return {Object} task
  */
-taskDao.createNewTask = function(taskInfo, serverId, registerType, loginName, characterId) {
+taskDao.createNewTask = function(taskInfo, serverId, registerType, loginName, characterId, curTasks) {
     taskInfo.serverId = serverId;
     taskInfo.registerType = registerType;
     taskInfo.loginName = loginName;
     taskInfo.characterId = characterId;
+    taskInfo.curTasks = curTasks;
     var task = new Task(taskInfo);
     var app = pomelo.app;
     task.on('save', function() {

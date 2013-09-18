@@ -24,6 +24,7 @@ module.exports = {
 
             }).hset(key, "package", JSON.stringify(value), function(err, reply) {
                     cb(!!err);
+                    dbclient.release(client);
                 })
                 .exec(function (err, replies) {
                     console.log(replies);

@@ -16,12 +16,12 @@ var httpClient = module.exports;
  */
 var url = require('url');
 httpClient.request = function(type, header, params, post_body,callback) {
-    if(typeof params == 'string' && params.indexOf('http')==-1) {
-        params = 'http://'+params;
+    if(typeof params == 'string' && params.indexOf('http') == -1) {
+        params = 'http://' + params;
     }
     var content = null;
     header = header || {};
-    if(post_body){
+    if(post_body) {
         content = require('querystring').stringify(post_body);
         header['Content-length'] = content.length;
     }
@@ -48,8 +48,8 @@ httpClient.request = function(type, header, params, post_body,callback) {
     req.on('error',function(err){
        callback(err.message,null);
     });
-    req.setTimeout(5000,function() {
-        callback('error:'+params+' timeout!',null);
+    req.setTimeout(5000, function() {
+        callback('error:' + params + ' timeout!', null);
     });
     req.write(content);
     req.end();
@@ -61,7 +61,7 @@ httpClient.request = function(type, header, params, post_body,callback) {
  * @param post_body
  */
 httpClient.get = function(header, params, post_body,callback) {
-   this.request('get',header,params,post,post_body,callback);
+   this.request('get', header, params, post_body, callback);
 }
 
 /**
@@ -71,5 +71,5 @@ httpClient.get = function(header, params, post_body,callback) {
  * @param post_body
  */
 httpClient.post = function(header, params, post_body,callback) {
-    this.request('post',header,params,post,post_body,callback);
+    this.request('post', header, params, post_body, callback);
 }

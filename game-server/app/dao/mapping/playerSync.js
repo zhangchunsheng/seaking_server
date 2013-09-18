@@ -26,7 +26,7 @@ module.exports =  {
                         array.push(["hset", key, o, column[o]]);
                     }
                     client.multi(array).exec(function(err, replies) {
-
+                        dbclient.release(client);
                     });
                 }
             })

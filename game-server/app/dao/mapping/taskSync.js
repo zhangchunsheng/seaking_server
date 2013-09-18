@@ -30,7 +30,14 @@ module.exports = {
             taskId: val.taskId,
             status: val.status,
             taskRecord: val.taskRecord,
-            startTime: val.startTime || (new Date()).getTime()
+            startTime: val.startTime || (new Date()).getTime(),
+            finishTime: val.finishTime,
+            handOverTime: val.handOverTime
+        };
+        if(val.type == consts.curTaskType.CURRENT_DAY_TASK) {
+            var temp = val.curTasks[val.type];
+            temp[0] = taskInfo;
+            taskInfo = temp;
         }
         dbclient.command(function(client) {
             client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
@@ -43,6 +50,7 @@ module.exports = {
                         array.push(["hset", key, field, JSON.stringify(taskInfo)]);
                         logger.info(array);
                         client.multi(array).exec(function(err, replies) {
+                            dbclient.release(client);
                             logger.info(replies);
                         });
                     }

@@ -30,6 +30,7 @@ module.exports = {
 
             }).hset(key, "equipments", JSON.stringify(value), function(err, reply) {
                     cb(!!err);
+                    dbclient.release(client);
                 })
                 .exec(function (err, replies) {
                     console.log(replies);

@@ -33,10 +33,11 @@ var Task = function(opts) {
     this.kindId = opts.taskId;
     this.status = opts.status;
     this.startTime = opts.startTime || (new Date()).getTime();
-    this.finishTime = 0;
-    this.handOverTime = 0;
+    this.finishTime = opts.finishTime || 0;
+    this.handOverTime = opts.handOverTime || 0;
     this.taskRecord = opts.taskRecord;
     this.step = opts.step;
+    this.curTasks = opts.curTasks;
 
     this._initTaskInfo();
 };
@@ -82,6 +83,8 @@ Task.prototype.updateRecord = function(player, type, items) {
     logger.info(this);
     logger.info(items);
     if(typeof this.id == "undefined")
+        return;
+    if(this.status == consts.TaskStatus.CANNOT_ACCEPT)
         return;
     if(type == consts.TaskGoalType.KILL_MONSTER) {// 击杀怪物数量
         for(var i in items) {
