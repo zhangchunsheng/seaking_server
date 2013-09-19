@@ -450,8 +450,9 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                             }
                         },
                         skills: {
-                            activeSkills: [],
-                            passiveSkills: []
+                            currentSkill: {"skillId":""},
+                            activeSkills: [{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0}],
+                            passiveSkills: [{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0}]
                         },
                         formation: [{playerId:"S" + serverId + "C" + characterId},null,null,null,null,null,null],
                         partners: [],
