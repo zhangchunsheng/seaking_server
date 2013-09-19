@@ -202,6 +202,113 @@ module.exports = {
         Activity: "09"
     },
 
+    effect_attr: {
+        1: {
+            name: "hp",
+            showName: "HP"
+        },
+        2: {
+            name: "experience",
+            showName: "经验"
+        },
+        3: {
+            name: "attack",
+            showName: "攻击"
+        },
+        4: {
+            name: "defense",
+            showName: "防御"
+        },
+        5: {
+            name: "focus",
+            showName: "集中值"
+        },
+        6: {
+            name: "speed",
+            showName: "速度"
+        },
+        7: {
+            name: "dodge",
+            showName: "闪避"
+        },
+        8: {
+            name: "criticalHit",
+            showName: "暴击几率"
+        },
+        9: {
+            name: "critDamage",
+            showName: "暴击伤害"
+        },
+        10: {
+            name: "block",
+            showName: "格挡"
+        },
+        11: {
+            name: "counter",
+            showName: "反击"
+        },
+        12: {
+            name: "parallelDamage",
+            showName: "溅射伤害"
+        },
+        13: {
+            name: "burn",
+            showName: "点燃"
+        },
+        14: {
+            name: "stunt",
+            showName: "禁锢"
+        },
+        15: {
+            name: "poison",
+            showName: "施毒"
+        },
+        16: {
+            name: "confusion",
+            showName: "迷惑"
+        },
+        17: {
+            name: "defense_focus",
+            showName: "防御力加成(focus)"
+        },
+        18: {
+            name: "hpRecoverySpeed",
+            showName: "血量回复"
+        },
+        19: {
+            name: "addItemAttr",
+            showName: "装备加成"
+        },
+        20: {
+            name: "addAttack",
+            showName: "增加自己攻击力"
+        },
+        21: {
+            name: "bounceAttack",
+            showName: "反弹伤害"
+        },
+        22: {
+            name: "money",
+            showName: "额外金钱"
+        },
+        23: {
+            name: "addBlood",
+            showName: "吸血"
+        },
+        24: {
+            name: "attack_focus",
+            showName: "攻击力加成(focus)"
+        },
+        25: {
+            name: "skill",
+            showName: "技能"
+        },
+        26: {
+            name: "ice",
+            showName: "冰冻"
+        }
+    },
+
     /**
      * check a entity that whether can be picked
      * @param entity
