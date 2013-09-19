@@ -20,7 +20,7 @@ var logger = require('pomelo-logger').getLogger(__filename);
  * @param target
  * @param skill
  */
-var attack = function(formation, attacker, targets, skill) {
+var attack = function(formation, attacker, targets) {
 
 };
 
