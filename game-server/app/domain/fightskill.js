@@ -7,10 +7,11 @@
  */
 
 var util = require('util');
-var dataApi = require('../../util/dataApi');
-var formula = require('../../consts/formula');
-var consts = require('../../consts/consts');
+var dataApi = require('../util/dataApi');
+var formula = require('../consts/formula');
+var consts = require('../consts/consts');
 var buff = require('./buff');
+var Persistent = require('./persistent');
 var logger = require('pomelo-logger').getLogger(__filename);
 
 /**
@@ -60,11 +61,14 @@ var removeBuff = function(attacker, target, buff) {
  * @constructor
  */
 var FightSkill = function(opts) {
+    Persistent.call(this, opts);
     this.skillId = opts.skillId;
     this.level = opts.level;
     this.playerId = opts.playerId;
     this.skillData = dataApi.fightskill.findById(this.skillId);
     this.name = this.skillData.skillName;
 };
+
+util.inherits(FightSkill, Persistent);
 
 module.exports.FightSkill = FightSkill;
