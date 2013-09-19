@@ -25,11 +25,73 @@ var attack = function(formation, attacker, targets) {
 
 };
 
+/**
+ * 计算攻击
+ */
 var calculateAttack = function() {
 
 }
 
+/**
+ * 计算防御
+ */
 var calculateDefense = function() {
+
+}
+
+/**
+ * 计算目标
+ */
+var calculateTarget = function() {
+
+}
+
+/**
+ * 计算集中值
+ */
+var calculateFocus = function() {
+
+}
+
+/**
+ * 计算速度
+ */
+var calculateSpeed = function() {
+
+}
+
+/**
+ * 计算闪避
+ */
+var calculateDodge = function() {
+
+}
+
+/**
+ * 计算暴击几率
+ */
+var calculateCriticalHit = function() {
+
+}
+
+/**
+ * 计算暴击几率
+ */
+var calculateCritDamage = function() {
+
+}
+
+/**
+ * 计算格挡
+ */
+var calculateBlock = function() {
+
+}
+
+/**
+ * 计算反击
+ */
+var calculateCounter = function() {
 
 }
 
@@ -68,6 +130,10 @@ var FightSkill = function(opts) {
     this.skillData = dataApi.fightskill.findById(this.skillId);
     this.name = this.skillData.skillName;
 };
+
+FightSkill.prototype.attack = function() {
+
+}
 
 util.inherits(FightSkill, Persistent);
 
