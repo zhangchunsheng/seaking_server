@@ -683,6 +683,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                         equipments: JSON.parse(replies.equipments),
                         package: JSON.parse(replies.package),
                         skills: {
+                            currentSkill: JSON.parse(replies.currentSkill),
                             activeSkills: JSON.parse(replies.activeSkills),
                             passiveSkills: JSON.parse(replies.passiveSkills)
                         },
