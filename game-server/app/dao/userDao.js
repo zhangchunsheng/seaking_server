@@ -359,10 +359,10 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                     var hero = dataApi.heros.findById(cId);
                     var date = new Date();
                     var curTasks = {
-                        currentMainTask: {"taskId": 10100, "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
-                        currentBranchTask: {"taskId": 20201, "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
-                        currentDayTask: [{"taskId": 30201,"status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}, {"taskId": 30202}, {"taskId": 30203}],
-                        currentExerciseTask: {"taskId": 40201, "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
+                        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+                        currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+                        currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
+                        currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
                     };
                     var character = {
                         id: "S" + serverId + "C" + characterId,
