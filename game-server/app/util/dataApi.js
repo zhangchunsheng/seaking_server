@@ -11,6 +11,7 @@ var character = require('../../config/data/character');
 var equipment = require('../../config/data/equipment');
 var experience = require('../../config/data/experience');
 var fightskill = require('../../config/data/skillList');
+var heroSkills = require('../../config/data/heroSkills');
 var item = require('../../config/data/item');
 var npc = require('../../config/data/npc');
 var task = require('../../config/data/task');
@@ -23,8 +24,8 @@ var equipmentLevelup = require('../../config/data/equipmentLevelup');
 var partners = require('../../config/data/partners');
 var city = require('../../config/data/city');
 var indu_event = require('../../config/data/indu_event');
-var shops = require('../../config/data/shops')
-var casino = require('../../config/data/casino')
+var shops = require('../../config/data/shops');
+var casino = require('../../config/data/casino');
 /**
  * Data model `new Data()`
  *
