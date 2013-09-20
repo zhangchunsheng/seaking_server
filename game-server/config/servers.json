@@ -29,7 +29,42 @@
 				"host" : "127.0.0.1",
 				"port" : 4252,
 				"area" : "city03"
-			}
+			}, {
+                "id" : "area-server-4",
+                "host" : "127.0.0.1",
+                "port" : 4253,
+                "area" : "city04"
+            }, {
+                "id" : "area-server-5",
+                "host" : "127.0.0.1",
+                "port" : 4254,
+                "area" : "city05"
+            }, {
+                "id" : "area-server-6",
+                "host" : "127.0.0.1",
+                "port" : 4255,
+                "area" : "city06"
+            }, {
+                "id" : "area-server-7",
+                "host" : "127.0.0.1",
+                "port" : 4256,
+                "area" : "city07"
+            }, {
+                "id" : "area-server-8",
+                "host" : "127.0.0.1",
+                "port" : 4257,
+                "area" : "city08"
+            }, {
+                "id" : "area-server-9",
+                "host" : "127.0.0.1",
+                "port" : 4258,
+                "area" : "city09"
+            }, {
+                "id" : "area-server-10",
+                "host" : "127.0.0.1",
+                "port" : 4259,
+                "area" : "city10"
+            }
 		],
         "battle": [{
             "id": "battle-server-1",
@@ -92,7 +127,42 @@
 				"host" : "127.0.0.1",
 				"port" : 6252,
 				"area" : "city03"
-			}
+			}, {
+                "id" : "area-server-4",
+                "host" : "127.0.0.1",
+                "port" : 6253,
+                "area" : "city04"
+            }, {
+                "id" : "area-server-5",
+                "host" : "127.0.0.1",
+                "port" : 6254,
+                "area" : "city05"
+            }, {
+                "id" : "area-server-6",
+                "host" : "127.0.0.1",
+                "port" : 6255,
+                "area" : "city06"
+            }, {
+                "id" : "area-server-7",
+                "host" : "127.0.0.1",
+                "port" : 6256,
+                "area" : "city07"
+            }, {
+                "id" : "area-server-8",
+                "host" : "127.0.0.1",
+                "port" : 6257,
+                "area" : "city08"
+            }, {
+                "id" : "area-server-9",
+                "host" : "127.0.0.1",
+                "port" : 6258,
+                "area" : "city09"
+            }, {
+                "id" : "area-server-10",
+                "host" : "127.0.0.1",
+                "port" : 6259,
+                "area" : "city10"
+            }
 		],
         "battle": [{
             "id": "battle-server-1",

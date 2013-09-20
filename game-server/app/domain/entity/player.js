@@ -304,14 +304,7 @@ Player.prototype.useItem = function(type, index) {
  * @api public
  */
 Player.prototype.learnSkill = function(skillId, callback) {
-    var skillData = dataApi.fightskill.findById(skillId);
-    if (this.level < skillData.playerLevel || !!this.fightSkills[skillId]) {
-        return false;
-    }
-    var fightSkill = fightskill.create({skillId: skillId, level: 1, playerId: this.id, type:'attack'});
-    this.fightSkills[skillId] = fightSkill;
-    fightskillDao.add(fightSkill, callback);
-    return true;
+    utils.invokeCallback(cb, null, {});
 };
 
 /**
@@ -495,6 +488,17 @@ Player.prototype.strip = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift
+    };
+};
+
+Player.prototype.getUserInfo = function() {
+    return {
+        id: this.id,
+        serverId: this.sid,
+        registerType: this.registerType,
+        loginName: this.loginName,
+        nickname: this.nickname,
+        currentScene: this.currentScene
     };
 };
 

@@ -66,20 +66,22 @@ pro.entry = function(msg, session, next) {
             // generate session and register chat status
             players = res;
             self.app.get('sessionService').isReconnect(session, uid);
-            logger.info(session);
             self.app.get('sessionService').kick(uid, cb);
         }, function(cb) {
             if(!players) {
-                players = {};
+                players = [];
             }
+            logger.info(uid);
+            logger.info(userInfo);
             session.bind(uid, cb);
             session.set('serverId', userInfo.serverId);
             session.set('registerType', userInfo.registerType);
             session.set('loginName', userInfo.loginName);
             session.set('ip', session.__session__.__socket__.remoteAddress.ip);
+            logger.info(session);
         }, function(cb) {
             if(!players || players.length === 0) {
-                next(null, {code: Code.OK});
+                next(null, {code: Code.OK, players: null});
                 return;
             }
 
@@ -97,10 +99,12 @@ pro.entry = function(msg, session, next) {
         }
     ], function(err) {
         if(err) {
-            next(err, {code: Code.FAIL});
+            next(null, {code: Code.FAIL});
             return;
         }
 
+        if(players[0] == {})
+            players[0] = null;
         next(null, {code: Code.OK, player: players ? players[0] : null});
     });
 };

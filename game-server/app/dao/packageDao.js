@@ -21,7 +21,7 @@ var packageDao = module.exports;
  * @param {function} cb Call back function
  */
 packageDao.createPackage = function(characterId, cb) {
-
+    utils.invokeCallback(cb, null, {});
 };
 
 /**

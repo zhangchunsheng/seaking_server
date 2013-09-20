@@ -49,8 +49,6 @@ ChannelHandler.prototype.send = function(msg, session, next) {
             if(err) {
                 logger.error(err.stack);
                 code = Code.FAIL;
-            } else if(res) {
-                code = res;
             } else {
                 code = Code.OK;
             }
@@ -64,8 +62,6 @@ ChannelHandler.prototype.send = function(msg, session, next) {
             if(err) {
                 logger.error(err.stack);
                 code = Code.FAIL;
-            } else if(res){
-                code = res;
             } else {
                 code = Code.OK;
             }

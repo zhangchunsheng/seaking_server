@@ -21,7 +21,7 @@ var equipmentsDao = module.exports;
  * @param {function} cb Callback function
  */
 equipmentsDao.createEquipments = function (characterId, cb) {
-
+    utils.invokeCallback(cb, null, {});
 };
 
 /**

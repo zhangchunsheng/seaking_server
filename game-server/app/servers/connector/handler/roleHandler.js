@@ -13,6 +13,7 @@ var packageDao = require('../../../dao/packageDao');
 var consts = require('../../../consts/consts');
 var channelUtil = require('../../../util/channelUtil');
 var async = require('async');
+var tokenService = require('../../../../../shared/token');
 
 module.exports = function(app) {
     return new Handler(app);
@@ -30,18 +31,20 @@ var Handler = function(app) {
  */
 Handler.prototype.createMainPlayer = function(msg, session, next) {
     var uid = session.uid
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName")
+        , registerType = session.get('registerType')
+        , loginName = session.get('loginName')
         , cId = msg.cId // cId characterId
         , nickname = msg.nickname
         , isRandom = msg.isRandom;// 随机获得昵称
     var self = this;
 
+    //var res = tokenService.parse(token, "pomelo_session_secret");
+
     logger.info(session);
-    var serverId = 1;
+    var serverId = this.app.get("regionInfo").serverId;
 
     userDao.is_exists_nickname(this.app, serverId, nickname, function(err, flag) {
-        if (flag) {
+        if(flag) {
             next(null, {code: consts.MESSAGE.ERR});
             return;
         }
@@ -60,18 +63,20 @@ Handler.prototype.createMainPlayer = function(msg, session, next) {
                         packageDao.createPackage(character.id, callback);
                     },
                     function(callback) {
-                        character.learnSkill(1, callback);
+                        var skillId = 1;
+                        character.learnSkill(skillId, callback);
                     }
                 ];
-                async.parallel([],
+                async.parallel(array,
                     function(err, results) {
                         if (err) {
                             logger.error('learn skill error with player: ' + JSON.stringify(character.strip()) + ' stack: ' + err.stack);
                             next(null, {code: consts.MESSAGE.ERR, error:err});
                             return;
                         }
-                        afterLogin(self.app, msg, session, {id: uid}, character.strip(), next);
-                    });
+                        afterLogin(self.app, msg, session, {id: uid}, character.getUserInfo(), next);
+                    }
+                );
             }
         });
     });
@@ -83,10 +88,13 @@ var afterLogin = function (app, msg, session, user, character, next) {
             session.bind(user.id, cb);
         },
         function(cb) {
-            session.set('loginName', user.loginName);
-            session.set('areaId', character.areaId);
-            session.set('nickname', character.nickname);
-            session.set('playerId', character.playerId);
+            session.set('serverId', character.serverId);
+            session.set('registerType', character.registerType);
+            session.set('loginName', character.loginName);
+            session.set('areaId', character.currentScene);
+            session.set('playername', character.nickname);
+            session.set('playerId', character.id);
+            session.set('ip', session.__session__.__socket__.remoteAddress.ip);
             session.on('closed', onUserLeave);
             session.pushAll(cb);
         },

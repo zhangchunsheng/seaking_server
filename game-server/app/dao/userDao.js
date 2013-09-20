@@ -232,7 +232,7 @@ userDao.is_exists_nickname = function(app, serverId, nickname, next) {
 
         }).sismember(key, nickname, function(err, reply) {
             redis.release(client);
-            next(reply);
+            utils.invokeCallback(next, null, reply);
         })
         .exec(function (err, replies) {
 
@@ -257,7 +257,7 @@ userDao.has_nickname_player = function(app, serverId, nickname, next) {
 
         }).exists(key, function(err, reply) {
                 redis.release(client);
-                next(reply);
+                utils.invokeCallback(next, null, reply);
             })
             .exec(function (err, replies) {
 
@@ -349,6 +349,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
     var redis = pomelo.app.get('redisclient');
 
     var key = "S" + serverId + "_T" + registerType + "_" + loginName;// 先判断是否已创建角色
+    logger.info(key);
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
@@ -526,7 +527,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                             gift: character.gift,
                             currentIndu: character.currentIndu
                         });
-                        createEPTInfo(player, serverId, registerType, loginName, characterId);
+                        createEPTInfo(player, serverId, registerType, loginName, character.characterId);
                         redis.release(client);
                         utils.invokeCallback(cb, null, player);
                     });
@@ -574,25 +575,27 @@ userDao.getCharacterAllInfo = function (serverId, registerType, loginName, chara
             userDao.getCharacterInfo(serverId, registerType, loginName, function(err, character) {
                 if(!!err || !character) {
                     logger.error('Get user for userDao failed! ' + err);
+                } else {
+                    characterId = character.id;
                 }
-                characterId = character.id;
+
                 //var characterId = userDao.getRealCharacterId(characterId);
                 callback(err, character);
             });
         }
     ],
     function(err, results) {
+        if(!!err) {
+            utils.invokeCallback(cb, err, null);
+            return;
+        }
         var character = results[0];
         createEPTInfo(character, serverId, registerType, loginName, characterId);
 
         if(typeof needCalculateWeapon != "undefined" && needCalculateWeapon == true)
             character.updateAttribute();
 
-        if (!!err) {
-            utils.invokeCallback(cb, err);
-        } else {
-            utils.invokeCallback(cb, null, character);
-        }
+        utils.invokeCallback(cb, null, character);
     });
 };
 
@@ -630,11 +633,11 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
     var key = "S" + serverId + "_T" + registerType + "_" + loginName;
     dbUtil.selectDb(redisConfig.database.SEAKING_REDIS_DB, function(client) {
         client.hget(key, "characters", function(err, characterId) {
-            if(characterId == null) {
+            if(characterId == null || characterId == 0) {
                 var result = null;
 
                 redis.release(client);
-                utils.invokeCallback(cb, null, result);
+                utils.invokeCallback(cb, {errCode:100}, result);
             } else {
                 key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
                 client.hgetall(key, function(err, replies) {
