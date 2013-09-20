@@ -304,7 +304,7 @@ Player.prototype.useItem = function(type, index) {
  * @api public
  */
 Player.prototype.learnSkill = function(skillId, callback) {
-    utils.invokeCallback(cb, null, {});
+    utils.invokeCallback(callback, null, {});
 };
 
 /**
