@@ -562,6 +562,45 @@ Player.prototype.setEquipmentsEntity = function(equipmentsEntity){
 }
 
 /**
+ * 重置任务
+ * @param type
+ * @param taskId
+ */
+Player.prototype.resetTask = function(type, taskId) {
+    logger.info("resetTask");
+    var task = this.curTasksEntity[type];
+    var date = new Date();
+    if(taskId != null && taskId != "")
+        task.taskId = taskId;
+    task.status = TaskStatus.NOT_START;
+    task.startTime = date.getTime();
+    task.taskRecord = {"itemNum": 0};
+    task.save();
+}
+
+/**
+ * 更新金币
+ * @param money
+ */
+Player.prototype.updateMoney = function(money) {
+    this.money += parseInt(money);
+    if(this.money < 0)
+        this.money = 0;
+    this.save();
+};
+
+/**
+ * 更新经验
+ * @param exp
+ */
+Player.prototype.updateExp = function(exp) {
+    this.experience += parseInt(exp);
+    if(this.experience < 0)
+        this.experience = 0;
+    this.save();
+};
+
+/**
  * Parse String to json.
  * It covers object' method
  *

@@ -48,3 +48,33 @@ exp.playerLeave = function(args, cb) {
     messageService.pushMessage({route: 'onUserLeave', code: consts.MESSAGE.RES, playerId: playerId});
     utils.invokeCallback(cb);
 };
+
+exp.resetTask = function(args, cb) {
+    var areaId = args.areaId;
+    var playerId = args.playerId;
+    var player = area.getPlayer(playerId);
+
+    player.resetTask(args.type, args.taskId);
+
+    utils.invokeCallback(cb);
+}
+
+exp.updateMoney = function(args, cb) {
+    var areaId = args.areaId;
+    var playerId = args.playerId;
+    var player = area.getPlayer(playerId);
+
+    player.updateMoney(args.money);
+
+    utils.invokeCallback(cb);
+}
+
+exp.updateExp = function(args, cb) {
+    var areaId = args.areaId;
+    var playerId = args.playerId;
+    var player = area.getPlayer(playerId);
+
+    player.updateExp(args.exp);
+
+    utils.invokeCallback(cb);
+}

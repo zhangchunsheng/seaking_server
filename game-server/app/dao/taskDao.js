@@ -10,12 +10,13 @@
  */
 var pomelo = require('pomelo');
 var logger = require('pomelo-logger').getLogger(__filename);
-var taskDao = module.exports;
 var Task = require('../domain/task');
 var consts = require('../consts/consts');
 var taskApi = require('../util/dataApi').task;
 var utils = require('../util/utils');
 var dbUtil = require('../util/dbUtil');
+
+var taskDao = module.exports;
 
 /**
  * 获得taskId
