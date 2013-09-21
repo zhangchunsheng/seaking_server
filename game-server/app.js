@@ -12,6 +12,7 @@ var dataApi = require('./app/util/dataApi');
 var routeUtil = require('./app/util/routeUtil');
 var playerFilter = require('./app/servers/area/filter/playerFilter');
 var ChatService = require('./app/services/chatService');
+var sync = require('pomelo-sync-plugin');
 
 /**
  * Init app for client.
@@ -83,7 +84,8 @@ app.configure('production|development', 'gate|area|scene|battle|auth|connector|m
     var redisclient = require('./app/dao/redis/redis').init(app);
     app.set('redisclient', redisclient);
     app.set('dbclient', redisclient);
-    app.load(pomelo.sync, {path:__dirname + '/app/dao/mapping', dbclient: redisclient});
+    //app.load(pomelo.sync, {path:__dirname + '/app/dao/mapping', dbclient: redisclient});
+    app.use(sync, {sync: {path:__dirname + '/app/dao/mapping', dbclient: redisclient}});
 });
 
 // app configuration

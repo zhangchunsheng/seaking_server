@@ -5,95 +5,114 @@
 				"host" : "127.0.0.1",
 				"port" : 4150,
 				"clientPort" : 4010,
-				"frontend" : true
+				"frontend" : true,
+				"auto-restart" : true
 			}, {
 				"id" : "connector-server-2",
 				"host" : "127.0.0.1",
 				"port" : 4151,
 				"clientPort" : 4011,
-				"frontend" : true
+				"frontend" : true,
+				"auto-restart" : true
 			}
 		],
 		"area" : [{
 				"id" : "area-server-1",
 				"host" : "127.0.0.1",
 				"port" : 4250,
-				"area" : "city01"
+				"area" : "city01",
+				"auto-restart" : true
 			}, {
 				"id" : "area-server-2",
 				"host" : "127.0.0.1",
 				"port" : 4251,
-				"area" : "city02"
+				"area" : "city02",
+				"auto-restart" : true
 			}, {
 				"id" : "area-server-3",
 				"host" : "127.0.0.1",
 				"port" : 4252,
-				"area" : "city03"
+				"area" : "city03",
+				"auto-restart" : true
 			}, {
-                "id" : "area-server-4",
-                "host" : "127.0.0.1",
-                "port" : 4253,
-                "area" : "city04"
-            }, {
-                "id" : "area-server-5",
-                "host" : "127.0.0.1",
-                "port" : 4254,
-                "area" : "city05"
-            }, {
-                "id" : "area-server-6",
-                "host" : "127.0.0.1",
-                "port" : 4255,
-                "area" : "city06"
-            }, {
-                "id" : "area-server-7",
-                "host" : "127.0.0.1",
-                "port" : 4256,
-                "area" : "city07"
-            }, {
-                "id" : "area-server-8",
-                "host" : "127.0.0.1",
-                "port" : 4257,
-                "area" : "city08"
-            }, {
-                "id" : "area-server-9",
-                "host" : "127.0.0.1",
-                "port" : 4258,
-                "area" : "city09"
-            }, {
-                "id" : "area-server-10",
-                "host" : "127.0.0.1",
-                "port" : 4259,
-                "area" : "city10"
-            }
+				"id" : "area-server-4",
+				"host" : "127.0.0.1",
+				"port" : 4253,
+				"area" : "city04",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-5",
+				"host" : "127.0.0.1",
+				"port" : 4254,
+				"area" : "city05",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-6",
+				"host" : "127.0.0.1",
+				"port" : 4255,
+				"area" : "city06",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-7",
+				"host" : "127.0.0.1",
+				"port" : 4256,
+				"area" : "city07",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-8",
+				"host" : "127.0.0.1",
+				"port" : 4257,
+				"area" : "city08",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-9",
+				"host" : "127.0.0.1",
+				"port" : 4258,
+				"area" : "city09",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-10",
+				"host" : "127.0.0.1",
+				"port" : 4259,
+				"area" : "city10",
+				"auto-restart" : true
+			}
 		],
-        "battle": [{
-            "id": "battle-server-1",
-            "host": "127.0.0.1",
-            "port": 4551,
-            "battle": 1
-        }],
-        "scene": [{
-            "id": "scene-server-1",
-            "host": "127.0.0.1",
-            "port": 4552
-        }],
+		"battle" : [{
+				"id" : "battle-server-1",
+				"host" : "127.0.0.1",
+				"port" : 4551,
+				"battle" : 1,
+				"auto-restart" : true
+			}
+		],
+		"scene" : [{
+				"id" : "scene-server-1",
+				"host" : "127.0.0.1",
+				"port" : 4552,
+				"auto-restart" : true
+			}
+		],
 		"chat" : [{
 				"id" : "chat-server-1",
 				"host" : "127.0.0.1",
-				"port" : 4450
+				"port" : 4450,
+				"auto-restart" : true
 			}
 		],
 		"auth" : [{
 				"id" : "auth-server-1",
 				"host" : "127.0.0.1",
-				"port" : 4650
+				"port" : 4650,
+				"auto-restart" : true
 			}
 		],
 		"gate" : [{
 				"id" : "gate-server-1",
 				"host" : "127.0.0.1",
 				"clientPort" : 4014,
-				"frontend" : true
+				"frontend" : true,
+				"auto-restart" : true
 			}
 		]
 	},
@@ -103,95 +122,114 @@
 				"host" : "127.0.0.1",
 				"port" : 6150,
 				"clientPort" : 6010,
-				"frontend" : true
+				"frontend" : true,
+				"auto-restart" : true
 			}, {
 				"id" : "connector-server-2",
 				"host" : "127.0.0.1",
 				"port" : 6151,
 				"clientPort" : 6011,
-				"frontend" : true
+				"frontend" : true,
+				"auto-restart" : true
 			}
 		],
 		"area" : [{
 				"id" : "area-server-1",
 				"host" : "127.0.0.1",
 				"port" : 6250,
-				"area" : "city01"
+				"area" : "city01",
+				"auto-restart" : true
 			}, {
 				"id" : "area-server-2",
 				"host" : "127.0.0.1",
 				"port" : 6251,
-				"area" : "city02"
+				"area" : "city02",
+				"auto-restart" : true
 			}, {
 				"id" : "area-server-3",
 				"host" : "127.0.0.1",
 				"port" : 6252,
-				"area" : "city03"
+				"area" : "city03",
+				"auto-restart" : true
 			}, {
-                "id" : "area-server-4",
-                "host" : "127.0.0.1",
-                "port" : 6253,
-                "area" : "city04"
-            }, {
-                "id" : "area-server-5",
-                "host" : "127.0.0.1",
-                "port" : 6254,
-                "area" : "city05"
-            }, {
-                "id" : "area-server-6",
-                "host" : "127.0.0.1",
-                "port" : 6255,
-                "area" : "city06"
-            }, {
-                "id" : "area-server-7",
-                "host" : "127.0.0.1",
-                "port" : 6256,
-                "area" : "city07"
-            }, {
-                "id" : "area-server-8",
-                "host" : "127.0.0.1",
-                "port" : 6257,
-                "area" : "city08"
-            }, {
-                "id" : "area-server-9",
-                "host" : "127.0.0.1",
-                "port" : 6258,
-                "area" : "city09"
-            }, {
-                "id" : "area-server-10",
-                "host" : "127.0.0.1",
-                "port" : 6259,
-                "area" : "city10"
-            }
+				"id" : "area-server-4",
+				"host" : "127.0.0.1",
+				"port" : 6253,
+				"area" : "city04",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-5",
+				"host" : "127.0.0.1",
+				"port" : 6254,
+				"area" : "city05",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-6",
+				"host" : "127.0.0.1",
+				"port" : 6255,
+				"area" : "city06",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-7",
+				"host" : "127.0.0.1",
+				"port" : 6256,
+				"area" : "city07",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-8",
+				"host" : "127.0.0.1",
+				"port" : 6257,
+				"area" : "city08",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-9",
+				"host" : "127.0.0.1",
+				"port" : 6258,
+				"area" : "city09",
+				"auto-restart" : true
+			}, {
+				"id" : "area-server-10",
+				"host" : "127.0.0.1",
+				"port" : 6259,
+				"area" : "city10",
+				"auto-restart" : true
+			}
 		],
-        "battle": [{
-            "id": "battle-server-1",
-            "host": "127.0.0.1",
-            "port": 6551,
-            "battle": 1
-        }],
-        "scene": [{
-            "id": "scene-server-1",
-            "host": "127.0.0.1",
-            "port": 6552
-        }],
+		"battle" : [{
+				"id" : "battle-server-1",
+				"host" : "127.0.0.1",
+				"port" : 6551,
+				"battle" : 1,
+				"auto-restart" : true
+			}
+		],
+		"scene" : [{
+				"id" : "scene-server-1",
+				"host" : "127.0.0.1",
+				"port" : 6552,
+				"auto-restart" : true
+			}
+		],
 		"chat" : [{
 				"id" : "chat-server-1",
 				"host" : "127.0.0.1",
-				"port" : 6450
+				"port" : 6450,
+				"auto-restart" : true
 			}
 		],
 		"auth" : [{
 				"id" : "auth-server-1",
 				"host" : "127.0.0.1",
-				"port" : 6650
+				"port" : 6650,
+				"auto-restart" : true
 			}
 		],
 		"gate" : [{
 				"id" : "gate-server-1",
 				"host" : "127.0.0.1",
 				"clientPort" : 6014,
-				"frontend" : true
+				"frontend" : true,
+				"auto-restart" : true
 			}
 		]
 	}

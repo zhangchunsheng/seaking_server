@@ -3,7 +3,7 @@
     "version":"0.0.1",
     "private":false,
     "dependencies":{
-        "pomelo":"0.4.3",
+        "pomelo":"0.6.0",
         "redis": "*",
         "connect-redis": "*",
         "connect": "*",
@@ -17,7 +17,9 @@
         "pomelo-pathfinding": "*",
         "pomelo-collection": "*",
         "pomelo-logger": "0.0.3",
-        "request": "*"
+        "request": "*",
+        "pomelo-sync-plugin": "0.0.1",
+        "webkit-devtools-agent" : "0.1.2"
     },
     "devDependencies": {
         "should": "*",
