@@ -5,21 +5,29 @@
  * Date: 2013-09-22
  * Description: auth_required
  */
+var utils = require('../app/utils/utils');
+var Code = require('../shared/code');
+
 module.exports = function (req, res, next) {
+    var msg = req.query;
+
     if (req.session.uid) {
         return next();
     }
 
     var accept = req.headers.accept || '';
+    var data = {};
     // html
     if (~accept.indexOf('json')) {
         res.statusCode = 403;
-        res.send({
-            err: 'forbidden'
-        });
+        data = {
+            code: 403
+        }
+        utils.send(msg, res, data);
     } else {
-        res.send({
-            err: 'noLogin'
-        });
+        data = {
+            code: Code.NO_LOGIN
+        }
+        utils.send(msg, res, data);
     }
 };

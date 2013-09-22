@@ -3,7 +3,7 @@
  * Version: 1.0
  * Author: Peter Zhang
  * Date: 2013-09-22
- * Description: formationDao
+ * Description: areaDao
  */
 var redis = require('../dao/redis/redis')
     , redisConfig = require('../../shared/config/redis');
@@ -24,8 +24,8 @@ if(redisConfig[env]) {
     redisConfig = redisConfig[env];
 }
 
-var formationDao = module.exports;
+var areaDao = module.exports;
 
-formationDao.change = function() {
+areaDao.addPlayer = function(playerId) {
 
 }

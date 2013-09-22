@@ -6,6 +6,8 @@
  * Description: package
  */
 var packageService = require('../app/services/packageService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.addItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var itemId = msg.itemId;
     var itemNum = msg.itemNum;
     var itemLevel = msg.itemLevel;
@@ -55,6 +60,9 @@ exports.addItem = function(req, res) {
  * @param res
  */
 exports.dropItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var type = msg.type;
     var index = msg.index;
 
@@ -74,6 +82,9 @@ exports.dropItem = function(req, res) {
  * @param res
  */
 exports.sellItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var type = msg.type,
         itemId = msg.itemId,
         itemNum = msg.itemNum;
@@ -84,7 +95,6 @@ exports.sellItem = function(req, res) {
     } else {
         itemInfo = dataApi.equipment.findById(itemId);
     }
-    logger.info(itemInfo);
     if(!itemInfo) {
         next(null, {
             code:code.PACKAGE.NOT_EXIST_ITEM
@@ -157,6 +167,9 @@ function removeItem(msg,player,next) {
  * @param res
  */
 exports.discardItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var player = area.getPlayer(session.get('playerId'));
     var result = removeItem(msg, player, next);
     if(!!result) {
@@ -178,6 +191,9 @@ exports.discardItem = function(req, res) {
  * @param res
  */
 exports.resetItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var start = msg.start;
     var end = msg.end;
     var type = msg.type;
@@ -211,12 +227,15 @@ exports.resetItem = function(req, res) {
  * @param res
  */
 exports.userItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var index = msg.index;
     var type = msg.type;
 
     var player = (area.getPlayer(session.get("playerId")));
     var Item = player.packageEntity[type].items[index];
-    logger.error(player);
+
     if(Item == null) {
         next(null, {
             code: code.FAIL
@@ -252,7 +271,6 @@ exports.userItem = function(req, res) {
                 startTime: new Date().getTime()
             });
 
-            logger.info(player.buffs);
             package.removeItem(type, index, 1);
             package.save();
             next(null, {
@@ -271,7 +289,7 @@ exports.userItem = function(req, res) {
                     } else {
                         player.hp = player.maxHp;
                     }
-                    logger.info("hp:" + player.hp);
+
                     userDao.updatePlayer(player, "hp", function(err, reply) {
                         package.removeItem(type, index, 1);
                         package.save();

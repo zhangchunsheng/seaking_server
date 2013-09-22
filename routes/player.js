@@ -6,6 +6,8 @@
  * Description: player
  */
 var playerService = require('../app/services/playerService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.enterScene = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var playerId = session.get('playerId');
     var areaId = session.get('areaId');
     var uid = session.uid
@@ -25,7 +30,7 @@ exports.enterScene = function(req, res) {
         , loginName = session.get("loginName");
     userDao.getCharacterAllInfo(serverId, registerType, loginName, playerId, function(err, player) {
         if (err || !player) {
-            logger.error('Get user for userDao failed! ' + err.stack);
+            console.log('Get user for userDao failed! ' + err.stack);
             next(new Error('fail to get user from dao'), {
                 route: msg.route,
                 code: consts.MESSAGE.ERR
@@ -50,11 +55,10 @@ exports.enterScene = function(req, res) {
             code: consts.MESSAGE.RES,
             entities: area.getAreaInfo({x: player.x, y: player.y}, player.range)
         };
-        logger.info(data);
         next(null, data);
 
         if (!area.addEntity(player)) {
-            logger.error("Add player to area faild! areaId : " + player.areaId);
+            console.log("Add player to area faild! areaId : " + player.areaId);
         }
     }, true);
 }
@@ -65,13 +69,16 @@ exports.enterScene = function(req, res) {
  * @param res
  */
 exports.enterIndu = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
         , loginName = session.get("loginName")
         , induId = msg.induId;
     var player = area.getPlayer(session.get('playerId'));
-    logger.info(player);
+
     player.isEnterIndu = 1;
     userDao.enterIndu(serverId, registerType, loginName, induId, function(err, induInfo) {
         player.currentIndu = induInfo;
@@ -88,13 +95,16 @@ exports.enterIndu = function(req, res) {
  * @param res
  */
 exports.leaveIndu = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
         , loginName = session.get("loginName")
         , induId = msg.induId;
     var player = area.getPlayer(session.get('playerId'));
-    logger.info(player);
+
     player.isEnterIndu = 0;
     userDao.leaveIndu(serverId, registerType, loginName, induId, function(err, induInfo) {
         player.currentIndu = induInfo;
@@ -116,6 +126,9 @@ exports.leaveIndu = function(req, res) {
  * @param res
  */
 exports.getPartner = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
@@ -155,6 +168,9 @@ exports.getPartner = function(req, res) {
  * @param res
  */
 exports.changeView = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     res.send("changeView");
 }
 
@@ -164,6 +180,9 @@ exports.changeView = function(req, res) {
  * @param res
  */
 exports.changeArea = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var areaId = msg.currentScene;
     var target = msg.target;
 
@@ -196,6 +215,9 @@ exports.changeArea = function(req, res) {
  * @param res
  */
 exports.npcTalk = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var player = area.getPlayer(session.get('playerId'));
     player.target = msg.targetId;
     next();
@@ -207,6 +229,9 @@ exports.npcTalk = function(req, res) {
  * @param res
  */
 exports.learnSkill = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var player = area.getPlayer(session.get('playerId'));
     var status = player.learnSkill(msg.skillId);
 
@@ -219,6 +244,9 @@ exports.learnSkill = function(req, res) {
  * @param res
  */
 exports.upgradeSkill = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var player = area.getPlayer(session.get('playerId'));
     var status = player.upgradeSkill(msg.skillId);
 

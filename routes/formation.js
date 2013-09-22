@@ -6,6 +6,8 @@
  * Description: formation
  */
 var authService = require('../app/services/authService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,13 +19,14 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.change = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
         , loginName = session.get("loginName")
         , formation = msg.formation;
-
-    logger.info(formation);
 
     if(!formation && Object.prototype.toString.call(formation) !== '[object Array]') {
         next(null, {

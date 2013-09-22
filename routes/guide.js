@@ -6,6 +6,8 @@
  * Description: guide
  */
 var guideService = require('../app/services/guideService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.get = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     res.send("index");
 }
 
@@ -26,5 +31,8 @@ exports.get = function(req, res) {
  * @param res
  */
 exports.save = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     res.send("index");
 }

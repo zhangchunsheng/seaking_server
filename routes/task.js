@@ -6,6 +6,8 @@
  * Description: task
  */
 var taskService = require('../app/services/taskService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.startTask = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var taskId = msg.taskId;
 
     var player = area.getPlayer(session.get('playerId'));
@@ -57,6 +62,9 @@ exports.startTask = function(req, res) {
  * @param res
  */
 exports.handOverTask = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var taskId = msg.taskId;
 
     var player = area.getPlayer(session.get('playerId'));

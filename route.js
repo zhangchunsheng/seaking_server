@@ -93,7 +93,6 @@ module.exports = function (app) {
     app.get('/player/upgradeSkill', authRequired, player.upgradeSkill);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
-    app.get('/resource/loadAreaResource', authRequired, resource.loadAreaResource);
 
     app.get('/shop/buyItem', authRequired, shop.buyItem);
 

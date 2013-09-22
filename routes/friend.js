@@ -6,6 +6,8 @@
  * Description: friend
  */
 var authService = require('../app/services/authService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.get = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
@@ -41,6 +46,9 @@ exports.get = function(req, res) {
  * @param res
  */
 exports.add = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
@@ -54,7 +62,6 @@ exports.add = function(req, res) {
 
 function addFriendById(player, playerId, next) {
     friendDao.addFriend(player, playerId, function(err, reply) {
-        logger.info(reply);
         if(reply.reply == 1) {
             next(null, {
                 code: Code.OK
@@ -77,12 +84,14 @@ function addFriendById(player, playerId, next) {
  * @param res
  */
 exports.addByName = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var player  = area.getPlayer(session.get('playerId'));
     // var nickName = msg.nickname;
     var serverId = session.get("serverId");
     var self = addFriendById;
     userDao.getPlayerIdByNickname(serverId, msg.nickname, function(err, playerId) {
-        logger.info(arguments);
         if(!playerId) {
             next(null,{
                 code:Code.FRIEND.NOT_EXIST_PLAYER
@@ -99,6 +108,9 @@ exports.addByName = function(req, res) {
  * @param res
  */
 exports.remove = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")

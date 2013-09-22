@@ -6,6 +6,8 @@
  * Description: gm
  */
 var gmService = require('../app/services/gmService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.resetTask = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     res.send("index");
 }
 
@@ -26,6 +31,9 @@ exports.resetTask = function(req, res) {
  * @param res
  */
 exports.updateMoney = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     res.send("index");
 }
 
@@ -35,5 +43,8 @@ exports.updateMoney = function(req, res) {
  * @param res
  */
 exports.updateExp = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     res.send("index");
 }

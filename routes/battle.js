@@ -6,6 +6,8 @@
  * Description: battle
  */
 var authService = require('../app/services/authService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,10 +19,13 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.battle = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName")
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
         , eid = msg.eid;
 
     var character = area.getPlayer(session.get('playerId'));
@@ -51,7 +56,6 @@ exports.battle = function(req, res) {
     var owner_formationData = character.formation;//[{"playerId":"S1C10"},{"playerId":"S1C10P1"},{"playerId":"S1C10P2"},null,null,null,null]// array index - 阵型位置 array value - character id
     var induMonstergroup = dataApi.induMonstergroup.findById(eid);
     var monster_formationData = induMonstergroup.formation;//["M10101","M10102",0,"M10103",0,0,0];// 0,1,2,3,4,5,6
-    logger.info(monster_formationData);
 
     var owners = {};
     var monsters = {};
@@ -76,7 +80,6 @@ exports.battle = function(req, res) {
     var monster = {};
     for(var i = 0 ; i < monster_formationData.length ; i++) {
         if(monster_formationData[i] != null && monster_formationData[i] != 0) {
-            logger.info(monster_formationData[i]);
             player = new Monster(Fight.createMonster({
                 id: monster_formationData[i],
                 formationId: i,
@@ -85,8 +88,6 @@ exports.battle = function(req, res) {
             monsters[i] = player;
         }
     }
-    logger.info(owners);
-    logger.info(monsters);
 
     var fight = new Fight({
         mainPlayer: character,

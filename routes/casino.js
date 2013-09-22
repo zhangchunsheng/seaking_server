@@ -6,6 +6,8 @@
  * Description: casino
  */
 var authService = require('../app/services/authService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.getItems = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var playerId = session.get('playerId');
     var player = area.getPlayer(playerId);
     var items = prize(player.level);
@@ -25,7 +30,7 @@ exports.getItems = function(req, res) {
         index : 0,
         items : items
     };
-    logger.error(items);
+
     next(null, {
         code : Code.OK,
         items : items
@@ -38,6 +43,9 @@ exports.getItems = function(req, res) {
  * @param res
  */
 exports.gambling = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var playerId = session.get('playerId');
     var player = area.getPlayer(playerId);
     if (player.casino.index != msg.index) {

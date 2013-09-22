@@ -6,6 +6,7 @@
  * Description: arenaService
  */
 var equipmentsDao = require('../dao/equipmentsDao');
+var utils = require('../utils/utils');
 
 var equipmentsService = module.exports;
 
@@ -27,4 +28,8 @@ equipmentsService.unEquip = function() {
 
 equipmentsService.upgrade = function() {
 
+}
+
+equipmentsService.createEquipments = function(playerId, callback) {
+    utils.invokeCallback(callback, null, {});
 }

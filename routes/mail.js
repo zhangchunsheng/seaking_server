@@ -6,6 +6,8 @@
  * Description: mail
  */
 var mailService = require('../app/services/mailService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,7 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.systemSendMail = function(req, res) {
-    logger.error(msg);
+    var msg = req.query;
+    var session = req.session;
+
     if (msg.to == null && msg.toName == null) {
         next(null, {
             code: Code.MAIL.NO_RECEIVE_ID
@@ -33,7 +37,6 @@ exports.systemSendMail = function(req, res) {
                 mailDao.DelInboxMail(all.toKey, function (err, reply) {});
             }
             var mail = mailDao.createMail(all);
-            logger.info(mail);
             mailDao.systemSendMail(all.toKey, mail, function (err, reply) {
                 next(null, {
                     code : "OK",
@@ -64,7 +67,9 @@ exports.systemSendMail = function(req, res) {
  * @param res
  */
 exports.sendMail = function(req, res) {
-    logger.error(msg);
+    var msg = req.query;
+    var session = req.session;
+
     if (msg.content.length > 50) {
         next(null, {
             code:Code.FAIL
@@ -100,9 +105,7 @@ exports.sendMail = function(req, res) {
     msg.from = playerId;
     msg.fromName = player.nickname;
     var fromKey = picecBoxName(session);
-    logger.debug(fromKey);
     mailDao.SendMailCount(fromKey, function (err, reply) {
-        logger.debug(reply);
         if (reply == 50) {
             mailDao.DelOutboxMail(fromKey, function (err, reply) {});
         }
@@ -113,11 +116,10 @@ exports.sendMail = function(req, res) {
                     mailDao.DelInboxMail(all.toKey, function (err, reply) {});
                 }
                 var mail = mailDao.createMail(all);
-                logger.info(mail);
 
                 mailDao.addMail(fromKey + MailKeyType.SEND, all.toKey + MailKeyType.NOREAD, mail, function (err, reply) {
                     if (!!err) {
-                        logger.debug(err);
+                        console.log(err);
                         next(null, {
                             code : Code.FAIL
                         });
@@ -153,6 +155,9 @@ exports.sendMail = function(req, res) {
  */
 var packageNum = 10;
 exports.getInbox = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var Key = picecBoxName(session);
     //var player = area.getPlayer(playerId);
     var index = msg.index;
@@ -193,6 +198,9 @@ exports.getInbox = function(req, res) {
  * @param res
  */
 exports.getOutbox = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var key = picecBoxName(session);
     var index = msg.index;
     var start = index  * packageNum;
@@ -245,6 +253,9 @@ function picecBoxName(session) {
  * @param res
  */
 exports.readMail = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var mailId = msg.mailId;
     var mails = [mailId.substring(0, 3), mailId.substring(3)];
     if (MailKeyType.NOREAD != mails[0]) {
@@ -254,7 +265,6 @@ exports.readMail = function(req, res) {
         return;
     }
     var Key = picecBoxName(session);
-    logger.info(mails);
     mailDao.readMail(mails, Key, function (err, reply) {
         if (!!err) {
             next(null, {
@@ -274,6 +284,9 @@ exports.readMail = function(req, res) {
  * @param res
  */
 exports.delMail = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var mailId = msg.mailId;
     var mails = [mailId.substring(0, 3), mailId.substring(3)];
 
@@ -297,6 +310,9 @@ exports.delMail = function(req, res) {
  * @param res
  */
 exports.hasNewMail = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var Key = picecBoxName(session);
     mailDao.ToMailCount([Key + "_" + MailKeyType.NOREAD, Key + "_" + MailKeyType.HASITEM], function (err, reply) {
         if (!!err) {
@@ -318,6 +334,9 @@ exports.hasNewMail = function(req, res) {
  * @param res
  */
 exports.collectItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var itemIndex = msg.itemIndex;
     var mailId = msg.mailId;
     var Key = picecBoxName(session);

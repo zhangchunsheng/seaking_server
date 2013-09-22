@@ -6,6 +6,8 @@
  * Description: shop
  */
 var shopService = require('../app/services/shopService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.buyItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")

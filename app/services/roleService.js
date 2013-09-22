@@ -12,3 +12,13 @@ var roleService = module.exports;
 roleService.createMainPlayer = function() {
 
 }
+
+/**
+ * 昵称是否存在
+ * @param serverId
+ * @param nickname
+ * @param next
+ */
+roleService.is_exists_nickname = function(serverId, nickname, next) {
+    roleDao.is_exists_nickname(serverId, nickname, next);
+}

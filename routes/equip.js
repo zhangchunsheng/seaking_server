@@ -6,6 +6,8 @@
  * Description: equip
  */
 var authService = require('../app/services/authService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,23 +19,22 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.wearWeapon = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     logUtil.info(logger, session, msg);
 
     var index = msg.index;
     var weaponId = msg.weaponId;
     var pkgType = PackageType.WEAPONS;
-    logger.info(msg);
 
     var player = area.getPlayer(session.get('playerId'));
     var status = 0;
 
-    logger.info(player.packageEntity);
     var packageIndex = -1;
     if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
         var item = player.packageEntity[pkgType].items[index];
-        logger.info(item);
         var eq = dataApi.equipment.findById(item.itemId);
-        logger.info(eq);
         if(!eq || player.level < eq.useLevel) {
             next(null, {
                 status: -1//等级不够
@@ -62,6 +63,9 @@ exports.wearWeapon = function(req, res) {
  * @param res
  */
 exports.unWearWeapon = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var weaponId = msg.weaponId;
     var type = consts.EqType.WEAPON;
 
@@ -107,6 +111,9 @@ exports.unWearWeapon = function(req, res) {
  * @param res
  */
 exports.equip = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var pkgType = msg.pkgType;
     var index = msg.index;
     var eqId = msg.eqId;
@@ -159,6 +166,9 @@ exports.equip = function(req, res) {
  * @param res
  */
 exports.unEquip = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var epId = msg.eqId;
     var type = msg.type;
 
@@ -166,9 +176,6 @@ exports.unEquip = function(req, res) {
     var status = 0;
     var result = {};
     var packageIndex = -1;
-
-    logger.info(type);
-    logger.info(player.equipmentsEntity);
 
     if(player.equipmentsEntity.get(type).epid == 0) {// 没有装备
         next(null, {
@@ -214,14 +221,14 @@ exports.unEquip = function(req, res) {
  * @param res
  */
 exports.upgrade = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var epId = msg.eqId;
     var type = msg.type;
 
     var player = area.getPlayer(session.get('playerId'));
     var status = 0;
-
-    logger.info(type);
-    logger.info(player.equipmentsEntity);
 
     if(player.equipmentsEntity.get(type).epid == 0) {// 没有装备
         next(null, {

@@ -6,6 +6,7 @@
  * Description: arenaService
  */
 var packageDao = require('../dao/packageDao');
+var utils = require('../utils/utils');
 
 var packageService = module.exports;
 
@@ -31,4 +32,8 @@ packageService.resetItem = function() {
 
 packageService.userItem = function() {
 
+}
+
+packageService.createPackage = function(playerId, callback) {
+    utils.invokeCallback(callback, null, {});
 }

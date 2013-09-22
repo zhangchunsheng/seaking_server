@@ -6,6 +6,9 @@
  * Description: resource
  */
 var resourceService = require('../app/services/resourceService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
+var fs = require("fs");
 
 exports.index = function(req, res) {
     res.send("index");
@@ -23,44 +26,11 @@ var _getFileVersion = function(path) {
 };
 
 var version = {
-    fightskill: _getFileVersion('./config/data/fightskill.json'),
+    skillList: _getFileVersion('./config/data/skillList.json'),
     equipment:  _getFileVersion('./config/data/equipment.json'),
     item: _getFileVersion('./config/data/item.json'),
     character: _getFileVersion('./config/data/character.json'),
-    npc: _getFileVersion('./config/data/npc.json'),
-    animation:  _getFileVersion('./config/animation_json'),
-    effect: _getFileVersion('./config/effect.json')
-};
-
-var animationFiles = [];
-
-/**
- * Get animation data with the given path.
- *
- * @retun {Object}
- * @api public
- */
-
-var _getAnimationJson = function() {
-    var path = '../../../../config/animation_json/';
-    var data = {};
-    if (animationFiles.length === 0) {
-        var dir = './config/animation_json';
-        var name, reg = /\.json$/;
-        fs.readdirSync(dir).forEach(function(file) {
-            if (reg.test(file)) {
-                name = file.replace(reg, '');
-                animationFiles.push(name);
-                data[name] = require(path + file);
-            }
-        });
-    } else {
-        animationFiles.forEach(function(name) {
-            data[name] = require(path + name + '.json');
-        });
-    }
-
-    return data;
+    npc: _getFileVersion('./config/data/npc.json')
 };
 
 /**
@@ -69,10 +39,13 @@ var _getAnimationJson = function() {
  * @param res
  */
 exports.loadResource = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     console.log("loadResource");
     var data = {};
-    if (msg.version.fightskill !== version.fightskill) {
-        data.fightskill = dataApi.fightskill.all();
+    if (msg.version.skillList !== version.skillList) {
+        data.skillList = dataApi.skillList.all();
     }
     if (msg.version.equipment !== version.equipment) {
         data.equipment = dataApi.equipment.all();
@@ -86,55 +59,10 @@ exports.loadResource = function(req, res) {
     if (msg.version.npc !== version.npc) {
         data.npc = dataApi.npc.all();
     }
-    if (msg.version.animation !== version.animation) {
-        data.animation = _getAnimationJson();
-    }
-    if (msg.version.effect !== version.effect) {
-        data.effect = require('../../../../config/effect.json');
-    }
 
-    next(null, {
+    var result = {
         data: data,
         version: version
-    });
-}
-
-/**
- * loadAreaResource
- * @param req
- * @param res
- */
-exports.loadAreaResource = function(req, res) {
-    var entities = area.getAllEntities();
-    var players = {}, mobs = {}, npcs = {}, items = {}, equips = {};
-    var i, e;
-    for (i in entities) {
-        e = entities[i];
-        if (e.type === EntityType.PLAYER) {
-            if (!players[e.kindId]) {
-                players[e.kindId] = 1;
-            }
-        } else if(e.type === EntityType.NPC) {
-            if (!npcs[e.kindId]) {
-                npcs[e.kindId] = 1;
-            }
-        }else if (e.type === EntityType.ITEM) {
-            if (!items[e.kindId]) {
-                items[e.kindId] = 1;
-            }
-        }else if (e.type === EntityType.EQUIPMENT) {
-            if (!equips[e.kindId]) {
-                equips[e.kindId] = 1;
-            }
-        }
-    }
-
-    next(null, {
-        players: Object.keys(players),
-        mobs: Object.keys(mobs),
-        npcs: Object.keys(npcs),
-        items: Object.keys(items),
-        equipments: Object.keys(equips),
-        mapName: area.map().name
-    });
+    };
+    utils.send(msg, res, result);
 }

@@ -6,6 +6,8 @@
  * Description: arena
  */
 var arenaService = require('../app/services/arenaService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.pk = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
@@ -24,10 +29,8 @@ exports.pk = function(req, res) {
         , vsPlayerId = msg.vsPlayerId;
 
     var opponent = area.getPlayer(vsPlayerId);
-    logger.info(opponent);
     if(opponent == null) {
         userDao.getPlayerById(vsPlayerId, function(err, reply) {
-            logger.info(reply);
             pk(msg, session, next, reply);
         });
     } else {
@@ -104,6 +107,9 @@ function pk(msg, session, next, opponent) {
  * @param res
  */
 exports.add = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
@@ -125,6 +131,9 @@ exports.add = function(req, res) {
  * @param res
  */
 exports.getOpponents = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var player = area.getPlayer(session.get('playerId'));
     arenaDao.getOpponents(player, function(err, result) {
         if( result == null ) {
@@ -147,6 +156,9 @@ exports.getOpponents = function(req, res) {
  * @param res
  */
 exports.getRank = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")

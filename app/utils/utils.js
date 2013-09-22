@@ -7,6 +7,9 @@
  */
 var message = require('../i18n/zh_CN.json');
 var consts = require('../consts/consts');
+var Token = require('../../shared/token')
+    , secret = require('../../config/session').secret;
+
 var utils = module.exports;
 
 /**
@@ -203,6 +206,53 @@ utils.getEqType = function(eqId) {
         }
     }
     return type;
+}
+
+/**
+ * get userInfo by token
+ * @param msg
+ * @param req
+ * @param res
+ * @returns {*}
+ */
+utils.getUserInfo = function(msg, req, res) {
+    var userInfo = {};
+    if(typeof msg.token != "undefined") {
+        userInfo = Token.parse(msg.token, secret);
+        console.log(userInfo);
+    } else {
+        var headers = req.headers;
+        if(typeof headers.signature == "undefined") {
+            return null;
+        }
+        var signature = headers.signature;
+        var test = Token.parseString(signature, secret);
+        if(test.substr(5).length == 6) {
+            var registerType = msg.registerType;
+            var loginName = msg.loginName;
+            userInfo = {
+                registerType: registerType,
+                loginName: loginName
+            }
+        } else {
+            return null;
+        }
+    }
+    return userInfo;
+}
+
+/**
+ *
+ * @param msg
+ * @param res
+ * @param data
+ */
+utils.send = function(msg, res, data) {
+    if(typeof msg.jsoncallback == "undefined") {
+        res.send(data);
+    } else {
+        res.send(msg.jsoncallback + "(" + JSON.stringify(data) + ")");
+    }
 }
 
 utils.log = function(msg) {

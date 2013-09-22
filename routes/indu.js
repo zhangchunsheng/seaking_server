@@ -6,6 +6,8 @@
  * Description: indu
  */
 var induService = require('../app/services/induService');
+var Code = require('../shared/code');
+var utils = require('../app/utils/utils');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -17,6 +19,9 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.triggerEvent = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
     var uid = session.uid
         , serverId = session.get("serverId")
         , registerType = session.get("registerType")
@@ -34,7 +39,6 @@ exports.triggerEvent = function(req, res) {
     }
 
     var induData = character.currentIndu.induData;
-    logger.info(induData);
     var flag = false;
     for(var i = 0 ; i < induData.length ; i++) {
         if(induData[i] == null)
@@ -87,8 +91,6 @@ exports.triggerEvent = function(req, res) {
                 monsters[i] = player;
             }
         }
-        logger.info(owners);
-        logger.info(monsters);
 
         var fight = new Fight({
             mainPlayer: character,
