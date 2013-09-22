@@ -1,0 +1,20 @@
+[
+	["id","cityId","name","description","npcs","level","width","height","path","towerWidth","towerHeight","_id"],
+	["id","cityId","name","description","npcs","level","width","height","path","towerWidth","towerHeight","_id"],
+	["city01","city01","新岛","失忆之城",[{"npcId":"NPC0101"},{"npcId":"NPC0102"}],0,3072,4096,"/config/map/city01.json",300,300,1],
+	["city02","city02","流风湾","废墟之城",[{"npcId":"NPC0201"},{"npcId":"NPC0202"},{"npcId":"NPC0203"},{"npcId":"NPC0204"},{"npcId":"NPC0205"},{"npcId":"NPC0206"}],0,3072,4096,"/config/map/city02.json",300,300,2],
+	["city04","city04","新岛","被毁灭的失忆之城",[],0,3072,4096,"/config/map/city04.json",300,300,3],
+	["city06","city06","极光城","极光之城",[{"npcId":"NPC0601"},{"npcId":"NPC0602"},{"npcId":"NPC0603"},{"npcId":"NPC0604"},{"npcId":"NPC0605"}],0,3072,4096,"/config/map/city06.json",300,300,4],
+	["city03","city03","双星城","双星城",[{"npcId":"NPC0301"},{"npcId":"NPC0302"},{"npcId":"NPC0303"},{"npcId":"NPC0304"},{"npcId":"NPC0305"},{"npcId":"NPC0306"},{"npcId":"NPC0307"},{"npcId":"NPC0308"}],0,3072,4096,"/config/map/city03.json",300,300,5],
+	["city05","city05","天外村","天外村",[{"npcId":"NPC0501"},{"npcId":"NPC0502"},{"npcId":"NPC0503"},{"npcId":"NPC0504"},{"npcId":"NPC0505"},{"npcId":"NPC0506"},{"npcId":"NPC0507"},{"npcId":"NPC0508"}],0,3072,4096,"/config/map/city05.json",300,300,6],
+	["city07","city07","丛林沼泽","丛林沼泽",[{"npcId":"NPC0701"},{"npcId":"NPC0702"},{"npcId":"NPC0703"},{"npcId":"NPC0704"},{"npcId":"NPC0705"}],0,3072,4096,"/config/map/city07.json",300,300,7],
+	["city08","city08","流沙古城","流沙古城",[{"npcId":"NPC0801"},{"npcId":"NPC0802"},{"npcId":"NPC0803"},{"npcId":"NPC0804"},{"npcId":"NPC0805"}],0,3072,4096,"/config/map/city08.json",300,300,8],
+	["city10","city10","炎城","崩坏的炎城",[{"npcId":"NPC1001"},{"npcId":"NPC1002"},{"npcId":"NPC1003"},{"npcId":"NPC1004"}],0,3072,4096,"/config/map/city10.json",300,300,9],
+	["city09","city09","炎城","炎城",[{"npcId":"NPC0901"},{"npcId":"NPC0902"},{"npcId":"NPC0903"},{"npcId":"NPC0904"},{"npcId":"NPC0905"},{"npcId":"NPC0906"}],0,3072,4096,"/config/map/city09.json",300,300,10],
+	["city11","city11","双星城","崩坏的双星城",[{"npcId":"NPC1101"},{"npcId":"NPC1102"},{"npcId":"NPC1103"},{"npcId":"NPC1104"},{"npcId":"NPC1105"},{"npcId":"NPC1106"}],0,3072,4096,"/config/map/city11.json",300,300,11],
+	["city12","city12","极光城","崩坏的极光之城",[{"npcId":"NPC1201"},{"npcId":"NPC1202"},{"npcId":"NPC1203"}],0,3072,4096,"/config/map/city12.json",300,300,12],
+	["city13","city13","新岛","被毁灭的失忆之城",[],0,3072,4096,"/config/map/city13.json",300,300,13],
+	["city14","city14","天外村","崩坏的天外村",[{"npcId":"NPC1401"},{"npcId":"NPC1402"},{"npcId":"NPC1403"},{"npcId":"NPC1404"},{"npcId":"NPC1405"}],0,3072,4096,"/config/map/city14.json",300,300,14],
+	["city15","city15","炎城","崩坏的炎城",[{"npcId":"NPC1501"},{"npcId":"NPC1502"},{"npcId":"NPC1503"},{"npcId":"NPC1504"}],0,3072,4096,"/config/map/city15.json",300,300,15],
+	["city16","city16","冰雪长城","冰雪长城",[{"npcId":"NPC1601"},{"npcId":"NPC1602"},{"npcId":"NPC1603"},{"npcId":"NPC1604"},{"npcId":"NPC1605"},{"npcId":"NPC1606"}],0,3072,4096,"/config/map/city16.json",300,300,16]
+]

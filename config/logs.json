@@ -1,0 +1,22 @@
+{
+    "routes": {
+        "arena": {
+            "pk": {
+                "key": 1000,
+                "name": "pk"
+            }
+        },
+        "battle": {
+
+        },
+        "casino": {
+
+        },
+        "equip": {
+            "wearWeapon": {
+                "key": 1001,
+                "name": "装载武器"
+            }
+        }
+    }
+}
