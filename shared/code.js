@@ -15,7 +15,8 @@ module.exports = {
         FA_TOKEN_ILLEGAL: 1000,
         FA_TOKEN_INVALID: 1001,
         FA_TOKEN_EXPIRE: 	1002,
-        FA_USER_NOT_EXIST: 1003
+        FA_USER_NOT_EXIST: 1003,
+        NO_CHARACTER: 1004
     },
 
     GATE: {

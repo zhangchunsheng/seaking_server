@@ -5,7 +5,8 @@
  * Date: 2013-09-22
  * Description: formation
  */
-var authService = require('../app/services/authService');
+var formationService = require('../app/services/formationService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 

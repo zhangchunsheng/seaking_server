@@ -33,28 +33,6 @@ if(redisConfig[env]) {
 
 var userDao = module.exports;
 
-userDao.login = function (registerType, loginName, password, cb) {
-    var key = "T" + registerType + "_" + loginName;
-
-     redis.command(function(client) {
-        client.multi().select(redisConfig.database.UC_USER_REDIS_DB, function() {
-
-        }).hgetall(key, function(err, reply) {
-                if(reply.password == password) {
-                    utils.invokeCallback(cb, null, reply);
-                } else {
-                    utils.invokeCallback(cb, {
-                        errCode: 101
-                    });
-                }
-                redis.release(client);
-            })
-            .exec(function (err, replies) {
-
-            });
-    });
-};
-
 /**
  * Get user data by loginName.
  * @param {Number} serverId
@@ -128,20 +106,6 @@ userDao.logLogout = function(serverId, registerType, loginName, cb) {
 }
 
 /**
- * 记录在线玩家
- */
-userDao.addOnlineUser = function(serverId, registerType, loginName, cb) {
-
-}
-
-/**
- * 删除在线玩家
- */
-userDao.removeOnlineUser = function(serverId, registerType, loginName, cb) {
-
-}
-
-/**
  * 初始化用户信息
  * @param userId
  * @param serverId
@@ -160,7 +124,6 @@ userDao.initUserInfo = function(userId, serverId, registerType, loginName, cb) {
         onlineDayNumContinuous: 0,
         isOnline: 1,
         date: date.getTime(),
-        gameCurrency: 0,
         bz: 1
     };
 
@@ -201,7 +164,7 @@ userDao.saveUserInfo = function(userInfo, serverId, registerType, loginName, cb)
  * @param {loginName} loginName
  * @param {function} cb Callback function.
  */
-userDao.getCharactersByLoginName = function(app, serverId, registerType, loginName, cb) {
+userDao.getCharactersByLoginName = function(serverId, registerType, loginName, cb) {
     userDao.getCharacterAllInfo(serverId, registerType, loginName, 0, function(err, character) {
         var array = [];
         array.push(character);
@@ -313,15 +276,6 @@ userDao.getPlayerIdByNickname=function(serverId, nickname, cb) {
         });
     });
 }
-
-/**
- * Get an user's all players by userId
- * @param {Number} characterId
- * @param {function} cb Callback function.
- */
-userDao.getPlayer = function(characterId, cb){
-
-};
 
 /**
  * 創建角色
@@ -844,14 +798,13 @@ userDao.getPlayerById = function(playerId, cb) {
 };
 
 /**
- * Get userInfo by loginName
- * @param {Object} app
- * @param {String} username
+ * Get playerInfo by loginName
+ * @param {String} loginName
  * @param {function} cb
  */
-userDao.getUserByLoginName = function (app, registerType, loginName, cb) {
-    dbUtil.selectDb(redisConfig.database.UC_USER_REDIS_DB, function(client) {
-        var key = "T" + registerType + "_" + loginName;
+userDao.getUserByLoginName = function (serverId, registerType, loginName, cb) {
+    dbUtil.selectDb(redisConfig.database.SEAKING_REDIS_DB, function(client) {
+        var key = "S" + serverId + "_T" + registerType + "_" + loginName;
         client.exists(key, function(err, reply) {
             if (reply == 0) {
                 redis.release(client);
@@ -863,50 +816,14 @@ userDao.getUserByLoginName = function (app, registerType, loginName, cb) {
                         redis.release(client);
                         utils.invokeCallback(cb, err.message, null);
                     } else {
-                        var user = new User({
-                            id: userInfo.userId,
-                            registerType: userInfo.registerType,
-                            loginName: userInfo.loginName,
-                            password: userInfo.password
-                        });
+                        var playerId = "S" + serverId + "C" + userInfo.characters;
                         redis.release(client);
-                        utils.invokeCallback(cb, null, user);
+                        utils.invokeCallback(cb, null, playerId);
                     }
                 });
             }
         });
     });
-};
-
-/**
- * delete user by username
- * @param {String} username
- * @param {function} cb Call back function.
- */
-userDao.deleteUserByName = function (username, cb) {
-
-};
-
-/**
- * Create a new user
- * @param (String) username
- * @param {String} password
- * @param {String} from Register source
- * @param {function} cb Call back function.
- */
-userDao.createUser = function (username, password, from, cb){
-
-};
-
-/**
- * Create a new player
- * @param {String} uid User id.
- * @param {String} name Player's name in the game.
- * @param {Number} roleId Player's roleId, decide which kind of player to create.
- * @param {function} cb Callback function
- */
-userDao.createMainPlayer = function (uid, name, cId, cb) {
-
 };
 
 /**
@@ -1260,13 +1177,4 @@ userDao.updateMoneyAndExp = function(data, cb) {
             }
         });
     });
-};
-
-/**
- * Delete player
- * @param {Number} characterId
- * @param {function} cb Callback function.
- */
-userDao.deletePlayer = function (characterId, cb){
-
 };

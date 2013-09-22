@@ -76,6 +76,9 @@ exports.createMainPlayer = function(req, res) {
                         var user = {
                             id: uid
                         };
+
+                        req.session.playerId = character.id;
+
                         data = {
                             code: consts.MESSAGE.RES,
                             user: user,
@@ -96,5 +99,36 @@ exports.createMainPlayer = function(req, res) {
  * @param res
  */
 exports.getMainPlayer = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , serverId = session.serverId;
+
+    var data = {};
+    userService.getCharactersByLoginName(serverId, registerType, loginName, function(err, results) {
+        if (err) {
+            console.log('learn skill error with player: ' + JSON.stringify(results) + ' stack: ' + err.stack);
+            data = {code: consts.MESSAGE.ERR, error:err};
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(results[0] == null || results[0] == {}) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER,
+                player: null
+            };
+        } else {
+            data = {
+                code: consts.MESSAGE.RES,
+                player: results[0].strip()
+            };
+        }
+
+        console.log(data);
+        utils.send(msg, res, data);
+    });
 }

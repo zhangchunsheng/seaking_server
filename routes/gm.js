@@ -6,6 +6,7 @@
  * Description: gm
  */
 var gmService = require('../app/services/gmService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 

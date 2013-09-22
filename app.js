@@ -27,7 +27,7 @@ app.set('port', process.env.PORT || 6011);
 express.logger.format('home', ':remote-addr :response-time - [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :res[content-length]');
 app.use(express.logger({
     format: 'home',
-    stream: fs.createWriteStream(__dirname + '/logs/access.log')
+    stream: fs.createWriteStream(__dirname + '/logs/access.log', {flags: 'a'})
 }));
 
 //app.use(express.bodyParser());

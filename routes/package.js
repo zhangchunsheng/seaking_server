@@ -6,6 +6,7 @@
  * Description: package
  */
 var packageService = require('../app/services/packageService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 

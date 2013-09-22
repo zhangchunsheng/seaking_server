@@ -45,10 +45,20 @@ exports.auth = function(req, res) {
     }
 
     userInfo.serverId = region.serverId;
-    session.setSession(req, res, userInfo);
 
-    data = {code: Code.OK};
-    utils.send(msg, res, data);
+    userService.getUserByLoginName(userInfo.serverId, userInfo.registerType, userInfo.loginName, function(err, reply) {
+        console.log(reply);
+        if(err || !reply) {
+
+        } else {
+            userInfo.playerId = reply;
+        }
+
+        session.setSession(req, res, userInfo);
+
+        data = {code: Code.OK};
+        utils.send(msg, res, data);
+    });
 }
 
 /**

@@ -44,3 +44,7 @@ playerService.learnSkill = function() {
 playerService.upgradeSkill = function() {
 
 }
+
+playerService.updatePlayerHP = function(character, players, cb) {
+    playerDao.updatePlayerHP(character, players, cb);
+}

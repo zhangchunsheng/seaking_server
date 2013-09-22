@@ -6,6 +6,7 @@
  * Description: skill
  */
 var skillService = require('../app/services/skillService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 

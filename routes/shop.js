@@ -6,6 +6,7 @@
  * Description: shop
  */
 var shopService = require('../app/services/shopService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 

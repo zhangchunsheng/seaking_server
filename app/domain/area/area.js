@@ -15,3 +15,11 @@ var exp = module.exports;
 exp.addPlayer = function() {
 
 }
+
+exp.getAreaInfo = function() {
+
+}
+
+exp.addEntity = function() {
+
+}

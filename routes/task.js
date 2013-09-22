@@ -6,6 +6,7 @@
  * Description: task
  */
 var taskService = require('../app/services/taskService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 

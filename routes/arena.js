@@ -6,6 +6,7 @@
  * Description: arena
  */
 var arenaService = require('../app/services/arenaService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 

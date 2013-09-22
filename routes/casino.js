@@ -5,7 +5,8 @@
  * Date: 2013-09-22
  * Description: casino
  */
-var authService = require('../app/services/authService');
+var casinoService = require('../app/services/casinoService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 

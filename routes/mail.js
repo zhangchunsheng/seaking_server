@@ -6,6 +6,7 @@
  * Description: mail
  */
 var mailService = require('../app/services/mailService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 
