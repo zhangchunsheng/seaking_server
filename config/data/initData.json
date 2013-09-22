@@ -1,0 +1,76 @@
+{
+    "currentScene": "city01",
+    "x": 1000,
+    "y": 100,
+    "experience": 0,
+    "level": 1,
+    "gameCurrency": 100,
+    "money": 100,
+    "equipments": {
+        "weapon": {
+            "epid": 0,
+            "level": 0
+        },//武器
+
+        "necklace": {
+            "epid": 0,
+            "level": 0
+        },//项链
+        "helmet": {
+            "epid": 0,
+            "level": 0
+        },//头盔
+        "armor": {
+            "epid": 0,
+            "level": 0
+        },//护甲
+        "belt": {
+            "epid": 0,
+            "level": 0
+        },//腰带
+        "legguard": {
+            "epid": 0,
+            "level": 0
+        },//护腿
+        "amulet": {
+            "epid": 0,
+            "level": 0
+        },//护符
+        "shoes": {
+            "epid": 0,
+            "level": 0
+        },//鞋
+        "ring": {
+            "epid": 0,
+            "level": 0
+        }//戒指
+    },
+    "package": {
+        "weapons": {
+            "itemCount": 9,
+            "items": {}
+        },
+        "equipments": {
+            "itemCount": 9,
+            "items": {}
+        },
+        "items": {
+            "itemCount": 9,
+            "items": {}
+        }
+    },
+    "skills": {
+        "activeSkills": [],
+        "passiveSkills": []
+    },
+    "formation": [{"cId":1},{"cId":3},{"cId":4},null,null,null,null],
+    "partners": [{"cId": 3},{"cId": 4}],
+    "gift": [],
+    "curTasks": {
+        "currentMainTask": {"taskId": 10100, "status": 0, "taskRecord": {"itemNum": 0}, "startTime": 0},
+        "currentBranchTask": {"taskId": 20201, "status": 0, "startTime": 0},
+        "currentDayTask": [{"taskId": 30201,"status": 0, "startTime": 0}, 30202, 30203],
+        "currentExerciseTask": {"taskId": 40201, "status": 0, "startTime": 0}
+    },
+    "currentIndu": {"induId":0}
+}

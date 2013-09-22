@@ -1,0 +1,31 @@
+{
+    "name": "kouwanju",
+    "version": "0.0.1",
+    "private": true,
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "express": "3.2.6",
+        "redis": "*",
+        "mysql": "*",
+        "forward": "*",
+        "connect": "*",
+        "pm": "*",
+        "urlrouter": "*",
+        "redis": "*",
+        "connect-redis": "*",
+        "generic-pool": "*",
+        "async": "*",
+        "mongoskin": "0.6.0"
+    },
+    "devDependencies": {
+        "should": "*",
+        "mocha": "*",
+        "jscover": "*",
+        "supertest": "*"
+    },
+    "author": "Peter Zhang",
+    "license": "MIT"
+}

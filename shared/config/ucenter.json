@@ -1,0 +1,41 @@
+{
+    "development": {
+        "host": "192.168.1.99",
+        "port": 8090,
+
+        "induLog": {
+            "get": "induLog/get",
+            "save": "/induLog/save"
+        },
+
+        "battleLog": {
+            "get": "battleLog/get",
+            "save": "/battleLog/save"
+        },
+
+        "taskLog": {
+            "get": "taskLog/get",
+            "save": "/taskLog/save"
+        }
+    },
+
+    "production": {
+        "host": "192.168.1.99",
+        "port": 8090,
+
+        "induLog": {
+            "get": "induLog/get",
+            "save": "/induLog/save"
+        },
+
+        "battleLog": {
+            "get": "battleLog/get",
+            "save": "/battleLog/save"
+        },
+
+        "taskLog": {
+            "get": "taskLog/get",
+            "save": "/taskLog/save"
+        }
+    }
+}

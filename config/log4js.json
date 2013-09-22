@@ -1,0 +1,8 @@
+{
+	"appenders" : [{
+        "type" : "file",
+        "filename" : "./logs/node-log.log",
+        "maxLogSize": 20480,
+        "backups" : 5
+    }]
+}

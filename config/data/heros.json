@@ -1,0 +1,15 @@
+[
+	["id","name","type","baseLevel","photo","xpNeeded","levelFillRate","accumulated_xp","hp","hpFillRate","attack","attLevelUpRate","defense","defLevelUpRate","focus","focusMaxIncrement","speedLevel","speed","speedMaxIncrement","dodge","dodgeMaxIncrement","criticalHit","critHitMaxIncrement","critDamage","critDamageMaxIncrement","block","blockMaxIncrement","counter","counterMaxIncrement"],
+	["id","name","type","baseLevel","photo","xpNeeded","levelFillRate","accumulated_xp","hp","hpFillRate","attack","attLevelUpRate","defense","defLevelUpRate","focus","focusMaxIncrement","speedLevel","speed","speedMaxIncrement","dodge","dodgeMaxIncrement","criticalHit","critHitMaxIncrement","critDamage","critDamageMaxIncrement","block","blockMaxIncrement","counter","counterMaxIncrement"],
+	[1,"Hero1",1,1,"1",50,10,0,200,7000,80,900,10,110,"1",34,"20","5000-2222",25,"0",10,"0",15,"40",55,"0",10,"0",15],
+	[2,"Hero2",2,1,"2",45,9.3,0,260,9600,52,480,25,200,"1",24,"26","3846-1851",28,"0",12,"0",10,"44",33,"0",16,"0",9],
+	[3,"Moon Princess",1,1,"3",55,10.3,0,175,5500,80,860,15,105,"1",31,"21","4761-2173",25,"0",9,"0",14,"50",35,"0",9,"0",14],
+	[4,"Sun princess",1,1,"4",44,9.9,0,160,6500,80,830,15,100,"1",29,"21","4761-2127",26,"0",9,"0",16,"50",30,"0",8,"0",13],
+	[5,"Chief",2,1,"5",47,9.5,0,250,9350,50,500,25,200,"1",23,"27","2703-1818",28,"0",11,"0",11,"40",30,"0",17,"0",10],
+	[6,"Pupil",1,1,"6",55,10.5,0,180,6500,85,800,12,100,"1",29,"22","4545-2083",26,"0",9,"0",14,"50",30,"0",9,"0",16],
+	[7,"Doctor sister",1,1,"7",60,11,0,180,6250,90,850,12,90,"1",31,"23","4347-2040",26,"0",11,"0",16,"50",30,"0",8,"0",17],
+	[8,"Witch",1,1,"8",65,11.5,0,180,6350,95,900,12,85,"1",33,"24","4166-1960",27,"0",10,"0",18,"50",40,"0",7,"0",18],
+	[9,"Fountain protector",2,1,"9",53,9.8,0,210,9200,55,550,30,220,"1",23,"28","2571-1785",28,"0",12,"0",12,"45",35,"0",18,"0",8],
+	[10,"Time machine protector",2,1,"10",55,9.7,0,230,9500,60,600,35,250,"1",20,"29","3448-1694",30,"0",13,"0",13,"40",40,"0",19,"0",7],
+	[11,"Volcano spirit",1,1,"11",70,12,0,180,5000,95,950,12,80,"1",35,"10","10000-4000",15,"0",8,"0",22,"60",30,"0",6,"0",20]
+]
