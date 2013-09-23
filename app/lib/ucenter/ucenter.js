@@ -16,8 +16,8 @@ if(ucenterConfig[env]) {
 var ucenter = module.exports;
 
 ucenter.saveInduLog = function(data) {
-    var host = "192.168.1.99";
-    var port = "8090";
+    var host = ucenterConfig.host;
+    var port = ucenterConfig.port;
     var path = "/induLog/save";
     var headers = {};
 
@@ -29,8 +29,8 @@ ucenter.saveInduLog = function(data) {
 }
 
 ucenter.saveTaskLog = function(data) {
-    var host = "192.168.1.99";
-    var port = "8090";
+    var host = ucenterConfig.host;
+    var port = ucenterConfig.port;
     var path = "/taskLog/save";
     var headers = {};
 
@@ -42,8 +42,8 @@ ucenter.saveTaskLog = function(data) {
 }
 
 ucenter.saveBattleLog = function(data) {
-    var host = "192.168.1.99";
-    var port = "8090";
+    var host = ucenterConfig.host;
+    var port = ucenterConfig.port;
     var path = "/battleLog/save";
     var headers = {};
 
