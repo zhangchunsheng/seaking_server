@@ -14,10 +14,12 @@ var express = require('express')
     , connect = require('connect')
     , config = require('./config')
     , fs = require('fs')
+    , utils = require('./app/utils/utils')
     , redis = require('./app/dao/redis/redis');
 
 var app = express();
 
+utils.doProcess(process);
 // all environments
 app.set('port', process.env.PORT || 4011);
 //app.use(express.favicon());

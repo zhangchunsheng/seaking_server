@@ -258,3 +258,20 @@ utils.send = function(msg, res, data) {
 utils.log = function(msg) {
     console.log(msg);
 }
+
+/**
+ *
+ * @param process
+ */
+utils.doProcess = function(process) {
+    var argv = process.argv;
+    var array = [];
+    for(var i = 2 ; i < argv.length ; i++) {
+        array = argv[i].split("=");
+        if(array[0] == "env") {
+            process.env.NODE_ENV = array[1];
+        } else if(array[0] == "serverType") {
+            process.env.SERVER_TYPE = array[1];
+        }
+    }
+}
