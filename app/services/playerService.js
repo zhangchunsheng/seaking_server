@@ -48,3 +48,7 @@ playerService.upgradeSkill = function() {
 playerService.updatePlayerHP = function(character, players, cb) {
     playerDao.updatePlayerHP(character, players, cb);
 }
+
+playerService.changeFormation = function(player, cb) {
+    playerDao.changeFormation(player, cb);
+}

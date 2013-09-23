@@ -56,7 +56,7 @@ exports.gambling = function(req, res) {
         return;
     }
     var allPice = (msg.fill * player.casino.items[msg.index].price * 0.2);
-    logger.debug(allPice);
+
     if (player.money < allPice) {
         next(null, {
             code : Code.FAIL

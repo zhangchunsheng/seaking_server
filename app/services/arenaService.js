@@ -24,3 +24,7 @@ arenaService.getOpponents = function() {
 arenaService.getRank = function() {
 
 }
+
+arenaService.exchange = function(player, opponent, cb) {
+    arenaDao.exchange(player, opponent, cb)
+}

@@ -23,3 +23,7 @@ exp.getAreaInfo = function() {
 exp.addEntity = function() {
 
 }
+
+exp.removePlayer = function(playerId) {
+
+}

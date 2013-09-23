@@ -7,12 +7,14 @@
  */
 var playerService = require('../app/services/playerService');
 var userService = require('../app/services/userService');
+var partnerService = require('../app/services/partnerService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
 var EntityType = require('../app/consts/consts').EntityType;
 var dataApi = require('../app/utils/dataApi');
 var area = require('../app/domain/area/area');
+var world = require('../app/domain/world');
 var async = require('async');
 
 exports.index = function(req, res) {
@@ -152,35 +154,50 @@ exports.getPartner = function(req, res) {
     var session = req.session;
 
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName")
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
         , cId = msg.cId;
-    var player = area.getPlayer(session.get('playerId'));
-    var partners = player.partners;
-    var flag = false;
-    for(var i = 0 ; i < partners.length ; i++) {
-        if(partners[i].cId == cId) {
-            flag = true;
-            break;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var partners = player.partners;
+        var flag = false;
+        for(var i = 0 ; i < partners.length ; i++) {
+            if(partners[i].cId == cId) {
+                flag = true;
+                break;
+            }
         }
-    }
-    if(flag) {
-        next(null, {
-            code: 102
-        });
-        return;
-    }
-    var characterId = session.get("playerId");
-    characterId = userDao.getRealCharacterId(characterId);
-    partnerDao.createPartner(serverId, uid, registerType, loginName, characterId, cId, function(err, partner) {
-        if(err) {
-            next(null, {code: consts.MESSAGE.ERR});
+        if(flag) {
+            data = {
+                code: 102
+            };
+            utils.send(msg, res, data);
             return;
         }
+        var characterId = session.get("playerId");
+        characterId = userService.getRealCharacterId(characterId);
+        partnerService.createPartner(serverId, uid, registerType, loginName, characterId, cId, function(err, partner) {
+            if(err) {
+                data = {
+                    code: consts.MESSAGE.ERR
+                };
+                utils.send(msg, res, data);
+                return;
+            }
 
-        player.partners.push(partner);
-        next(null, {code: consts.MESSAGE.RES, partner: partner});
+            player.partners.push(partner);
+
+            data = {
+                code: consts.MESSAGE.RES,
+                partner: partner
+            };
+            utils.send(msg, res, data);
+        });
     });
 }
 
@@ -208,25 +225,31 @@ exports.changeArea = function(req, res) {
     var areaId = msg.currentScene;
     var target = msg.target;
 
-    var req = {
+    var args = {
         areaId: areaId,
         target: target,
         uid: session.uid,
-        playerId: session.get('playerId'),
-        frontendId: session.frontendId
+        serverId: session.serverId,
+        registerType: session.registerType,
+        loginName: session.loginName,
+        playerId: session.playerId
     };
 
-    world.changeArea(req, session, function(err) {
+    var data = {};
+    world.changeArea(args, session, function(err) {
         if(err) {
-            next(null, {
+            data = {
                 code: consts.MESSAGE.ERR,
-                currentScene: target
-            });
+                currentScene: areaId
+            };
+            utils.send(msg, res, data);
+
         } else {
-            next(null, {
+            data = {
                 code: consts.MESSAGE.RES,
                 currentScene: target
-            });
+            };
+            utils.send(msg, res, data);
         }
     });
 }
@@ -240,9 +263,19 @@ exports.npcTalk = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var player = area.getPlayer(session.get('playerId'));
-    player.target = msg.targetId;
-    next();
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        player.target = msg.targetId;
+        utils.send(msg, res, data);
+    });
 }
 
 /**
@@ -254,10 +287,24 @@ exports.learnSkill = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var player = area.getPlayer(session.get('playerId'));
-    var status = player.learnSkill(msg.skillId);
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    next(null, {status: status, skill: player.fightSkills[msg.skillId]});
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var status = player.learnSkill(msg.skillId);
+
+        data = {
+            status: status,
+            skill: player.fightSkills[msg.skillId]
+        };
+        utils.send(msg, res, data);
+    });
 }
 
 /**
@@ -269,8 +316,21 @@ exports.upgradeSkill = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var player = area.getPlayer(session.get('playerId'));
-    var status = player.upgradeSkill(msg.skillId);
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    next(null, {status: status});
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var status = player.upgradeSkill(msg.skillId);
+
+        data = {
+            status: status
+        };
+        utils.send(msg, res, data);
+    });
 }

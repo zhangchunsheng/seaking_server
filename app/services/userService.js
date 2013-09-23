@@ -40,3 +40,15 @@ userService.enterIndu = function(serverId, registerType, loginName, induId, cb) 
 userService.leaveIndu = function(serverId, registerType, loginName, induId, cb) {
     userDao.leaveIndu(serverId, registerType, loginName, induId, cb);
 }
+
+userService.getPlayerById = function(playerId, cb) {
+    userDao.getPlayerById(playerId, cb);
+}
+
+userService.getRealCharacterId = function(characterId) {
+    userDao.getRealCharacterId(characterId);
+}
+
+userService.updatePlayer = function(player, field, cb) {
+    userDao.updatePlayer(player, field, cb);
+}

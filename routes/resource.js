@@ -9,6 +9,7 @@ var resourceService = require('../app/services/resourceService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var fs = require("fs");
+var dataApi = require('../app/utils/dataApi');
 
 exports.index = function(req, res) {
     res.send("index");

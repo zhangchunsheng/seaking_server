@@ -9,6 +9,9 @@ var taskService = require('../app/services/taskService');
 var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
+var consts = require('../app/consts/consts');
+var formula = require('../app/consts/formula');
+var taskReward = require('../app/domain/taskReward');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -25,36 +28,69 @@ exports.startTask = function(req, res) {
 
     var taskId = msg.taskId;
 
-    var player = area.getPlayer(session.get('playerId'));
-    var curTasks = player.curTasksEntity;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var task = getTask(taskId, curTasks, next);
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
 
-    if(task == null) {
-        return;
-    }
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var curTasks = player.curTasksEntity;
 
-    if(task.status > consts.TaskStatus.NOT_START) {
-        next(null, {
-            code: Code.TASK.HAS_ACCEPTED
-        });
-        return;
-    }
+        var task = getTask(req, res, msg, taskId, curTasks);
 
-    var type = utils.getTaskType(task);
+        if(task == null) {
+            return;
+        }
 
-    player.startTask(type, task);
-    var date = new Date();
-    date.setTime(task.startTime);
-    var taskData = {
-        status: task.status,
-        taskRecord: task.taskRecord,
-        startTime: formula.timeFormat(date)
-    };
-    next(null, {
-        code: consts.MESSAGE.RES,
-        taskData: taskData
+        if(task.status > consts.TaskStatus.NOT_START) {
+            data = {
+                code: Code.TASK.HAS_ACCEPTED
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var type = utils.getTaskType(task);
+
+        player.startTask(type, task);
+        var date = new Date();
+        date.setTime(task.startTime);
+        var taskData = {
+            status: task.status,
+            taskRecord: task.taskRecord,
+            startTime: formula.timeFormat(date)
+        };
+        data = {
+            code: consts.MESSAGE.RES,
+            taskData: taskData
+        };
+        utils.send(msg, res, data);
     });
+}
+
+function getTask(req, res, msg, taskId, curTasks) {
+    var task = null;
+    // 已存在task
+    for (var i in curTasks) {
+        if (curTasks[i].taskId == taskId) {
+            task = curTasks[i];
+            break;
+        }
+    }
+
+    var data = {};
+    if(task == null) {
+        data = {
+            code: Code.TASK.NO_CUR_TASK
+        };
+        utils.send(msg, res, data);
+    }
+
+    return task;
 }
 
 /**
@@ -68,35 +104,47 @@ exports.handOverTask = function(req, res) {
 
     var taskId = msg.taskId;
 
-    var player = area.getPlayer(session.get('playerId'));
-    var curTasks = player.curTasksEntity;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var task = getTask(taskId, curTasks, next);
-    if(task == null) {
-        return;
-    }
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
 
-    var type = utils.getTaskType(task);
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var curTasks = player.curTasksEntity;
 
-    var taskIds = [];
-    if (task.status === consts.TaskStatus.COMPLETED) {
-        taskIds.push(type);
-    }
+        var task = getTask(req, res, msg, taskId, curTasks);
+        if(task == null) {
+            return;
+        }
 
-    if(taskIds.length == 0) {
-        next(null, {
-            code: Code.TASK.NOT_COMPLETE
-        });
-        return;
-    }
+        var type = utils.getTaskType(task);
 
-    var players = [];
-    players.push(player);
-    taskReward.reward(player, players, taskIds, function(err, reply) { //奖励
-        var nextTasks = player.handOverTask(taskIds); //下一次任务
-        next(null, {
-            code: consts.MESSAGE.RES,
-            nextTasks: nextTasks
+        var taskIds = [];
+        if (task.status === consts.TaskStatus.COMPLETED) {
+            taskIds.push(type);
+        }
+
+        if(taskIds.length == 0) {
+            data = {
+                code: Code.TASK.NOT_COMPLETE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var players = [];
+        players.push(player);
+        taskReward.reward(player, players, taskIds, function(err, reply) { //奖励
+            var nextTasks = player.handOverTask(taskIds); //下一次任务
+            data = {
+                code: consts.MESSAGE.RES,
+                nextTasks: nextTasks
+            };
+            utils.send(msg, res, data);
         });
     });
 }
