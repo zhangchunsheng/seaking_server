@@ -8,6 +8,7 @@
 var routes = require('./routes')
     , auth = require('./routes/auth')
     , role = require('./routes/role')
+    , area = require('./routes/area')
     , arena = require('./routes/arena')
     , battle = require('./routes/battle')
     , casino = require('./routes/casino')
@@ -34,6 +35,8 @@ module.exports = function (app) {
 
     app.get('/role/createMainPlayer', authRequired, role.createMainPlayer);
     app.get('/role/getMainPlayer', authRequired, role.getMainPlayer);
+
+    app.get('/area/getAreaInfo', area.getAreaInfo);
 
     // 竞技场
     app.get('/arena/pk', authRequired, arena.pk);

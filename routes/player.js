@@ -55,19 +55,15 @@ exports.enterScene = function(req, res) {
         player.x = 100;
         player.y = 100;
 
-        /*var data = {
-         entities: area.getAreaInfo({x: player.x, y: player.y}, player.range),
-         curPlayer: player.getInfo()
-         };*/
-        var data = {
-            code: consts.MESSAGE.RES,
-            entities: area.getAreaInfo({x: player.x, y: player.y}, player.range)
-        };
-        utils.send(msg, res, data);
-
-        if (!area.addEntity(player)) {
-            console.log("Add player to area faild! areaId : " + player.areaId);
-        }
+        area.getAreaInfo(player, function(err, results) {
+            area.addEntity(player, function(err, reply) {
+                var data = {
+                    code: consts.MESSAGE.RES,
+                    entities: results
+                };
+                utils.send(msg, res, data);
+            });
+        });
     }, true);
 }
 
@@ -243,7 +239,6 @@ exports.changeArea = function(req, res) {
                 currentScene: areaId
             };
             utils.send(msg, res, data);
-
         } else {
             data = {
                 code: consts.MESSAGE.RES,
