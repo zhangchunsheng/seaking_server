@@ -19,7 +19,7 @@ var express = require('express')
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 6011);
+app.set('port', process.env.PORT || 4011);
 //app.use(express.favicon());
 
 //log
