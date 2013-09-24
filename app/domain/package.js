@@ -325,9 +325,11 @@ Package.prototype.removeItem = function(type, index,itemNum) {
 Package.prototype.checkItem = function(type, index, itemId) {
     var result = 0, i, item;
     item = this[type].items[index];
+    console.log(item);
+    console.log(itemId);
     if(!item){
         return result;
-    }else if (item.itemId == itemId) {
+    } else if (item.itemId == itemId) {
         result = item.itemNum;
     }
 

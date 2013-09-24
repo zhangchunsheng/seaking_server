@@ -392,7 +392,7 @@ Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
 }
 
 /**
- * 同步数据
+ *
  */
 Player.prototype.syncData = function() {
 

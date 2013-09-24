@@ -38,7 +38,12 @@ app.use(express.logger({
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('html5'));
-app.use(express.session());
+app.use(express.session({
+    secret: "html5",
+    maxAge: new Date(Date.now() + 3600000), //1 Hour
+    expires: new Date(Date.now() + 3600000) //1 Hour
+    //store: new MongoStore({db: 'sessionDB'})
+}));
 //app.use(app.router);
 app.use(urlrouter(route));
 

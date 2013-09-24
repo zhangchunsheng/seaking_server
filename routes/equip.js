@@ -7,11 +7,15 @@
  */
 var authService = require('../app/services/authService');
 var userService = require('../app/services/userService');
+var packageService = require('../app/services/packageService');
+var equipmentsService = require('../app/services/equipmentsService');
+var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var PackageType = require('../app/consts/consts').PackageType;
 var dataApi = require('../app/utils/dataApi');
 var consts = require('../app/consts/consts');
+var async = require('async');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -60,14 +64,35 @@ exports.wearWeapon = function(req, res) {
             });
 
             status = 1;
+
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    status: status,
+                    packageIndex: packageIndex
+                };
+                utils.send(msg, res, data);
+            });
         } else {
             status = -2;//没有该武器
+            data = {
+                status: status,
+                packageIndex: packageIndex
+            };
+            utils.send(msg, res, data);
         }
-        data = {
-            status: status,
-            packageIndex: packageIndex
-        };
-        utils.send(msg, res, data);
     });
 }
 
@@ -124,11 +149,26 @@ exports.unWearWeapon = function(req, res) {
             status = 1;
         }
 
-        data = {
-            status: status,
-            packageIndex: packageIndex
-        };
-        utils.send(msg, res, data);
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            data = {
+                status: status,
+                packageIndex: packageIndex
+            };
+            utils.send(msg, res, data);
+        });
     });
 }
 
@@ -193,11 +233,26 @@ exports.equip = function(req, res) {
 
         status = 1;
 
-        data = {
-            status: status,
-            packageIndex: packageIndex
-        };
-        utils.send(msg, res, data);
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            data = {
+                status: status,
+                packageIndex: packageIndex
+            };
+            utils.send(msg, res, data);
+        });
     });
 }
 
@@ -261,11 +316,26 @@ exports.unEquip = function(req, res) {
             status = 1;
         }
 
-        data = {
-            status: status,
-            packageIndex: packageIndex
-        };
-        utils.send(msg, res, data);
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            data = {
+                status: status,
+                packageIndex: packageIndex
+            };
+            utils.send(msg, res, data);
+        });
     });
 }
 
@@ -309,7 +379,7 @@ exports.upgrade = function(req, res) {
             return;
         }
 
-        var level = player.equipmentsEntity.get(type).level;
+        var level = parseInt(player.equipmentsEntity.get(type).level);
         level += 1;
         var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
 
@@ -319,9 +389,31 @@ exports.upgrade = function(req, res) {
             status = player.equipmentsEntity.upgradeByMoney(player, type, equipment_levelup);
         }
 
-        data = {
-            status: status
-        };
-        utils.send(msg, res, data);
+        if(status == 1) {
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    status: status
+                };
+                utils.send(msg, res, data);
+            });
+        } else {
+            data = {
+                status: status
+            };
+            utils.send(msg, res, data);
+        }
     });
 }

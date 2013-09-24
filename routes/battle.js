@@ -9,6 +9,9 @@ var battleService = require('../app/services/battleService');
 var userService = require('../app/services/userService');
 var playerService = require('../app/services/playerService');
 var battleService = require('../app/services/battleService');
+var packageService = require('../app/services/packageService');
+var equipmentsService = require('../app/services/equipmentsService');
+var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -132,11 +135,27 @@ exports.battle = function(req, res) {
                 function(err, results) {
                     var playerInfo = results[0];
                     if(reply.battleResult.isWin == true) {
-                        userService.updatePlayerInduInfo(character, eid, function(err, data) {
+                        async.parallel([
+                            function(callback) {
+                                userService.updatePlayerInduInfo(character, eid, callback);
+                            },
+                            function(callback) {
+                                userService.updatePlayerAttribute(character, callback);
+                            },
+                            function(callback) {
+                                packageService.update(character.packageEntity.strip(), callback);
+                            },
+                            function(callback) {
+                                equipmentsService.update(character.equipmentsEntity.strip(), callback);
+                            },
+                            function(callback) {
+                                taskService.updateTask(character, character.curTasksEntity.strip(), callback);
+                            }
+                        ], function(err, reply) {
                             var result = {
                                 induData: {
                                     eid: eid,
-                                    died: false // test
+                                    died: false
                                 },
                                 playerInfo: playerInfo,
                                 eventResult: reply

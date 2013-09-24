@@ -51,13 +51,14 @@ exports.addItem = function(req, res) {
         return;
     }
     var type = "";
-    if(itemId.indexOf("W")) {
+    if(itemId.indexOf("W") == 0) {
         type = PackageType.WEAPONS;
-    } else if(itemId.indexOf("E")) {
+    } else if(itemId.indexOf("E") == 0) {
         type = PackageType.EQUIPMENTS;
-    } else if(itemId.indexOf("D")) {
+    } else if(itemId.indexOf("D") == 0) {
         type = PackageType.ITEMS;
     }
+
     var item = {
         itemId: itemId,
         itemNum: itemNum,
