@@ -26,10 +26,14 @@ equipmentsService.unEquip = function() {
 
 }
 
-equipmentsService.upgrade = function(val, cb) {
-    equipmentsDao.update(val, cb);
+equipmentsService.upgrade = function() {
+
 }
 
 equipmentsService.createEquipments = function(playerId, callback) {
     utils.invokeCallback(callback, null, {});
+}
+
+equipmentsService.update = function(val, cb) {
+    equipmentsDao.update(val, cb);
 }

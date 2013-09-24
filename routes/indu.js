@@ -148,10 +148,6 @@ exports.triggerEvent = function(req, res) {
 
                             // character.updateTaskRecord(consts.TaskGoalType.KILL_MONSTER, fight.monsters);
                             // update task
-                            //userService.updatePlayerAttribute(player);
-                            //packageService.update(player.packageEntity.strip());
-                            //equipmentsService.update(player.equipmentsEntity.strip());
-                            //taskService.updateTask(player, player.curTasksEntity.strip());
                         } else {
                             var result = {
                                 induData: {

@@ -194,6 +194,7 @@ taskDao.createNewTask = function(taskInfo, serverId, registerType, loginName, ch
     taskInfo.curTasks = curTasks;
     var task = new Task(taskInfo);
     task.on('save', function() {
+        console.log("task sync data");
         task.syncData();
     });
     return task;

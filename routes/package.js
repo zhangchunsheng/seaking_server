@@ -7,11 +7,14 @@
  */
 var packageService = require('../app/services/packageService');
 var userService = require('../app/services/userService');
+var equipmentsService = require('../app/services/equipmentsService');
+var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
 var PackageType = require('../app/consts/consts').PackageType;
 var dataApi = require('../app/utils/dataApi');
+var async = require('async');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -67,7 +70,23 @@ exports.addItem = function(req, res) {
             code: consts.MESSAGE.RES,
             packageIndex: result.index
         };
-        utils.send(msg, res, data);
+
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            utils.send(msg, res, data);
+        });
     });
 }
 
