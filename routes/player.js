@@ -175,8 +175,6 @@ exports.getPartner = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        var characterId = session.get("playerId");
-        characterId = userService.getRealCharacterId(characterId);
         partnerService.createPartner(serverId, uid, registerType, loginName, characterId, cId, function(err, partner) {
             if(err) {
                 data = {
