@@ -26,8 +26,8 @@ equipmentsService.unEquip = function() {
 
 }
 
-equipmentsService.upgrade = function() {
-
+equipmentsService.upgrade = function(val, cb) {
+    equipmentsDao.update(val, cb);
 }
 
 equipmentsService.createEquipments = function(playerId, callback) {

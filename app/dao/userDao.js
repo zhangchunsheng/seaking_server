@@ -880,7 +880,8 @@ userDao.updatePlayer = function (player, field, cb) {
     });
 };
 
-userDao.updatePlayerAttribute = function(player, cb) {    var column = player.updateColumn().columns;
+userDao.updatePlayerAttribute = function(player, cb) {
+    var column = player.updateColumn().columns;
     var key = "S" + player.sid + "_T" + player.registerType + "_" + player.loginName;
 
     redis.command(function(client) {

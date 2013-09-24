@@ -266,6 +266,10 @@ Task.prototype.logTask = function() {
     }
 };
 
+Task.prototype.syncData = function() {
+
+}
+
 /**
  * getInfo
  */

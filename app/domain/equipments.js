@@ -85,6 +85,10 @@ Equipments.prototype.get = function(type) {
     return this[type];
 };
 
+Equipments.prototype.syncData = function() {
+
+}
+
 //Equip equipment by type and id
 Equipments.prototype.equip = function(type, equip) {
     this[type] = {

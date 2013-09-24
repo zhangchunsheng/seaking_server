@@ -6,6 +6,8 @@
  * Description: userService
  */
 var userDao = require('../dao/userDao');
+var utils = require('../utils/utils');
+var eventManager = require('../domain/event/eventManager');
 
 var userService = module.exports;
 
@@ -22,7 +24,14 @@ userService.getCharactersByLoginName = function(serverId, registerType, loginNam
 }
 
 userService.getCharacterAllInfo = function(serverId, registerType, loginName, characterId, cb) {
-    userDao.getCharacterAllInfo(serverId, registerType, loginName, characterId, cb);
+    userDao.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
+        if(!!err || !character) {
+            console.log('Get user for userService failed! ' + err);
+        } else {
+            eventManager.addEvent(character);
+        }
+        utils.invokeCallback(cb, err, character);
+    });
 }
 
 userService.getUserByLoginName = function(serverId, registerType, loginName, cb) {
@@ -51,4 +60,8 @@ userService.getRealCharacterId = function(characterId) {
 
 userService.updatePlayer = function(player, field, cb) {
     userDao.updatePlayer(player, field, cb);
+}
+
+userService.updatePlayerAttribute = function(player, cb) {
+    userDao.updatePlayerAttribute(player, cb);
 }

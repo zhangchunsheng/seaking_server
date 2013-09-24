@@ -45,7 +45,7 @@ exports.change = function(req, res) {
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         //需要验证是否有该角色存在
-        player.formation = formation;
+        player.formation = JSON.parse(formation);
         playerService.changeFormation(player, function(err, reply) {
             var status = {
                 code: consts.MESSAGE.RES

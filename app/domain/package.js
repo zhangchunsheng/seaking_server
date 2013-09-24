@@ -54,6 +54,10 @@ Package.prototype.get = function(type, index) {
     return this[type].items[index];
 };
 
+Package.prototype.syncData = function() {
+
+}
+
 Package.prototype.getData = function(type) {
     var data = {};
 

@@ -392,6 +392,13 @@ Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
 }
 
 /**
+ * 同步数据
+ */
+Player.prototype.syncData = function() {
+
+}
+
+/**
  * Handover task.
  * Handover task after curTask is completed, and upgrade the tasks' state
  *

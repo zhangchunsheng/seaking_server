@@ -145,8 +145,13 @@ exports.triggerEvent = function(req, res) {
                                 }
                                 utils.send(msg, res, result);
                             });
-                            //character.updateTaskRecord(consts.TaskGoalType.KILL_MONSTER, fight.monsters);
+
+                            // character.updateTaskRecord(consts.TaskGoalType.KILL_MONSTER, fight.monsters);
                             // update task
+                            //userService.updatePlayerAttribute(player);
+                            //packageService.update(player.packageEntity.strip());
+                            //equipmentsService.update(player.equipmentsEntity.strip());
+                            //taskService.updateTask(player, player.curTasksEntity.strip());
                         } else {
                             var result = {
                                 induData: {
