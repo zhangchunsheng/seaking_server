@@ -20,3 +20,7 @@ taskService.handOverTask = function() {
 taskService.updateTask = function(player, tasks, cb) {
     taskDao.updateTask(player, tasks, cb);
 }
+
+taskService.getUpdateArray = function() {
+
+}

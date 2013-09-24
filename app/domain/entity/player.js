@@ -513,7 +513,8 @@ Player.prototype.updateColumn = function() {
         columns : {
             experience: this.experience,
             money: this.money,
-            hp: this.hp
+            hp: this.hp,
+            buffs: this.buffs
         }
     };
 };

@@ -119,7 +119,22 @@ exports.dropItem = function(req, res) {
             code: consts.MESSAGE.RES,
             status: 1
         };
-        utils.send(msg, res, data);
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            utils.send(msg, res, data);
+        });
     });
 }
 
@@ -182,7 +197,22 @@ exports.sellItem = function(req, res) {
                     itemId: itemId
                 }
             };
-            utils.send(msg, res, data);
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                utils.send(msg, res, data);
+            });
         }
     });
 }
@@ -258,7 +288,22 @@ exports.discardItem = function(req, res) {
                     itemId: msg.itemId
                 }
             };
-            utils.send(msg, res, data);
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                utils.send(msg, res, data);
+            });
         }
     });
 }
@@ -308,7 +353,22 @@ exports.resetItem = function(req, res) {
                 item: startItem
             }]
         };
-        utils.send(msg, res, data);
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            utils.send(msg, res, data);
+        });
     });
 }
 
@@ -380,7 +440,22 @@ exports.userItem = function(req, res) {
                 data = {
                     code: Code.OK
                 };
-                utils.send(msg, res, data);
+                async.parallel([
+                    function(callback) {
+                        userService.updatePlayerAttribute(player, callback);
+                    },
+                    function(callback) {
+                        packageService.update(player.packageEntity.strip(), callback);
+                    },
+                    function(callback) {
+                        equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                    },
+                    function(callback) {
+                        taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                    }
+                ], function(err, reply) {
+                    utils.send(msg, res, data);
+                });
                 break;
             case consts.ItemCategory.HPreply://恢复HP
                 var hpType = Item.itemId.substr(5, 2);
@@ -401,7 +476,16 @@ exports.userItem = function(req, res) {
                             data = {
                                 code: Code.OK
                             };
-                            utils.send(msg, res, data);
+                            async.parallel([
+                                function(callback) {
+                                    packageService.update(player.packageEntity.strip(), callback);
+                                },
+                                function(callback) {
+                                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                                }
+                            ], function(err, reply) {
+                                utils.send(msg, res, data);
+                            });
                         });
                         break;
                     case "02"://持续恢复hp
@@ -414,7 +498,22 @@ exports.userItem = function(req, res) {
                         data = {
                             code: Code.OK
                         };
-                        utils.send(msg, res, data);
+                        async.parallel([
+                            function(callback) {
+                                userService.updatePlayerAttribute(player, callback);
+                            },
+                            function(callback) {
+                                packageService.update(player.packageEntity.strip(), callback);
+                            },
+                            function(callback) {
+                                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                            },
+                            function(callback) {
+                                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                            }
+                        ], function(err, reply) {
+                            utils.send(msg, res, data);
+                        });
                         break;
                 }
                 break;
@@ -426,7 +525,22 @@ exports.userItem = function(req, res) {
                 data = {
                     code:Code.OK
                 };
-                utils.send(msg, res, data);
+                async.parallel([
+                    function(callback) {
+                        userService.updatePlayerAttribute(player, callback);
+                    },
+                    function(callback) {
+                        packageService.update(player.packageEntity.strip(), callback);
+                    },
+                    function(callback) {
+                        equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                    },
+                    function(callback) {
+                        taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                    }
+                ], function(err, reply) {
+                    utils.send(msg, res, data);
+                });
                 break;
             case consts.ItemCategory.NoAttributeItem://无属性
                 break;

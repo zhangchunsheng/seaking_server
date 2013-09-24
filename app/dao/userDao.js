@@ -315,6 +315,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
                         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         photo: '',
+                        buffs: [],
                         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         anger: 0,
@@ -436,6 +437,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                             nickname: character.nickname,
                             level: character.level,
                             experience: character.experience,
+                            buffs: character.buffs,
                             hp: character.hp,
                             maxHp: character.maxHp,
                             anger: character.anger,
@@ -593,6 +595,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                         x: parseInt(replies.x),
                         y: parseInt(replies.y),
                         experience: parseInt(replies.experience),
+                        buffs: JSON.parse(replies.buffs).buffs,
                         level: parseInt(level),
                         needExp: parseInt(replies.needExp),
                         accumulated_xp: parseInt(replies.accumulated_xp),
@@ -671,6 +674,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                             nickname: character.nickname,
                             level: character.level,
                             experience: character.experience,
+                            buffs: character.buffs,
                             hp: character.hp,
                             maxHp: character.maxHp,
                             anger: character.anger,
@@ -741,6 +745,7 @@ userDao.getPlayerById = function(playerId, cb) {
                         x: parseInt(replies.x),
                         y: parseInt(replies.y),
                         experience: parseInt(replies.experience),
+                        buffs: JSON.parse(replies.buffs).buffs,
                         level: parseInt(level),
                         needExp: parseInt(replies.needExp),
                         accumulated_xp: parseInt(replies.accumulated_xp),
@@ -762,6 +767,7 @@ userDao.getPlayerById = function(playerId, cb) {
                         money: parseInt(replies.money),
                         equipments: JSON.parse(replies.equipments),
                         skills: {
+                            currentSkill: JSON.parse(replies.currentSkill),
                             activeSkills: JSON.parse(replies.activeSkills),
                             passiveSkills: JSON.parse(replies.passiveSkills)
                         },
@@ -880,6 +886,17 @@ userDao.updatePlayer = function (player, field, cb) {
     });
 };
 
+userDao.update = function(array, cb) {
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+            client.multi(array).exec(function(err, replies) {
+                redis.release(client);
+                utils.invokeCallback(cb, null, 1);
+            });
+        });
+    });
+}
+
 userDao.updatePlayerAttribute = function(player, cb) {
     var column = player.updateColumn().columns;
     var key = "S" + player.sid + "_T" + player.registerType + "_" + player.loginName;
@@ -893,7 +910,7 @@ userDao.updatePlayerAttribute = function(player, cb) {
 
                     var array = [];
                     for(var o in column) {
-                        array.push(["hset", key, o, column[o]]);
+                        dbUtil.getCommand(array, key, o, player);
                     }
                     client.multi(array).exec(function(err, replies) {
                         redis.release(client);

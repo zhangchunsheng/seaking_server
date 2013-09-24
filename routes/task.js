@@ -6,12 +6,15 @@
  * Description: task
  */
 var taskService = require('../app/services/taskService');
+var packageService = require('../app/services/packageService');
+var equipmentsService = require('../app/services/equipmentsService');
 var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
 var formula = require('../app/consts/formula');
 var taskReward = require('../app/domain/taskReward');
+var async = require('async');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -68,7 +71,22 @@ exports.startTask = function(req, res) {
             code: consts.MESSAGE.RES,
             taskData: taskData
         };
-        utils.send(msg, res, data);
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            utils.send(msg, res, data);
+        });
     });
 }
 
@@ -144,7 +162,22 @@ exports.handOverTask = function(req, res) {
                 code: consts.MESSAGE.RES,
                 nextTasks: nextTasks
             };
-            utils.send(msg, res, data);
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                utils.send(msg, res, data);
+            });
         });
     });
 }

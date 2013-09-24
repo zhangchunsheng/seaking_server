@@ -41,3 +41,7 @@ packageService.createPackage = function(playerId, callback) {
 packageService.update = function(val, cb) {
     packageDao.update(val, cb);
 }
+
+packageService.getUpdateArray = function() {
+
+}

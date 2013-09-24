@@ -37,3 +37,7 @@ equipmentsService.createEquipments = function(playerId, callback) {
 equipmentsService.update = function(val, cb) {
     equipmentsDao.update(val, cb);
 }
+
+equipmentsService.getUpdateArray = function() {
+
+}
