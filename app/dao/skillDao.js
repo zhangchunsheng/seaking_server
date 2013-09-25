@@ -28,6 +28,10 @@ fightskillDao.update = function(val, cb) {
 
 };
 
+fightskillDao.updateSkill = function(skills, type, cb) {
+
+};
+
 /**
  * Find fightskills by characterId
  *

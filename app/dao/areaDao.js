@@ -98,3 +98,35 @@ areaDao.removePlayer = function(player, cb) {
             });
     });
 }
+
+areaDao.removeAndUpdatePlayer = function(areaId, player, cb) {
+    redis.command(function(client) {
+        client.multi()
+            .select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+                var key = player.currentScene;
+
+                var array = [];
+                array.push(["hdel", areaId, player.id]);
+                var key = player.currentScene;
+
+                var date = new Date();
+                var value = {
+                    name: player.nickname,
+                    time: date.getTime()
+                };
+                array.push(["hset", key, player.id, JSON.stringify(value)]);
+
+                var characterId = utils.getRealCharacterId(player.id);
+                key = "S" + player.serverId + "_T" + player.registerType + "_" + player.loginName + "_C" + characterId;
+                array.push(["hset", key, "currentScene", player.currentScene]);
+
+                client.multi(array)
+                    .exec(function(err, reply) {
+                        utils.invokeCallback(cb, null, reply);
+                    });
+            })
+            .exec(function(err, reply) {
+
+            });
+    });
+}

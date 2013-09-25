@@ -128,6 +128,7 @@ var FightSkill = function(opts) {
     this.playerId = opts.playerId;
     this.skillData = dataApi.skillList.findById(this.skillId);
     this.name = this.skillData.skillName;
+    this.type = this.skillData.type;
 };
 
 FightSkill.prototype.attack = function() {

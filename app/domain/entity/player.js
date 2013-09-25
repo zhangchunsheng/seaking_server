@@ -18,7 +18,7 @@ var TaskStatus = require('../../consts/consts').TaskStatus;
 var Character = require('./character');
 var userDao = require('../../dao/userDao');
 var playerDao = require('../../dao/playerDao');
-var fightskillDao = require('../../dao/skillDao');
+var skillDao = require('../../dao/skillDao');
 var taskDao = require('../../dao/taskDao');
 var fightskill = require('./../fightskill');
 var utils = require('../../utils/utils');
@@ -310,16 +310,13 @@ Player.prototype.learnSkill = function(skillId, callback) {
  * @return {Boolean}
  * @api public
  */
-Player.prototype.upgradeSkill = function(skillId) {
-    var fightSkill = this.fightSkills[skillId];
+Player.prototype.upgradeSkill = function(skillId, type, cb) {
+    var skill = this.skills[type];
 
-    if (!fightSkill || this.skillPoint <= 0 || this.level < fightSkill.skillData.playerLevel * 1 + fightSkill.level * 5) {
-        return false;
-    }
-    fightSkill.level += 1;
-    this.skillPoint--;
-    fightskillDao.update(fightSkill);
-    return true;
+    //升级条件
+
+    var nextSkillId = skill.nextSkillId;
+    skillDao.updateSkill(this.skills, type, cb);
 };
 
 // Emit the event 'save'.

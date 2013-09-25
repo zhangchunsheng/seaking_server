@@ -66,6 +66,10 @@ module.exports = {
         NO_RECEIVE_ID: 1602
     },
 
+    AREA: {
+        WRONG_CURRENTSCENE: 1701
+    },
+
     EQUIPMENT: {
 
     }

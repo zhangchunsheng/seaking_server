@@ -86,6 +86,7 @@ module.exports = function (app) {
     app.get('/package/userItem', authRequired, package.userItem);
 
     app.get('/player/enterScene', authRequired, player.enterScene);
+    app.get('/player/changeAndGetSceneData', authRequired, player.changeAndGetSceneData);
     app.get('/player/enterIndu', authRequired, player.enterIndu);
     app.get('/player/leaveIndu', authRequired, player.leaveIndu);
     app.get('/player/getPartner', authRequired, player.getPartner);

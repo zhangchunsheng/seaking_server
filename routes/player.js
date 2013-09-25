@@ -44,7 +44,6 @@ exports.enterScene = function(req, res) {
         if (err || !player) {
             console.log('Get user for userDao failed! ' + err.stack);
             data = {
-                route: msg.route,
                 code: consts.MESSAGE.ERR
             };
             utils.send(msg, res, data);
@@ -64,7 +63,91 @@ exports.enterScene = function(req, res) {
                 utils.send(msg, res, data);
             });
         });
-    }, true);
+    });
+}
+
+/**
+ *
+ * @param req
+ * @param res
+ */
+exports.changeAndGetSceneData = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var areaId = msg.currentScene;
+    var target = msg.target;
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        if(err || !player) {
+            console.log('Get user for userDao failed! ' + err.stack);
+            data = {
+                code: consts.MESSAGE.ERR
+            };
+            utils.send(msg, res, data);
+
+            return;
+        }
+
+        if(areaId != player.currentScene) {
+            data = {
+                code: Code.AREA.WRONG_CURRENTSCENE
+            };
+            utils.send(msg, res, data);
+
+            return;
+        }
+
+        area.getAreaInfo(player, function(err, results) {
+            if (err) {
+                data = {
+                    code: consts.MESSAGE.ERR
+                };
+                utils.send(msg, res, data);
+
+                return;
+            }
+
+            areaId = player.currentScene;
+            if(areaId == target || target == "") {
+                data = {
+                    code: consts.MESSAGE.RES,
+                    currentScene: areaId,
+                    entities: results
+                };
+                utils.send(msg, res, data);
+            } else {
+                player.x = 100;
+                player.y = 100;
+                player.currentScene = target;
+                world.removeAndUpdatePlayer(areaId, player, function(err) {
+                    if(err) {
+                        data = {
+                            code: consts.MESSAGE.RES,
+                            currentScene: areaId,
+                            entities: results
+                        };
+                    } else {
+                        data = {
+                            code: consts.MESSAGE.RES,
+                            currentScene: target,
+                            entities: results
+                        };
+                    }
+                    utils.send(msg, res, data);
+                });
+            }
+        });
+    });
 }
 
 /**
@@ -306,6 +389,34 @@ exports.learnSkill = function(req, res) {
  * @param res
  */
 exports.upgradeSkill = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var status = player.upgradeSkill(msg.skillId);
+
+        data = {
+            status: status
+        };
+        utils.send(msg, res, data);
+    });
+}
+
+/**
+ * 使用技能
+ * @param req
+ * @param res
+ */
+exports.useSkill = function(req, res) {
     var msg = req.query;
     var session = req.session;
 

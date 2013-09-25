@@ -194,6 +194,22 @@ module.exports = {
         Activity: "09"
     },
 
+    skillType: {
+        ACTIVE_SKILL: 1,
+        PASSIVE_SKILL: 2
+    },
+
+    skillsType: {
+        CURRENT_SKILL: "currentSkill",
+        ACTIVE_SKILLS: "activeSkills",
+        PASSIVE_SKILLS: "passiveSkills"
+    },
+
+    correspondingSkillsType: {
+        1: "activeSkills",
+        2: "passiveSkills"
+    },
+
     effect_attr: {
         1: {
             name: "hp",
