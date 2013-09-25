@@ -40,7 +40,9 @@ exports.createMainPlayer = function(req, res) {
     var data = {};
     roleService.is_exists_nickname(serverId, nickname, function(err, flag) {
         if(flag) {
-            data = {code: consts.MESSAGE.ERR};
+            data = {
+                code: Code.CHARACTER.EXISTS_NICKNAME
+            };
             utils.send(msg, res, data);
             return;
         }
@@ -118,7 +120,7 @@ exports.getMainPlayer = function(req, res) {
 
         if(results[0] == null || results[0] == {}) {
             data = {
-                code: Code.ENTRY.NO_CHARACTER,
+                code: Code.OK,
                 player: null
             };
         } else {

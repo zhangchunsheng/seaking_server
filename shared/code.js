@@ -70,6 +70,10 @@ module.exports = {
         WRONG_CURRENTSCENE: 1701
     },
 
+    CHARACTER: {
+        EXISTS_NICKNAME: 1801
+    },
+
     EQUIPMENT: {
 
     }

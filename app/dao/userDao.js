@@ -8,6 +8,7 @@
 var dataApi = require('../utils/dataApi');
 var Player = require('../domain/entity/player');
 var Tasks = require('../domain/tasks');
+var Skills = require('../domain/skills');
 var User = require('../domain/user');
 var consts = require('../consts/consts');
 var equipmentsDao = require('./equipmentsDao');
@@ -298,6 +299,8 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
                         currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
                     };
+                    var skills = new Skills();
+                    skills.initSkills(cId);
                     var character = {
                         id: "S" + serverId + "C" + characterId,
                         characterId: "S" + serverId + "C" + characterId,
@@ -385,9 +388,9 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                             }
                         },
                         skills: {
-                            currentSkill: {"skillId":""},
-                            activeSkills: [{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0}],
-                            passiveSkills: [{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0}]
+                            currentSkill: skills.currentSkill,
+                            activeSkills: skills.activeSkills,
+                            passiveSkills: skills.passiveSkills
                         },
                         formation: [{playerId:"S" + serverId + "C" + characterId},null,null,null,null,null,null],
                         partners: [],
@@ -893,8 +896,10 @@ userDao.update = function(array, cb) {
                 redis.release(client);
                 utils.invokeCallback(cb, null, 1);
             });
+        }).exec(function(err, reply) {
+
         });
-    });
+    })
 }
 
 userDao.updatePlayerAttribute = function(player, cb) {
