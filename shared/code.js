@@ -74,6 +74,15 @@ module.exports = {
         EXISTS_NICKNAME: 1801
     },
 
+    SKILL: {
+        HAVED_SKILL: 1820,
+        NO_HAVE_SKILL: 1821,
+        TOP_LEVEL: 1822,
+        NEED_REQUIREMENT: 1823,
+        NO_REACH_SKILL: 1824,
+        NO_SKILL: 1825
+    },
+
     EQUIPMENT: {
 
     }
