@@ -22,6 +22,7 @@ var skillDao = require('../../dao/skillDao');
 var taskDao = require('../../dao/taskDao');
 var fightskill = require('./../fightskill');
 var utils = require('../../utils/utils');
+var dbUtil = require('../../utils/dbUtil');
 var ucenter = require('../../lib/ucenter/ucenter');
 
 /**
@@ -292,15 +293,143 @@ Player.prototype.useItem = function(type, index) {
 };
 
 /**
+ *
+ * @param skillId
+ */
+Player.prototype.checkSkill = function(skillId) {
+    var realSkillId = "";
+    var type = "";
+
+    realSkillId = skillId.substr(0, 6);
+    type = skillId.substr(4, 1);//SK01111
+
+    type = consts.correspondingSkillsType[type];
+
+    var skills = this.skills[type];
+    var flag = false;
+    for(var i = 0 ; i < skills.length ; i++) {
+        if(skills[i].skillId.substr(0, 6) == realSkillId) {
+            flag = true;
+            if(skills[i].status == 1) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+    }
+    if(!flag) {
+        return -1;
+    }
+
+    return -1;
+}
+
+Player.prototype.checkSkillUpgrade = function(skillId) {
+    var realSkillId = "";
+    var type = "";
+    var level = 0;
+
+    realSkillId = skillId.substr(0, 6);
+    type = skillId.substr(4, 1);//SK01111
+    level = skillId.substr(6, 1);
+
+    type = consts.correspondingSkillsType[type];
+
+    var flag = false;
+    var skills = this.skills[type];
+    for(var i = 0 ; i < skills.length ; i++) {
+        if(skills[i].skillId.substr(0, 6) == realSkillId) {
+            if(skills[i].status == 0) {
+                return 0;
+            }
+            if(level < skills[i].skillId.substr(6, 1)) {
+                return -2;
+            }
+            if(level > skills[i].skillId.substr(6, 1)) {
+                return -3;
+            }
+            if(dataApi.skillList.findById(skillId).nextSkillId == "") {//最高等级
+                return -1;
+            }
+            flag = true;
+            break;
+        }
+    }
+
+    if(flag) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+Player.prototype.checkUseSkill = function(skillId) {
+    var type = "";
+
+    type = skillId.substr(4, 1);//SK01111
+
+    type = consts.correspondingSkillsType[type];
+
+    var skills = this.skills[type];
+    for(var i = 0 ; i < skills.length ; i++) {
+        if(skills[i].skillId == skillId) {
+            if(skills[i].status == 1) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    return -1;
+}
+
+/**
  * Learn a new skill.
  *
  * @param {Number} skillId
+ * SK代表技能编号
+ * 第1,2位表示英雄编号
+ * 第3位表示技能类型
+ * 1表示主动技能
+ * 2表示被动技能
+ * 第4位表示技能编号
+ * 第5位表示技能等级
  * @param {Function} callback
  * @return {Blooean}
  * @api public
  */
 Player.prototype.learnSkill = function(skillId, callback) {
-    utils.invokeCallback(callback, null, {});
+    var realSkillId = "";
+    var type = "";
+
+    realSkillId = skillId.substr(0, 6);
+
+    var skillData = dataApi.skillList.findById(realSkillId + "1");
+    var status = this.checkRequirement(skillData);
+
+    if(status == 0) {
+        utils.invokeCallback(callback, {}, 0);
+        return;
+    }
+
+    type = skillId.substr(4, 1);//SK01111
+    type = consts.correspondingSkillsType[type];
+    var skills = this.skills[type];
+    for(var i = 0 ; i < skills.length ; i++) {
+        if(skills[i].skillId.substr(0, 6) == realSkillId) {
+            skills[i].status = 1;
+            break;
+        }
+    }
+
+    var array = [];
+    var characterId = utils.getRealCharacterId(this.id);
+    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    array.push(["hset", key, type, JSON.stringify(skills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, 1);
+    });
 };
 
 /**
@@ -310,14 +439,108 @@ Player.prototype.learnSkill = function(skillId, callback) {
  * @return {Boolean}
  * @api public
  */
-Player.prototype.upgradeSkill = function(skillId, type, cb) {
-    var skill = this.skills[type];
+Player.prototype.upgradeSkill = function(skillId, callback) {
+    var type = "";
 
-    //升级条件
+    type = skillId.substr(4, 1);//SK01111
+    type = consts.correspondingSkillsType[type];
+    var skills = this.skills[type];
+    var skillData = dataApi.skillList.findById(skillId);
+    var nextSkillId = skillData.nextSkillId;
+    skillData = dataApi.skillList.findById(nextSkillId);
 
-    var nextSkillId = skill.nextSkillId;
-    skillDao.updateSkill(this.skills, type, cb);
+    var status = this.checkRequirement(skillData);
+
+    if(status == 0) {
+        utils.invokeCallback(callback, {}, 0);
+        return;
+    }
+
+    for(var i = 0 ; i < skills.length ; i++) {
+        if(skills[i].skillId == skillId) {
+            skills[i].skillId = nextSkillId;
+            break;
+        }
+    }
+
+    var array = [];
+    var characterId = utils.getRealCharacterId(this.id);
+    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    array.push(["hset", key, type, JSON.stringify(skills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, nextSkillId);
+    });
 };
+
+Player.prototype.useSkill = function(skillId, callback) {
+    var type = "";
+
+    type = skillId.substr(4, 1);//SK01111
+    type = consts.correspondingSkillsType[type];
+    var skills = this.skills[type];
+
+    var flag = false;
+    for(var i = 0 ; i < skills.length ; i++) {
+        if(typeof skills[i].select != "" && skills[i].select == 1) {
+            skills[i].select = 0;
+        }
+        if(skills[i].skillId == skillId) {
+            flag = true;
+            skills[i].select = 1;
+        }
+    }
+
+    if(!flag) {
+        utils.invokeCallback(callback, {}, 0);
+    }
+
+    var array = [];
+    var characterId = utils.getRealCharacterId(this.id);
+    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    array.push(["hset", key, type, JSON.stringify(skills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, 1);
+    });
+};
+
+/**
+ *
+ * @param skillData
+ * @returns {number}
+ */
+Player.prototype.checkRequirement = function(skillData) {
+    var status = 0;
+    var requirement = skillData.requirement;
+    if(requirement.length == 0)
+        status = 1;
+    var count = 0;
+    for(var i = 0 ; i < requirement.length ; i++) {
+        if(requirement[i].type == consts.requirementType.COINS) {
+            if(this.money >= requirement[i].value) {
+                this.money -= requirement[i].value;
+                count++;
+            } else {
+
+            }
+
+        } else if(requirement[i].type == consts.requirementType.ITEMS) {
+            count++;
+        } else if(requirement[i].type == consts.requirementType.LEVEL) {
+            if(this.level >= requirement[i].value) {
+                count++;
+            } else {
+
+            }
+        } else if(requirement[i].type == consts.requirementType.SKILLS) {
+            count++;
+        } else {
+
+        }
+    }
+    if(count == requirement.length)
+        status = 1;
+    return status;
+}
 
 // Emit the event 'save'.
 Player.prototype.save = function() {

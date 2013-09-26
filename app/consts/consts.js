@@ -211,109 +211,243 @@ module.exports = {
     },
 
     effect_attr: {
-        1: {
-            name: "hp",
-            showName: "HP"
+        HP: "1",//HP
+        EXPERIENCE: "2",//经验
+        ATTACK: "3",//攻击
+        DEFENSE: "4",//防御
+        FOCUS: "5",//集中值
+        SPEED: "6",//速度
+        DODGE: "7",//闪避
+        CRITICALHIT: "8",//暴击几率
+        CRITDAMAGE: "9",//暴击伤害
+        BLOCK: "10",//格挡
+        COUNTER: "11",//反击
+        PARALLELDAMAGE: "12",//溅射伤害
+        BURN: "13",//点燃
+        STUNT: "14",//禁锢
+        POISON: "15",//施毒
+        CONFUSION: "16",//迷惑
+        DEFENSE_FOCUS: "17",//防御力加成(focus)
+        HPRECOVERYSPEED: "18",//血量回复
+        ADDITEMATTR: "19",//装备加成
+        ADDATTACK: "20",//增加自己攻击力
+        BOUNCEATTACK: "21",//反弹伤害
+        MONEY: "22",//额外金钱
+        ADDBLOOD: "23",//吸血
+        ATTACK_FOCUS: "24",//攻击力加成(focus)
+        SKILL: "25",//技能
+        ICE: "26"//冰冻
+    },
+
+    correspondingEffect_attr: {
+        1: "hp",
+        2: "experience",
+        3: "attack",
+        4: "defense",
+        5: "focus",
+        6: "speed",
+        7: "dodge",
+        8: "criticalHit",
+        9: "critDamage",
+        10: "block",
+        11: "counter",
+        12: "parallelDamage",
+        13: "burn",
+        14: "stunt",
+        15: "poison",
+        16: "confusion",
+        17: "defense_focus",
+        18: "hpRecoverySpeed",
+        19: "addItemAttr",
+        20: "addAttack",
+        21: "bounceAttack",
+        22: "money",
+        23: "addBlood",
+        24: "attack_focus",
+        25: "skill",
+        26: "ice"
+    },
+
+    valueType: {
+        PERCENTAGE: 0,//"百分比"
+        NUMBER: 1//"数值"
+    },
+
+    timeType: {
+        ATTACK_NUM: 0,//攻击次数
+        BEHITTED_NUM: 1,//受攻击次数
+        ROUND: 2,//回合
+        PERMANENTLY: 3//永久
+    },
+
+    targetType: {
+        OWNER_SINGLE: 1,//己方单体
+        OPPONENT_SINGLE: 2,//敌方单体
+        OWNER_ALL: 3,//己方全体
+        OPPONENT_ALL: 4,//敌方全体
+        OWNER_RANDOM: 5,//己方随机目标
+        OPPONENT_RANDOM: 6,//敌方随机目标
+        OWNER_SPECIFIC: 7,//己方特定目标
+        OPPONENT_SPECIFIC: 8//敌方特定目标
+    },
+
+    requirementType: {
+        COINS: "coins",
+        LEVEL: "level",
+        SKILLS: "skills",
+        ITEMS: "items"
+    },
+
+    skill_speedType: {
+        EA: "ea",
+        EHR: "ehr",
+        ESHR: "eshr"
+    },
+
+    skilllevel_header_effect: {
+        default: {
+            1: {
+                name: "valueType",
+                showName: "属性值类型",
+                type: "enum",
+                enum: "valueType"
+            },
+            2: {
+                name: "value",
+                showName: "属性值",
+                type: "int"
+            },
+            3: {
+                name: "targetType",
+                showName: "作用目标类型",
+                type: "enum",
+                enum: "targetType"
+            },
+            4: {
+                name: "targetValue",
+                showName: "作用目标值",
+                type: "int"
+            },
+            5: {
+                name: "timeType",
+                showName: "时间类型",
+                type: "enum",
+                enum: "timeType"
+            },
+            6: {
+                name: "timeValue",
+                showName: "时间值",
+                type: "int"
+            }
         },
-        2: {
-            name: "experience",
-            showName: "经验"
+        parallelDamage: {
+            1: {
+                name: "value",
+                showName: "溅射伤害",
+                type: "int"
+            },
+            2: "",
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        3: {
-            name: "attack",
-            showName: "攻击"
+        burn: {
+            1: {
+                name: "value",
+                showName: "点燃伤害",
+                type: "int"
+            },
+            2: {
+                name: "timeValue",
+                showName: "持续几轮",
+                type: "int"
+            },
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        4: {
-            name: "defense",
-            showName: "防御"
+        stunt: {
+            1: {
+                name: "value",
+                showName: "禁锢次数",
+                type: "int"
+            },
+            2: "",
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        5: {
-            name: "focus",
-            showName: "集中值"
+        poison: {
+            1: {
+                name: "value",
+                showName: "施毒伤害",
+                type: "int"
+            },
+            2: {
+                name: "timeValue",
+                showName: "持续几轮",
+                type: "int"
+            },
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        6: {
-            name: "speed",
-            showName: "速度"
+        confusion: {
+            1: {
+                name: "value",
+                showName: "持续次数",
+                type: "int"
+            },
+            2: "",
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        7: {
-            name: "dodge",
-            showName: "闪避"
+        ice: {
+            1: {
+                name: "speedValue",
+                showName: "减速值",
+                type: "int"
+            },
+            2: {
+                name: "timeValue",
+                showName: "持续几轮",
+                type: "int"
+            },
+            3: {
+                name: "value",
+                showName: "冰冻伤害",
+                type: "int"
+            },
+            4: "",
+            5: "",
+            6: ""
         },
-        8: {
-            name: "criticalHit",
-            showName: "暴击几率"
-        },
-        9: {
-            name: "critDamage",
-            showName: "暴击伤害"
-        },
-        10: {
-            name: "block",
-            showName: "格挡"
-        },
-        11: {
-            name: "counter",
-            showName: "反击"
-        },
-        12: {
-            name: "parallelDamage",
-            showName: "溅射伤害"
-        },
-        13: {
-            name: "burn",
-            showName: "点燃"
-        },
-        14: {
-            name: "stunt",
-            showName: "禁锢"
-        },
-        15: {
-            name: "poison",
-            showName: "施毒"
-        },
-        16: {
-            name: "confusion",
-            showName: "迷惑"
-        },
-        17: {
-            name: "defense_focus",
-            showName: "防御力加成(focus)"
-        },
-        18: {
-            name: "hpRecoverySpeed",
-            showName: "血量回复"
-        },
-        19: {
-            name: "addItemAttr",
-            showName: "装备加成"
-        },
-        20: {
-            name: "addAttack",
-            showName: "增加自己攻击力"
-        },
-        21: {
-            name: "bounceAttack",
-            showName: "反弹伤害"
-        },
-        22: {
-            name: "money",
-            showName: "额外金钱"
-        },
-        23: {
-            name: "addBlood",
-            showName: "吸血"
-        },
-        24: {
-            name: "attack_focus",
-            showName: "攻击力加成(focus)"
-        },
-        25: {
-            name: "skill",
-            showName: "技能"
-        },
-        26: {
-            name: "ice",
-            showName: "冰冻"
+        skill: {
+            1: {
+                name: "skillId",
+                showName: "技能Id",
+                type: "string"
+            },
+            2: {
+                name: "valueType",
+                showName: "加成类型",
+                type: "enum",
+                enum: "valueType"
+            },
+            3: {
+                name: "value",
+                showName: "加成数值",
+                type: "int"
+            },
+            4: "",
+            5: "",
+            6: ""
         }
     },
 
