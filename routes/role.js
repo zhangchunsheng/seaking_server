@@ -35,9 +35,33 @@ exports.createMainPlayer = function(req, res) {
         , isRandom = msg.isRandom;// 随机获得昵称
     var self = this;
 
+    var data = {};
+    if(typeof msg.cId == "undefined" || msg.cId == "" || msg.cId == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    if(typeof msg.nickname == "undefined" || msg.nickname == "" || msg.nickname == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    if(typeof msg.isRandom == "undefined") {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
     var serverId = session.serverId;
 
-    var data = {};
     roleService.is_exists_nickname(serverId, nickname, function(err, flag) {
         if(flag) {
             data = {
@@ -60,10 +84,6 @@ exports.createMainPlayer = function(req, res) {
                     },
                     function(callback) {// 初始化装备
                         packageService.createPackage(character.id, callback);
-                    },
-                    function(callback) {
-                        var skillId = 1;
-                        character.learnSkill(skillId, callback);
                     }
                 ];
                 async.parallel(array,

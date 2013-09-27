@@ -13,13 +13,13 @@ function Buff(opts) {
     this.count = opts.count;// 持续次数
 }
 
-var create = function(skill) {
-    return null;
-};
-
 Buff.prototype.use = function(player) {
     player.addBuff(this);
 };
 
-module.exports.create = create;
+Buff.create = function(skill) {
+
+}
+
+module.exports = Buff;
 

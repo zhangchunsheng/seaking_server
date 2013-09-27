@@ -10,13 +10,14 @@ var Player = require('../domain/entity/player');
 var User = require('../domain/user');
 var consts = require('../consts/consts');
 var equipmentsDao = require('./equipmentsDao');
-var fightskillDao = require('./skillDao');
+var skillDao = require('./skillDao');
 var taskDao = require('./taskDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
+var Skills = require('../domain/skills');
 
 var redis = require('../dao/redis/redis')
     , redisConfig = require('../../shared/config/redis');
@@ -123,9 +124,11 @@ function generalPartner(serverId, registerType, loginName, characterId, partnerI
         counter: parseFloat(replies.counter),
         equipments: JSON.parse(replies.equipments),
         skills: {
+            currentSkill: replies.currentSkill ? JSON.parse(replies.currentSkill) : {},
             activeSkills: JSON.parse(replies.activeSkills),
             passiveSkills: JSON.parse(replies.passiveSkills)
-        }
+        },
+        buffs: replies.buffs ? JSON.parse(replies.buffs).buffs : []
     };
     character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
     var Partner = require('../domain/entity/partner');
@@ -156,6 +159,8 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                     var hero = dataApi.heros.findById(cId);
                     var partner = dataApi.partners.findById(cId);
                     var level = partner.level;
+                    var skills = new Skills();
+                    skills.initSkills(cId);
                     var character = {
                         id: "S" + serverId + "C" + characterId + "P" + partnerId,
                         kindId: cId,
@@ -164,6 +169,7 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                         registerType: registerType,
                         loginName: loginName,
                         nickname: hero.name,
+                        buffs: [],
                         experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         level: level,
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
@@ -222,8 +228,9 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                             }//戒指
                         },
                         skills: {
-                            activeSkills: [],
-                            passiveSkills: []
+                            currentSkill: skills.currentSkill,
+                            activeSkills: skills.activeSkills,
+                            passiveSkills: skills.passiveSkills
                         }
                     };
 

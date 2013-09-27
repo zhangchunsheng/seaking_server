@@ -20,10 +20,11 @@ var userDao = require('../../dao/userDao');
 var playerDao = require('../../dao/playerDao');
 var skillDao = require('../../dao/skillDao');
 var taskDao = require('../../dao/taskDao');
-var fightskill = require('./../fightskill');
 var utils = require('../../utils/utils');
 var dbUtil = require('../../utils/dbUtil');
 var ucenter = require('../../lib/ucenter/ucenter');
+var ActiveSkill = require('./../activeSkill');
+var PassiveSkill = require('./../passiveSkill');
 
 /**
  * Initialize a new 'Player' with the given 'opts'.
@@ -42,8 +43,6 @@ var Player = function(opts) {
     this.nickname = opts.nickname;
     this.equipments = opts.equipments;
     this.package = opts.package;
-    this.skillPoint = opts.skillPoint || 0;
-    this.skills = opts.skills;
     this.formation = opts.formation;
     this.partners = opts.partners;
     this.gift = opts.gift;
@@ -67,6 +66,23 @@ var Player = function(opts) {
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
+
+    this.fightValue = {
+        attack: this.attack,
+        defense: this.defense,
+        speedLevel: this.speedLevel,
+        hp: this.hp,
+        maxHp: this.maxHp,
+        focus: this.focus,
+        criticalHit: this.criticalHit,
+        critDamage: this.critDamage,
+        dodge: this.dodge,
+        block: this.block,
+        counter: this.counter
+    };
+
+    this.initSkills();
+    this.updateRestoreAngerSpeed();
 };
 
 util.inherits(Player, Character);
@@ -115,7 +131,7 @@ Player.prototype.upgrade = function() {
     }
     var that = this;
     userDao.upgrade(this, upgradeColumn, function(err, reply) {
-        that.updateAttribute();
+        //that.updateAttribute();
         that.emit('upgrade');//pushMessage
     });
 };
@@ -207,6 +223,7 @@ Player.prototype.updateAttribute = function() {
             counter += equipment.counter;
         }
     }
+
     this.attack = Math.floor(attack);
     this.defense = Math.floor(defense);
     this.speedLevel = Math.floor(speedLevel);
@@ -219,6 +236,332 @@ Player.prototype.updateAttribute = function() {
     this.block = block;
     this.counter = counter;
 };
+
+Player.prototype.initSkills = function() {
+    this.activeSkill = new ActiveSkill({
+        skillId: this.skills.currentSkill.skillId
+    });
+    for(var i = 0 ; i < this.skills.passiveSkills.length ; i++) {
+        this.passiveSkills.push(new PassiveSkill({
+            skillId: this.skills.passiveSkills[i].skillId
+        }));
+    }
+    this.updateSkillBuffs();
+};
+
+Player.prototype.updateSkillBuffs = function() {
+    var effects = {};
+    for(var i = 0 ; i < this.passiveSkills.length ; i++) {
+        effects = this.passiveSkills[i].skillData.effects;
+        for(var j = 0 ; j < effects.length ; j++) {
+            if(effects[j].attr == consts.buffType.HPRECOVERYSPEED) {
+                if(effects[j].valueType == consts.valueType.PERCENTAGE)
+                    this.hpRecoverySpeed += this.hpRecoverySpeed * effects[j].value / 100;
+            }
+        }
+    }
+};
+
+/**
+ * 计算战斗数值
+ */
+Player.prototype.updateFightValue = function() {
+    var attack = 0;
+    var defense = 0;
+    var speedLevel = 0;
+    var hp = 0;
+    var focus = 0;
+    var criticalHit = 0;
+    var critDamage = 0;
+    var dodge = 0;
+    var block = 0;
+    var counter = 0;
+    var counterDamage = 0;
+    var equipments;
+    var equipment;
+    //集中值 武器百分比 技能百分比 buff百分比
+    //武器攻击力 技能攻击力 道具攻击力 buff攻击力
+    attack = this.attack + this.attack * this.focus;
+    defense = this.defense;
+    speedLevel = this.speedLevel;
+    hp = this.hp;
+    focus = this.focus;
+    criticalHit = this.criticalHit;
+    critDamage = this.critDamage;
+    dodge = this.dodge;
+    block = this.block;
+    counter = this.counter;
+
+    equipments = this.equipmentsEntity.getInfo();
+
+    // 百分比加成和数值加成
+    for(var key in equipments) {
+        if(equipments[key].epid != 0) {
+            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            if(typeof equipment == "undefined")
+                continue;
+            if(equipment.attackPercentage != 0)
+                attack += this.attack * equipment.attackPercentage;
+            if(equipment.defensePercentage != 0)
+                defense += this.defense * equipment.defensePercentage;
+            if(equipment.speedLevelPercentage != 0)
+                speedLevel += this.speedLevel * equipment.speedLevelPercentage;
+            if(equipment.hpPercentage != 0)
+                hp += this.hp * equipment.hpPercentage;
+
+            attack += equipment.attack;
+            defense += equipment.defense;
+            speedLevel += equipment.speedLevel;
+            hp += equipment.hp;
+            focus += equipment.focus;
+            criticalHit += equipment.criticalHit;
+            critDamage += equipment.critDamage;
+            dodge += equipment.dodge;
+            block += equipment.block;
+            counter += equipment.counter;
+        }
+    }
+
+    //被动技能加成 被动技能buff
+    var effects = {};
+    for(var i = 0 ; i < this.passiveSkills.length ; i++) {
+        effects = this.passiveSkills[i].skillData.effects;
+        for(var j = 0 ; j < effects.length ; j++) {
+            if(effects[j].attr == consts.buffType.ATTACK) {
+                attack += utils.getEffectValue(effects[j], this.attack);
+            } else if(effects[j].attr == consts.buffType.ADDATTACK) {
+                attack += utils.getEffectValue(effects[j], this.attack);
+            } else if(effects[j].attr == consts.buffType.DEFENSE) {
+                defense += utils.getEffectValue(effects[j], this.defense);
+            } else if(effects[j].attr == consts.buffType.SPEED) {
+                speedLevel += utils.getEffectValue(effects[j], this.speedLevel);
+            } else if(effects[j].attr == consts.buffType.HP) {
+                hp += utils.getEffectValue(effects[j], this.hp);
+            } else if(effects[j].attr == consts.buffType.FOCUS) {
+                focus += utils.getEffectValue(effects[j], this.focus);
+            } else if(effects[j].attr == consts.buffType.CRITICALHIT) {
+                criticalHit += utils.getEffectValue(effects[j], this.criticalHit);
+            } else if(effects[j].attr == consts.buffType.CRITDAMAGE) {
+                critDamage += utils.getEffectValue(effects[j], this.critDamage);
+            } else if(effects[j].attr == consts.buffType.DODGE) {
+                dodge += utils.getEffectValue(effects[j], this.dodge);
+            } else if(effects[j].attr == consts.buffType.BLOCK) {
+                block += utils.getEffectValue(effects[j], this.block);
+            } else if(effects[j].attr == consts.buffType.COUNTER) {
+                counter += utils.getEffectValue(effects[j], this.counter);
+            }
+        }
+    }
+
+    //主动技能加成
+    if(this.anger >= this.maxAnger) {
+
+    }
+
+    this.fightValue.attack = Math.floor(attack);
+    this.fightValue.defense = Math.floor(defense);
+    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.hp = hp;
+    this.fightValue.maxHp = hp;
+    this.fightValue.focus = focus;
+    this.fightValue.criticalHit = criticalHit;
+    this.fightValue.critDamage = critDamage;
+    this.fightValue.dodge = dodge;
+    this.fightValue.block = block;
+    this.fightValue.counter = counter;
+};
+
+Player.prototype.updateRestoreAngerSpeed = function() {
+    var speed = this.activeSkill.skillData.speed;
+    for(var i = 0 ; i < speed.length ; i++) {
+        this.restoreAngerSpeed[speed[i].type] = parseInt(speed[i].value);
+    }
+}
+
+/**
+ * 武器装备加成
+ */
+Player.prototype.equipmentAdditional = function() {
+    var attack = 0;
+    var defense = 0;
+    var speedLevel = 0;
+    var hp = 0;
+    var focus = 0;
+    var criticalHit = 0;
+    var critDamage = 0;
+    var dodge = 0;
+    var block = 0;
+    var counter = 0;
+    var counterDamage = 0;
+    var equipments;
+    var equipment;
+    //集中值 武器百分比 技能百分比 buff百分比
+    //武器攻击力 技能攻击力 道具攻击力 buff攻击力
+    attack = this.attack + this.attack * this.focus;
+    defense = this.defense;
+    speedLevel = this.speedLevel;
+    hp = this.hp;
+    focus = this.focus;
+    criticalHit = this.criticalHit;
+    critDamage = this.critDamage;
+    dodge = this.dodge;
+    block = this.block;
+    counter = this.counter;
+
+    equipments = this.equipmentsEntity.getInfo();
+
+    // 百分比加成和数值加成
+    for(var key in equipments) {
+        if(equipments[key].epid != 0) {
+            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            if(typeof equipment == "undefined")
+                continue;
+            if(equipment.attackPercentage != 0)
+                attack += this.attack * equipment.attackPercentage;
+            if(equipment.defensePercentage != 0)
+                defense += this.defense * equipment.defensePercentage;
+            if(equipment.speedLevelPercentage != 0)
+                speedLevel += this.speedLevel * equipment.speedLevelPercentage;
+            if(equipment.hpPercentage != 0)
+                hp += this.hp * equipment.hpPercentage;
+
+            attack += equipment.attack;
+            defense += equipment.defense;
+            speedLevel += equipment.speedLevel;
+            hp += equipment.hp;
+            focus += equipment.focus;
+            criticalHit += equipment.criticalHit;
+            critDamage += equipment.critDamage;
+            dodge += equipment.dodge;
+            block += equipment.block;
+            counter += equipment.counter;
+        }
+    }
+
+    this.fightValue.attack = Math.floor(attack);
+    this.fightValue.defense = Math.floor(defense);
+    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.hp = hp;
+    this.fightValue.maxHp = hp;
+    this.fightValue.focus = focus;
+    this.fightValue.criticalHit = criticalHit;
+    this.fightValue.critDamage = critDamage;
+    this.fightValue.dodge = dodge;
+    this.fightValue.block = block;
+    this.fightValue.counter = counter;
+}
+
+/**
+ * 主动技能加成
+ */
+Player.prototype.activeSkillAdditional = function() {
+    var attack = 0;
+    var defense = 0;
+    var speedLevel = 0;
+    var hp = 0;
+    var focus = 0;
+    var criticalHit = 0;
+    var critDamage = 0;
+    var dodge = 0;
+    var block = 0;
+    var counter = 0;
+    var counterDamage = 0;
+    //集中值 武器百分比 技能百分比 buff百分比
+    //武器攻击力 技能攻击力 道具攻击力 buff攻击力
+    attack = this.fightValue.attack;
+    defense = this.fightValue.defense;
+    speedLevel = this.fightValue.speedLevel;
+    hp = this.fightValue.hp;
+    focus = this.fightValue.focus;
+    criticalHit = this.fightValue.criticalHit;
+    critDamage = this.fightValue.critDamage;
+    dodge = this.fightValue.dodge;
+    block = this.fightValue.block;
+    counter = this.fightValue.counter;
+
+    var effects = {};
+    effects = this.activeSkill.skillData.effects;
+    for(var j = 0 ; j < effects.length ; j++) {
+        if(effects[j].attr == consts.buffType.ATTACK) {
+            attack += utils.getEffectValue(effects[j], this.attack);
+        } else if(effects[j].attr == consts.buffType.ADDATTACK) {
+            attack += utils.getEffectValue(effects[j], this.attack);
+        } else if(effects[j].attr == consts.buffType.DEFENSE) {
+            defense += utils.getEffectValue(effects[j], this.defense);
+        } else if(effects[j].attr == consts.buffType.SPEED) {
+            speedLevel += utils.getEffectValue(effects[j], this.speedLevel);
+        } else if(effects[j].attr == consts.buffType.HP) {
+            hp += utils.getEffectValue(effects[j], this.hp);
+        } else if(effects[j].attr == consts.buffType.FOCUS) {
+            focus += utils.getEffectValue(effects[j], this.focus);
+        } else if(effects[j].attr == consts.buffType.CRITICALHIT) {
+            criticalHit += utils.getEffectValue(effects[j], this.criticalHit);
+        } else if(effects[j].attr == consts.buffType.CRITDAMAGE) {
+            critDamage += utils.getEffectValue(effects[j], this.critDamage);
+        } else if(effects[j].attr == consts.buffType.DODGE) {
+            dodge += utils.getEffectValue(effects[j], this.dodge);
+        } else if(effects[j].attr == consts.buffType.BLOCK) {
+            block += utils.getEffectValue(effects[j], this.block);
+        } else if(effects[j].attr == consts.buffType.COUNTER) {
+            counter += utils.getEffectValue(effects[j], this.counter);
+        }
+    }
+
+    this.fightValue.attack = Math.floor(attack);
+    this.fightValue.defense = Math.floor(defense);
+    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.hp = hp;
+    this.fightValue.maxHp = hp;
+    this.fightValue.focus = focus;
+    this.fightValue.criticalHit = criticalHit;
+    this.fightValue.critDamage = critDamage;
+    this.fightValue.dodge = dodge;
+    this.fightValue.block = block;
+    this.fightValue.counter = counter;
+}
+
+/**
+ * 被动技能加成
+ */
+Player.prototype.passiveSkillAdditional = function() {
+    var attack = 0;
+    var defense = 0;
+    var speedLevel = 0;
+    var hp = 0;
+    var focus = 0;
+    var criticalHit = 0;
+    var critDamage = 0;
+    var dodge = 0;
+    var block = 0;
+    var counter = 0;
+    var counterDamage = 0;
+    //集中值 武器百分比 技能百分比 buff百分比
+    //武器攻击力 技能攻击力 道具攻击力 buff攻击力
+    attack = this.attack;
+    defense = this.defense;
+    speedLevel = this.speedLevel;
+    hp = this.hp;
+    focus = this.focus;
+    criticalHit = this.criticalHit;
+    critDamage = this.critDamage;
+    dodge = this.dodge;
+    block = this.block;
+    counter = this.counter;
+
+
+
+    this.fightValue.attack = Math.floor(attack);
+    this.fightValue.defense = Math.floor(defense);
+    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.hp = hp;
+    this.fightValue.maxHp = hp;
+    this.fightValue.focus = focus;
+    this.fightValue.criticalHit = criticalHit;
+    this.fightValue.critDamage = critDamage;
+    this.fightValue.dodge = dodge;
+    this.fightValue.block = block;
+    this.fightValue.counter = counter;
+}
 
 /**
  * Equip equipment.
@@ -247,7 +590,7 @@ Player.prototype.equip = function(pkgType, item, pIndex) {
     } else {
         this.packageEntity.removeItem(pkgType, pIndex);
     }
-    this.updateAttribute();
+    //this.updateAttribute();
 
     return index;
 };
@@ -273,7 +616,7 @@ Player.prototype.buyItem = function(type, item, costMoney) {
  */
 Player.prototype.unEquip = function(type) {
     this.equipmentsEntity.unEquip(type);
-    this.updateAttribute();
+    //this.updateAttribute();
 };
 
 /**
@@ -480,6 +823,7 @@ Player.prototype.useSkill = function(skillId, callback) {
     var skills = this.skills[type];
 
     var flag = false;
+    var currentSkill = {};
     for(var i = 0 ; i < skills.length ; i++) {
         if(typeof skills[i].select != "" && skills[i].select == 1) {
             skills[i].select = 0;
@@ -487,6 +831,11 @@ Player.prototype.useSkill = function(skillId, callback) {
         if(skills[i].skillId == skillId) {
             flag = true;
             skills[i].select = 1;
+            var date = new Date();
+            currentSkill = {
+                skillId: skillId,
+                time: date.getTime()
+            };
         }
     }
 
@@ -498,6 +847,7 @@ Player.prototype.useSkill = function(skillId, callback) {
     var characterId = utils.getRealCharacterId(this.id);
     var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
     array.push(["hset", key, type, JSON.stringify(skills)]);
+    array.push(["hset", key, "currentSkill", JSON.stringify(currentSkill)]);
     userDao.update(array, function(err, repy) {
         utils.invokeCallback(callback, null, 1);
     });
@@ -707,6 +1057,7 @@ Player.prototype.strip = function() {
         equipments: this.equipmentsEntity.getInfo(),
         package: this.packageEntity.getInfo(),
         skills: this.skills,
+        buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift
@@ -781,7 +1132,7 @@ Player.prototype.getPartner = function(playerId) {
 
 Player.prototype.setEquipmentsEntity = function(equipmentsEntity){
     this.equipmentsEntity = equipmentsEntity;
-    this.updateAttribute();
+    //this.updateAttribute();
 }
 
 /**
@@ -864,6 +1215,7 @@ Player.prototype.toJSON = function() {
         equipments: this.equipmentsEntity.getInfo(),
         package: this.packageEntity.getInfo(),
         skills: this.skills,
+        buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift

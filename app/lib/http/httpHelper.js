@@ -56,7 +56,6 @@ httpHelper.get = function(host, port, path, headers, params, cb) {
 
         //the whole response has been recieved, so we just print it out here
         response.on('end', function () {
-            console.log(str);
             var obj = JSON.parse(str);
             if(typeof cb == "function")
                 cb(obj);
@@ -78,8 +77,6 @@ httpHelper.post = function(host, port, path, headers, params, post_body, cb) {
         method: 'POST',
         headers: headers
     };
-
-    console.log(options);
 
     var callback = function(response) {
         var str = ''

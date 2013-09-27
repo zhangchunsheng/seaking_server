@@ -393,7 +393,7 @@ exports.learnSkill = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        player.learnSkill(skillId, function(err, reply) {
+        player.learnSkill(skillId, function(err, result) {
             if(err) {
                 data = {
                     code:Code.SKILL.NEED_REQUIREMENT
@@ -418,7 +418,7 @@ exports.learnSkill = function(req, res) {
                 data = {
                     code: Code.OK,
                     skillId: skillId,
-                    status: reply
+                    status: result
                 };
                 utils.send(msg, res, data);
             });

@@ -120,7 +120,7 @@ exports.triggerEvent = function(req, res) {
                 monsters: monsters
             });
 
-            var result = fight.fight(function(err, reply) {
+            var result = fight.fight(function(err, eventResult) {
                 async.parallel([
                     function(callback) {
                         playerService.updatePlayerHP(character, fight.owner_players, function(err, reply) {
@@ -128,7 +128,7 @@ exports.triggerEvent = function(req, res) {
                         });
                     },
                     function(callback) {
-                        battleService.savePlayerBattleData(character, fight.owner_players, fight.monsters, reply, function(err, reply) {
+                        battleService.savePlayerBattleData(character, fight.owner_players, fight.monsters, eventResult, function(err, reply) {
 
                         });
                         callback(null, 1);
@@ -136,7 +136,7 @@ exports.triggerEvent = function(req, res) {
                 ],
                     function(err, results) {
                         var playerInfo = results[0];
-                        if(reply.battleResult.isWin == true) {
+                        if(eventResult.battleResult.isWin == true) {
                             character.updateTaskRecord(consts.TaskGoalType.KILL_MONSTER, fight.monsters);
 
                             async.parallel([
@@ -162,7 +162,7 @@ exports.triggerEvent = function(req, res) {
                                         died: true
                                     },
                                     playerInfo: playerInfo,
-                                    eventResult: reply
+                                    eventResult: eventResult
                                 }
                                 utils.send(msg, res, result);
                             });
@@ -172,7 +172,7 @@ exports.triggerEvent = function(req, res) {
                                     eid: eid,
                                     died: false
                                 },
-                                eventResult: reply
+                                eventResult: eventResult
                             }
                             utils.send(msg, res, result);
                         }

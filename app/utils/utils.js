@@ -167,6 +167,16 @@ utils.getTaskType = function(task) {
     return type;
 }
 
+utils.getEffectValue = function(effect, baseValue) {
+    var value = 0;
+    if(effect.valueType == consts.valueType.NUMBER)
+        value = effect.value;
+    if(effect.valueType == consts.valueType.PERCENTAGE)
+        value = baseValue * effect.value / 100;
+
+    return value;
+}
+
 /**
  * get equipment type
  * 第3位表示位置序号
