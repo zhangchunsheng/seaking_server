@@ -8,6 +8,9 @@
 var playerService = require('../app/services/playerService');
 var userService = require('../app/services/userService');
 var partnerService = require('../app/services/partnerService');
+var packageService = require('../app/services/packageService');
+var equipmentsService = require('../app/services/equipmentsService');
+var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -371,15 +374,55 @@ exports.learnSkill = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
 
+    var skillId = msg.skillId;
+
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var status = player.learnSkill(msg.skillId);
-
-        data = {
-            status: status,
-            skill: player.fightSkills[msg.skillId]
-        };
-        utils.send(msg, res, data);
+        var status = player.checkSkill(skillId);
+        if(status == 0) {
+            data = {
+                code: Code.SKILL.HAVED_SKILL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(status == -1) {
+            data = {
+                code: Code.SKILL.NO_SKILL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        player.learnSkill(skillId, function(err, result) {
+            if(err) {
+                data = {
+                    code:Code.SKILL.NEED_REQUIREMENT
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    code: Code.OK,
+                    skillId: skillId,
+                    status: result
+                };
+                utils.send(msg, res, data);
+            });
+        });
     });
 }
 
@@ -400,14 +443,68 @@ exports.upgradeSkill = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
 
+    var skillId = msg.skillId;
+
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var status = player.upgradeSkill(msg.skillId);
-
-        data = {
-            status: status
-        };
-        utils.send(msg, res, data);
+        var status = player.checkSkillUpgrade(skillId);
+        if(status == 0) {
+            data = {
+                code: Code.SKILL.NO_HAVE_SKILL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(status == -1) {
+            data = {
+                code: Code.SKILL.TOP_LEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(status == -2) {
+            data = {
+                code: Code.SKILL.HAVED_SKILL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(status == -3) {
+            data = {
+                code: Code.SKILL.NO_REACH_SKILL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        player.upgradeSkill(msg.skillId, function(err, skillId) {
+            if(err) {
+                data = {
+                    code:Code.SKILL.NEED_REQUIREMENT
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    skillId: skillId,
+                    code:Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        });
     });
 }
 
@@ -428,13 +525,31 @@ exports.useSkill = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
 
+    var skillId = msg.skillId;
+
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var status = player.upgradeSkill(msg.skillId);
-
-        data = {
-            status: status
-        };
-        utils.send(msg, res, data);
+        var status = player.checkUseSkill(skillId);
+        if(status == 1) {
+            player.useSkill(msg.skillId, function(err, reply) {
+                if(err) {
+                    data = {
+                        code:Code.SKILL.NO_SKILL
+                    };
+                    utils.send(msg, res, data);
+                    return;
+                }
+                data = {
+                    skillId: skillId,
+                    code:Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        } else {
+            data = {
+                code: Code.SKILL.NO_SKILL
+            };
+            utils.send(msg, res, data);
+        }
     });
 }

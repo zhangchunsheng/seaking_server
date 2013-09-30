@@ -10,6 +10,7 @@ var Entity = require('./entity/entity');
 var heroSkills = require('../../config/data/heroSkills');
 var Persistent = require('./persistent');
 var consts = require('../consts/consts');
+var dataApi = require('../utils/dataApi');
 
 var Skills = function(opts) {
     if(typeof opts == "undefined")
@@ -70,10 +71,23 @@ Skills.prototype.initSkills = function(cId) {
     this.currentSkill = {};
     for(var i = 0 ; i < skills.length ; i++) {
         if(skills[i].type == consts.skillType.ACTIVE_SKILL) {
-            this.activeSkills.push({//{skillId:"",status:0,selected:1}
-                skillId: skills[i].skillId,
-                status: 0
-            });
+            if(dataApi.skillList.findById(skills[i].skillId).requirement == "") {
+                this.activeSkills.push({//{skillId:"",status:0,selected:1}
+                    skillId: skills[i].skillId,
+                    status: 1,
+                    select: 1
+                });
+                var date = new Date();
+                this.currentSkill = {
+                    skillId: skills[i].skillId,
+                    time: date.getTime()
+                };
+            } else {
+                this.activeSkills.push({//{skillId:"",status:0,selected:1}
+                    skillId: skills[i].skillId,
+                    status: 0
+                });
+            }
         } else if(skills[i].type == consts.skillType.PASSIVE_SKILL) {
             this.passiveSkills.push({
                 skillId: skills[i].skillId,

@@ -84,7 +84,9 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
 
         var time = date.getTime() - lastLoginDate;
         time = Math.floor(time / 1000);
-        playerDao.appPlayerAndPartnersHP(player, time, cb);
+        var hp = player.hpRecoverySpeed * time;
+        console.log(player.hpRecoverySpeed * time);
+        playerDao.appPlayerAndPartnersHP(player, hp, cb);
 
         var userInfo = {
             lastLoginDate: date.getTime()

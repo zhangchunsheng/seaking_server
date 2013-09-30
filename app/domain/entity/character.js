@@ -14,7 +14,6 @@ var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
 var consts = require('../../consts/consts');
 var Entity = require('./entity');
-var fightskill = require('./../fightskill');
 
 var Character = function(opts) {
     Entity.call(this, opts);
@@ -31,11 +30,10 @@ var Character = function(opts) {
 
     this.died = false;
     this.hp = opts.hp;
-    this.anger = opts.anger;// 能量值
+    this.anger = opts.anger || 0;// 能量值
     this.maxHp = opts.maxHp;
     this.maxAnger = opts.maxAnger || 100;// 最大能量值
     this.restoreHpSpeed = opts.restoreHpSpeed || 10;//生命值恢复速度
-    this.restoreAngerSpeed = opts.restoreAngerSpeed || 10;//能量恢复速度
     this.level = opts.level;
     this.experience = opts.experience;
     this.attack = opts.attack;//攻击
@@ -62,18 +60,25 @@ var Character = function(opts) {
     this.attackSpeed = opts.attackSpeed;//攻速
     this.isMoving = false;
 
+    this.hpRecoverySpeed = 1;
+
     this.formationId = opts.formationId;
 
     this.attackParam = 1;
     this.defenseParam = 1;
     this.equipmentParam = 1;
-    this.hasBuff = false;
-    this.buffs = [];
-    this.curSkill = 1;  //default normal attack
     this.characterData = dataApi.character.findById(this.cId);
-    this.fightSkills = {};
-    this.activeSkills = opts.activeSkills;// 主动技能
-    this.passiveSkills = opts.passiveSkills;// 被动技能
+    this.skills = opts.skills;
+
+    this.activeSkill = {};
+    this.activeSkills = [];
+    this.passiveSkills = [];
+
+    this.restoreAngerSpeed = opts.restoreAngerSpeed || {ea:10, ehr: 3, eshr: 6};//能量恢复速度
+
+    this.hasBuff = false;
+    this.buffs = opts.buffs || [];
+    this.skillBuffs = [];//技能buff
 };
 
 util.inherits(Character, Entity);
@@ -82,39 +87,6 @@ util.inherits(Character, Entity);
  * Expose 'Character' constructor.
  */
 module.exports = Character;
-
-
-/**
- * Add skills to the fightSkills.
- *
- * @param {Array} fightSkills
- * @api public
- */
-Character.prototype.addFightSkills = function(fightSkills) {
-    for (var i = 0; i < fightSkills.length; i++) {
-        var skill = fightskill.create(fightSkills[i]);
-        this.fightSkills[skill.skillId] = skill;
-    }
-};
-
-/**
- * Get fight skill data
- *
- * @api public
- */
-Character.prototype.getFightSkillData = function(){
-    var data = [];
-    for(var key in this.fightSkills){
-        var fs = {
-            id : Number(key),
-            level : this.fightSkills[key].level
-        };
-
-        data.push(fs);
-    }
-
-    return data;
-};
 
 /**
  * Reset the hp.
@@ -218,7 +190,7 @@ Character.prototype.getTotalDefence = function() {
  * @api public
  */
 Character.prototype.addBuff = function(buff) {
-    this.buffs[buff.type] = buff;
+    this.buffs.push(buff);
 };
 
 /**
@@ -228,5 +200,102 @@ Character.prototype.addBuff = function(buff) {
  * @api public
  */
 Character.prototype.removeBuff = function(buff) {
-    delete this.buffs[buff.type];
+
 };
+
+Character.prototype.addAttack = function(value) {
+    this.attack += parseInt(value);
+};
+
+Character.prototype.reduceAttack = function(value) {
+    this.attack -= parseInt(value);
+};
+
+Character.prototype.addDefense = function(value) {
+    this.defense += parseInt(value);
+};
+
+Character.prototype.reduceDefense = function(value) {
+    this.defense -= parseInt(value);
+};
+
+Character.prototype.addSpeedLevel = function(value) {
+    this.speedLevel += parseInt(value);
+};
+
+Character.prototype.reduceSpeedLevel = function(value) {
+    this.speedLevel -= parseInt(value);
+};
+
+Character.prototype.addHp = function(value) {
+    this.hp += parseInt(value);
+};
+
+Character.prototype.reduceHp = function(value) {
+    this.hp -= parseInt(value);
+};
+
+Character.prototype.addMaxHp = function(value) {
+    this.maxHp += parseInt(value);
+};
+
+Character.prototype.reduceMaxHp = function(value) {
+    this.maxHp -= parseInt(value);
+};
+
+Character.prototype.addFocus = function(value) {
+    this.focus += parseInt(value);
+};
+
+Character.prototype.reduceFocus = function(value) {
+    this.focus -= parseInt(value);
+};
+
+Character.prototype.addCriticalHit = function(value) {
+    this.criticalHit += parseInt(value);
+};
+
+Character.prototype.reduceCriticalHit = function(value) {
+    this.criticalHit -= parseInt(value);
+};
+
+Character.prototype.addCritDamage = function(value) {
+    this.critDamage += parseInt(value);
+};
+
+Character.prototype.reduceCritDamage = function(value) {
+    this.critDamage -= parseInt(value);
+};
+
+Character.prototype.addDodge = function(value) {
+    this.dodge += parseInt(value);
+};
+
+Character.prototype.reduceDodge = function(value) {
+    this.dodge -= parseInt(value);
+};
+
+Character.prototype.addBlock = function(value) {
+    this.block += parseInt(value);
+};
+
+Character.prototype.reduceBlock = function(value) {
+    this.block -= parseInt(value);
+};
+
+Character.prototype.addCounter = function(value) {
+    this.counter += parseInt(value);
+};
+
+Character.prototype.reduceCounter = function(value) {
+    this.counter -= parseInt(value);
+};
+
+Character.prototype.addValue = function(attrName, value) {
+    this[attrName] += parseInt(value);
+};
+
+Character.prototype.reduceValue = function(attrName, value) {
+    this[attrName] -= parseInt(value);
+};
+

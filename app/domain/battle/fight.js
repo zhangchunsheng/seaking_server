@@ -52,6 +52,14 @@ Fight.prototype.fight = function(cb) {
 
     // players = utils.sortArray(players, "speedLevel", 1); //由大到小排序
 
+    // 更新角色数据
+    for(var i in owners) {
+        owners[i].updateFightValue();
+    }
+    for(var i in monsters) {
+        monsters[i].updateFightValue();
+    }
+
     // 计算最大速度
     var max_speed = 0;
     for(var i in owners) {
@@ -238,16 +246,21 @@ Fight.prototype.attack = function(battleData, players, index) {
     // 阵型位置
     attackData.fId = attack.formationId;
 
+    attack.anger = 100;
     // 攻击方式
     if(attack.anger >= attack.maxAnger) {// 1 - 普通攻击 2 - 技能攻击
         attackData.action = 2;
-        attackData.skillId = 1;
+        if(attack.type == EntityType.MONSTER) {
+            attackData.skillId = 0;
+        } else {
+            attackData.skillId = attack.activeSkill.skillId;
+        }
         attack.anger = 0;
     } else {
         attackData.action = 1;
     }
 
-    attackData.attack = attack.attack;
+    attackData.attack = attack.fightValue.attack;
     defenseData.defense = defense.defense;
 
     var random = 0;
@@ -259,17 +272,25 @@ Fight.prototype.attack = function(battleData, players, index) {
         defenseData.reduceBlood = 0;
     } else {
         if(attackData.action == 2) {//技能攻击
-            //计算攻击力
-            attackData.attack = attack.attack;
+            //计算攻击力 技能加成
+            if(attack.type == EntityType.MONSTER) {
+
+            } else {
+                attack.activeSkillAdditional();
+                attackData.attack = attack.fightValue.attack;
+                attackData.buffs = [];
+                defenseData.groupDamage = {};
+                defenseData.buffs = [];
+            }
             //计算防御
             defenseData.defense = defense.defense;
         } else {
             // 判定是否暴击
-            var criticalHit = attack.criticalHit * 100;
+            var criticalHit = attack.fightValue.criticalHit * 100;
             random = utils.random(1, 10000);
             if(random >= 1 && random <= criticalHit) {// 暴击
                 attackData.isCritHit = true;
-                attackData.attack += (attackData.attack * attack.critDamage / 100);
+                attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
             }
 
             defenseData.action = 1;
@@ -311,9 +332,6 @@ Fight.prototype.attack = function(battleData, players, index) {
     }
 
     // 更新数据
-    attackData.addAnger = attack.restoreAngerSpeed;
-
-    defenseData.addAnger = defense.restoreAngerSpeed;
     defenseData.fId = monsterIndex;
     if(battleData.length > 0) {
         previousTime = battleData[battleData.length - 1].currentTime;
@@ -323,11 +341,28 @@ Fight.prototype.attack = function(battleData, players, index) {
     // 更新状态
     // 攻方
     // 增加怒气
-    attack.anger += attack.restoreAngerSpeed;
+    if(attack.type == EntityType.MONSTER) {
+        attack.anger += attack.restoreAngerSpeed.ea;
+    } else {
+        attack.anger += attack.restoreAngerSpeed.ea;
+    }
 
     // 守方
     // 增加怒气
-    defense.anger += defense.restoreAngerSpeed;
+    if(attackData.action == 1) {// each hit received
+        if(defense.type == EntityType.MONSTER) {
+            defense.anger += defense.restoreAngerSpeed.ehr;
+        } else {
+            defense.anger += defense.restoreAngerSpeed.ehr;
+        }
+    } else if(attackData.action == 2) {// each skill hit received
+        if(defense.type == EntityType.MONSTER) {
+            defense.anger += defense.restoreAngerSpeed.eshr;
+        } else {
+            defense.anger += defense.restoreAngerSpeed.eshr;
+        }
+    }
+
     defense.hp -= defenseData.reduceBlood;
     if(defense.hp <= 0) {
         defense.hp = 0;
@@ -338,7 +373,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     attackData.hp = attack.hp;
     attackData.anger = attack.anger;
     defenseData.hp = defense.hp;
-    defenseData.hp = defense.hp;
+    defenseData.anger = defense.anger;
 
     // 写入数据
     // 攻方
@@ -410,7 +445,7 @@ Fight.createCharacter = function(opts) {
         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), opts.level),
         anger: 0,
         maxAnger: 100,
-        restoreAngerSpeed: 10,
+        restoreAngerSpeed: {ea:10, ehr: 3, eshr: 6},
         attackers: [],
         costTime: 0,
         distance: 0,
@@ -442,7 +477,7 @@ Fight.createMonster = function(opts) {
         hp: monster.hp,
         anger: 0,
         maxAnger: 100,
-        restoreAngerSpeed: 10,
+        restoreAngerSpeed: {ea:10, ehr: 3, eshr: 6},
         attackers: [],
         costTime: 0,
         distance: 0,
@@ -477,7 +512,7 @@ Fight.createTestCharacter = function(opts) {
         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), opts.level),
         anger: 0,
         maxAnger: 100,
-        restoreAngerSpeed: 10,
+        restoreAngerSpeed: {ea:10, ehr: 3, eshr: 6},
         attackers: [],
         costTime: 0,
         distance: 0,
@@ -509,7 +544,7 @@ Fight.createTestMonster = function(opts) {
         hp: monster.hp,
         anger: 0,
         maxAnger: 100,
-        restoreAngerSpeed: 10,
+        restoreAngerSpeed: {ea:10, ehr: 3, eshr: 6},
         attackers: [],
         costTime: 0,
         distance: 0,

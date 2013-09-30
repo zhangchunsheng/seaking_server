@@ -11,8 +11,9 @@ var formula = require('../../consts/formula');
 var consts = require('../../consts/consts');
 var EntityType = require('../../consts/consts').EntityType;
 var Character = require('./character');
-var fightskillDao = require('../../dao/skillDao');
-var fightskill = require('./../fightskill');
+var skillDao = require('../../dao/skillDao');
+var ActiveSkill = require('./../activeSkill');
+var PassiveSkill = require('./../passiveSkill');
 
 /**
  * Initialize a new 'Enemy' with the given 'opts'.
@@ -26,14 +27,28 @@ var Enemy = function(opts) {
     this.id = opts.id;
     this.type = EntityType.MONSTER;
     this.equipments = opts.equipments;
-    this.skillPoint = opts.skillPoint || 0;
 
     var heros = dataApi.heros.data;
     //this.nextLevelExp = formula.calculateXpNeeded(heros[this.id]["xpNeeded"], heros[this.id]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
     this.herosData = dataApi.heros.findById(this.kindId);
     this.range = opts.range || 2;
 
+    this.initSkills();
     this.setTotalAttackAndDefence();
+
+    this.fightValue = {
+        attack: this.attack,
+        defense: this.defense,
+        speedLevel: this.speedLevel,
+        hp: this.hp,
+        maxHp: this.maxHp,
+        focus: this.focus,
+        criticalHit: this.criticalHit,
+        critDamage: this.critDamage,
+        dodge: this.dodge,
+        block: this.block,
+        counter: this.counter
+    };
 };
 
 util.inherits(Enemy, Character);
@@ -42,6 +57,10 @@ util.inherits(Enemy, Character);
  * Expose 'Enemy' constructor.
  */
 module.exports = Enemy;
+
+Enemy.prototype.initSkills = function() {
+
+};
 
 Enemy.prototype.setTotalAttackAndDefence = function() {
     var attack = 0, defense = 0;
@@ -77,6 +96,53 @@ Enemy.prototype.recover = function(lastTick){
     }
 };
 
+/**
+ * 计算战斗数值
+ */
+Enemy.prototype.updateFightValue = function() {
+    var attack = 0;
+    var defense = 0;
+    var speedLevel = 0;
+    var hp = 0;
+    var focus = 0;
+    var criticalHit = 0;
+    var critDamage = 0;
+    var dodge = 0;
+    var block = 0;
+    var counter = 0;
+    var counterDamage = 0;
+    var equipments;
+    var equipment;
+    //集中值 武器百分比 技能百分比 buff百分比
+    //武器攻击力 技能攻击力 道具攻击力 buff攻击力
+    attack = this.attack + this.attack * this.focus;
+    defense = this.defense;
+    speedLevel = this.speedLevel;
+    hp = this.hp;
+    focus = this.focus;
+    criticalHit = this.criticalHit;
+    critDamage = this.critDamage;
+    dodge = this.dodge;
+    block = this.block;
+    counter = this.counter;
+
+    this.fightValue.attack = Math.floor(attack);
+    this.fightValue.defense = Math.floor(defense);
+    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.hp = hp;
+    this.fightValue.maxHp = hp;
+    this.fightValue.focus = focus;
+    this.fightValue.criticalHit = criticalHit;
+    this.fightValue.critDamage = critDamage;
+    this.fightValue.dodge = dodge;
+    this.fightValue.block = block;
+    this.fightValue.counter = counter;
+};
+
+Enemy.prototype.updateRestoreAngerSpeed = function() {
+
+}
+
 //Convert player' state to json and return
 Enemy.prototype.strip = function() {
     return {
@@ -106,7 +172,9 @@ Enemy.prototype.strip = function() {
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         block: this.block,//格挡
-        counterAttack: this.counterAttack//反击
+        counterAttack: this.counterAttack,//反击
+        skills: this.skills,
+        buffs: this.buffs
     };
 };
 
@@ -119,7 +187,6 @@ Enemy.prototype.strip = function() {
 Enemy.prototype.getInfo = function() {
     var playerData = this.strip();
     playerData.equipments = this.equipments;
-    playerData.fightSkills = this.getFightSkillData();
 
     return playerData;
 };
@@ -165,6 +232,8 @@ Enemy.prototype.toJSON = function() {
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         block: this.block,//格挡
-        counterAttack: this.counterAttack//反击
+        counterAttack: this.counterAttack,//反击
+        skills: this.skills,
+        buffs: this.buffs
     };
 };

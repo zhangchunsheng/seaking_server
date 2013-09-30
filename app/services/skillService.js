@@ -6,9 +6,26 @@
  * Description: arenaService
  */
 var skillDao = require('../dao/skillDao');
+var Skills = require('../domain/skills');
+var dataApi = require('../utils/dataApi');
 
 var skillService = module.exports;
 
-skillService.initSkill = function() {
+skillService.initSkill = function(cId) {
+    var skills = new Skills();
+    skills.initSkills(cId);
+
+    var currentSkill = skills.currentSkill || {};
+    var activeSkills = skills.activeSkills || [];
+    var passiveSkills = skills.passiveSkills || [];
+
+    return {
+        currentSkill: currentSkill,
+        activeSkills: activeSkills,
+        passiveSkills: passiveSkills
+    };
+}
+
+skillService.getNextSkill = function(skill) {
 
 }

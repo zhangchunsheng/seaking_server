@@ -1,4 +1,4 @@
-/**
+ /**
  * Copyright(c)2013,Wozlla,www.wozlla.com
  * Version: 1.0
  * Author: Peter Zhang
@@ -205,115 +205,322 @@ module.exports = {
         PASSIVE_SKILLS: "passiveSkills"
     },
 
+    attrNames: {
+        ATTACK: "attack",
+        DEFENSE: "defense",
+        SPEEDLEVEL: "speedLevel",
+        HP: "hp",
+        MAXHP: "maxHp",
+        FOCUS: "focus",
+        CRITICALHIT: "criticalHit",
+        CRITICALHIT: "critDamage",
+        DODGE: "dodge",
+        BLOCK: "block",
+        COUNTER: "counter"
+    },
+
     correspondingSkillsType: {
         1: "activeSkills",
         2: "passiveSkills"
     },
 
     effect_attr: {
-        1: {
-            name: "hp",
-            showName: "HP"
+        HP: "1",//HP
+        EXPERIENCE: "2",//经验
+        ATTACK: "3",//攻击
+        DEFENSE: "4",//防御
+        FOCUS: "5",//集中值
+        SPEED: "6",//速度
+        DODGE: "7",//闪避
+        CRITICALHIT: "8",//暴击几率
+        CRITDAMAGE: "9",//暴击伤害
+        BLOCK: "10",//格挡
+        COUNTER: "11",//反击
+        PARALLELDAMAGE: "12",//溅射伤害
+        BURN: "13",//点燃
+        STUNT: "14",//禁锢
+        POISON: "15",//施毒
+        CONFUSION: "16",//迷惑
+        DEFENSE_FOCUS: "17",//防御力加成(focus)
+        HPRECOVERYSPEED: "18",//血量回复
+        ADDITEMATTR: "19",//装备加成
+        ADDATTACK: "20",//增加自己攻击力
+        BOUNCEATTACK: "21",//反弹伤害
+        MONEY: "22",//额外金钱
+        ADDBLOOD: "23",//吸血
+        ATTACK_FOCUS: "24",//攻击力加成(focus)
+        SKILL: "25",//技能
+        ICE: "26"//冰冻
+    },
+
+    EffectType: {
+        "hp": 1,
+        "experience": 2,
+        "attack": 3,
+        "defense": 4,
+        "focus": 5,
+        "speed": 6,
+        "dodge": 7,
+        "criticalHit": 8,
+        "critDamage": 9,
+        "block": 10,
+        "counter": 11,
+        "parallelDamage": 12,
+        "burn": 13,
+        "stunt": 14,
+        "poison": 15,
+        "confusion": 16,
+        "defense_focus": 17,
+        "hpRecoverySpeed": 18,
+        "addItemAttr": 19,
+        "addAttack": 20,
+        "bounceAttack": 21,
+        "money": 22,
+        "addBlood": 23,
+        "attack_focus": 24,
+        "skill": 25,
+        "ice": 26
+    },
+
+    buffType: {
+        HP: "hp",//HP
+        EXPERIENCE: "experience",//经验
+        ATTACK: "attack",//攻击
+        DEFENSE: "defense",//防御
+        FOCUS: "focus",//集中值
+        SPEED: "speed",//速度
+        DODGE: "dodge",//闪避
+        CRITICALHIT: "criticalHit",//暴击几率
+        CRITDAMAGE: "critDamage",//暴击伤害
+        BLOCK: "block",//格挡
+        COUNTER: "counter",//反击
+        PARALLELDAMAGE: "parallelDamage",//溅射伤害
+        BURN: "burn",//点燃
+        STUNT: "stunt",//禁锢
+        POISON: "poison",//施毒
+        CONFUSION: "confusion",//迷惑
+        DEFENSE_FOCUS: "defense_focus",//防御力加成(focus)
+        HPRECOVERYSPEED: "hpRecoverySpeed",//血量回复
+        ADDITEMATTR: "addItemAttr",//装备加成
+        ADDATTACK: "addAttack",//增加自己攻击力
+        BOUNCEATTACK: "bounceAttack",//反弹伤害
+        MONEY: "money",//额外金钱
+        ADDBLOOD: "addBlood",//吸血
+        ATTACK_FOCUS: "attack_focus",//攻击力加成(focus)
+        SKILL: "skill",//技能
+        ICE: "ice"//冰冻
+    },
+
+    correspondingEffect_attr: {
+        1: "hp",
+        2: "experience",
+        3: "attack",
+        4: "defense",
+        5: "focus",
+        6: "speed",
+        7: "dodge",
+        8: "criticalHit",
+        9: "critDamage",
+        10: "block",
+        11: "counter",
+        12: "parallelDamage",
+        13: "burn",
+        14: "stunt",
+        15: "poison",
+        16: "confusion",
+        17: "defense_focus",
+        18: "hpRecoverySpeed",
+        19: "addItemAttr",
+        20: "addAttack",
+        21: "bounceAttack",
+        22: "money",
+        23: "addBlood",
+        24: "attack_focus",
+        25: "skill",
+        26: "ice"
+    },
+
+    valueType: {
+        NUMBER: 1,//"数值"
+        PERCENTAGE: 2,//"百分比"
+        GETPERCENTAGE: 3//获取目标值(百分比）
+    },
+
+    timeType: {
+        ATTACK_NUM: 0,//攻击次数
+        BEHITTED_NUM: 1,//受攻击次数
+        ROUND: 2,//回合
+        PERMANENTLY: 3//永久
+    },
+
+    targetType: {
+        OWNER_SINGLE: 1,//己方单体
+        OPPONENT_SINGLE: 2,//敌方单体
+        OWNER_ALL: 3,//己方全体
+        OPPONENT_ALL: 4,//敌方全体
+        OWNER_RANDOM: 5,//己方随机目标
+        OPPONENT_RANDOM: 6,//敌方随机目标
+        OWNER_SPECIFIC: 7,//己方特定目标
+        OPPONENT_SPECIFIC: 8//敌方特定目标
+    },
+
+    requirementType: {
+        COINS: "coins",
+        LEVEL: "level",
+        SKILLS: "skills",
+        ITEMS: "items"
+    },
+
+    skill_speedType: {
+        EA: "ea",
+        EHR: "ehr",
+        ESHR: "eshr"
+    },
+
+    skilllevel_header_effect: {
+        default: {
+            1: {
+                name: "valueType",
+                showName: "属性值类型",
+                type: "enum",
+                enum: "valueType"
+            },
+            2: {
+                name: "value",
+                showName: "属性值",
+                type: "int"
+            },
+            3: {
+                name: "targetType",
+                showName: "作用目标类型",
+                type: "enum",
+                enum: "targetType"
+            },
+            4: {
+                name: "targetValue",
+                showName: "作用目标值",
+                type: "int"
+            },
+            5: {
+                name: "timeType",
+                showName: "时间类型",
+                type: "enum",
+                enum: "timeType"
+            },
+            6: {
+                name: "timeValue",
+                showName: "时间值",
+                type: "int"
+            }
         },
-        2: {
-            name: "experience",
-            showName: "经验"
+        parallelDamage: {
+            1: {
+                name: "value",
+                showName: "溅射伤害",
+                type: "int"
+            },
+            2: "",
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        3: {
-            name: "attack",
-            showName: "攻击"
+        burn: {
+            1: {
+                name: "value",
+                showName: "点燃伤害",
+                type: "int"
+            },
+            2: {
+                name: "timeValue",
+                showName: "持续几轮",
+                type: "int"
+            },
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        4: {
-            name: "defense",
-            showName: "防御"
+        stunt: {
+            1: {
+                name: "value",
+                showName: "禁锢次数",
+                type: "int"
+            },
+            2: "",
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        5: {
-            name: "focus",
-            showName: "集中值"
+        poison: {
+            1: {
+                name: "value",
+                showName: "施毒伤害",
+                type: "int"
+            },
+            2: {
+                name: "timeValue",
+                showName: "持续几轮",
+                type: "int"
+            },
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        6: {
-            name: "speed",
-            showName: "速度"
+        confusion: {
+            1: {
+                name: "value",
+                showName: "持续次数",
+                type: "int"
+            },
+            2: "",
+            3: "",
+            4: "",
+            5: "",
+            6: ""
         },
-        7: {
-            name: "dodge",
-            showName: "闪避"
+        ice: {
+            1: {
+                name: "speedValue",
+                showName: "减速值",
+                type: "int"
+            },
+            2: {
+                name: "timeValue",
+                showName: "持续几轮",
+                type: "int"
+            },
+            3: {
+                name: "value",
+                showName: "冰冻伤害",
+                type: "int"
+            },
+            4: "",
+            5: "",
+            6: ""
         },
-        8: {
-            name: "criticalHit",
-            showName: "暴击几率"
-        },
-        9: {
-            name: "critDamage",
-            showName: "暴击伤害"
-        },
-        10: {
-            name: "block",
-            showName: "格挡"
-        },
-        11: {
-            name: "counter",
-            showName: "反击"
-        },
-        12: {
-            name: "parallelDamage",
-            showName: "溅射伤害"
-        },
-        13: {
-            name: "burn",
-            showName: "点燃"
-        },
-        14: {
-            name: "stunt",
-            showName: "禁锢"
-        },
-        15: {
-            name: "poison",
-            showName: "施毒"
-        },
-        16: {
-            name: "confusion",
-            showName: "迷惑"
-        },
-        17: {
-            name: "defense_focus",
-            showName: "防御力加成(focus)"
-        },
-        18: {
-            name: "hpRecoverySpeed",
-            showName: "血量回复"
-        },
-        19: {
-            name: "addItemAttr",
-            showName: "装备加成"
-        },
-        20: {
-            name: "addAttack",
-            showName: "增加自己攻击力"
-        },
-        21: {
-            name: "bounceAttack",
-            showName: "反弹伤害"
-        },
-        22: {
-            name: "money",
-            showName: "额外金钱"
-        },
-        23: {
-            name: "addBlood",
-            showName: "吸血"
-        },
-        24: {
-            name: "attack_focus",
-            showName: "攻击力加成(focus)"
-        },
-        25: {
-            name: "skill",
-            showName: "技能"
-        },
-        26: {
-            name: "ice",
-            showName: "冰冻"
+        skill: {
+            1: {
+                name: "skillId",
+                showName: "技能Id",
+                type: "string"
+            },
+            2: {
+                name: "valueType",
+                showName: "加成类型",
+                type: "enum",
+                enum: "valueType"
+            },
+            3: {
+                name: "value",
+                showName: "加成数值",
+                type: "int"
+            },
+            4: "",
+            5: "",
+            6: ""
         }
     },
 

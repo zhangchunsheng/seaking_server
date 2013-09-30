@@ -11,7 +11,7 @@ var dataApi = require('../utils/dataApi');
 var formula = require('../consts/formula');
 var consts = require('../consts/consts');
 var buff = require('./buff');
-var Persistent = require('./persistent');
+var Skill = require('./skill');
 
 /**
  * 计算技能攻击伤害
@@ -121,20 +121,18 @@ var removeBuff = function(attacker, target, buff) {
  * @param opts
  * @constructor
  */
-var FightSkill = function(opts) {
-    Persistent.call(this, opts);
-    this.skillId = opts.skillId;
-    this.level = opts.level;
-    this.playerId = opts.playerId;
-    this.skillData = dataApi.skillList.findById(this.skillId);
-    this.name = this.skillData.skillName;
-    this.type = this.skillData.type;
+var ActiveSkill = function(opts) {
+    Skill.call(this, opts);
 };
 
-FightSkill.prototype.attack = function() {
+ActiveSkill.prototype.attack = function() {
 
 }
 
-util.inherits(FightSkill, Persistent);
+ActiveSkill.create = function(opts) {
 
-module.exports.FightSkill = FightSkill;
+}
+
+util.inherits(ActiveSkill, Skill);
+
+module.exports = ActiveSkill;

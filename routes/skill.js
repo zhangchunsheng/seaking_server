@@ -23,5 +23,7 @@ exports.initSkill = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
+    var cId = msg.cId;
+    skillService.initSkill();
     res.send("index");
 }
