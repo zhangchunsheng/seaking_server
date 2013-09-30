@@ -17,6 +17,9 @@ var Mail = function(opts){
     this.time = new Date().getTime();
     this.content = opts.content;
     this.type = opts.type || consts.MailType.PLAYER;
+    if('string' == typeof opts.items) {
+        opts.items = JSON.parse(opts.items);
+    }
     if( !!(opts.items) &&  opts.items.length > 0 ) {
         this.items = opts.items;
         for(var i in this.items){

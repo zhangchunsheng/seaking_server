@@ -211,6 +211,10 @@ mailDao.addMail = function (fromBox, toBox, mail, cb) {
 	var sendMail = JSON.stringify(mail);
 	mail.mailId = MailKeyType.NOREAD + mail.mailId;
 	var receive = JSON.stringify(mail);
+    console.log(fromBox);
+    console.log(sendMail);
+    console.log(toBox);
+    console.log(receive);
 	redis.command(function (client) {
 		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {})
 		.lpush(fromBox, sendMail, function (err, reply) {
@@ -224,12 +228,12 @@ mailDao.addMail = function (fromBox, toBox, mail, cb) {
 				return;
 			}
 		}).exec(function (err, reply) {
+            redis.release(client);
 			if (!!err) {
-                redis.release(client);
 				console.log(err);
 				return;
 			}
-            redis.release(client);
+            console.log('addMail ###### '+reply);
 			utils.invokeCallback(cb, null, mail);
 		});
 	});
@@ -365,17 +369,27 @@ function LuaSha(lua_script) {
  * @param cb
  */
 mailDao.readMail = function (mails, Key, cb) {
-	mailDao.delMail(mails, Key, function (err, reply) {
-
-		if (err || reply == null) {
-			utils.invokeCallback(cb, "不是未读邮件");
-			return;
-		}
-		var mail = JSON.parse(reply);
-		mail.mailId = MailKeyType.READ + mails[1];
-		var mailStr = JSON.stringify(mail);
-		insertMail(Key + "_" + MailKeyType.READ, mailStr, cb);
-	});
+    if(mails[0]==MailKeyType.NOREAD ){
+        mailDao.delMail(mails, Key, function (err, reply) {
+    
+            if (err || reply == null) {
+                utils.invokeCallback(cb, "不是未读邮件");
+                return;
+            }
+            var mail = JSON.parse(reply);
+            mail.mailId = MailKeyType.READ + mails[1];
+            var mailStr = JSON.stringify(mail);
+            insertMail(Key + "_" + MailKeyType.READ, mailStr);
+            utils.invokeCallback(cb,null,mail.mailId);
+        });
+    }else{
+        redis.command(function(client) {
+             client.eval(readMailLua,function(err, res){
+                redis.release(client);
+                 utils.invokeCallback(cb,null,res);
+             });
+        });
+    }
 }
 
 /**

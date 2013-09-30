@@ -14,6 +14,7 @@ var region = require('../config/region');
 var EntityType = require('../app/consts/consts').EntityType;
 var Fight = require('../app/domain/battle/fight');
 var consts = require('../app/consts/consts');
+var arenaDao = require('../app/dao/arenaDao');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -122,16 +123,18 @@ exports.add = function(req, res) {
     var session = req.session;
 
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName");
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
-
-    arenaDao.add(player, function(err, reply) {
-        next(null, {
-            code: Code.OK,
-            rank: reply
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        arenaDao.add(player, function(err, reply) {
+            next(null, {
+                code: Code.OK,
+                rank: reply
+            });
         });
     });
 }
@@ -144,20 +147,27 @@ exports.add = function(req, res) {
 exports.getOpponents = function(req, res) {
     var msg = req.query;
     var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
-    arenaDao.getOpponents(player, function(err, result) {
-        if( result == null ) {
-            next(null,{
-                code: Code.FAIL
-            });
-            return;
-        } else {
-            next(null,{
-                code: Code.OK,
-                Opponents: result
-            });
-        }
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        arenaDao.getOpponents(player, function(err, result) {
+            if( result == null ) {
+                utils.send(msg, res,{
+                    code: Code.FAIL
+                });
+                return;
+            } else {
+                utils.send(msg, res,{
+                    code: Code.OK,
+                    Opponents: result
+                });
+            }
+        });
     });
 }
 
@@ -171,16 +181,28 @@ exports.getRank = function(req, res) {
     var session = req.session;
 
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName");
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
-
-    arenaDao.getRank(player, function(err, reply) {
-        next(null, {
-            code: Code.OK,
-            rank: reply + 1
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        arenaDao.getRank(player, function(err, reply) {
+            if(err){console.log(err.message);utils.send(msg,res,{code:500});}
+            if(reply == null) {
+                arenaDao.add(player,function(err,reply){
+                    utils.send(msg, res, {
+                        code:Code.OK,
+                        rank: reply
+                    });
+                });
+            } else {
+                utils.send(msg, res, {
+                    code: Code.OK,
+                    rank: reply + 1
+                });
+            }
         });
     });
 }

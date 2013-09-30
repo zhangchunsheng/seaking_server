@@ -55,8 +55,7 @@ exports.buyItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-
-
+        
 //      if(!) {
 //          next(null,{
 //              code:Code.FAIL
@@ -82,6 +81,17 @@ exports.buyItem = function(req, res) {
             utils.send(msg, res, data);
             return ;
         }
+        if( type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS ) {
+            if(num != 1) {
+                utils.send(msg, res, {code:'数据错误'});
+                return;    
+            }
+        }else{
+            if(itemInfo.pileNum != num) {
+                utils.send(msg, res, {code:'数据错误'});
+                return;      
+            }
+        }
         var price = itemInfo.price;
         var costMoney = price * num;
 
@@ -92,7 +102,7 @@ exports.buyItem = function(req, res) {
             utils.send(msg, res, data);
             return ;
         }
-
+        
         var item = {
             itemId: wid,
             itemNum: num,

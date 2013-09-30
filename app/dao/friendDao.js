@@ -49,6 +49,7 @@ friendDao.addFriend = function(player, f_playerId, cb) {
                         });
                     });
                 } else {
+                    redis.release(client);
                     utils.invokeCallback(cb, null, {
                         reply: -1
                     });

@@ -25,6 +25,7 @@ var routes = require('./routes')
     , skill = require('./routes/skill')
     , task = require('./routes/task')
     , gm = require('./routes/gm')
+    , shop = require('./routes/shop')
     , authRequired = require('./middlewares/auth_required');
 
 module.exports = function (app) {
@@ -59,7 +60,7 @@ module.exports = function (app) {
 
     app.get('/formation/change', authRequired, formation.change);
 
-    app.get('/friend/add', authRequired, friend.get);
+    app.get('/friend/get', authRequired, friend.get);
     app.get('/friend/add', authRequired, friend.add);
     app.get('/friend/addByName', authRequired, friend.addByName);
     app.get('/friend/remove', authRequired, friend.remove);
@@ -108,4 +109,15 @@ module.exports = function (app) {
     app.get('/gm/resetTask', authRequired, gm.resetTask);
     app.get('/gm/updateMoney', authRequired, gm.updateMoney);
     app.get('/gm/updateExp', authRequired, gm.updateExp);
+    
+    app.get('/mail/send',authRequired,mail.sendMail);
+    app.get('/mail/getOutbox',authRequired,mail.getOutbox);
+    app.get('/mail/getInbox',authRequired,mail.getInbox);
+    app.get('/mail/read',authRequired,mail.readMail);
+    app.get('/mail/newMail',authRequired,mail.hasNewMail);
+    app.get('/mail/systemSendMail',authRequired,mail.systemSendMail);
+    app.get('/mail/collectItem',authRequired,mail.collectItem);
+    app.get('/mail/del',authRequired,mail.delMail);
+    
+    app.get('/shop/buyItem',authRequired,shop.buyItem);
 }
