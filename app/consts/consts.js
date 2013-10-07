@@ -279,7 +279,10 @@ module.exports = {
         "addBlood": 23,
         "attack_focus": 24,
         "skill": 25,
-        "ice": 26
+        "ice": 26,
+        "block_focus": 30,
+        "counter_focus": 31,
+        "critDamage_focus": 32
     },
 
     buffType: {
@@ -308,7 +311,10 @@ module.exports = {
         ADDBLOOD: "addBlood",//吸血
         ATTACK_FOCUS: "attack_focus",//攻击力加成(focus)
         SKILL: "skill",//技能
-        ICE: "ice"//冰冻
+        ICE: "ice",//冰冻
+        BLOCK_FOCUS: "block_focus",//格挡focus加成
+        COUNTER_FOCUS: "counter_focus",//反击focus加成
+        CRITDAMAGE_FOCUS: "critDamage_focus"//暴击focus加成
     },
 
     correspondingEffect_attr: {
@@ -337,7 +343,10 @@ module.exports = {
         23: "addBlood",
         24: "attack_focus",
         25: "skill",
-        26: "ice"
+        26: "ice",
+        30: "block_focus",
+        31: "counter_focus",
+        32: "critDamage_focus"
     },
 
     valueType: {
