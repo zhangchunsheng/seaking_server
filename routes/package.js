@@ -14,6 +14,7 @@ var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
 var PackageType = require('../app/consts/consts').PackageType;
 var dataApi = require('../app/utils/dataApi');
+var Buff = require('../app/domain/buff');
 var async = require('async');
 
 exports.index = function(req, res) {
@@ -429,10 +430,11 @@ exports.userItem = function(req, res) {
         var package = player.packageEntity;
         switch(itemClass) {
             case consts.ItemCategory.Increase:
-                player.buffs.push({
+                var buff = new Buff({
                     useEffectId: itemInfo.useEffectId,
                     startTime: new Date().getTime()
                 });
+                player.buffs.push(buff);
 
                 package.removeItem(type, index, 1);
                 package.save();
@@ -489,10 +491,11 @@ exports.userItem = function(req, res) {
                         });
                         break;
                     case "02"://持续恢复hp
-                        player.buffs.push({
+                        var buff = new Buff({
                             useEffectId: itemInfo.useEffectId,
-                            startTime: new Date()
+                            startTime: new Date().getTime()
                         });
+                        player.buffs.push(buff);
                         package.removeItem(type, index, 1);
                         package.save();
                         data = {
