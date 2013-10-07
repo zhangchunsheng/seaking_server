@@ -25,7 +25,6 @@ var dbUtil = require('../../utils/dbUtil');
 var ucenter = require('../../lib/ucenter/ucenter');
 var ActiveSkill = require('./../activeSkill');
 var PassiveSkill = require('./../passiveSkill');
-var Buff = require('./../buff');
 
 /**
  * Initialize a new 'Player' with the given 'opts'.
@@ -262,7 +261,7 @@ Player.prototype.updateSkillBuffs = function() {
     for(var i = 0 ; i < this.passiveSkills.length ; i++) {
         effects = this.passiveSkills[i].skillData.effects;
         for(var j = 0 ; j < effects.length ; j++) {
-            if(effects[j].attr == consts.buffType.HPRECOVERYSPEED) {//血量回复速度
+            if(effects[j].attr == consts.buffType.HPRECOVERYSPEED) {
                 if(effects[j].valueType == consts.valueType.PERCENTAGE)
                     this.hpRecoverySpeed += this.hpRecoverySpeed * effects[j].value / 100;
             }
@@ -539,7 +538,7 @@ Player.prototype.activeSkillAdditional = function() {
 
         } else if(effects[j].attr == consts.buffType.ATTACK_FOCUS) {//攻击力focus加成
 
-        } else if(effects[j].attr == consts.buffType.SKILL) {//技能加成，buff
+        } else if(effects[j].attr == consts.buffType.SKILL) {//技能加成
 
         } else if(effects[j].attr == consts.buffType.ICE) {//冰冻
 
@@ -547,7 +546,7 @@ Player.prototype.activeSkillAdditional = function() {
 
         } else if(effects[j].attr == consts.buffType.COUNTER_FOCUS) {//反击focus加成
 
-        } else if(effects[j].attr == consts.buffType.CRITICALHIT_FOCUS) {//暴击focus加成
+        } else if(effects[j].attr == consts.buffType.CRITDAMAGE_FOCUS) {//暴击focus加成
 
         }
     }
@@ -653,7 +652,7 @@ Player.prototype.passiveSkillAdditional = function() {
 
             } else if(effects[j].attr == consts.buffType.COUNTER_FOCUS) {//反击focus加成
 
-            } else if(effects[j].attr == consts.buffType.CRITICALHIT_FOCUS) {//暴击focus加成
+            } else if(effects[j].attr == consts.buffType.CRITDAMAGE_FOCUS) {//暴击focus加成
 
             }
         }

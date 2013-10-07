@@ -282,7 +282,7 @@ module.exports = {
         "ice": 26,
         "block_focus": 30,
         "counter_focus": 31,
-        "criticalHit_focus": 32
+        "critDamage_focus": 32
     },
 
     buffType: {
@@ -314,7 +314,7 @@ module.exports = {
         ICE: "ice",//冰冻
         BLOCK_FOCUS: "block_focus",//格挡focus加成
         COUNTER_FOCUS: "counter_focus",//反击focus加成
-        CRITICALHIT_FOCUS: "criticalHit_focus"//暴击几率focus加成
+        CRITDAMAGE_FOCUS: "critDamage_focus"//暴击focus加成
     },
 
     correspondingEffect_attr: {
@@ -346,7 +346,7 @@ module.exports = {
         26: "ice",
         30: "block_focus",
         31: "counter_focus",
-        32: "criticalHit_focus"
+        32: "critDamage_focus"
     },
 
     valueType: {
