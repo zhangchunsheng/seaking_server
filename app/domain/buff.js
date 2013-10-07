@@ -7,22 +7,44 @@
  */
 var util = require('util');
 var Persistent = require('./persistent');
+var consts = require('../consts/consts');
+var dataApi = require('../utils/dataApi');
 
 function Buff(opts) {
     Persistent.call(this, opts);
-    /**
-     * 效果Id XG
-     */
-    this.useEffectId = opts.useEffectId;
+    this.useEffectId = opts.useEffectId;// 物品Id，效果Id XG
     this.startTime = opts.startTime;
-    this.type = opts.type;// 1 - 道具 2 - 技能
+    this.type = opts.type;// skill attr
+    this.buffKind = consts.buffKind.ITEM;// 1 - 道具 2 - 技能
     this.count = opts.count;// 持续次数
     this.isTempBuff = opts.isTempBuff || false;
-    this.buffData = {};
+    this.buffData = opts.buffData || {};
+    this.skillId = opts.skillId;
+
+    this.updateAttribute();
 }
 
 Buff.prototype.updateAttribute = function() {
-    
+    if(this.useEffectId.indexOf("XG") == 0) {
+        this.buffKind = consts.buffKind.SKILL;
+    } else {
+        this.buffKind = consts.buffKind.ITEM;
+    }
+}
+
+Buff.prototype.updatePlayerAttribute = function() {
+    if(this.buffKind == consts.buffKind.ITEM) {
+
+    } else if(this.buffKind == consts.buffKind.SKILL) {
+
+    }
+}
+
+/**
+ * 更新buff
+ */
+Buff.prototype.updateBuff = function() {
+
 }
 
 Buff.prototype.use = function(player) {

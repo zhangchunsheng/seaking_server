@@ -285,6 +285,11 @@ module.exports = {
         "criticalHit_focus": 32
     },
 
+    buffKind: {
+        ITEM: 1,
+        SKILL: 2
+    },
+
     buffType: {
         HP: "hp",//HP
         EXPERIENCE: "experience",//经验
