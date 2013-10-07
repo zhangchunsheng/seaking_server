@@ -25,7 +25,6 @@ var routes = require('./routes')
     , skill = require('./routes/skill')
     , task = require('./routes/task')
     , gm = require('./routes/gm')
-    , shop = require('./routes/shop')
     , authRequired = require('./middlewares/auth_required');
 
 module.exports = function (app) {
@@ -72,11 +71,15 @@ module.exports = function (app) {
 
     app.get('/mail/systemSendMail', authRequired, mail.systemSendMail);
     app.get('/mail/sendMail', authRequired, mail.sendMail);
+    app.get('/mail/send',authRequired,mail.sendMail);
     app.get('/mail/getInbox', authRequired, mail.getInbox);
     app.get('/mail/getOutbox', authRequired, mail.getOutbox);
     app.get('/mail/readMail', authRequired, mail.readMail);
+    app.get('/mail/read',authRequired,mail.readMail);
     app.get('/mail/delMail', authRequired, mail.delMail);
+    app.get('/mail/del',authRequired,mail.delMail);
     app.get('/mail/hasNewMail', authRequired, mail.hasNewMail);
+    app.get('/mail/newMail',authRequired,mail.hasNewMail);
     app.get('/mail/collectItem', authRequired, mail.collectItem);
 
     app.get('/package/addItem', authRequired, package.addItem);
@@ -110,15 +113,4 @@ module.exports = function (app) {
     app.get('/gm/resetTask', authRequired, gm.resetTask);
     app.get('/gm/updateMoney', authRequired, gm.updateMoney);
     app.get('/gm/updateExp', authRequired, gm.updateExp);
-    
-    app.get('/mail/send',authRequired,mail.sendMail);
-    app.get('/mail/getOutbox',authRequired,mail.getOutbox);
-    app.get('/mail/getInbox',authRequired,mail.getInbox);
-    app.get('/mail/read',authRequired,mail.readMail);
-    app.get('/mail/newMail',authRequired,mail.hasNewMail);
-    app.get('/mail/systemSendMail',authRequired,mail.systemSendMail);
-    app.get('/mail/collectItem',authRequired,mail.collectItem);
-    app.get('/mail/del',authRequired,mail.delMail);
-    
-    app.get('/shop/buyItem',authRequired,shop.buyItem);
 }
