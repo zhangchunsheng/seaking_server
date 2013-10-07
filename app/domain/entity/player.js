@@ -238,6 +238,8 @@ Player.prototype.updateAttribute = function() {
 };
 
 Player.prototype.initSkills = function() {
+    if(typeof this.skills.currentSkill == "undefined")
+        return;
     this.activeSkill = new ActiveSkill({
         skillId: this.skills.currentSkill.skillId
     });
