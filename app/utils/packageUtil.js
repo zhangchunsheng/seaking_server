@@ -15,7 +15,7 @@ packageUtil.initPackage = function(heroId) {
     itemId = "W" + heroId + "01";
     var package = {
         weapons: {
-            itemCount: 12,
+            itemCount: 15,
             items: {"1":{
                 "itemId":itemId,
                 "itemNum":1,
@@ -23,7 +23,7 @@ packageUtil.initPackage = function(heroId) {
             }}
         },
         equipments: {
-            itemCount: 12,
+            itemCount: 15,
             items: {"1":{
                 "itemId":"W90101",
                 "itemNum":1,
@@ -31,8 +31,11 @@ packageUtil.initPackage = function(heroId) {
             }}
         },
         items: {
-            itemCount: 12,
-            items: {"1":{"itemId":"D10010101","itemNum":1}}
+            itemCount: 15,
+            items: {"1":{
+                "itemId":"D10010101",
+                "itemNum":1
+            }}
         }
     };
     return package;

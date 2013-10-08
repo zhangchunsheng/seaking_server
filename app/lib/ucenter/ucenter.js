@@ -51,3 +51,25 @@ ucenter.saveBattleLog = function(data) {
 
     });
 }
+
+ucenter.addPlayer = function(data) {
+    var host = ucenterConfig.host;
+    var port = ucenterConfig.port;
+    var path = "/user/addPlayer";
+    var headers = {};
+
+    httpHelper.get(host, port, path, headers, data, function() {
+
+    });
+}
+
+ucenter.updatePlayer = function(data) {
+    var host = ucenterConfig.host;
+    var port = ucenterConfig.port;
+    var path = "/user/updatePlayer";
+    var headers = {};
+
+    httpHelper.get(host, port, path, headers, data, function() {
+
+    });
+}

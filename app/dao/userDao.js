@@ -336,7 +336,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), level),
                         counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), level),
                         gameCurrency: 100,
-                        money: 100,
+                        money: 1000000,
                         equipments: {
                             weapon: {
                                 epid: 0,
@@ -395,6 +395,16 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                     });
 
                     key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+
+                    var data = {
+                        registerType: registerType,
+                        loginName: loginName,
+                        serverId: serverId,
+                        cId: characterId,
+                        nickname: nickname,
+                        level: level
+                    }
+                    ucenter.addPlayer(data);
 
                     var array = dbUtil.getMultiCommand(key, character);
                     dbUtil.saveNickname(array, serverId, nickname);
