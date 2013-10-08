@@ -13,6 +13,7 @@ var User = require('../domain/user');
 var consts = require('../consts/consts');
 var equipmentsDao = require('./equipmentsDao');
 var packageDao = require('./packageDao');
+var packageUtil = require('../utils/packageUtil');
 var induDao = require('./induDao');
 var taskDao = require('./taskDao');
 var partnerDao = require('./partnerDao');
@@ -302,6 +303,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                     };
                     var skills = new Skills();
                     skills.initSkills(cId);
+                    var package = packageUtil.initPackage(cId);
                     var character = {
                         id: "S" + serverId + "C" + characterId,
                         characterId: "S" + serverId + "C" + characterId,
@@ -374,20 +376,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                                 level: 0
                             }//戒指
                         },
-                        package: {
-                            weapons: {
-                                itemCount: 9,
-                                items: {}
-                            },
-                            equipments: {
-                                itemCount: 9,
-                                items: {}
-                            },
-                            items: {
-                                itemCount: 9,
-                                items: {}
-                            }
-                        },
+                        package: package,
                         skills: {
                             currentSkill: skills.currentSkill,
                             activeSkills: skills.activeSkills,

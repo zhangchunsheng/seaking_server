@@ -37,7 +37,6 @@ var Package = function(opts) {
         itemCount: opts.items.itemCount,
         items: opts.items.items
     };
-
 };
 
 var dict = [
