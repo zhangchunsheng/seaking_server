@@ -30,6 +30,7 @@ var Task = function(opts) {
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
     this.kindId = opts.taskId;
+    this.taskId = opts.taskId;
     this.status = opts.status;
     this.startTime = opts.startTime || (new Date()).getTime();
     this.finishTime = opts.finishTime || 0;
@@ -224,7 +225,7 @@ Task.prototype.strip = function() {
         serverId: this.serverId,
         registerType: this.registerType,
         loginName: this.loginName,
-        taskId: this.kindId,
+        taskId: this.taskId,
         status: this.status,
         startTime: this.startTime,
         finishTime: this.finishTime,
@@ -237,7 +238,7 @@ Task.prototype.strip = function() {
  */
 Task.prototype.taskInfo = function() {
     return {
-        taskId: this.kindId,
+        taskId: this.taskId,
         status: this.status,
         startTime: this.startTime,
         finishTime: this.finishTime,
@@ -256,7 +257,7 @@ Task.prototype.logTask = function() {
         serverId: this.serverId,
         registerType: this.registerType,
         loginName: this.loginName,
-        taskId: this.kindId,
+        taskId: this.taskId,
         status: consts.TaskStatus.HANDOVERED,
         startTime: this.startTime,
         finishTime: this.finishTime,

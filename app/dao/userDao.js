@@ -226,31 +226,28 @@ userDao.has_nickname_player = function(serverId, nickname, next) {
  * @param cb
  */
 userDao.getNicknameByPlayerId = function(playerId, cb ) {
-    console.log(playerId);
-    
-        redis.command(function(client) {
-            client.multi().select(redisConfig.database.SEAKING_REDIS_DB,function(){
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB,function() {
 
-            }).get(playerId,function(err,reply) {
-                    if(!!err){
+        }).get(playerId, function(err, reply) {
+                if(!!err) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, "不存在playerId");
+                    return;
+                }
+                client.hget(reply, "nickname", function(err, reply) {
+                    if(!!err) {
                         redis.release(client);
-                        utils.invokeCallback(cb, "不存在playerId");
+                        utils.invokeCallback(cb, err);
                         return;
                     }
-                    client.hget(reply, "nickname", function(err, reply) {
-                        if(!!err) {
-                            redis.release(client);
-                            utils.invokeCallback(cb, err);
-                            return;
-                        }
-                        redis.release(client);
-                        utils.invokeCallback(cb, null, reply);
-                    });
-                }).exec(function(err,reply) {
-
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
                 });
-        });
-    
+            }).exec(function(err,reply) {
+
+            });
+    });
 }
 
 /**
@@ -259,7 +256,7 @@ userDao.getNicknameByPlayerId = function(playerId, cb ) {
  * @param nickname
  * @param cb
  */
-userDao.getPlayerIdByNickname=function(serverId, nickname, cb) {
+userDao.getPlayerIdByNickname = function(serverId, nickname, cb) {
     var key = "S" + serverId + "_N" + nickname;
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
@@ -277,6 +274,19 @@ userDao.getPlayerIdByNickname=function(serverId, nickname, cb) {
         }).exec(function (err, replies) {
 
         });
+    });
+}
+
+userDao.getCharacterInfoByNickname = function(serverId, nickname, cb) {
+    var key = "S" + serverId + "_N" + nickname;
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
+
+        }).get(key, function(err, reply) {//S1_T2_w106451_C10212
+                utils.invokeCallback(cb, null, reply);
+            }).exec(function (err, replies) {
+
+            });
     });
 }
 

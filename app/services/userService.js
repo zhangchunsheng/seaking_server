@@ -73,3 +73,7 @@ userService.updatePlayerAttribute = function(player, cb) {
 userService.getUpdateArray = function() {
 
 }
+
+userService.getCharacterInfoByNickname = function(serverId, nickname, cb) {
+    userDao.getCharacterInfoByNickname(serverId, nickname, cb);
+}

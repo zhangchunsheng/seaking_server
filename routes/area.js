@@ -24,9 +24,14 @@ exports.getAreaInfo = function(req, res) {
 
     var sceneId = msg.sceneId;
     area.getAreaPlayers(sceneId, function(err, results) {
+        var entities = [];
+        for(var o in results) {
+            var obj = JSON.parse(results[o]);
+            entities.push(obj.name);
+        }
         var data = {
             code: consts.MESSAGE.RES,
-            entities: results
+            entities: entities
         };
         utils.send(msg, res, data);
     });

@@ -111,7 +111,7 @@ module.exports = function (app) {
     app.get('/task/startTask', authRequired, task.startTask);
     app.get('/task/handOverTask', authRequired, task.handOverTask);
 
-    app.get('/gm/resetTask', authRequired, gm.resetTask);
-    app.get('/gm/updateMoney', authRequired, gm.updateMoney);
-    app.get('/gm/updateExp', authRequired, gm.updateExp);
+    app.get('/gm/resetTask', gm.resetTask);
+    app.get('/gm/updateMoney', gm.updateMoney);
+    app.get('/gm/updateExp', gm.updateExp);
 }
