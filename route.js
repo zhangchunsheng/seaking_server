@@ -37,6 +37,7 @@ module.exports = function (app) {
     app.get('/role/getMainPlayer', authRequired, role.getMainPlayer);
 
     app.get('/area/getAreaInfo', area.getAreaInfo);
+    app.get('/area/getAreaPlayers', area.getAreaPlayers);
 
     // 竞技场
     app.get('/arena/pk', authRequired, arena.pk);

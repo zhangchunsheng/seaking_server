@@ -21,7 +21,19 @@ exports.index = function(req, res) {
 
 exports.getAreaInfo = function(req, res) {
     var msg = req.query;
-    var session = req.session;
+
+    var sceneId = msg.sceneId;
+    area.getAreaPlayers(sceneId, function(err, results) {
+        var data = {
+            code: consts.MESSAGE.RES,
+            entities: results
+        };
+        utils.send(msg, res, data);
+    });
+}
+
+exports.getAreaPlayers = function(req, res) {
+    var msg = req.query;
 
     var sceneId = msg.sceneId;
     area.getAreaPlayers(sceneId, function(err, results) {
