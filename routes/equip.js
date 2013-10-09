@@ -78,11 +78,7 @@ exports.wearWeapon = function(req, res) {
                 return;
             }
 
-            if(isSelf) {
-                packageIndex = player.equip(pkgType, item, index);
-            } else {// partner
-                packageIndex = player.equip(pkgType, item, index);
-            }
+            packageIndex = character.equip(pkgType, item, index, player);
 
             player.updateTaskRecord(consts.TaskGoalType.EQUIPMENT, {
                 itemId: item.itemId
@@ -96,6 +92,7 @@ exports.wearWeapon = function(req, res) {
                 },
                 function(callback) {
                     packageService.update(player.packageEntity.strip(), callback);
+                    callback();
                 },
                 function(callback) {
                     equipmentsService.update(character.equipmentsEntity.strip(), callback);
@@ -196,7 +193,7 @@ exports.unWearWeapon = function(req, res) {
         });
         packageIndex = result.index;
         if(packageIndex.length > 0) {
-            player.unEquip(type);
+            character.unEquip(type);
             status = 1;
         }
 
@@ -298,7 +295,7 @@ exports.equip = function(req, res) {
             return;
         }
 
-        packageIndex = player.equip(pkgType, item, index);
+        packageIndex = character.equip(pkgType, item, index, player);
         player.updateTaskRecord(consts.TaskGoalType.EQUIPMENT, {
             itemId: item.itemId
         });
@@ -405,7 +402,7 @@ exports.unEquip = function(req, res) {
         });
         packageIndex = result.index;
         if (packageIndex.length > 0) {
-            player.unEquip(type);
+            character.unEquip(type);
             status = 1;
         }
 

@@ -5,7 +5,7 @@
  * Date: 2013-06-28
  * Description: skillUtil
  */
-var Buff = require('./../buff');
+var Buff = require('../domain/buff');
 
 var skillUtil = module.exports;
 
