@@ -24,9 +24,9 @@ module.exports = {
     },
 
     CHAT: {
-        FA_CHANNEL_CREATE: 		3001,
-        FA_CHANNEL_NOT_EXIST: 	3002,
-        FA_UNKNOWN_CONNECTOR: 	3003,
+        FA_CHANNEL_CREATE: 3001,
+        FA_CHANNEL_NOT_EXIST: 3002,
+        FA_UNKNOWN_CONNECTOR: 3003,
         FA_USER_NOT_ONLINE: 	3004
     },
 
@@ -38,6 +38,13 @@ module.exports = {
         NOT_ENOUGHT_SPACE: 1201,
         NOT_EXIST_ITEM:1202,
         NOT_ENOUGH_ITEM:1203
+    },
+
+    EQUIPMENT: {
+        NO_ENOUGH_LEVEL: 1220,
+        NO_WEAPON: 1221,
+        WRONG_WEAPON: 1222,
+        NO_UPGRADE: 1223
     },
 
     SHOP: {
@@ -81,9 +88,5 @@ module.exports = {
         NEED_REQUIREMENT: 1823,
         NO_REACH_SKILL: 1824,
         NO_SKILL: 1825
-    },
-
-    EQUIPMENT: {
-
     }
 };

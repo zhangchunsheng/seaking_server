@@ -138,6 +138,11 @@ utils.sort = function(array, sortBy) {
     }
 }
 
+/**
+ *
+ * @param partnerId
+ * @returns {string}
+ */
 utils.getRealPartnerId = function(partnerId) {
     partnerId = partnerId.substr(partnerId.indexOf("P") + 1);
     return partnerId;
@@ -173,6 +178,16 @@ utils.getEffectValue = function(effect, baseValue) {
         value = effect.value;
     if(effect.valueType == consts.valueType.PERCENTAGE)
         value = baseValue * effect.value / 100;
+
+    return value;
+}
+
+utils.getEffectFocusValue = function(effect, baseValue, focus) {
+    var value = 0;
+    if(effect.valueType == consts.valueType.NUMBER)
+        value = baseValue * focus * effect.value;
+    if(effect.valueType == consts.valueType.PERCENTAGE)
+        value = baseValue * focus * effect.value / 100;
 
     return value;
 }

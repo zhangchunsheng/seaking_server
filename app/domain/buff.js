@@ -20,6 +20,9 @@ function Buff(opts) {
     this.isTempBuff = opts.isTempBuff || false;
     this.buffData = opts.buffData || {};
     this.skillId = opts.skillId;
+    this.skillType = opts.skillType;// 主动技能buff 被动技能buff
+    this.skillLevel = opts.skillLevel;
+    this.skillData = opts.skillData;
 
     this.updateAttribute();
 }
@@ -29,6 +32,7 @@ Buff.prototype.updateAttribute = function() {
         this.buffKind = consts.buffKind.SKILL;
     } else {
         this.buffKind = consts.buffKind.ITEM;
+        //this.buffData = dataApi.itemEffect.findById(this.useEffectId);
     }
 }
 

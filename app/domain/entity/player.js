@@ -26,6 +26,7 @@ var ucenter = require('../../lib/ucenter/ucenter');
 var ActiveSkill = require('./../activeSkill');
 var PassiveSkill = require('./../passiveSkill');
 var Buff = require('./../buff');
+var skillUtil = require('../../utils/skillUtil');
 
 /**
  * Initialize a new 'Player' with the given 'opts'.
@@ -238,6 +239,9 @@ Player.prototype.updateAttribute = function() {
     this.counter = counter;
 };
 
+/**
+ * 初始化技能
+ */
 Player.prototype.initSkills = function() {
     if(typeof this.skills.currentSkill == "undefined")
         return;
@@ -357,6 +361,25 @@ Player.prototype.updateFightValue = function() {
                 block += utils.getEffectValue(effects[j], this.block);
             } else if(effects[j].attr == consts.buffType.COUNTER) {
                 counter += utils.getEffectValue(effects[j], this.counter);
+            } else if(effects[j].attr == consts.buffType.ATTACK_FOCUS) {
+                attack += utils.getEffectFocusValue(effects[j], this.attack, this.focus);
+            } else if(effects[j].attr == consts.buffType.DEFENSE_FOCUS) {
+                defense += utils.getEffectFocusValue(effects[j], this.defense, this.focus);
+            } else if(effects[j].attr == consts.buffType.BLOCK_FOCUS) {
+                block += utils.getEffectFocusValue(effects[j], this.block, this.focus);
+            } else if(effects[j].attr == consts.buffType.COUNTER_FOCUS) {
+                counter += utils.getEffectFocusValue(effects[j], this.counter, this.focus);
+            } else if(effects[j].attr == consts.buffType.CRITICALHIT_FOCUS) {
+                attack += utils.getEffectFocusValue(effects[j], this.attack, this.focus);
+            } else if(effects[j].attr == consts.buffType.SKILL) {//技能处理
+                var buff = skillUtil.getBuff(effects[j], this.passiveSkills[i]);
+                this.addBuff(buff);
+            } else if(effects[j].attr == consts.buffType.EXPERIENCE) {//额外经验
+                var buff = skillUtil.getBuff(effects[j], this.passiveSkills[i]);
+                this.addBuff(buff);
+            } else if(effects[j].attr == consts.buffType.MONEY) {//额外金币
+                var buff = skillUtil.getBuff(effects[j], this.passiveSkills[i]);
+                this.addBuff(buff);
             }
         }
     }
@@ -379,6 +402,9 @@ Player.prototype.updateFightValue = function() {
     this.fightValue.counter = counter;
 };
 
+/**
+ * 获得怒气数值
+ */
 Player.prototype.updateRestoreAngerSpeed = function() {
     var speed = this.activeSkill.skillData.speed;
     for(var i = 0 ; i < speed.length ; i++) {
