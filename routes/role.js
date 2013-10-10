@@ -224,7 +224,7 @@ exports.testCreateMainPlayer = function(req, res) {
             return;
         }
 
-        userService.createCharacter(serverId, uid, registerType, loginName, cId, nickname, function(err, character) {
+        userService.createCharacter(serverId, uid, registerType, loginName, cId, nickname, isRandom, function(err, character) {
             if(err) {
                 console.log('[register] fail to invoke createPlayer for ' + err.stack);
                 data = {code: consts.MESSAGE.ERR, error:err};
