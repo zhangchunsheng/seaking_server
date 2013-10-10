@@ -216,55 +216,46 @@ exports.testCreateMainPlayer = function(req, res) {
     var serverId = 1;
 
     var data = {};
-    roleService.is_exists_nickname(serverId, nickname, function(err, flag) {
-        if(flag) {
-            data = {
-                code: Code.CHARACTER.EXISTS_NICKNAME
-            };
+
+    userService.createCharacter(serverId, uid, registerType, loginName, cId, nickname, isRandom, function(err, character) {
+        if(err) {
+            console.log('[register] fail to invoke createPlayer for ' + err.stack);
+            data = {code: consts.MESSAGE.ERR, error:err};
             utils.send(msg, res, data);
             return;
-        }
-
-        userService.createCharacter(serverId, uid, registerType, loginName, cId, nickname, isRandom, function(err, character) {
-            if(err) {
-                console.log('[register] fail to invoke createPlayer for ' + err.stack);
-                data = {code: consts.MESSAGE.ERR, error:err};
-                utils.send(msg, res, data);
-                return;
-            } else {
-                var array = [
-                    function(callback) {// 初始化武器
-                        equipmentsService.createEquipments(character.id, callback);
-                    },
-                    function(callback) {// 初始化装备
-                        packageService.createPackage(character.id, callback);
-                    }
-                ];
-                async.parallel(array,
-                    function(err, results) {
-                        if (err) {
-                            console.log('learn skill error with player: ' + JSON.stringify(character.strip()) + ' stack: ' + err.stack);
-                            data = {code: consts.MESSAGE.ERR, error:err};
-                            utils.send(msg, res, data);
-                            return;
-                        }
-
-                        var user = {
-                            id: uid
-                        };
-
-                        req.session.playerId = character.id;
-
-                        data = {
-                            code: consts.MESSAGE.RES,
-                            user: user,
-                            player: character.strip()
-                        };
-                        console.log(data);
+        } else {
+            var array = [
+                function(callback) {// 初始化武器
+                    equipmentsService.createEquipments(character.id, callback);
+                },
+                function(callback) {// 初始化装备
+                    packageService.createPackage(character.id, callback);
+                }
+            ];
+            async.parallel(array,
+                function(err, results) {
+                    if (err) {
+                        console.log('learn skill error with player: ' + JSON.stringify(character.strip()) + ' stack: ' + err.stack);
+                        data = {code: consts.MESSAGE.ERR, error:err};
                         utils.send(msg, res, data);
+                        return;
                     }
-                );
-            }
-        });
+
+                    var user = {
+                        id: uid
+                    };
+
+                    req.session.playerId = character.id;
+
+                    data = {
+                        code: consts.MESSAGE.RES,
+                        user: user,
+                        player: character.strip()
+                    };
+                    console.log(data);
+                    utils.send(msg, res, data);
+                }
+            );
+        }
     });
 }
