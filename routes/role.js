@@ -207,39 +207,14 @@ exports.testCreateMainPlayer = function(req, res) {
     var uid = i
         , registerType = 1
         , loginName = "wozlla" + i
-        , cId = msg.cId // cId characterId
+        , cId = 1 // cId characterId
         , nickname = "wozlla" + i
         , isRandom = 0;// 随机获得昵称
     var self = this;
-    i++;
+
+    var serverId = 1;
 
     var data = {};
-    if(typeof msg.cId == "undefined" || msg.cId == "" || msg.cId == 0) {
-        data = {
-            code: Code.ARGUMENT_EXCEPTION
-        };
-        utils.send(msg, res, data);
-        return;
-    }
-
-    if(typeof msg.nickname == "undefined" || msg.nickname == "" || msg.nickname == 0) {
-        data = {
-            code: Code.ARGUMENT_EXCEPTION
-        };
-        utils.send(msg, res, data);
-        return;
-    }
-
-    if(typeof msg.isRandom == "undefined") {
-        data = {
-            code: Code.ARGUMENT_EXCEPTION
-        };
-        utils.send(msg, res, data);
-        return;
-    }
-
-    var serverId = session.serverId;
-
     roleService.is_exists_nickname(serverId, nickname, function(err, flag) {
         if(flag) {
             data = {
