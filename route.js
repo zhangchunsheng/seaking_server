@@ -35,6 +35,10 @@ module.exports = function (app) {
 
     app.get('/role/createMainPlayer', authRequired, role.createMainPlayer);
     app.get('/role/getMainPlayer', authRequired, role.getMainPlayer);
+    app.get('/role/initNickname', authRequired, role.initNickname);
+    app.get('/role/getNickname', authRequired, role.getNickname);
+    app.get('/role/removeMainPlayer', authRequired, role.removeMainPlayer);
+    app.get('/role/testCreateMainPlayer', role.testCreateMainPlayer);
 
     app.get('/area/getAreaInfo', area.getAreaInfo);
     app.get('/area/getAreaPlayers', area.getAreaPlayers);

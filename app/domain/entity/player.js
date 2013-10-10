@@ -489,7 +489,7 @@ Player.prototype.equipmentAdditional = function() {
  * 主动技能加成
  * 技能计算:目标 伤害等
  */
-Player.prototype.activeSkillAdditional = function() {
+Player.prototype.activeSkillAdditional = function(formation, players, enemies, fightData) {
     var attack = 0;
     var defense = 0;
     var speedLevel = 0;
@@ -552,7 +552,7 @@ Player.prototype.activeSkillAdditional = function() {
         } else if(effects[j].attr == consts.buffType.CONFUSION) {//迷惑
 
         } else if(effects[j].attr == consts.buffType.DEFENSE_FOCUS) {//防御力focus加成
-
+            defense += utils.getEffectFocusValue(effects[j], this.defense, this.focus);
         } else if(effects[j].attr == consts.buffType.HPRECOVERYSPEED) {//血量回复速度，buff
 
         } else if(effects[j].attr == consts.buffType.ADDITEMATTR) {//装备加成
@@ -564,17 +564,17 @@ Player.prototype.activeSkillAdditional = function() {
         } else if(effects[j].attr == consts.buffType.ADDBLOOD) {//吸血
 
         } else if(effects[j].attr == consts.buffType.ATTACK_FOCUS) {//攻击力focus加成
-
+            attack += utils.getEffectFocusValue(effects[j], this.attack, this.focus);
         } else if(effects[j].attr == consts.buffType.SKILL) {//技能加成，buff
 
         } else if(effects[j].attr == consts.buffType.ICE) {//冰冻
 
         } else if(effects[j].attr == consts.buffType.BLOCK_FOCUS) {//格挡focus加成
-
+            block += utils.getEffectFocusValue(effects[j], this.block, this.focus);
         } else if(effects[j].attr == consts.buffType.COUNTER_FOCUS) {//反击focus加成
-
+            counter += utils.getEffectFocusValue(effects[j], this.counter, this.focus);
         } else if(effects[j].attr == consts.buffType.CRITICALHIT_FOCUS) {//暴击focus加成
-
+            criticalHit += utils.getEffectFocusValue(effects[j], this.criticalHit, this.focus);
         }
     }
 

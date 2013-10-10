@@ -293,7 +293,7 @@ userDao.getCharacterInfoByNickname = function(serverId, nickname, cb) {
 /**
  * 創建角色
  */
-userDao.createCharacter = function(serverId, userId, registerType, loginName, cId, nickname, cb) {
+userDao.createCharacter = function(serverId, userId, registerType, loginName, cId, nickname, isRandom, cb) {
     var key = "S" + serverId + "_T" + registerType + "_" + loginName;// 先判断是否已创建角色
 
     redis.command(function(client) {
@@ -323,6 +323,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         registerType: registerType,
                         loginName: loginName,
                         nickname: nickname,
+                        isRandom: isRandom,
                         currentScene: "city01",
                         x: 1000,
                         y: 100,

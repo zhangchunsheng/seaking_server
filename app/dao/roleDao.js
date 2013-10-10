@@ -31,7 +31,7 @@ if(redisConfig[env]) {
     redisConfig = redisConfig[env];
 }
 
-var userDao = module.exports;
+var roleDao = module.exports;
 
 /**
  * 根据昵称判断是否存在该玩家，玩家昵称不可以重复
@@ -40,7 +40,7 @@ var userDao = module.exports;
  * @param nickName
  * @param cb
  */
-userDao.is_exists_nickname = function(serverId, nickname, next) {
+roleDao.is_exists_nickname = function(serverId, nickname, next) {
     var key = "S" + serverId + "_exist_nickname";
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
@@ -62,7 +62,7 @@ userDao.is_exists_nickname = function(serverId, nickname, next) {
  * @param nickName
  * @param cb
  */
-userDao.has_nickname_player = function(serverId, nickname, next) {
+roleDao.has_nickname_player = function(serverId, nickname, next) {
     var key = "S" + serverId + "_N" + nickname;
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
@@ -76,3 +76,24 @@ userDao.has_nickname_player = function(serverId, nickname, next) {
             });
     });
 }
+
+/**
+ *
+ * @param serverId
+ * @param next
+ */
+roleDao.getNickname = function(serverId, next) {
+    var key = "S" + serverId + "_canUseNickname";
+    var count = 30;
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+
+        }).srandmember(key, count, function(err, reply) {
+                redis.release(client);
+                utils.invokeCallback(next, null, reply);
+            }).exec(function(err, reply) {
+
+            });
+    });
+}
+

@@ -22,3 +22,15 @@ roleService.createMainPlayer = function() {
 roleService.is_exists_nickname = function(serverId, nickname, next) {
     roleDao.is_exists_nickname(serverId, nickname, next);
 }
+
+roleService.initNickname = function(serverId, next) {
+    roleDao.initNickname(serverId, next);
+}
+
+roleService.getNickname = function(serverId, next) {
+    roleDao.getNickname(serverId, next);
+}
+
+roleService.removeMainPlayer = function(serverId, registerType, loginName, next) {
+    roleDao.removeMainPlayer(serverId, registerType, loginName, next);
+}

@@ -15,8 +15,8 @@ userService.get = function() {
 
 }
 
-userService.createCharacter = function(serverId, userId, registerType, loginName, cId, nickname, cb) {
-    userDao.createCharacter(serverId, userId, registerType, loginName, cId, nickname, cb);
+userService.createCharacter = function(serverId, userId, registerType, loginName, cId, nickname, isRandom, cb) {
+    userDao.createCharacter(serverId, userId, registerType, loginName, cId, nickname, isRandom, cb);
 }
 
 userService.getCharactersByLoginName = function(serverId, registerType, loginName, cb) {
