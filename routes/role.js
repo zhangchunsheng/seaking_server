@@ -212,6 +212,7 @@ exports.testCreateMainPlayer = function(req, res) {
         , isRandom = 0;// 随机获得昵称
     var self = this;
 
+    i++;
     var serverId = 1;
 
     var data = {};
