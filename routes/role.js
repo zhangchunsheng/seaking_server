@@ -209,7 +209,7 @@ exports.testCreateMainPlayer = function(req, res) {
         , loginName = "wozlla" + i
         , cId = msg.cId // cId characterId
         , nickname = "wozlla" + i
-        , isRandom = msg.isRandom;// 随机获得昵称
+        , isRandom = 0;// 随机获得昵称
     var self = this;
     i++;
 
