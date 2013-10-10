@@ -7,6 +7,7 @@
  */
 var authService = require('../app/services/authService');
 var userService = require('../app/services/userService');
+var roleService = require('../app/services/roleService');
 var tokenService = require('../shared/token');
 var sessionToken = require('../config/session');
 var Code = require('../shared/code');
@@ -62,7 +63,10 @@ exports.auth = function(req, res) {
                 code: Code.OK,
                 player: null
             };
-            utils.send(msg, res, data);
+            roleService.getNickname(userInfo.serverId, function(err, reply) {
+                data.nicknames = reply;
+                utils.send(msg, res, data);
+            });
         } else {
             data = {
                 code: consts.MESSAGE.RES,

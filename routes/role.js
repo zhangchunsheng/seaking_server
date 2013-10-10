@@ -183,7 +183,7 @@ exports.getNickname = function(req, res) {
     roleService.getNickname(serverId, function(err, reply) {
         data = reply;
         utils.send(msg, res, data);
-    })
+    });
 }
 
 /**
