@@ -132,7 +132,7 @@ exports.getMainPlayer = function(req, res) {
     var data = {};
     userService.getCharactersByLoginName(serverId, registerType, loginName, function(err, results) {
         if (err) {
-            console.log('learn skill error with player: ' + JSON.stringify(results) + ' stack: ' + err.stack);
+            console.log('get character error with player: ' + JSON.stringify(results) + ' stack: ' + err.stack);
             data = {code: consts.MESSAGE.ERR, error:err};
             utils.send(msg, res, data);
             return;
@@ -192,7 +192,30 @@ exports.getNickname = function(req, res) {
  * @param res
  */
 exports.removeMainPlayer = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , serverId = session.serverId;
+
+    var data = {};
+    roleService.removeMainPlayer(serverId, registerType, loginName, function(err, results) {
+        if (err) {
+            console.log('remove player error with player: ' + JSON.stringify(results) + ' stack: ' + err.stack);
+            data = {code: consts.MESSAGE.ERR, error:err};
+            utils.send(msg, res, data);
+            return;
+        }
+
+        data = {
+            code: consts.MESSAGE.RES
+        };
+
+        console.log(data);
+        utils.send(msg, res, data);
+    });
 }
 
 var i = 10000;

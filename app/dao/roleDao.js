@@ -97,3 +97,77 @@ roleDao.getNickname = function(serverId, next) {
     });
 }
 
+roleDao.removeMainPlayer = function(serverId, registerType, loginName, next) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName;
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+
+        }).hgetall(key, function(err, userInfo) {
+                var characterId = userInfo.characters;
+                var delCharacters = userInfo.delCharacters;
+
+                if(characterId == null || characterId == 0) {
+                    redis.release(client);
+                    utils.invokeCallback(next, null, characterId);
+                } else {
+                    var array = [];
+                    client.hset(key, "characters", 0);
+
+                    if(delCharacters == null || delCharacters == "") {
+                        delCharacters = [];
+                    } else {
+                        delCharacters = JSON.parse(delCharacters);
+                    }
+                    delCharacters.push(characterId);
+                    client.hset(key, "delCharacters", JSON.stringify(delCharacters));
+
+                    // 邮件
+                    dbUtil.removeMailKey(array, serverId, registerType, loginName, characterId)
+
+                    key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+
+                    client.hgetall(key, function(err, replies) {
+                        var partners = JSON.parse(replies.partners).partners;
+                        var nickname = replies.nickname;
+                        var isRandom = replies.isRandom;
+
+                        // partners
+                        var playerId = "";
+                        var cId = 0;
+                        var partnerId = 0;
+                        for(var i = 0 ; i < partners.length ; i++) {
+                            playerId = partners[i].playerId;
+                            cId = partners[i].cId;
+
+                            partnerId = utils.getRealPartnerId(playerId);
+                            array.push(["del", dbUtil.getPartnerKey(serverId, registerType, loginName, characterId, partnerId)]);
+                        }
+
+                        // 昵称
+                        if(isRandom == 1) {
+                            array.push(["sadd", dbUtil.getCanUseNicknameKey(serverId), nickname]);
+                        }
+                        dbUtil.removeNickname(array, serverId, nickname);
+
+                        // 战斗数据
+                        array.push(["del", dbUtil.getBattleKey(serverId, registerType, loginName, characterId)]);
+                        // 副本数据
+
+                        // 竞技场
+                        dbUtil.removeFromArena(array, serverId, characterId);
+
+                        array.push(["del", key]);
+
+                        client.multi(array)
+                            .exec(function(err, reply) {
+                                redis.release(client);
+                                utils.invokeCallback(next, null, characterId);
+                            });
+                    });
+
+                }
+            }).exec(function(err, reply) {
+
+            });
+    });
+}

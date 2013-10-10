@@ -400,7 +400,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         currentIndu: {"induId":0}
                     };
 
-                    client.hset(key, "characters", characterId);
+                    //client.hset(key, "characters", characterId);
                     userDao.initUserInfo(userId, serverId, registerType, loginName, function(err, reply) {
 
                     });
@@ -418,9 +418,13 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                     ucenter.addPlayer(data);
 
                     var array = dbUtil.getMultiCommand(key, character);
+                    dbUtil.saveCharacters(array, serverId, registerType, loginName, characterId)
                     dbUtil.saveNickname(array, serverId, nickname);
                     dbUtil.savePlayerIdToCharacter(array, character.id, key);
                     dbUtil.saveNicknameToCharacter(array, serverId, nickname, key);
+                    if(isRandom == 1) {
+                        dbUtil.removeFromCanUseNickname(array, serverId, nickname);
+                    }
                     client.multi(array).exec(function(err, replies) {
                         var taskInfo = {};
                         for(var o in character.curTasks) {
