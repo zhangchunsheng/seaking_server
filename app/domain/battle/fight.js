@@ -200,6 +200,8 @@ Fight.prototype.attack = function(battleData, players, index) {
     var defense = {};
     var attacks = {};
     var defences = {};
+    var attack_formation = [];
+    var defense_formation = [];
     var attackSide = 1;//1 - 己方 2 - 敌方
     var currentTime = attack.costTime;
     var previousTime = 0;
@@ -218,10 +220,14 @@ Fight.prototype.attack = function(battleData, players, index) {
         attackSide = 1;
         attacks = owners;
         defences = monsters;
+        attack_formation = this.owner_formation;
+        defense_formation = this.monster_formation;
     } else {
         attackSide = 2;
         attacks = monsters;
         defences = owners;
+        attack_formation = this.monster_formation;
+        defense_formation = this.owner_formation;
     }
 
     // 攻方
@@ -284,6 +290,8 @@ Fight.prototype.attack = function(battleData, players, index) {
             }
             //计算防御
             defenseData.defense = defense.defense;
+
+            attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, attackData);
         } else {
             // 判定是否暴击
             var criticalHit = attack.fightValue.criticalHit * 100;
@@ -304,30 +312,29 @@ Fight.prototype.attack = function(battleData, players, index) {
 
             // attackData.hasBuff = true;// buff，可以有多个buff
 
-        }
+            defenseData.reduceBlood = attackData.attack - defenseData.defense;
+            if(defenseData.reduceBlood < 0) {
+                defenseData.reduceBlood = 0;
+            }
 
-        defenseData.reduceBlood = attackData.attack - defenseData.defense;
-        if(defenseData.reduceBlood < 0) {
-            defenseData.reduceBlood = 0;
-        }
+            // 更新状态
+            // 攻方
 
-        // 更新状态
-        // 攻方
+            // 守方
 
-        // 守方
-    }
-
-    // 判定是否反击
-    var counterAttack = defense.counterAttack * 100;
-    random = utils.random(1, 10000);
-    if(random >= 1 && random <= counterAttack) {// 反击
-        var damage = defense.attack * 25 / 100;
-        defenseData.counterValue = damage;//反击伤害
-        attack.hp -= damage;
-        if(attack.hp <= 0) {
-            attack.hp = 0;
-            attack.died = attackData.died = true;
-            attack.costTime = 10000;
+            // 判定是否反击
+            var counterAttack = defense.counterAttack * 100;
+            random = utils.random(1, 10000);
+            if(random >= 1 && random <= counterAttack) {// 反击
+                var damage = defense.attack * 25 / 100;
+                defenseData.counterValue = damage;//反击伤害
+                attack.hp -= damage;
+                if(attack.hp <= 0) {
+                    attack.hp = 0;
+                    attack.died = attackData.died = true;
+                    attack.costTime = 10000;
+                }
+            }
         }
     }
 

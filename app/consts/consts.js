@@ -282,7 +282,8 @@ module.exports = {
         "ice": 26,
         "block_focus": 30,
         "counter_focus": 31,
-        "criticalHit_focus": 32
+        "criticalHit_focus": 32,
+        "revive": 33
     },
 
     buffKind: {
@@ -319,7 +320,8 @@ module.exports = {
         ICE: "ice",//冰冻
         BLOCK_FOCUS: "block_focus",//格挡focus加成
         COUNTER_FOCUS: "counter_focus",//反击focus加成
-        CRITICALHIT_FOCUS: "criticalHit_focus"//暴击几率focus加成
+        CRITICALHIT_FOCUS: "criticalHit_focus",//暴击几率focus加成
+        REVIVE: "revive"
     },
 
     correspondingEffect_attr: {
@@ -351,7 +353,8 @@ module.exports = {
         26: "ice",
         30: "block_focus",
         31: "counter_focus",
-        32: "criticalHit_focus"
+        32: "criticalHit_focus",
+        33: "revive"
     },
 
     valueType: {
@@ -364,7 +367,8 @@ module.exports = {
         ATTACK_NUM: 0,//攻击次数
         BEHITTED_NUM: 1,//受攻击次数
         ROUND: 2,//回合
-        PERMANENTLY: 3//永久
+        PERMANENTLY: 3,//永久
+        COUNT: 4
     },
 
     targetType: {
@@ -375,7 +379,8 @@ module.exports = {
         OWNER_RANDOM: 5,//己方随机目标
         OPPONENT_RANDOM: 6,//敌方随机目标
         OWNER_SPECIFIC: 7,//己方特定目标
-        OPPONENT_SPECIFIC: 8//敌方特定目标
+        OPPONENT_SPECIFIC: 8,//敌方特定目标 1周围1格，2正前，3正后，4左侧，5右侧，6前一行，7同行，8后一行
+        SKILL: 10
     },
 
     requirementType: {

@@ -17,6 +17,7 @@ function Buff(opts) {
     this.type = opts.type;// skill attr
     this.buffKind = consts.buffKind.ITEM;// 1 - 道具 2 - 技能
     this.count = opts.count;// 持续次数
+    this.round = opts.round;// 持续回合
     this.isTempBuff = opts.isTempBuff || false;
     this.buffData = opts.buffData || {};
     this.skillId = opts.skillId;
