@@ -15,11 +15,20 @@ var express = require('express')
     , config = require('./config')
     , fs = require('fs')
     , utils = require('./app/utils/utils')
-    , redis = require('./app/dao/redis/redis');
+    , redis = require('./app/dao/redis/redis')
+    , RedisStore = require('connect-redis')(express);
+
+var redisConfig = require('./shared/config/redis');
 
 var app = express();
 
 utils.doProcess(process);
+
+var env = process.env.NODE_ENV || 'development';
+if(redisConfig[env]) {
+    redisConfig = redisConfig[env];
+}
+
 // all environments
 app.set('port', process.env.PORT || 4011);
 //app.use(express.favicon());
@@ -41,8 +50,14 @@ app.use(express.cookieParser('html5'));
 app.use(express.session({
     secret: "html5",
     maxAge: new Date(Date.now() + 3600000), //1 Hour
-    expires: new Date(Date.now() + 3600000) //1 Hour
+    expires: new Date(Date.now() + 3600000), //1 Hour
+    cookie: { secure: false, maxAge:86400000 },
     //store: new MongoStore({db: 'sessionDB'})
+    store: new RedisStore({
+        host: redisConfig.host,
+        port: redisConfig.port,
+        db: 15
+    })
 }));
 //app.use(app.router);
 app.use(urlrouter(route));
