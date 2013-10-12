@@ -12,6 +12,9 @@ var formula = require('../consts/formula');
 var consts = require('../consts/consts');
 var buff = require('./buff');
 var Skill = require('./skill');
+var utils = require('../utils/utils');
+var skillUtil = require('../utils/skillUtil');
+var formationUtil = require('../utils/formationUtil');
 
 /**
  *
@@ -82,9 +85,88 @@ ActiveSkill.prototype.calculateAttack = function(effect, attack_formation, defen
 
 /**
  * 增加自身攻击力
+ * 1己方单体	0~7特定位置，8生命值最少，9生命百分比最少（空 为技能作用自身）
+ * 2敌方单体	0~7特定位置，8生命值最少，9生命百分比最少（空 为技能对位优先）
+ * 3己方全体
+ * 4敌方全体
+ * 5己方随机目标	随机数目（从敌方或己方随机取几个目标)
+ * 6敌方随机目标	随机数目
+ * 7己方特定目标	1周围1格，2正前，3正后，4左侧，5右侧，6前一行，7同行，8后一行
+ * 8敌方特定目标	1周围1格，2正前，3正后，4左侧，5右侧，6前一行，7同行，8后一行
+ * 9敌方特定目标	1下一格，2下两格，3下三格，4，下四格，5下五格，6下六格
+ * 10作用为技能
  */
-ActiveSkill.prototype.calculateAddAttack = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+    // 攻击力加成
+    attack.fightValue.attack += utils.getEffectValue(effect, attack.attack);
 
+    fightData.targetType = consts.attackSide.OPPONENT;
+
+    var fight = {};
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {// target
+
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {// 单个目标
+        fight.fId = defense.formationId;
+        fight.id = defense.id;
+        fight.action = consts.defenseAction.beHitted;
+
+        // 计算伤害
+        defense.hp = attack.fightValue.attack - defense.fightValue.defense;
+
+        fight.hp = defense.hp;
+        fight.anger = defense.anger;
+
+        fightData.target.push(fight);
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {// 特定目标
+        // 1周围1格，2正前，3正后，4左侧，5右侧，6前一行，7同行，8后一行
+        var target = effect.targetValue;
+
+        if(target == consts.targetSpecialType.AROUND_ONE_CELL) {// 周围1格
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {// 随机目标
+        var positions = [];
+        for(var i in defenses) {// key为formationId的json对象
+            if(!defenses[i].died) {
+                positions.push(i);
+            }
+        }
+        var num = effect.targetValue;
+
+        positions = formationUtil.getRandomPosition(num, positions);
+
+        fight.fId = defense.formationId;
+        fight.id = defense.id;
+        fight.action = consts.defenseAction.beHitted;
+
+        // 计算伤害
+        defense.hp = attack.fightValue.attack - defense.fightValue.defense;
+
+        fight.hp = defense.hp;
+        fight.anger = defense.anger;
+
+        fightData.target.push(fight);
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {// 敌方所有单位
+        fight.fId = defense.formationId;
+        fight.id = defense.id;
+        fight.action = consts.defenseAction.beHitted;
+
+        // 计算伤害
+        defense.hp = attack.fightValue.attack - defense.fightValue.defense;
+
+        fight.hp = defense.hp;
+        fight.anger = defense.anger;
+
+        fightData.target.push(fight);
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**

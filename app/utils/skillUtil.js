@@ -13,7 +13,44 @@ skillUtil.calculateAttack = function() {
 
 }
 
-skillUtil.getBuff = function(effect, passiveSkill) {
+skillUtil.getBuff = function(effect, skill) {
+    var buff = new Buff({
+        useEffectId: effect.id,
+        type: effect.attr,
+        skillId: skill.skillId,
+        skillType: skill.skillType,
+        skillLevel: skill.skillLevel,
+        skillData: skill.skillData,
+        buffData: effect
+    });
+    return buff;
+}
+
+/**
+ * 主动技能buff
+ * @param effect
+ * @param activeSkill
+ */
+skillUtil.getActiveSkillBuff = function(effect, activeSkill) {
+    var buff = new Buff({
+        useEffectId: effect.id,
+        type: effect.attr,
+        skillId: activeSkill.skillId,
+        skillType: activeSkill.skillType,
+        skillLevel: activeSkill.skillLevel,
+        skillData: activeSkill.skillData,
+        buffData: effect
+    });
+    return buff;
+}
+
+/**
+ * 被动技能buff
+ * @param effect
+ * @param passiveSkill
+ * @returns {Buff}
+ */
+skillUtil.getPassiveSkillBuff = function(effect, passiveSkill) {
     var buff = new Buff({
         useEffectId: effect.id,
         type: effect.attr,

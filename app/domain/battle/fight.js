@@ -12,6 +12,7 @@ var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
 var EntityType = require('../../consts/consts').EntityType;
 var fightReward = require('./fightReward');
+var consts = require('../../consts/consts');
 
 var Fight = function(opts) {
     this.mainPlayer = opts.mainPlayer;
@@ -217,13 +218,13 @@ Fight.prototype.attack = function(battleData, players, index) {
     }
 
     if(attack.type == EntityType.PLAYER || attack.type == EntityType.PARTNER) {
-        attackSide = 1;
+        attackSide = consts.attackSide.OWNER;
         attacks = owners;
         defences = monsters;
         attack_formation = this.owner_formation;
         defense_formation = this.monster_formation;
     } else {
-        attackSide = 2;
+        attackSide = consts.attackSide.OPPONENT;
         attacks = monsters;
         defences = owners;
         attack_formation = this.monster_formation;
@@ -240,7 +241,7 @@ Fight.prototype.attack = function(battleData, players, index) {
 
     // 没有敌人战斗结束
     if(monsterIndex == null) {
-        if(attackSide == 1) {
+        if(attackSide == consts.attackSide.OWNER) {
             this.isWin = true;
         } else {
             this.isWin = false;
@@ -252,10 +253,11 @@ Fight.prototype.attack = function(battleData, players, index) {
     // 阵型位置
     attackData.fId = attack.formationId;
 
+    // test
     attack.anger = 100;
     // 攻击方式
     if(attack.anger >= attack.maxAnger) {// 1 - 普通攻击 2 - 技能攻击
-        attackData.action = 2;
+        attackData.action = consts.attackAction.skill;
         if(attack.type == EntityType.MONSTER) {
             attackData.skillId = 0;
         } else {
@@ -263,21 +265,45 @@ Fight.prototype.attack = function(battleData, players, index) {
         }
         attack.anger = 0;
     } else {
-        attackData.action = 1;
+        attackData.action = consts.attackAction.common;
     }
 
     attackData.attack = attack.fightValue.attack;
     defenseData.defense = defense.defense;
 
     var random = 0;
-    // 判定是否闪避
+
+    // 判断闪避、暴击、格挡、普通攻击
+    var isCriticalHit = false;
+    var isBlock = false;
+    var isDodge = false;
+    var isCommandAttack = false;
+    //暴击
+    var criticalHit = attack.fightValue.criticalHit * 100;
+    //格挡
+    var block = defense.block * 100;
+    //闪避
     var dodgeRate = defense.dodgeRate * 100;
+    var num1 = criticalHit + block;
+    var num2 = num1 + dodgeRate;
     random = utils.random(1, 10000);
-    if(random >= 1 && random <= dodgeRate) {// 闪避
-        defenseData.action = 2;//1 - 被击中 2 - 闪避 3 - 被击中反击
+    if(random >= 1 && random <= criticalHit) {
+        isCriticalHit = true;
+    } else if(random > criticalHit && random <= num1) {
+        isBlock = true;
+    } else if(random > num1 && random <= num2) {
+        isDodge = true;
+    } else {
+        isCommandAttack = true;
+    }
+
+    // 判定是否闪避
+    // random = utils.random(1, 10000);
+    if(isDodge) {// 闪避
+        defenseData.action = consts.defenseAction.dodge;//1 - 被击中 2 - 闪避 3 - 被击中反击
         defenseData.reduceBlood = 0;
     } else {
-        if(attackData.action == 2) {//技能攻击
+        if(attackData.action == consts.attackAction.skill) {//技能攻击
             //计算攻击力 技能加成
             if(attack.type == EntityType.MONSTER) {
 
@@ -294,18 +320,17 @@ Fight.prototype.attack = function(battleData, players, index) {
             attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, attackData);
         } else {
             // 判定是否暴击
-            var criticalHit = attack.fightValue.criticalHit * 100;
-            random = utils.random(1, 10000);
-            if(random >= 1 && random <= criticalHit) {// 暴击
+            // random = utils.random(1, 10000);
+            if(isCriticalHit) {// 暴击
                 attackData.isCritHit = true;
                 attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
             }
 
-            defenseData.action = 1;
+            defenseData.action = consts.defenseAction.beHitted;
+
             // 判定是否格挡
-            var block = defense.block * 100;
-            random = utils.random(1, 10000);
-            if(random >= 1 && random <= block) {// 格挡
+            // random = utils.random(1, 10000);
+            if(isBlock) {// 格挡
                 attackData.attack = attackData.attack / 2;
                 defenseData.isBlock = true;
             }
@@ -356,13 +381,13 @@ Fight.prototype.attack = function(battleData, players, index) {
 
     // 守方
     // 增加怒气
-    if(attackData.action == 1) {// each hit received
+    if(attackData.action == consts.attackAction.common) {// each hit received
         if(defense.type == EntityType.MONSTER) {
             defense.anger += defense.restoreAngerSpeed.ehr;
         } else {
             defense.anger += defense.restoreAngerSpeed.ehr;
         }
-    } else if(attackData.action == 2) {// each skill hit received
+    } else if(attackData.action == consts.attackAction.skill) {// each skill hit received
         if(defense.type == EntityType.MONSTER) {
             defense.anger += defense.restoreAngerSpeed.eshr;
         } else {

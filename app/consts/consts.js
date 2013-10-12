@@ -383,6 +383,26 @@ module.exports = {
         SKILL: 10
     },
 
+    targetSpecialType: {
+        AROUND_ONE_CELL: 1// 周围1格
+    },
+
+    attackSide: {
+        OWNER: 1,//己方
+        OPPONENT: 2//敌方
+    },
+
+    attackAction: {
+        common: 1,//普通攻击
+        skill: 2//技能攻击
+    },
+
+    defenseAction: {//1 - 被击中 2 - 闪避 3 - 被击中反击
+        beHitted: 1,
+        dodge: 2,
+        counter: 3
+    },
+
     requirementType: {
         COINS: "coins",
         LEVEL: "level",
