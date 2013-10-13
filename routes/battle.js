@@ -144,6 +144,8 @@ exports.battle = function(req, res) {
                     });
                 },
                 function(callback) {
+                    eventResult.players = players;
+                    eventResult.enemies = enemies;
                     battleService.savePlayerBattleData(character, fight.owner_players, fight.monsters, eventResult, function(err, reply) {
 
                     });
@@ -170,8 +172,6 @@ exports.battle = function(req, res) {
                                 taskService.updateTask(character, character.curTasksEntity.strip(), callback);
                             }
                         ], function(err, reply) {
-                            eventResult.players = players;
-                            eventResult.enemies = enemies;
                             var result = {
                                 induData: {
                                     eid: eid,
@@ -183,8 +183,6 @@ exports.battle = function(req, res) {
                             utils.send(msg, res, result);
                         });
                     } else {
-                        eventResult.players = players;
-                        eventResult.enemies = enemies;
                         var result = {
                             induData: {
                                 eid: eid,
