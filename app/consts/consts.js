@@ -397,10 +397,21 @@ module.exports = {
         skill: 2//技能攻击
     },
 
-    defenseAction: {//1 - 被击中 2 - 闪避 3 - 被击中反击
+    damageType: {
+        common: 1,
+        criticalHit: 2
+    },
+
+    effectTargetType: {
+        OWNER: 1,
+        OPPONENT: 2
+    },
+
+    defenseAction: {//1 - 被击中 2 - 闪避 3 - 被击中反击 4 - 格挡
         beHitted: 1,
         dodge: 2,
-        counter: 3
+        counter: 3,
+        block: 4
     },
 
     requirementType: {

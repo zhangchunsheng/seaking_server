@@ -29,11 +29,12 @@ var Fight = function(opts) {
         this.players.push(this.monsters[i]);
     }
     this.round = 0;
+    this.sequence = [];
     this.isWin = false;
 };
 
 /**
- * fight
+ * 副本遇怪fight
  */
 Fight.prototype.fight = function(cb) {
     var owners = this.owners;
@@ -73,6 +74,7 @@ Fight.prototype.fight = function(cb) {
 
     var flag = false;
     while(true) {
+        this.sequence = [];
         // 判定出手顺序
         for(var i = 0 ; i < players.length ; i++) {
             attackData = {};
@@ -82,6 +84,12 @@ Fight.prototype.fight = function(cb) {
             }
         }
         players = utils.sortArray(players, "costTime");
+
+        //攻击顺序
+        for(var i = 0 ; i < players.length ; i++) {
+            this.sequence.push(players[i].id);
+        }
+
         currentTime = players[0].costTime;
         flag = this.attack(battleData, players, 0);
         if(currentTime > max_time)
@@ -115,7 +123,7 @@ Fight.prototype.fight = function(cb) {
 };
 
 /**
- * pk
+ * 竞技场pk
  */
 Fight.prototype.pk = function(cb) {
     var owners = this.owners;
@@ -156,6 +164,12 @@ Fight.prototype.pk = function(cb) {
             }
         }
         players = utils.sortArray(players, "costTime");
+
+        //攻击顺序
+        for(var i = 0 ; i < players.length ; i++) {
+            this.sequence.push(players[i].id);
+        }
+
         currentTime = players[0].costTime;
         flag = this.attack(battleData, players, 0);
         if(currentTime > max_time)
@@ -233,6 +247,9 @@ Fight.prototype.attack = function(battleData, players, index) {
         defense_formation = this.owner_formation;
     }
 
+    // 作用目标 攻击或技能效果
+    data.target = [];
+
     // 攻方
     data.attackSide = attackSide;
     data.currentTime = currentTime;
@@ -256,7 +273,8 @@ Fight.prototype.attack = function(battleData, players, index) {
     attackData.fId = attack.formationId;
 
     // test
-    attack.anger = 100;
+    //attack.anger = 100;
+
     // 攻击方式
     if(attack.anger >= attack.maxAnger) {// 1 - 普通攻击 2 - 技能攻击
         attackData.action = consts.attackAction.skill;
@@ -280,6 +298,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     var isBlock = false;
     var isDodge = false;
     var isCommandAttack = false;
+    var damageType = consts.damageType.common;
     //暴击
     var criticalHit = attack.fightValue.criticalHit * 100;
     //格挡
@@ -291,6 +310,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     random = utils.random(1, 10000);
     if(random >= 1 && random <= criticalHit) {
         isCriticalHit = true;
+        damageType = consts.damageType.criticalHit;
     } else if(random > criticalHit && random <= num1) {
         isBlock = true;
     } else if(random > num1 && random <= num2) {
@@ -304,8 +324,37 @@ Fight.prototype.attack = function(battleData, players, index) {
     if(isDodge) {// 闪避
         defenseData.action = consts.defenseAction.dodge;//1 - 被击中 2 - 闪避 3 - 被击中反击
         defenseData.reduceBlood = 0;
+
+        // 守方
+        // 增加怒气
+        if(attackData.action == consts.attackAction.common) {// each hit received
+            if(defense.type == EntityType.MONSTER) {
+                defense.anger += defense.restoreAngerSpeed.ehr;
+            } else {
+                defense.anger += defense.restoreAngerSpeed.ehr;
+            }
+        } else if(attackData.action == consts.attackAction.skill) {// each skill hit received
+            if(defense.type == EntityType.MONSTER) {
+                defense.anger += defense.restoreAngerSpeed.eshr;
+            } else {
+                defense.anger += defense.restoreAngerSpeed.eshr;
+            }
+        }
+
+        defenseData.hp = defense.hp;
+        defenseData.hp = defense.anger;
+
+        data.targetType = consts.effectTargetType.OPPONENT;
+        var target = {
+            id: defense.id,
+            action: defenseData.action,
+            hp: defenseData.hp,
+            anger: defenseData.anger
+        };
+        data.target.push(target);
     } else {
         if(attackData.action == consts.attackAction.skill) {//技能攻击
+            damageType = consts.damageType.common;
             //计算攻击力 技能加成
             if(attack.type == EntityType.MONSTER) {
 
@@ -335,6 +384,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             if(isBlock) {// 格挡
                 attackData.attack = attackData.attack / 2;
                 defenseData.isBlock = true;
+                defenseData.action = consts.defenseAction.block;
             }
 
             // attackData.hasBuff = true;// buff，可以有多个buff
@@ -354,6 +404,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             random = utils.random(1, 10000);
             if(random >= 1 && random <= counterAttack) {// 反击
                 var damage = defense.attack * 25 / 100;
+                defenseData.isCounter = true;
                 defenseData.counterValue = damage;//反击伤害
                 attack.hp -= damage;
                 if(attack.hp <= 0) {
@@ -392,6 +443,19 @@ Fight.prototype.attack = function(battleData, players, index) {
             // 更新状态
             defenseData.hp = defense.hp;
             defenseData.anger = defense.anger;
+
+            data.targetType = consts.effectTargetType.OPPONENT;
+            var target = {
+                id: defense.id,
+                action: defenseData.action,
+                hp: defenseData.hp,
+                anger: defenseData.anger
+            };
+            if(defenseData.isCounter) {
+                target.isCounter = true;
+                target.counterValue = defenseData.counterValue;
+            }
+            data.target.push(target);
         }
     }
 
@@ -412,12 +476,23 @@ Fight.prototype.attack = function(battleData, players, index) {
 
     attackData.hp = attack.hp;
     attackData.anger = attack.anger;
+    attackData.damageType = damageType;
 
+    data.sequence = this.sequence;
     // 写入数据
+    if(data.attackSide == consts.attackSide.OWNER) {
+        data.camp = "player";
+    } else {
+        data.camp = "enemy";
+    }
     // 攻方
-    data.attackData = attackData;
+    //data.attackData = attackData;
+    data.attacker = attack.id;
+    data.attackType = attackData.action;
+    data.damageType = attackData.damageType;
+    data.attackAnger = attackData.anger;
     // 守方
-    data.defenseData = defenseData;
+    //data.defenseData = defenseData;
 
     battleData.push(data);
 
@@ -428,6 +503,8 @@ Fight.prototype.attack = function(battleData, players, index) {
     this.round++;
 
     if(players[index + 1].costTime == players[index].costTime) {
+        var playerId = this.sequence.shift();
+        this.sequence.push(playerId);
         return this.attack(battleData, players, index + 1);
     } else {
         return false;

@@ -70,6 +70,7 @@ areaDao.addEntity = function(player, cb) {
 
                 var date = new Date();
                 var value = {
+                    cId: player.cId,
                     name: player.nickname,
                     time: date.getTime()
                 };
