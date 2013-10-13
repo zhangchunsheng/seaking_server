@@ -141,18 +141,26 @@ ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, de
 
         positions = formationUtil.getRandomPosition(num, positions);
 
-        fight.fId = defense.formationId;
-        fight.id = defense.id;
-        fight.action = consts.defenseAction.beHitted;
+        for(var i = 0 ; i < positions.length ; i++) {
+            defense = defenses[positions[i]];
 
-        // 计算伤害
-        defense.hp = attack.fightValue.attack - defense.fightValue.defense;
+            fight.fId = defense.formationId;
+            fight.id = defense.id;
+            fight.action = consts.defenseAction.beHitted;
 
-        fight.hp = defense.hp;
-        fight.anger = defense.anger;
+            // 计算伤害
+            defense.hp = attack.fightValue.attack - defense.fightValue.defense;
 
-        fightData.target.push(fight);
+            fight.hp = defense.hp;
+            fight.anger = defense.anger;
+
+            fightData.target.push(fight);
+        }
+
     } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {// 敌方所有单位
+        for(var i in defenses) {
+
+        }
         fight.fId = defense.formationId;
         fight.id = defense.id;
         fight.action = consts.defenseAction.beHitted;

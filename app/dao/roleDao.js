@@ -106,12 +106,13 @@ roleDao.removeMainPlayer = function(serverId, registerType, loginName, next) {
                 var characterId = userInfo.characters;
                 var delCharacters = userInfo.delCharacters;
 
-                if(characterId == null || characterId == 0) {
+                if(typeof characterId == "undefined" || characterId == null || characterId == 0) {
                     redis.release(client);
                     utils.invokeCallback(next, null, characterId);
                 } else {
                     var array = [];
-                    client.hset(key, "characters", 0);
+                    //client.hset(key, "characters", 0);
+                    client.hdel(key, "characters");
 
                     if(delCharacters == null || delCharacters == "") {
                         delCharacters = [];
@@ -157,6 +158,13 @@ roleDao.removeMainPlayer = function(serverId, registerType, loginName, next) {
                         dbUtil.removeFromArena(array, serverId, characterId);
 
                         array.push(["del", key]);
+
+                        var data = {
+                            registerType: registerType,
+                            loginName: loginName,
+                            serverId: serverId
+                        }
+                        ucenter.removePlayer(data);
 
                         client.multi(array)
                             .exec(function(err, reply) {

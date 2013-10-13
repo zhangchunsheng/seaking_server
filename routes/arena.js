@@ -57,6 +57,9 @@ function pk(req, res, msg, session, opponent) {
         var owner_formationData = character.formation;
         var opponent_formationData = opponent.formation;
 
+        var players = [];
+        var enemies = [];
+
         for(var i = 0 ; i < owner_formationData.length ; i++) {
             if(owner_formationData[i] != null && owner_formationData[i] != 0) {
                 if(owner_formationData[i].playerId.indexOf("P") >= 0) {
@@ -68,6 +71,13 @@ function pk(req, res, msg, session, opponent) {
                     player.formationId = i;
                     owners[i] = player;
                 }
+                players.push({
+                    "id" : player.id,
+                    "maxHP" : player.maxHp,
+                    "HP" : player.hp,
+                    "anger" : player.anger,
+                    "formation" : i
+                });
             }
         }
 
@@ -83,6 +93,13 @@ function pk(req, res, msg, session, opponent) {
                     player.formationId = i;
                     opponents[i] = player;
                 }
+                enemies.push({
+                    "id" : player.id,
+                    "maxHP" : player.maxHp,
+                    "HP" : player.hp,
+                    "anger" : player.anger,
+                    "formation" : i
+                });
             }
         }
 
@@ -101,6 +118,8 @@ function pk(req, res, msg, session, opponent) {
             });
             if(reply.battleResult.isWin == true) {
                 arenaService.exchange(character, opponent, function(err, reply) {
+                    battle.players = players;
+                    battle.enemies = enemies;
                     data = {
                         code: Code.OK,
                         rank: reply,

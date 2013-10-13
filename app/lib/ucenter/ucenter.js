@@ -73,3 +73,14 @@ ucenter.updatePlayer = function(data) {
 
     });
 }
+
+ucenter.removePlayer = function(data) {
+    var host = ucenterConfig.host;
+    var port = ucenterConfig.port;
+    var path = "/user/removePlayer";
+    var headers = {};
+
+    httpHelper.get(host, port, path, headers, data, function() {
+
+    });
+}

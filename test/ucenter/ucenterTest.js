@@ -50,4 +50,13 @@ describe('ucenter test', function() {
         }
         ucenter.updatePlayer(data);
     });
+
+    it('removePlayer', function() {
+        var data = {
+            registerType: 1,
+            loginName: "wozlla",
+            serverId: 1
+        }
+        ucenter.removePlayer(data);
+    });
 });

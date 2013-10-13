@@ -411,7 +411,8 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         registerType: registerType,
                         loginName: loginName,
                         serverId: serverId,
-                        cId: characterId,
+                        cId: cId,
+                        characterId: characterId,
                         nickname: nickname,
                         level: level
                     }

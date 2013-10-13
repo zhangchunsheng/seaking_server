@@ -84,6 +84,9 @@ exports.triggerEvent = function(req, res) {
             var monsters = {};
             var player;
 
+            var players = [];
+            var enemies = [];
+
             // 阵型中角色数据
             // get player info from db
             for(var i = 0 ; i < owner_formationData.length ; i++) {
@@ -97,6 +100,13 @@ exports.triggerEvent = function(req, res) {
                         player.formationId = i;
                         owners[i] = player;
                     }
+                    players.push({
+                        "id" : player.id,
+                        "maxHP" : player.maxHp,
+                        "HP" : player.hp,
+                        "anger" : player.anger,
+                        "formation" : i
+                    });
                 }
             }
             // get monster info from file config
@@ -109,6 +119,14 @@ exports.triggerEvent = function(req, res) {
                         type: EntityType.MONSTER
                     }));
                     monsters[i] = player;
+
+                    enemies.push({
+                        "id" : player.id,
+                        "maxHP" : player.maxHp,
+                        "HP" : player.hp,
+                        "anger" : player.anger,
+                        "formation" : i
+                    });
                 }
             }
 
@@ -156,6 +174,8 @@ exports.triggerEvent = function(req, res) {
                                     taskService.updateTask(character, character.curTasksEntity.strip(), callback);
                                 }
                             ], function(err, reply) {
+                                eventResult.players = players;
+                                eventResult.enemies = enemies;
                                 var result = {
                                     induData: {
                                         eid: eid,
@@ -167,6 +187,8 @@ exports.triggerEvent = function(req, res) {
                                 utils.send(msg, res, result);
                             });
                         } else {
+                            eventResult.players = players;
+                            eventResult.enemies = enemies;
                             var result = {
                                 induData: {
                                     eid: eid,
