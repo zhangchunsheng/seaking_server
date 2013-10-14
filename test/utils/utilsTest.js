@@ -21,4 +21,17 @@ describe('utils test', function() {
 
         console.log(formationUtil.getRandomPosition(num, positions));
     });
+
+    it('fightData', function() {
+        /*var fightData = [];
+
+        var fight = {};
+        fight.id = 1;
+        fightData.push(fight);
+
+        fight.id = 2;
+        fightData.push(fight);
+
+        console.log(fightData);*/
+    });
 });

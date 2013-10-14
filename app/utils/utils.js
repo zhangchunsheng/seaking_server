@@ -297,6 +297,8 @@ utils.doProcess = function(process) {
             process.env.NODE_ENV = array[1];
         } else if(array[0] == "serverType") {
             process.env.SERVER_TYPE = array[1];
+        } else if(array[0] == "port") {
+            process.env.PORT = array[1];
         }
     }
 }

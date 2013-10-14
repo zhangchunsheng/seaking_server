@@ -535,65 +535,65 @@ Player.prototype.activeSkillAdditional = function() {
     this.fightValue.counter = counter;
 }
 
-Player.prototype.useActiveSkill = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+Player.prototype.useActiveSkill = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
     var effects = {};
     effects = this.activeSkill.skillData.effects;
     for(var j = 0 ; j < effects.length ; j++) {
         if(effects[j].attr == consts.buffType.ATTACK) {// 计算攻击力
-            this.activeSkill.calculateAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.ADDATTACK) {//给自己加攻击力
-            this.activeSkill.calculateAddAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateAddAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.DEFENSE) {
-            this.activeSkill.calculateDefense(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateDefense(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.SPEED) {//加速度，速度buff
-            this.activeSkill.calculateSpeed(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateSpeed(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.HP) {//加血，直接累加
-            this.activeSkill.calculateHp(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateHp(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.FOCUS) {
-            this.activeSkill.calculateFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.CRITICALHIT) {
-            this.activeSkill.calculateCriticalHit(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateCriticalHit(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.CRITDAMAGE) {
-            this.activeSkill.calculateCritDamage(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateCritDamage(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.DODGE) {
-            this.activeSkill.calculateDodge(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateDodge(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.BLOCK) {
-            this.activeSkill.calculateBlock(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateBlock(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.COUNTER) {
-            this.activeSkill.calculateCounter(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateCounter(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.BLOCK_FOCUS) {//格挡focus加成
-            this.activeSkill.calculateBlockFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateBlockFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.COUNTER_FOCUS) {//反击focus加成
-            this.activeSkill.calculateCounterFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateCounterFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.CRITICALHIT_FOCUS) {//暴击focus加成
-            this.activeSkill.calculateCriticalHitFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.calculateCriticalHitFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.PARALLELDAMAGE) {//溅射伤害
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
-            this.activeSkill.parallelDamage(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.parallelDamage(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.buffType.BURN) {//点燃
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
-            this.activeSkill.burn(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);// buff 次数
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.burn(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.buffType.STUNT) {//禁锢
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
-            this.activeSkill.stunt(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);// buff 次数
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.stunt(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.buffType.POISON) {//施毒
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
-            this.activeSkill.poison(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);// buff 次数 no anger
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.poison(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数 no anger
         } else if(effects[j].attr == consts.buffType.CONFUSION) {//迷惑
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
-            this.activeSkill.confusion(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);// buff 次数
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.confusion(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.buffType.HPRECOVERYSPEED) {//血量回复速度，buff
 
         } else if(effects[j].attr == consts.buffType.ADDITEMATTR) {//装备加成
 
         } else if(effects[j].attr == consts.buffType.BOUNCEATTACK) {//反弹伤害
-            this.activeSkill.bounceAttack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData); // buff 次数
+            this.activeSkill.bounceAttack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData); // buff 次数
         } else if(effects[j].attr == consts.buffType.ADDBLOOD) {//吸血
-            this.activeSkill.addBlood(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);// 计算数值
+            this.activeSkill.addBlood(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 计算数值
         } else if(effects[j].attr == consts.buffType.ICE) {//冰冻
-            this.activeSkill.ice(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);
+            this.activeSkill.ice(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[i].attr == consts.buffType.REVIVE) {
-            this.activeSkill.revive(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData);// 复活 buff 次数
+            this.activeSkill.revive(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 复活 buff 次数
         }
     }
 }

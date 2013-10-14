@@ -15,6 +15,8 @@ var Skill = require('./skill');
 var utils = require('../utils/utils');
 var skillUtil = require('../utils/skillUtil');
 var formationUtil = require('../utils/formationUtil');
+var fightUtil = require('../utils/fightUtil');
+var FightData = require('./battle/fightData');
 
 /**
  *
@@ -50,14 +52,14 @@ var ActiveSkill = function(opts) {
 /**
  *
  */
-ActiveSkill.prototype.calculateHp = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateHp = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算攻击
  */
-ActiveSkill.prototype.calculateAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -96,7 +98,7 @@ ActiveSkill.prototype.calculateAttack = function(effect, attack_formation, defen
  * 9敌方特定目标	1下一格，2下两格，3下三格，4，下四格，5下五格，6下六格
  * 10作用为技能
  */
-ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
     // 攻击力加成
     attack.fightValue.attack += utils.getEffectValue(effect, attack.attack);
 
@@ -122,6 +124,8 @@ ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, de
         fight.hp = defense.hp;
         fight.anger = defense.anger;
 
+        fightUtil.calculateHP(defense, fight);
+
         fightData.target.push(fight);
     } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {// 特定目标
         // 1周围1格，2正前，3正后，4左侧，5右侧，6前一行，7同行，8后一行
@@ -142,6 +146,7 @@ ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, de
         positions = formationUtil.getRandomPosition(num, positions);
 
         for(var i = 0 ; i < positions.length ; i++) {
+            fight = new FightData({});
             defense = defenses[positions[i]];
 
             fight.fId = defense.formationId;
@@ -154,24 +159,32 @@ ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, de
             fight.hp = defense.hp;
             fight.anger = defense.anger;
 
-            fightData.target.push(fight);
-        }
+            fightUtil.calculateHP(defense, fight);
 
+            fightData = new FightData(fight);
+            fightData.target.push(fight.strip());
+        }
     } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {// 敌方所有单位
         for(var i in defenses) {
+            defense = defenses[i];
+            if(defense.died) {
+                continue;
+            }
+            fight = new FightData({});
+            fight.fId = defense.formationId;
+            fight.id = defense.id;
+            fight.action = consts.defenseAction.beHitted;
 
+            // 计算伤害
+            defense.hp = attack.fightValue.attack - defense.fightValue.defense;
+
+            fight.hp = defense.hp;
+            fight.anger = defense.anger;
+
+            fightUtil.calculateHP(defense, fight);
+
+            fightData.target.push(fight.strip());
         }
-        fight.fId = defense.formationId;
-        fight.id = defense.id;
-        fight.action = consts.defenseAction.beHitted;
-
-        // 计算伤害
-        defense.hp = attack.fightValue.attack - defense.fightValue.defense;
-
-        fight.hp = defense.hp;
-        fight.anger = defense.anger;
-
-        fightData.target.push(fight);
     } else if(effect.targetType == consts.targetType.SKILL) {
 
     }
@@ -180,84 +193,84 @@ ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, de
 /**
  * 计算防御
  */
-ActiveSkill.prototype.calculateDefense = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateDefense = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算目标
  */
-ActiveSkill.prototype.calculateTarget = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateTarget = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算集中值
  */
-ActiveSkill.prototype.calculateFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算速度
  */
-ActiveSkill.prototype.calculateSpeed = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateSpeed = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算闪避
  */
-ActiveSkill.prototype.calculateDodge = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateDodge = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算暴击几率
  */
-ActiveSkill.prototype.calculateCriticalHit = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateCriticalHit = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算暴击几率
  */
-ActiveSkill.prototype.calculateCritDamage = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateCritDamage = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算格挡
  */
-ActiveSkill.prototype.calculateBlock = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateBlock = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 计算反击
  */
-ActiveSkill.prototype.calculateCounter = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateCounter = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 格挡focus加成
  */
-ActiveSkill.prototype.calculateBlockFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateBlockFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 反击focus加成
  */
-ActiveSkill.prototype.calculateCounterFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateCounterFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
 /**
  * 暴击focus加成
  */
-ActiveSkill.prototype.calculateCriticalHitFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.calculateCriticalHitFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -271,7 +284,7 @@ ActiveSkill.prototype.calculateCriticalHitFocus = function(attack_formation, def
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.attack = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.attack = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -285,8 +298,40 @@ ActiveSkill.prototype.attack = function(attack_formation, defense_formation, att
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.parallelDamage = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
-    fightData.target.push();
+ActiveSkill.prototype.parallelDamage = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    var positions = formationUtil.calculateAroundOneCell(defense.formationId);
+
+    for(var i = 0 ; i < positions.length ; i++) {
+        if(defenses[i]) {
+            if(!defenses[i].died) {
+
+            } else {
+                delete positions[i];
+            }
+        } else {
+            delete positions[i];
+        }
+    }
+
+    var fight = {};
+    for(var i = 0 ; i < positions.length ; i++) {
+        fight = new FightData({});
+        defense = defenses[positions[i]];
+
+        fight.fId = defense.formationId;
+        fight.id = defense.id;
+        fight.action = consts.defenseAction.beHitted;
+
+        // 计算伤害
+        defense.hp = (attack.fightValue.attack - defense.fightValue.defense) * effect.value / 100;
+
+        fight.hp = defense.hp;
+        //fight.anger = defense.anger;
+
+        fightUtil.calculateHP(defense, fight);
+
+        fightData.target.push(fight.strip());
+    }
 }
 
 /**
@@ -299,7 +344,7 @@ ActiveSkill.prototype.parallelDamage = function(attack_formation, defense_format
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.burn = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.burn = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -313,7 +358,7 @@ ActiveSkill.prototype.burn = function(attack_formation, defense_formation, attac
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.stunt = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.stunt = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -327,7 +372,7 @@ ActiveSkill.prototype.stunt = function(attack_formation, defense_formation, atta
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.poison = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.poison = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -341,7 +386,7 @@ ActiveSkill.prototype.poison = function(attack_formation, defense_formation, att
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.confusion = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.confusion = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -355,7 +400,7 @@ ActiveSkill.prototype.confusion = function(attack_formation, defense_formation, 
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.bounceAttack = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.bounceAttack = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -369,7 +414,7 @@ ActiveSkill.prototype.bounceAttack = function(attack_formation, defense_formatio
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.addBlood = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.addBlood = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -383,7 +428,7 @@ ActiveSkill.prototype.addBlood = function(attack_formation, defense_formation, a
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.ice = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.ice = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -397,7 +442,7 @@ ActiveSkill.prototype.ice = function(attack_formation, defense_formation, attack
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.revive = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
+ActiveSkill.prototype.revive = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 

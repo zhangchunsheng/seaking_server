@@ -347,6 +347,7 @@ Fight.prototype.attack = function(battleData, players, index) {
         data.targetType = consts.effectTargetType.OPPONENT;
         var target = {
             id: defense.id,
+            fId: defense.formationId,
             action: defenseData.action,
             hp: defenseData.hp,
             anger: defenseData.anger
@@ -368,7 +369,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             //计算防御
             defenseData.defense = defense.defense;
 
-            attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, data);
+            attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, data, attackData, defenseData);
         } else {
             // 判定是否暴击
             // random = utils.random(1, 10000);
@@ -447,6 +448,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             data.targetType = consts.effectTargetType.OPPONENT;
             var target = {
                 id: defense.id,
+                fId: defense.formationId,
                 action: defenseData.action,
                 hp: defenseData.hp,
                 anger: defenseData.anger
@@ -488,6 +490,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     // 攻方
     //data.attackData = attackData;
     data.attacker = attack.id;
+    data.attackerFid = attack.formationId;
     data.attackType = attackData.action;
     data.damageType = attackData.damageType;
     data.attackAnger = attackData.anger;

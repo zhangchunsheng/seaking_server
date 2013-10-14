@@ -62,12 +62,15 @@ function getRandom(array, num, count) {
     if(array.length == num)
         return;
     var random = utils.random(0, count - 1);
+    var flag = true;
     for(var i = 0 ; i < array.length ; i++) {
         if(random == array[i]) {
+            flag = false;
             getRandom(array, num, count);
         }
     }
-    array.push(random);
+    if(flag)
+        array.push(random);
     if(array.length <= num)
         getRandom(array, num, count);
 }

@@ -35,7 +35,7 @@ app.set('port', process.env.PORT || 4011);
 
 //log
 //app.use(express.logger('dev'));
-express.logger.format('home', ':remote-addr :response-time - [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :res[content-length]');
+express.logger.format('home', ':req[X-Forwarded-For] :response-time - [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :res[content-length]');
 app.use(express.logger({
     format: 'home',
     stream: fs.createWriteStream(__dirname + '/logs/access.log', {flags: 'a'})
