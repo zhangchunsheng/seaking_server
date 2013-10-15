@@ -352,6 +352,8 @@ Player.prototype.updateFightValue = function() {
                 this.addBuff(buff);
             } else if(effects[j].id == "XG042111" || effects[j].id == "XG042121" || effects[j].id == "XG042131" || effects[j].id == "XG042141") {// 武器防御加成
 
+            } else {
+
             }
         }
     }
@@ -544,56 +546,56 @@ Player.prototype.useActiveSkill = function(attack_formation, defense_formation, 
         } else if(effects[j].attr == consts.effectName.ADDATTACK) {//给自己加攻击力
             this.activeSkill.calculateAddAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.DEFENSE) {
-            this.activeSkill.calculateDefense(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateDefense(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.SPEED) {//加速度，速度buff
-            this.activeSkill.calculateSpeed(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateSpeed(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.HP) {//加血，直接累加
-            this.activeSkill.calculateHp(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateHp(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.FOCUS) {
-            this.activeSkill.calculateFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.CRITICALHIT) {
-            this.activeSkill.calculateCriticalHit(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCriticalHit(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.CRITDAMAGE) {
-            this.activeSkill.calculateCritDamage(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCritDamage(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.DODGE) {
-            this.activeSkill.calculateDodge(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateDodge(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.BLOCK) {
-            this.activeSkill.calculateBlock(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateBlock(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.COUNTER) {
-            this.activeSkill.calculateCounter(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCounter(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.BLOCK_FOCUS) {//格挡focus加成
-            this.activeSkill.calculateBlockFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateBlockFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.COUNTER_FOCUS) {//反击focus加成
-            this.activeSkill.calculateCounterFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCounterFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.CRITICALHIT_FOCUS) {//暴击focus加成
-            this.activeSkill.calculateCriticalHitFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCriticalHitFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.PARALLELDAMAGE) {//溅射伤害
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.parallelDamage(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.parallelDamage(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.BURN) {//点燃
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.burn(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
+            this.activeSkill.burn(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.effectName.STUNT) {//禁锢
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.stunt(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
+            this.activeSkill.stunt(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.effectName.POISON) {//施毒
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.poison(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数 no anger
+            this.activeSkill.poison(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数 no anger
         } else if(effects[j].attr == consts.effectName.CONFUSION) {//迷惑
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.confusion(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
+            this.activeSkill.confusion(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.effectName.HPRECOVERYSPEED) {//血量回复速度，buff
 
         } else if(effects[j].attr == consts.effectName.ADDITEMATTR) {//装备加成
 
         } else if(effects[j].attr == consts.effectName.BOUNCEATTACK) {//反弹伤害
-            this.activeSkill.bounceAttack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData); // buff 次数
+            this.activeSkill.bounceAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData); // buff 次数
         } else if(effects[j].attr == consts.effectName.ADDBLOOD) {//吸血
-            this.activeSkill.addBlood(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 计算数值
+            this.activeSkill.addBlood(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 计算数值
         } else if(effects[j].attr == consts.effectName.ICE) {//冰冻
-            this.activeSkill.ice(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.ice(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
         } else if(effects[i].attr == consts.effectName.REVIVE) {
-            this.activeSkill.revive(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 复活 buff 次数
+            this.activeSkill.revive(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 复活 buff 次数
         }
     }
 }

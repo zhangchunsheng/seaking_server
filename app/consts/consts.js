@@ -325,7 +325,36 @@ module.exports = {
     },
 
     buffType: {
-
+        HP: "hp",//HP
+        EXPERIENCE: "experience",//经验
+        ATTACK: "attack",//攻击
+        DEFENSE: "defense",//防御
+        FOCUS: "focus",//集中值
+        SPEED: "speed",//速度
+        DODGE: "dodge",//闪避
+        CRITICALHIT: "criticalHit",//暴击几率
+        CRITDAMAGE: "critDamage",//暴击伤害
+        BLOCK: "block",//格挡
+        COUNTER: "counter",//反击
+        PARALLELDAMAGE: "parallelDamage",//溅射伤害
+        BURN: "burn",//点燃
+        STUNT: "stunt",//禁锢
+        POISON: "poison",//施毒
+        CONFUSION: "confusion",//迷惑
+        DEFENSE_FOCUS: "defense_focus",//防御力加成(focus)
+        HPRECOVERYSPEED: "hpRecoverySpeed",//血量回复
+        ADDITEMATTR: "addItemAttr",//装备加成
+        ADDATTACK: "addAttack",//增加自己攻击力
+        BOUNCEATTACK: "bounceAttack",//反弹伤害
+        MONEY: "money",//额外金钱
+        ADDBLOOD: "addBlood",//吸血
+        ATTACK_FOCUS: "attack_focus",//攻击力加成(focus)
+        SKILL: "skill",//技能
+        ICE: "ice",//冰冻
+        BLOCK_FOCUS: "block_focus",//格挡focus加成
+        COUNTER_FOCUS: "counter_focus",//反击focus加成
+        CRITICALHIT_FOCUS: "criticalHit_focus",//暴击几率focus加成
+        REVIVE: "revive"
     },
 
     correspondingEffect_attr: {

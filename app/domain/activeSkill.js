@@ -52,8 +52,30 @@ var ActiveSkill = function(opts) {
 /**
  *
  */
-ActiveSkill.prototype.calculateHp = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateHp = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -193,85 +215,349 @@ ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, de
 /**
  * 计算防御
  */
-ActiveSkill.prototype.calculateDefense = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateDefense = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 计算目标
  */
-ActiveSkill.prototype.calculateTarget = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateTarget = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 计算集中值
  */
-ActiveSkill.prototype.calculateFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
- * 计算速度
+ * 计算速度 speedLevel
  */
-ActiveSkill.prototype.calculateSpeed = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateSpeed = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 计算闪避
  */
-ActiveSkill.prototype.calculateDodge = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateDodge = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 计算暴击几率
  */
-ActiveSkill.prototype.calculateCriticalHit = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCriticalHit = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 计算暴击几率
  */
-ActiveSkill.prototype.calculateCritDamage = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCritDamage = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 计算格挡
  */
-ActiveSkill.prototype.calculateBlock = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateBlock = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 计算反击
  */
-ActiveSkill.prototype.calculateCounter = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCounter = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 格挡focus加成
  */
-ActiveSkill.prototype.calculateBlockFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateBlockFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 反击focus加成
  */
-ActiveSkill.prototype.calculateCounterFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCounterFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
  * 暴击focus加成
  */
-ActiveSkill.prototype.calculateCriticalHitFocus = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCriticalHitFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -284,7 +570,7 @@ ActiveSkill.prototype.calculateCriticalHitFocus = function(attack_formation, def
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.attack = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.attack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
 
 }
 
@@ -344,8 +630,30 @@ ActiveSkill.prototype.parallelDamage = function(effect, attack_formation, defens
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.burn = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.burn = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -358,8 +666,30 @@ ActiveSkill.prototype.burn = function(attack_formation, defense_formation, attac
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.stunt = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.stunt = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -372,8 +702,30 @@ ActiveSkill.prototype.stunt = function(attack_formation, defense_formation, atta
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.poison = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.poison = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -386,8 +738,30 @@ ActiveSkill.prototype.poison = function(attack_formation, defense_formation, att
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.confusion = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.confusion = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -400,8 +774,30 @@ ActiveSkill.prototype.confusion = function(attack_formation, defense_formation, 
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.bounceAttack = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.bounceAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -414,8 +810,30 @@ ActiveSkill.prototype.bounceAttack = function(attack_formation, defense_formatio
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.addBlood = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.addBlood = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -428,8 +846,30 @@ ActiveSkill.prototype.addBlood = function(attack_formation, defense_formation, a
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.ice = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.ice = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 /**
@@ -442,8 +882,30 @@ ActiveSkill.prototype.ice = function(attack_formation, defense_formation, attack
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.revive = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.revive = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+    if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
+    } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+        if(effect.timeType == consts.timeType.ROUND) {
+
+        } else if(effect.timeType == consts.timeType.COUNT) {
+
+        }
+    } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_RANDOM) {
+
+    } else if(effect.targetType == consts.targetType.OPPONENT_ALL) {
+
+    } else if(effect.targetType == consts.targetType.SKILL) {
+
+    }
 }
 
 ActiveSkill.create = function(opts) {
