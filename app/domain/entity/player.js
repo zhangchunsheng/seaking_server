@@ -769,6 +769,8 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
         level: item.level
     });
 
+    console.log(this.equipmentsEntity);
+    console.log(epType);
     if (curEquipment.epid != 0) {
         index = player.packageEntity.addItem(this, pkgType, {
             itemId: curEquipment.epid,

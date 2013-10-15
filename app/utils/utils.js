@@ -205,7 +205,7 @@ utils.getEffectFocusValue = function(effect, baseValue, focus) {
  */
 utils.getEqType = function(eqId) {
     var type = "";
-    if(eqId.length == 5) {
+    if(eqId.indexOf("W9") < 0) {
         type = consts.EqType.WEAPON;
     } else {
         var num = eqId.substr(3, 1);
