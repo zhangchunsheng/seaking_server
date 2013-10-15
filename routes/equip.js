@@ -66,6 +66,14 @@ exports.wearWeapon = function(req, res) {
             character = partnerUtil.getPartner(playerId, player);
         }
 
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
             var item = player.packageEntity[pkgType].items[index];
             // var eq = dataApi.equipment.findById(item.itemId);
@@ -165,6 +173,15 @@ exports.unWearWeapon = function(req, res) {
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
         }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         if(character.equipmentsEntity.get(type).epid == 0) {// 没有武器
             data = {
                 //status: -2
@@ -265,6 +282,14 @@ exports.equip = function(req, res) {
         var character = player;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
         }
 
         if(typeof item == "undefined") {
@@ -374,6 +399,14 @@ exports.unEquip = function(req, res) {
             character = partnerUtil.getPartner(playerId, player);
         }
 
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         if(character.equipmentsEntity.get(type).epid == 0) {// 没有装备
             data = {
                 //status: -2
@@ -473,6 +506,14 @@ exports.upgrade = function(req, res) {
         var character = player;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
         }
 
         if(character.equipmentsEntity.get(type).epid == 0) {// 没有装备
