@@ -65,10 +65,10 @@ Fight.prototype.fight = function(cb) {
     // 计算最大速度
     var max_speed = 0;
     for(var i in owners) {
-        max_speed = Math.max(max_speed, owners[i].speedLevel);
+        max_speed = Math.max(max_speed, owners[i].fightValue.speedLevel);
     }
     for(var i in monsters) {
-        max_speed = Math.max(max_speed, monsters[i].speedLevel);
+        max_speed = Math.max(max_speed, monsters[i].fightValue.speedLevel);
     }
     perDistance = max_speed;
 
@@ -80,7 +80,7 @@ Fight.prototype.fight = function(cb) {
             attackData = {};
             if(!players[i].died) {
                 players[i].distance = (players[i].attackers.length + 1) * perDistance;
-                players[i].costTime = players[i].distance / players[i].speedLevel;
+                players[i].costTime = players[i].distance / players[i].fightValue.speedLevel;
             }
         }
         players = utils.sortArray(players, "costTime");
@@ -146,10 +146,10 @@ Fight.prototype.pk = function(cb) {
     // 计算最大速度
     var max_speed = 0;
     for(var i in owners) {
-        max_speed = Math.max(max_speed, owners[i].speedLevel);
+        max_speed = Math.max(max_speed, owners[i].fightValue.speedLevel);
     }
     for(var i in monsters) {
-        max_speed = Math.max(max_speed, monsters[i].speedLevel);
+        max_speed = Math.max(max_speed, monsters[i].fightValue.speedLevel);
     }
     perDistance = max_speed;
 
@@ -160,7 +160,7 @@ Fight.prototype.pk = function(cb) {
             attackData = {};
             if(!players[i].died) {
                 players[i].distance = (players[i].attackers.length + 1) * perDistance;
-                players[i].costTime = players[i].distance / players[i].speedLevel;
+                players[i].costTime = players[i].distance / players[i].fightValue.speedLevel;
             }
         }
         players = utils.sortArray(players, "costTime");
@@ -272,7 +272,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     // 阵型位置
     attackData.fId = attack.formationId;
 
-    // test
+    // test skill
     //attack.anger = 100;
 
     // 攻击方式
@@ -552,7 +552,7 @@ Fight.prototype.getEnemyIndex = function(formationId, monsters, count) {
 Fight.createCharacter = function(opts) {
     var heros = dataApi.heros.data;
     var hero = heros[opts.id];
-    return {
+    var data = {
         id: opts.id,
         cId: opts.cId,
         kindId: opts.id,
@@ -582,12 +582,25 @@ Fight.createCharacter = function(opts) {
         counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), opts.level),
         level: opts.level
     };
+    data.fightValue = {};
+    data.fightValue.attack = Math.floor(data.attack);
+    data.fightValue.defense = Math.floor(data.defense);
+    data.fightValue.speedLevel = Math.floor(data.speedLevel);
+    data.fightValue.hp = data.hp;
+    data.fightValue.maxHp = data.hp;
+    data.fightValue.focus = data.focus;
+    data.fightValue.criticalHit = data.criticalHit;
+    data.fightValue.critDamage = data.critDamage;
+    data.fightValue.dodge = data.dodge;
+    data.fightValue.block = data.block;
+    data.fightValue.counter = data.counter;
+    return data;
 }
 
 Fight.createMonster = function(opts) {
     var monsters = dataApi.monster.data;
     var monster = monsters[opts.id];
-    return {
+    var data = {
         id: opts.id,
         kindId: opts.id,
         formationId: opts.formationId,
@@ -614,12 +627,25 @@ Fight.createMonster = function(opts) {
         counter: monster.counter,
         level: monster.level
     };
+    data.fightValue = {};
+    data.fightValue.attack = Math.floor(data.attack);
+    data.fightValue.defense = Math.floor(data.defense);
+    data.fightValue.speedLevel = Math.floor(data.speedLevel);
+    data.fightValue.hp = data.hp;
+    data.fightValue.maxHp = data.hp;
+    data.fightValue.focus = data.focus;
+    data.fightValue.criticalHit = data.criticalHit;
+    data.fightValue.critDamage = data.critDamage;
+    data.fightValue.dodge = data.dodge;
+    data.fightValue.block = data.block;
+    data.fightValue.counter = data.counter;
+    return data;
 }
 
 Fight.createTestCharacter = function(opts) {
     var heros = dataApi.heros.data;
     var hero = heros[opts.id];
-    return {
+    var data = {
         id: opts.id,
         cId: opts.cId,
         kindId: opts.id,
@@ -649,12 +675,25 @@ Fight.createTestCharacter = function(opts) {
         counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), opts.level),
         level: opts.level
     };
+    data.fightValue = {};
+    data.fightValue.attack = Math.floor(data.attack);
+    data.fightValue.defense = Math.floor(data.defense);
+    data.fightValue.speedLevel = Math.floor(data.speedLevel);
+    data.fightValue.hp = data.hp;
+    data.fightValue.maxHp = data.hp;
+    data.fightValue.focus = data.focus;
+    data.fightValue.criticalHit = data.criticalHit;
+    data.fightValue.critDamage = data.critDamage;
+    data.fightValue.dodge = data.dodge;
+    data.fightValue.block = data.block;
+    data.fightValue.counter = data.counter;
+    return data;
 }
 
 Fight.createTestMonster = function(opts) {
     var monsters = dataApi.monster.data;
     var monster = monsters[opts.id];
-    return {
+    var data =  {
         id: opts.id,
         kindId: opts.id,
         formationId: opts.formationId,
@@ -681,6 +720,20 @@ Fight.createTestMonster = function(opts) {
         counter: monster.counter,
         level: monster.level
     };
+    data.fightValue = {};
+    data.fightValue.attack = Math.floor(data.attack);
+    data.fightValue.defense = Math.floor(data.defense);
+    data.fightValue.speedLevel = Math.floor(data.speedLevel);
+    data.fightValue.hp = data.hp;
+    data.fightValue.maxHp = data.hp;
+    data.fightValue.focus = data.focus;
+    data.fightValue.criticalHit = data.criticalHit;
+    data.fightValue.critDamage = data.critDamage;
+    data.fightValue.dodge = data.dodge;
+    data.fightValue.block = data.block;
+    data.fightValue.counter = data.counter;
+
+    return data;
 }
 
 module.exports = Fight;

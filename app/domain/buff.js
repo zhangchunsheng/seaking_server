@@ -15,6 +15,7 @@ function Buff(opts) {
     this.useEffectId = opts.useEffectId;// 物品Id，效果Id XG
     this.startTime = opts.startTime;
     this.type = opts.type;// skill attr
+    this.buffType = opts.buffType;
     this.buffKind = consts.buffKind.ITEM;// 1 - 道具 2 - 技能
     this.count = opts.count;// 持续次数
     this.round = opts.round;// 持续回合

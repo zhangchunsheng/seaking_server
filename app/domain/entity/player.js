@@ -266,7 +266,7 @@ Player.prototype.updateSkillBuffs = function() {
     for(var i = 0 ; i < this.passiveSkills.length ; i++) {
         effects = this.passiveSkills[i].skillData.effects;
         for(var j = 0 ; j < effects.length ; j++) {
-            if(effects[j].attr == consts.buffType.HPRECOVERYSPEED) {//血量回复速度
+            if(effects[j].attr == consts.effectName.HPRECOVERYSPEED) {//血量回复速度
                 if(effects[j].valueType == consts.valueType.PERCENTAGE)
                     this.hpRecoverySpeed += this.hpRecoverySpeed * effects[j].value / 100;
             }
@@ -309,45 +309,45 @@ Player.prototype.updateFightValue = function() {
     for(var i = 0 ; i < this.passiveSkills.length ; i++) {
         effects = this.passiveSkills[i].skillData.effects;
         for(var j = 0 ; j < effects.length ; j++) {
-            if(effects[j].attr == consts.buffType.ATTACK) {
+            if(effects[j].attr == consts.effectName.ATTACK) {
                 attack += utils.getEffectValue(effects[j], this.attack);
-            } else if(effects[j].attr == consts.buffType.ADDATTACK) {
+            } else if(effects[j].attr == consts.effectName.ADDATTACK) {
                 attack += utils.getEffectValue(effects[j], this.attack);
-            } else if(effects[j].attr == consts.buffType.DEFENSE) {
+            } else if(effects[j].attr == consts.effectName.DEFENSE) {
                 defense += utils.getEffectValue(effects[j], this.defense);
-            } else if(effects[j].attr == consts.buffType.SPEED) {
+            } else if(effects[j].attr == consts.effectName.SPEED) {
                 speedLevel += utils.getEffectValue(effects[j], this.speedLevel);
-            } else if(effects[j].attr == consts.buffType.HP) {
+            } else if(effects[j].attr == consts.effectName.HP) {
                 hp += utils.getEffectValue(effects[j], this.hp);
-            } else if(effects[j].attr == consts.buffType.FOCUS) {
+            } else if(effects[j].attr == consts.effectName.FOCUS) {
                 focus += utils.getEffectValue(effects[j], this.focus);
-            } else if(effects[j].attr == consts.buffType.CRITICALHIT) {
+            } else if(effects[j].attr == consts.effectName.CRITICALHIT) {
                 criticalHit += utils.getEffectValue(effects[j], this.criticalHit);
-            } else if(effects[j].attr == consts.buffType.CRITDAMAGE) {
+            } else if(effects[j].attr == consts.effectName.CRITDAMAGE) {
                 critDamage += utils.getEffectValue(effects[j], this.critDamage);
-            } else if(effects[j].attr == consts.buffType.DODGE) {
+            } else if(effects[j].attr == consts.effectName.DODGE) {
                 dodge += utils.getEffectValue(effects[j], this.dodge);
-            } else if(effects[j].attr == consts.buffType.BLOCK) {
+            } else if(effects[j].attr == consts.effectName.BLOCK) {
                 block += utils.getEffectValue(effects[j], this.block);
-            } else if(effects[j].attr == consts.buffType.COUNTER) {
+            } else if(effects[j].attr == consts.effectName.COUNTER) {
                 counter += utils.getEffectValue(effects[j], this.counter);
-            } else if(effects[j].attr == consts.buffType.ATTACK_FOCUS) {//攻击力focus加成
+            } else if(effects[j].attr == consts.effectName.ATTACK_FOCUS) {//攻击力focus加成
                 attack += utils.getEffectFocusValue(effects[j], this.attack, this.focus);
-            } else if(effects[j].attr == consts.buffType.DEFENSE_FOCUS) {//防御力focus加成
+            } else if(effects[j].attr == consts.effectName.DEFENSE_FOCUS) {//防御力focus加成
                 defense += utils.getEffectFocusValue(effects[j], this.defense, this.focus);
-            } else if(effects[j].attr == consts.buffType.BLOCK_FOCUS) {//格挡focus加成
+            } else if(effects[j].attr == consts.effectName.BLOCK_FOCUS) {//格挡focus加成
                 block += utils.getEffectFocusValue(effects[j], this.block, this.focus);
-            } else if(effects[j].attr == consts.buffType.COUNTER_FOCUS) {//反击focus加成
+            } else if(effects[j].attr == consts.effectName.COUNTER_FOCUS) {//反击focus加成
                 counter += utils.getEffectFocusValue(effects[j], this.counter, this.focus);
-            } else if(effects[j].attr == consts.buffType.CRITICALHIT_FOCUS) {//暴击focus加成
+            } else if(effects[j].attr == consts.effectName.CRITICALHIT_FOCUS) {//暴击focus加成
                 attack += utils.getEffectFocusValue(effects[j], this.attack, this.focus);
-            } else if(effects[j].attr == consts.buffType.SKILL) {//技能处理
+            } else if(effects[j].attr == consts.effectName.SKILL) {//技能处理
                 var buff = skillUtil.getPassiveSkillBuff(effects[j], this.passiveSkills[i]);
                 this.addBuff(buff);
-            } else if(effects[j].attr == consts.buffType.EXPERIENCE) {//额外经验
+            } else if(effects[j].attr == consts.effectName.EXPERIENCE) {//额外经验
                 var buff = skillUtil.getPassiveSkillBuff(effects[j], this.passiveSkills[i]);
                 this.addBuff(buff);
-            } else if(effects[j].attr == consts.buffType.MONEY) {//额外金币
+            } else if(effects[j].attr == consts.effectName.MONEY) {//额外金币
                 var buff = skillUtil.getPassiveSkillBuff(effects[j], this.passiveSkills[i]);
                 this.addBuff(buff);
             } else if(effects[j].id == "XG042111" || effects[j].id == "XG042121" || effects[j].id == "XG042131" || effects[j].id == "XG042141") {// 武器防御加成
@@ -539,60 +539,60 @@ Player.prototype.useActiveSkill = function(attack_formation, defense_formation, 
     var effects = {};
     effects = this.activeSkill.skillData.effects;
     for(var j = 0 ; j < effects.length ; j++) {
-        if(effects[j].attr == consts.buffType.ATTACK) {// 计算攻击力
+        if(effects[j].attr == consts.effectName.ATTACK) {// 计算攻击力
             this.activeSkill.calculateAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.ADDATTACK) {//给自己加攻击力
+        } else if(effects[j].attr == consts.effectName.ADDATTACK) {//给自己加攻击力
             this.activeSkill.calculateAddAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.DEFENSE) {
+        } else if(effects[j].attr == consts.effectName.DEFENSE) {
             this.activeSkill.calculateDefense(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.SPEED) {//加速度，速度buff
+        } else if(effects[j].attr == consts.effectName.SPEED) {//加速度，速度buff
             this.activeSkill.calculateSpeed(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.HP) {//加血，直接累加
+        } else if(effects[j].attr == consts.effectName.HP) {//加血，直接累加
             this.activeSkill.calculateHp(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.FOCUS) {
+        } else if(effects[j].attr == consts.effectName.FOCUS) {
             this.activeSkill.calculateFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.CRITICALHIT) {
+        } else if(effects[j].attr == consts.effectName.CRITICALHIT) {
             this.activeSkill.calculateCriticalHit(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.CRITDAMAGE) {
+        } else if(effects[j].attr == consts.effectName.CRITDAMAGE) {
             this.activeSkill.calculateCritDamage(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.DODGE) {
+        } else if(effects[j].attr == consts.effectName.DODGE) {
             this.activeSkill.calculateDodge(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.BLOCK) {
+        } else if(effects[j].attr == consts.effectName.BLOCK) {
             this.activeSkill.calculateBlock(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.COUNTER) {
+        } else if(effects[j].attr == consts.effectName.COUNTER) {
             this.activeSkill.calculateCounter(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.BLOCK_FOCUS) {//格挡focus加成
+        } else if(effects[j].attr == consts.effectName.BLOCK_FOCUS) {//格挡focus加成
             this.activeSkill.calculateBlockFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.COUNTER_FOCUS) {//反击focus加成
+        } else if(effects[j].attr == consts.effectName.COUNTER_FOCUS) {//反击focus加成
             this.activeSkill.calculateCounterFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.CRITICALHIT_FOCUS) {//暴击focus加成
+        } else if(effects[j].attr == consts.effectName.CRITICALHIT_FOCUS) {//暴击focus加成
             this.activeSkill.calculateCriticalHitFocus(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.PARALLELDAMAGE) {//溅射伤害
+        } else if(effects[j].attr == consts.effectName.PARALLELDAMAGE) {//溅射伤害
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
             this.activeSkill.parallelDamage(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[j].attr == consts.buffType.BURN) {//点燃
+        } else if(effects[j].attr == consts.effectName.BURN) {//点燃
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
             this.activeSkill.burn(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
-        } else if(effects[j].attr == consts.buffType.STUNT) {//禁锢
+        } else if(effects[j].attr == consts.effectName.STUNT) {//禁锢
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
             this.activeSkill.stunt(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
-        } else if(effects[j].attr == consts.buffType.POISON) {//施毒
+        } else if(effects[j].attr == consts.effectName.POISON) {//施毒
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
             this.activeSkill.poison(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数 no anger
-        } else if(effects[j].attr == consts.buffType.CONFUSION) {//迷惑
+        } else if(effects[j].attr == consts.effectName.CONFUSION) {//迷惑
             //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
             this.activeSkill.confusion(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
-        } else if(effects[j].attr == consts.buffType.HPRECOVERYSPEED) {//血量回复速度，buff
+        } else if(effects[j].attr == consts.effectName.HPRECOVERYSPEED) {//血量回复速度，buff
 
-        } else if(effects[j].attr == consts.buffType.ADDITEMATTR) {//装备加成
+        } else if(effects[j].attr == consts.effectName.ADDITEMATTR) {//装备加成
 
-        } else if(effects[j].attr == consts.buffType.BOUNCEATTACK) {//反弹伤害
+        } else if(effects[j].attr == consts.effectName.BOUNCEATTACK) {//反弹伤害
             this.activeSkill.bounceAttack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData); // buff 次数
-        } else if(effects[j].attr == consts.buffType.ADDBLOOD) {//吸血
+        } else if(effects[j].attr == consts.effectName.ADDBLOOD) {//吸血
             this.activeSkill.addBlood(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 计算数值
-        } else if(effects[j].attr == consts.buffType.ICE) {//冰冻
+        } else if(effects[j].attr == consts.effectName.ICE) {//冰冻
             this.activeSkill.ice(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-        } else if(effects[i].attr == consts.buffType.REVIVE) {
+        } else if(effects[i].attr == consts.effectName.REVIVE) {
             this.activeSkill.revive(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 复活 buff 次数
         }
     }
@@ -630,63 +630,63 @@ Player.prototype.passiveSkillAdditional = function() {
     for(var i = 0 ; i < this.passiveSkills.length ; i++) {
         effects = this.passiveSkills[i].skillData.effects;
         for(var j = 0 ; j < effects.length ; j++) {
-            if(effects[j].attr == consts.buffType.EXPERIENCE) {//加经验，经验buff
+            if(effects[j].attr == consts.effectName.EXPERIENCE) {//加经验，经验buff
 
-            } else if(effects[j].attr == consts.buffType.ATTACK) {
+            } else if(effects[j].attr == consts.effectName.ATTACK) {
                 attack += utils.getEffectValue(effects[j], this.attack);
-            } else if(effects[j].attr == consts.buffType.ADDATTACK) {//给自己加攻击力
+            } else if(effects[j].attr == consts.effectName.ADDATTACK) {//给自己加攻击力
                 attack += utils.getEffectValue(effects[j], this.attack);
-            } else if(effects[j].attr == consts.buffType.DEFENSE) {
+            } else if(effects[j].attr == consts.effectName.DEFENSE) {
                 defense += utils.getEffectValue(effects[j], this.defense);
-            } else if(effects[j].attr == consts.buffType.SPEED) {//加速度，速度buff
+            } else if(effects[j].attr == consts.effectName.SPEED) {//加速度，速度buff
                 speedLevel += utils.getEffectValue(effects[j], this.speedLevel);
-            } else if(effects[j].attr == consts.buffType.HP) {//加血，直接累加
+            } else if(effects[j].attr == consts.effectName.HP) {//加血，直接累加
                 hp += utils.getEffectValue(effects[j], this.hp);
-            } else if(effects[j].attr == consts.buffType.FOCUS) {
+            } else if(effects[j].attr == consts.effectName.FOCUS) {
                 focus += utils.getEffectValue(effects[j], this.focus);
-            } else if(effects[j].attr == consts.buffType.CRITICALHIT) {
+            } else if(effects[j].attr == consts.effectName.CRITICALHIT) {
                 criticalHit += utils.getEffectValue(effects[j], this.criticalHit);
-            } else if(effects[j].attr == consts.buffType.CRITDAMAGE) {
+            } else if(effects[j].attr == consts.effectName.CRITDAMAGE) {
                 critDamage += utils.getEffectValue(effects[j], this.critDamage);
-            } else if(effects[j].attr == consts.buffType.DODGE) {
+            } else if(effects[j].attr == consts.effectName.DODGE) {
                 dodge += utils.getEffectValue(effects[j], this.dodge);
-            } else if(effects[j].attr == consts.buffType.BLOCK) {
+            } else if(effects[j].attr == consts.effectName.BLOCK) {
                 block += utils.getEffectValue(effects[j], this.block);
-            } else if(effects[j].attr == consts.buffType.COUNTER) {
+            } else if(effects[j].attr == consts.effectName.COUNTER) {
                 counter += utils.getEffectValue(effects[j], this.counter);
-            } else if(effects[j].attr == consts.buffType.PARALLELDAMAGE) {//溅射伤害
+            } else if(effects[j].attr == consts.effectName.PARALLELDAMAGE) {//溅射伤害
 
-            } else if(effects[j].attr == consts.buffType.BURN) {//点燃
+            } else if(effects[j].attr == consts.effectName.BURN) {//点燃
 
-            } else if(effects[j].attr == consts.buffType.STUNT) {//禁锢
+            } else if(effects[j].attr == consts.effectName.STUNT) {//禁锢
 
-            } else if(effects[j].attr == consts.buffType.POISON) {//施毒
+            } else if(effects[j].attr == consts.effectName.POISON) {//施毒
 
-            } else if(effects[j].attr == consts.buffType.CONFUSION) {//迷惑
+            } else if(effects[j].attr == consts.effectName.CONFUSION) {//迷惑
 
-            } else if(effects[j].attr == consts.buffType.DEFENSE_FOCUS) {//防御力focus加成
+            } else if(effects[j].attr == consts.effectName.DEFENSE_FOCUS) {//防御力focus加成
 
-            } else if(effects[j].attr == consts.buffType.HPRECOVERYSPEED) {//血量回复速度，buff
+            } else if(effects[j].attr == consts.effectName.HPRECOVERYSPEED) {//血量回复速度，buff
 
-            } else if(effects[j].attr == consts.buffType.ADDITEMATTR) {//装备加成
+            } else if(effects[j].attr == consts.effectName.ADDITEMATTR) {//装备加成
 
-            } else if(effects[j].attr == consts.buffType.BOUNCEATTACK) {//反弹伤害
+            } else if(effects[j].attr == consts.effectName.BOUNCEATTACK) {//反弹伤害
 
-            } else if(effects[j].attr == consts.buffType.MONEY) {//额外金币，buff
+            } else if(effects[j].attr == consts.effectName.MONEY) {//额外金币，buff
 
-            } else if(effects[j].attr == consts.buffType.ADDBLOOD) {//吸血
+            } else if(effects[j].attr == consts.effectName.ADDBLOOD) {//吸血
 
-            } else if(effects[j].attr == consts.buffType.ATTACK_FOCUS) {//攻击力focus加成
+            } else if(effects[j].attr == consts.effectName.ATTACK_FOCUS) {//攻击力focus加成
 
-            } else if(effects[j].attr == consts.buffType.SKILL) {//技能加成
+            } else if(effects[j].attr == consts.effectName.SKILL) {//技能加成
 
-            } else if(effects[j].attr == consts.buffType.ICE) {//冰冻
+            } else if(effects[j].attr == consts.effectName.ICE) {//冰冻
 
-            } else if(effects[j].attr == consts.buffType.BLOCK_FOCUS) {//格挡focus加成
+            } else if(effects[j].attr == consts.effectName.BLOCK_FOCUS) {//格挡focus加成
 
-            } else if(effects[j].attr == consts.buffType.COUNTER_FOCUS) {//反击focus加成
+            } else if(effects[j].attr == consts.effectName.COUNTER_FOCUS) {//反击focus加成
 
-            } else if(effects[j].attr == consts.buffType.CRITICALHIT_FOCUS) {//暴击focus加成
+            } else if(effects[j].attr == consts.effectName.CRITICALHIT_FOCUS) {//暴击focus加成
 
             }
         }

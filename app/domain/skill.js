@@ -50,7 +50,7 @@ Skill.prototype.updateFightValue = function(player) {
 
     var effects = this.skillData.effects;
     for(var j = 0 ; j < effects.length ; j++) {
-        if(effects[j].attr == consts.buffType.ADDATTACK) {
+        if(effects[j].attr == consts.effectName.ADDATTACK) {
             this.attack = utils.getEffectValue(effects[j], player.attack);
         } else {
             this[effects[j].attr] = utils.getEffectValue(effects[j], player[effects[j].attr]);

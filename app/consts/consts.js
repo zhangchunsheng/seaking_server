@@ -291,7 +291,7 @@ module.exports = {
         SKILL: 2
     },
 
-    buffType: {
+    effectName: {
         HP: "hp",//HP
         EXPERIENCE: "experience",//经验
         ATTACK: "attack",//攻击
@@ -322,6 +322,10 @@ module.exports = {
         COUNTER_FOCUS: "counter_focus",//反击focus加成
         CRITICALHIT_FOCUS: "criticalHit_focus",//暴击几率focus加成
         REVIVE: "revive"
+    },
+
+    buffType: {
+
     },
 
     correspondingEffect_attr: {
