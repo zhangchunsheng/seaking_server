@@ -69,10 +69,10 @@ exports.buyItem = function(req, res) {
             itemInfo = dataApi.item.findById(wid);
         } else if(wid.indexOf("W") >= 0) {
             type = PackageType.WEAPONS;
-            itemInfo = dataApi.equipment.findById(wid);
+            itemInfo = dataApi.equipmentLevelup.findById(wid);
         } else {
             type = PackageType.EQUIPMENTS;
-            itemInfo = dataApi.equipment.findById(wid);
+            itemInfo = dataApi.equipmentLevelup.findById(wid);
         }
         if(typeof itemInfo == "undefined" || itemInfo == null){
             data = {

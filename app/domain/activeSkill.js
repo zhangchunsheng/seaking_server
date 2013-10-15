@@ -52,7 +52,7 @@ var ActiveSkill = function(opts) {
 /**
  *
  */
-ActiveSkill.prototype.calculateHp = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateHp = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -81,7 +81,7 @@ ActiveSkill.prototype.calculateHp = function(effect, attack_formation, defense_f
 /**
  * 计算攻击
  */
-ActiveSkill.prototype.calculateAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -120,7 +120,7 @@ ActiveSkill.prototype.calculateAttack = function(effect, attack_formation, defen
  * 9敌方特定目标	1下一格，2下两格，3下三格，4，下四格，5下五格，6下六格
  * 10作用为技能
  */
-ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     // 攻击力加成
     attack.fightValue.attack += utils.getEffectValue(effect, attack.attack);
 
@@ -215,7 +215,7 @@ ActiveSkill.prototype.calculateAddAttack = function(effect, attack_formation, de
 /**
  * 计算防御
  */
-ActiveSkill.prototype.calculateDefense = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateDefense = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -244,7 +244,7 @@ ActiveSkill.prototype.calculateDefense = function(effect, attack_formation, defe
 /**
  * 计算目标
  */
-ActiveSkill.prototype.calculateTarget = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateTarget = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -273,7 +273,7 @@ ActiveSkill.prototype.calculateTarget = function(effect, attack_formation, defen
 /**
  * 计算集中值
  */
-ActiveSkill.prototype.calculateFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -301,15 +301,25 @@ ActiveSkill.prototype.calculateFocus = function(effect, attack_formation, defens
 
 /**
  * 计算速度 speedLevel
+ * 1己方单体	0~7特定位置，8生命值最少，9生命百分比最少（空 为技能作用自身）
+ * 2敌方单体	0~7特定位置，8生命值最少，9生命百分比最少（空 为技能对位优先）
+ * 3己方全体
+ * 4敌方全体
+ * 5己方随机目标	随机数目（从敌方或己方随机取几个目标)
+ * 6敌方随机目标	随机数目
+ * 7己方特定目标	1周围1格，2正前，3正后，4左侧，5右侧，6前一行，7同行，8后一行
+ * 8敌方特定目标	1周围1格，2正前，3正后，4左侧，5右侧，6前一行，7同行，8后一行
+ * 9敌方特定目标	1下一格，2下两格，3下三格，4，下四格，5下五格，6下六格
+ * 10作用为技能
  */
-ActiveSkill.prototype.calculateSpeed = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateSpeed = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
 
     } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
 
-    } else if(effect.targetType == consts.targetType.OWNER_ALL) {
+    } else if(effect.targetType == consts.targetType.OWNER_ALL) {// 加buff
         if(effect.timeType == consts.timeType.ROUND) {
 
         } else if(effect.timeType == consts.timeType.COUNT) {
@@ -331,7 +341,7 @@ ActiveSkill.prototype.calculateSpeed = function(effect, attack_formation, defens
 /**
  * 计算闪避
  */
-ActiveSkill.prototype.calculateDodge = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateDodge = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -360,7 +370,7 @@ ActiveSkill.prototype.calculateDodge = function(effect, attack_formation, defens
 /**
  * 计算暴击几率
  */
-ActiveSkill.prototype.calculateCriticalHit = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCriticalHit = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -389,7 +399,7 @@ ActiveSkill.prototype.calculateCriticalHit = function(effect, attack_formation, 
 /**
  * 计算暴击几率
  */
-ActiveSkill.prototype.calculateCritDamage = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCritDamage = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -418,7 +428,7 @@ ActiveSkill.prototype.calculateCritDamage = function(effect, attack_formation, d
 /**
  * 计算格挡
  */
-ActiveSkill.prototype.calculateBlock = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateBlock = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -447,7 +457,7 @@ ActiveSkill.prototype.calculateBlock = function(effect, attack_formation, defens
 /**
  * 计算反击
  */
-ActiveSkill.prototype.calculateCounter = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCounter = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -476,7 +486,7 @@ ActiveSkill.prototype.calculateCounter = function(effect, attack_formation, defe
 /**
  * 格挡focus加成
  */
-ActiveSkill.prototype.calculateBlockFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateBlockFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -505,7 +515,7 @@ ActiveSkill.prototype.calculateBlockFocus = function(effect, attack_formation, d
 /**
  * 反击focus加成
  */
-ActiveSkill.prototype.calculateCounterFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCounterFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -534,7 +544,7 @@ ActiveSkill.prototype.calculateCounterFocus = function(effect, attack_formation,
 /**
  * 暴击focus加成
  */
-ActiveSkill.prototype.calculateCriticalHitFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.calculateCriticalHitFocus = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -570,7 +580,7 @@ ActiveSkill.prototype.calculateCriticalHitFocus = function(effect, attack_format
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.attack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.attack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
 }
 
@@ -584,7 +594,7 @@ ActiveSkill.prototype.attack = function(effect, attack_formation, defense_format
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.parallelDamage = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.parallelDamage = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var positions = formationUtil.calculateAroundOneCell(defense.formationId);
 
     for(var i = 0 ; i < positions.length ; i++) {
@@ -630,7 +640,7 @@ ActiveSkill.prototype.parallelDamage = function(effect, attack_formation, defens
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.burn = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.burn = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -666,7 +676,7 @@ ActiveSkill.prototype.burn = function(effect, attack_formation, defense_formatio
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.stunt = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.stunt = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -702,7 +712,7 @@ ActiveSkill.prototype.stunt = function(effect, attack_formation, defense_formati
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.poison = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.poison = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -738,7 +748,7 @@ ActiveSkill.prototype.poison = function(effect, attack_formation, defense_format
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.confusion = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.confusion = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -774,7 +784,7 @@ ActiveSkill.prototype.confusion = function(effect, attack_formation, defense_for
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.bounceAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.bounceAttack = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -810,7 +820,7 @@ ActiveSkill.prototype.bounceAttack = function(effect, attack_formation, defense_
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.addBlood = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.addBlood = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -846,7 +856,7 @@ ActiveSkill.prototype.addBlood = function(effect, attack_formation, defense_form
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.ice = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.ice = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {
@@ -882,7 +892,7 @@ ActiveSkill.prototype.ice = function(effect, attack_formation, defense_formation
  * @param defenses
  * @param fightData
  */
-ActiveSkill.prototype.revive = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+ActiveSkill.prototype.revive = function(effect, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(effect.targetType == consts.targetType.OWNER_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OWNER_SPECIFIC) {

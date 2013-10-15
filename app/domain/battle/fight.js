@@ -18,6 +18,8 @@ var Fight = function(opts) {
     this.mainPlayer = opts.mainPlayer;
     this.owner_formation = opts.owner_formation;
     this.monster_formation = opts.monster_formation;
+    this.ownerTeam = opts.ownerTeam;
+    this.monsterTeam = opts.monsterTeam;
     this.owners = opts.owners;
     this.monsters = opts.monsters;
     this.players = [];
@@ -143,6 +145,14 @@ Fight.prototype.pk = function(cb) {
 
     // players = utils.sortArray(players, "speedLevel", 1); //由大到小排序
 
+    // 更新角色数据
+    for(var i in owners) {
+        owners[i].updateFightValue();
+    }
+    for(var i in monsters) {
+        monsters[i].updateFightValue();
+    }
+
     // 计算最大速度
     var max_speed = 0;
     for(var i in owners) {
@@ -224,6 +234,8 @@ Fight.prototype.attack = function(battleData, players, index) {
     var defense_action = 0;
     var formationId = 0;
     var monsterIndex = 0;
+    var attackFightTeam = {};
+    var defenseFightTeam = {};
 
     for(var i = 0 ; i < players.length ; i++) {
         if(players[i].type == EntityType.PLAYER || players[i].type == EntityType.PARTNER) {
@@ -233,18 +245,30 @@ Fight.prototype.attack = function(battleData, players, index) {
         }
     }
 
+    // 更新buff数据
+    for(var i in owners) {
+        owners[i].calculateBuff();
+    }
+    for(var i in monsters) {
+        monsters[i].calculateBuff();
+    }
+
     if(attack.type == EntityType.PLAYER || attack.type == EntityType.PARTNER) {
         attackSide = consts.attackSide.OWNER;
         attacks = owners;
         defences = monsters;
         attack_formation = this.owner_formation;
         defense_formation = this.monster_formation;
+        attackFightTeam = this.ownerTeam;
+        defenseFightTeam = this.monsterTeam;
     } else {
         attackSide = consts.attackSide.OPPONENT;
         attacks = monsters;
         defences = owners;
         attack_formation = this.monster_formation;
         defense_formation = this.owner_formation;
+        attackFightTeam = this.monsterTeam;
+        defenseFightTeam = this.ownerTeam;
     }
 
     // 作用目标 攻击或技能效果
@@ -369,7 +393,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             //计算防御
             defenseData.defense = defense.defense;
 
-            attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, data, attackData, defenseData);
+            attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         } else {
             // 判定是否暴击
             // random = utils.random(1, 10000);

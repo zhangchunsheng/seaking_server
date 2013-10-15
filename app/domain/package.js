@@ -358,11 +358,21 @@ Package.prototype.all = function() {
     };
 };
 
+Package.prototype.updateId = function() {
+    for(var i in this.weapons.items) {
+        this.weapons.items[i].itemId = this.weapons.items[i].itemId + this.weapons.items[i].level;
+    }
+    for(var i in this.equipments.items) {
+        this.equipments.items[i].itemId = this.equipments.items[i].itemId + this.equipments.items[i].level;
+    }
+}
+
 /**
  * strip
  */
 Package.prototype.strip = function() {
     var characterId = this.playerId.substr(this.playerId.indexOf("C") + 1);
+    //this.updateId();
     return {
         characterId: characterId,
         serverId: this.serverId,
@@ -378,6 +388,7 @@ Package.prototype.strip = function() {
  * getInfo
  */
 Package.prototype.getInfo = function() {
+    //this.updateId();
     return {
         weapons: this.weapons,
         equipments: this.equipments,

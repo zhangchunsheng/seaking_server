@@ -143,11 +143,42 @@ Equipments.prototype.upgradeByMoney = function(player, type, equipment_levelup) 
     return status;
 }
 
+Equipments.prototype.updateId = function() {
+    if(this.weapon.epid != 0) {
+        this.weapon.epid += this.weapon.level;
+    }
+    if(this.necklace.epid != 0) {
+        this.necklace.epid += this.necklace.level;
+    }
+    if(this.helmet.epid != 0) {
+        this.helmet.epid += this.helmet.level;
+    }
+    if(this.armor.epid != 0) {
+        this.armor.epid += this.armor.level;
+    }
+    if(this.belt.epid != 0) {
+        this.belt.epid += this.belt.level;
+    }
+    if(this.legguard.epid != 0) {
+        this.legguard.epid += this.legguard.level;
+    }
+    if(this.amulet.epid != 0) {
+        this.amulet.epid += this.amulet.level;
+    }
+    if(this.shoes.epid != 0) {
+        this.shoes.epid += this.shoes.level;
+    }
+    if(this.ring.epid != 0) {
+        this.ring.epid += this.ring.level;
+    }
+}
+
 /**
  * strip
  */
 Equipments.prototype.strip = function() {
     var characterId = this.playerId.substr(this.playerId.indexOf("C") + 1);
+    //this.updateId();
     return {
         characterId: characterId,
         serverId: this.serverId,
@@ -169,6 +200,7 @@ Equipments.prototype.strip = function() {
  * getInfo
  */
 Equipments.prototype.getInfo = function() {
+    //this.updateId();
     return {
         weapon: this.weapon,
         necklace: this.necklace,

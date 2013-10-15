@@ -19,6 +19,7 @@ var EntityType = require('../app/consts/consts').EntityType;
 var Monster = require('../app/domain/entity/monster');
 var dataApi = require('../app/utils/dataApi');
 var Fight = require('../app/domain/battle/fight');
+var FightTeam = require('../app/domain/battle/fightTeam');
 var async = require('async');
 
 exports.index = function(req, res) {
@@ -85,6 +86,13 @@ exports.battle = function(req, res) {
         var players = [];
         var enemies = [];
 
+        var ownerTeam = new FightTeam({
+            type: consts.teamType.PLAYER_TEAM
+        });
+        var monsterTeam = new FightTeam({
+            type: consts.teamType.MONSTER_TEAM
+        });
+
         // 阵型中角色数据
         // get player info from db
         for(var i = 0 ; i < owner_formationData.length ; i++) {
@@ -98,6 +106,7 @@ exports.battle = function(req, res) {
                     player.formationId = i;
                     owners[i] = player;
                 }
+                ownerTeam.addMember(player);
                 players.push({
                     "id" : player.id,
                     "maxHP" : player.maxHp,
@@ -118,6 +127,8 @@ exports.battle = function(req, res) {
                 }));
                 monsters[i] = player;
 
+                monsterTeam.addMember(player);
+
                 enemies.push({
                     "id" : player.id,
                     "maxHP" : player.maxHp,
@@ -133,7 +144,9 @@ exports.battle = function(req, res) {
             owner_formation: owner_formationData,
             monster_formation: monster_formationData,
             owners: owners,
-            monsters: monsters
+            monsters: monsters,
+            ownerTeam: ownerTeam,
+            monsterTeam: monsterTeam
         });
 
         fight.fight(function(err, eventResult) {

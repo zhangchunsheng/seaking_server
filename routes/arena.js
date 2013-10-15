@@ -13,6 +13,7 @@ var session = require('../app/http/session');
 var region = require('../config/region');
 var EntityType = require('../app/consts/consts').EntityType;
 var Fight = require('../app/domain/battle/fight');
+var FightTeam = require('../app/domain/battle/fightTeam');
 var consts = require('../app/consts/consts');
 var arenaDao = require('../app/dao/arenaDao');
 
@@ -60,6 +61,13 @@ function pk(req, res, msg, session, opponent) {
         var players = [];
         var enemies = [];
 
+        var ownerTeam = new FightTeam({
+            type: consts.teamType.PLAYER_TEAM
+        });
+        var monsterTeam = new FightTeam({
+            type: consts.teamType.MONSTER_TEAM
+        });
+
         for(var i = 0 ; i < owner_formationData.length ; i++) {
             if(owner_formationData[i] != null && owner_formationData[i] != 0) {
                 if(owner_formationData[i].playerId.indexOf("P") >= 0) {
@@ -71,6 +79,7 @@ function pk(req, res, msg, session, opponent) {
                     player.formationId = i;
                     owners[i] = player;
                 }
+                ownerTeam.addMember(player);
                 players.push({
                     "id" : player.id,
                     "maxHP" : player.maxHp,
@@ -93,6 +102,7 @@ function pk(req, res, msg, session, opponent) {
                     player.formationId = i;
                     opponents[i] = player;
                 }
+                monsterTeam.addMember(player);
                 enemies.push({
                     "id" : player.id,
                     "maxHP" : player.maxHp,
@@ -108,7 +118,9 @@ function pk(req, res, msg, session, opponent) {
             owner_formation: owner_formationData,
             monster_formation: opponent_formationData,
             owners: owners,
-            monsters: opponents
+            monsters: opponents,
+            ownerTeam: ownerTeam,
+            monsterTeam: monsterTeam
         });
         var data = {};
         fight.pk(function(err, reply) {

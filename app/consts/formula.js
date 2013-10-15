@@ -169,7 +169,8 @@ formula.calculatePlayerAttribute = function(player) {
     // 百分比加成和数值加成
     for(var key in equipments) {
         if(equipments[key].epid != 0) {
-            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
             if(equipment.attackPercentage != 0)
                 attack += player.attack * equipment.attackPercentage;
             if(equipment.defensePercentage != 0)
@@ -221,7 +222,8 @@ formula.calculatePlayerAttack = function(player) {
     // 百分比加成和数值加成
     for(var key in equipments) {
         if(equipments[key].epid != 0) {
-            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
             if(equipment.attackPercentage != 0)
                 attack += player.attack * equipment.attackPercentage;
             attack += equipment.attack;
@@ -244,7 +246,8 @@ formula.calculatePlayerDefense = function(player) {
     // 百分比加成和数值加成
     for(var key in equipments) {
         if(equipments[key].epid != 0) {
-            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
             if(equipment.defensePercentage != 0)
                 defense += player.defense * equipment.defensePercentage;
             defense += equipment.defense;

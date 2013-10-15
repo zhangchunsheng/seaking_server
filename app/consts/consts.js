@@ -288,7 +288,14 @@ module.exports = {
 
     buffKind: {
         ITEM: 1,
-        SKILL: 2
+        SKILL: 2,
+        TEAM: 3
+    },
+
+    teamType: {
+        PLAYER_TEAM: 1,
+        MONSTER_TEAM: 2,
+        OPPONENT_TEAM: 3
     },
 
     effectName: {
@@ -398,10 +405,10 @@ module.exports = {
 
     timeType: {
         ATTACK_NUM: 0,//攻击次数
-        BEHITTED_NUM: 1,//受攻击次数
+        BEHITTED_NUM: 4,//受攻击次数
         ROUND: 2,//回合
         PERMANENTLY: 3,//永久
-        COUNT: 4
+        COUNT: 1
     },
 
     targetType: {

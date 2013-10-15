@@ -68,8 +68,10 @@ exports.wearWeapon = function(req, res) {
 
         if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
             var item = player.packageEntity[pkgType].items[index];
-            var eq = dataApi.equipment.findById(item.itemId);
-            if(!eq || player.level < eq.useLevel) {
+            // var eq = dataApi.equipment.findById(item.itemId);
+            var eq = dataApi.equipmentLevelup.findById(item.itemId);
+            // if(!eq || player.level < eq.useLevel) {
+            if(!eq) {
                 data = {
                     //status: -1//等级不够
                     code: Code.EQUIPMENT.NO_ENOUGH_LEVEL
@@ -285,8 +287,10 @@ exports.equip = function(req, res) {
 
         var packageIndex = -1;
 
-        var eq =  dataApi.equipment.findById(item.itemId);
-        if(!eq || player.level < eq.useLevel) {
+        // var eq =  dataApi.equipment.findById(item.itemId);
+        var eq =  dataApi.equipmentLevelup.findById(item.itemId);
+        //if(!eq || player.level < eq.useLevel) {
+        if(!eq) {
             data = {
                 //status: -1
                 code: Code.EQUIPMENT.NO_ENOUGH_LEVEL
@@ -491,7 +495,8 @@ exports.upgrade = function(req, res) {
 
         var level = parseInt(character.equipmentsEntity.get(type).level);
         level += 1;
-        var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
+        // var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
+        var equipment_levelup = dataApi.equipmentLevelup.findById(epId);
 
         if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
             status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);

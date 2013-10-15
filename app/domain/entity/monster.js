@@ -26,15 +26,10 @@ var Enemy = function(opts) {
     Character.call(this, opts);
     this.id = opts.id;
     this.type = EntityType.MONSTER;
-    this.equipments = opts.equipments;
 
-    var heros = dataApi.heros.data;
-    //this.nextLevelExp = formula.calculateXpNeeded(heros[this.id]["xpNeeded"], heros[this.id]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
-    this.herosData = dataApi.heros.findById(this.kindId);
     this.range = opts.range || 2;
 
     this.initSkills();
-    this.setTotalAttackAndDefence();
 
     this.fightValue = {
         attack: this.attack,
@@ -60,40 +55,6 @@ module.exports = Enemy;
 
 Enemy.prototype.initSkills = function() {
 
-};
-
-Enemy.prototype.setTotalAttackAndDefence = function() {
-    var attack = 0, defense = 0;
-
-    for (var key in this.equipments) {
-        var equip = dataApi.equipment.findById(this.equipments[key]);
-        if (!!equip) {
-            attack += Number(equip.attack);
-            defense += Number(equip.defense);
-        }
-    }
-
-    this.totalAttack = this.getAttackValue() + attack;
-    this.totalDefense = this.getDefenseValue() + defense;
-};
-
-/**
- * Recover hp if not in fight state
- *
- */
-Enemy.prototype.recover = function(lastTick){
-    var time = Date.now();
-
-    if(!this.isRecover){
-        this.revocerWaitTime -= 100;
-    }
-
-    this.hp += (time - lastTime)/ this.maxHp;
-    if(hp >= this.maxHp){
-        this.hp == this.maxHp;
-
-        this.isRecover = false;
-    }
 };
 
 /**
@@ -143,6 +104,46 @@ Enemy.prototype.updateRestoreAngerSpeed = function() {
 
 }
 
+Enemy.prototype.calculateBuff = function() {
+    var attack = 0;
+    var defense = 0;
+    var speedLevel = 0;
+    var hp = 0;
+    var focus = 0;
+    var criticalHit = 0;
+    var critDamage = 0;
+    var dodge = 0;
+    var block = 0;
+    var counter = 0;
+    var counterDamage = 0;
+    var equipments;
+    var equipment;
+    //集中值 武器百分比 技能百分比 buff百分比
+    //武器攻击力 技能攻击力 道具攻击力 buff攻击力
+    attack = this.fightValue.attack;
+    defense = this.fightValue.defense;
+    speedLevel = this.fightValue.speedLevel;
+    hp = this.fightValue.hp;
+    focus = this.fightValue.focus;
+    criticalHit = this.fightValue.criticalHit;
+    critDamage = this.fightValue.critDamage;
+    dodge = this.fightValue.dodge;
+    block = this.fightValue.block;
+    counter = this.fightValue.counter;
+
+    this.fightValue.attack = Math.floor(attack);
+    this.fightValue.defense = Math.floor(defense);
+    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.hp = hp;
+    this.fightValue.maxHp = hp;
+    this.fightValue.focus = focus;
+    this.fightValue.criticalHit = criticalHit;
+    this.fightValue.critDamage = critDamage;
+    this.fightValue.dodge = dodge;
+    this.fightValue.block = block;
+    this.fightValue.counter = counter;
+}
+
 //Convert player' state to json and return
 Enemy.prototype.strip = function() {
     return {
@@ -190,11 +191,6 @@ Enemy.prototype.getInfo = function() {
 
     return playerData;
 };
-
-Enemy.prototype.setEquipments = function(equipments){
-    this.equipments = equipments;
-    this.setTotalAttackAndDefence();
-}
 
 /**
  * Parse String to json.

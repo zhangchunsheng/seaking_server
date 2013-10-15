@@ -201,7 +201,8 @@ Player.prototype.updateAttribute = function() {
     // 百分比加成和数值加成
     for(var key in equipments) {
         if(equipments[key].epid != 0) {
-            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
             if(typeof equipment == "undefined")
                 continue;
             if(equipment.attackPercentage != 0)
@@ -293,7 +294,7 @@ Player.prototype.updateFightValue = function() {
     var equipment;
     //集中值 武器百分比 技能百分比 buff百分比
     //武器攻击力 技能攻击力 道具攻击力 buff攻击力
-    attack = this.attack + this.attack * this.focus;
+    // attack = this.attack + this.attack * this.focus;
     defense = this.defense;
     speedLevel = this.speedLevel;
     hp = this.hp;
@@ -363,7 +364,8 @@ Player.prototype.updateFightValue = function() {
     // 百分比加成和数值加成
     for(var key in equipments) {
         if(equipments[key].epid != 0) {
-            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
             if(typeof equipment == "undefined")
                 continue;
             if(equipment.attackPercentage != 0)
@@ -387,6 +389,8 @@ Player.prototype.updateFightValue = function() {
             counter += equipment.counter;
         }
     }
+
+    attack = this.attack + attack + this.attack * focus;
 
     //主动技能加成
     if(this.anger >= this.maxAnger) {
@@ -435,7 +439,7 @@ Player.prototype.equipmentAdditional = function() {
     var equipment;
     //集中值 武器百分比 技能百分比 buff百分比
     //武器攻击力 技能攻击力 道具攻击力 buff攻击力
-    attack = this.attack + this.attack * this.focus;
+
     defense = this.defense;
     speedLevel = this.speedLevel;
     hp = this.hp;
@@ -451,7 +455,8 @@ Player.prototype.equipmentAdditional = function() {
     // 百分比加成和数值加成
     for(var key in equipments) {
         if(equipments[key].epid != 0) {
-            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
+            equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
             if(typeof equipment == "undefined")
                 continue;
             if(equipment.attackPercentage != 0)
@@ -475,6 +480,7 @@ Player.prototype.equipmentAdditional = function() {
             counter += equipment.counter;
         }
     }
+    attack = this.attack + attack + this.attack * this.focus;
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
@@ -537,67 +543,105 @@ Player.prototype.activeSkillAdditional = function() {
     this.fightValue.counter = counter;
 }
 
-Player.prototype.useActiveSkill = function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData) {
+Player.prototype.useActiveSkill = function(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var effects = {};
     effects = this.activeSkill.skillData.effects;
     for(var j = 0 ; j < effects.length ; j++) {
         if(effects[j].attr == consts.effectName.ATTACK) {// 计算攻击力
-            this.activeSkill.calculateAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.ADDATTACK) {//给自己加攻击力
-            this.activeSkill.calculateAddAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateAddAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.DEFENSE) {
-            this.activeSkill.calculateDefense(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateDefense(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.SPEED) {//加速度，速度buff
-            this.activeSkill.calculateSpeed(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateSpeed(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.HP) {//加血，直接累加
-            this.activeSkill.calculateHp(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateHp(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.FOCUS) {
-            this.activeSkill.calculateFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.CRITICALHIT) {
-            this.activeSkill.calculateCriticalHit(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCriticalHit(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.CRITDAMAGE) {
-            this.activeSkill.calculateCritDamage(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCritDamage(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.DODGE) {
-            this.activeSkill.calculateDodge(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateDodge(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.BLOCK) {
-            this.activeSkill.calculateBlock(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateBlock(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.COUNTER) {
-            this.activeSkill.calculateCounter(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCounter(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.BLOCK_FOCUS) {//格挡focus加成
-            this.activeSkill.calculateBlockFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateBlockFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.COUNTER_FOCUS) {//反击focus加成
-            this.activeSkill.calculateCounterFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCounterFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.CRITICALHIT_FOCUS) {//暴击focus加成
-            this.activeSkill.calculateCriticalHitFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.calculateCriticalHitFocus(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.PARALLELDAMAGE) {//溅射伤害
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.parallelDamage(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            this.activeSkill.parallelDamage(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[j].attr == consts.effectName.BURN) {//点燃
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.burn(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            this.activeSkill.burn(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.effectName.STUNT) {//禁锢
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.stunt(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            this.activeSkill.stunt(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.effectName.POISON) {//施毒
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.poison(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数 no anger
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            this.activeSkill.poison(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);// buff 次数 no anger
         } else if(effects[j].attr == consts.effectName.CONFUSION) {//迷惑
-            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
-            this.activeSkill.confusion(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// buff 次数
+            //this.activeSkill.attack(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            this.activeSkill.confusion(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);// buff 次数
         } else if(effects[j].attr == consts.effectName.HPRECOVERYSPEED) {//血量回复速度，buff
 
         } else if(effects[j].attr == consts.effectName.ADDITEMATTR) {//装备加成
 
         } else if(effects[j].attr == consts.effectName.BOUNCEATTACK) {//反弹伤害
-            this.activeSkill.bounceAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData); // buff 次数
+            this.activeSkill.bounceAttack(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData); // buff 次数
         } else if(effects[j].attr == consts.effectName.ADDBLOOD) {//吸血
-            this.activeSkill.addBlood(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 计算数值
+            this.activeSkill.addBlood(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);// 计算数值
         } else if(effects[j].attr == consts.effectName.ICE) {//冰冻
-            this.activeSkill.ice(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);
+            this.activeSkill.ice(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else if(effects[i].attr == consts.effectName.REVIVE) {
-            this.activeSkill.revive(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, fightData, attackData, defenseData);// 复活 buff 次数
+            this.activeSkill.revive(effects[j], attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);// 复活 buff 次数
         }
     }
+}
+
+Player.prototype.calculateBuff = function() {
+    var attack = 0;
+    var defense = 0;
+    var speedLevel = 0;
+    var hp = 0;
+    var focus = 0;
+    var criticalHit = 0;
+    var critDamage = 0;
+    var dodge = 0;
+    var block = 0;
+    var counter = 0;
+    var counterDamage = 0;
+    //集中值 武器百分比 技能百分比 buff百分比
+    //武器攻击力 技能攻击力 道具攻击力 buff攻击力
+    attack = this.fightValue.attack;
+    defense = this.fightValue.defense;
+    speedLevel = this.fightValue.speedLevel;
+    hp = this.fightValue.hp;
+    focus = this.fightValue.focus;
+    criticalHit = this.fightValue.criticalHit;
+    critDamage = this.fightValue.critDamage;
+    dodge = this.fightValue.dodge;
+    block = this.fightValue.block;
+    counter = this.fightValue.counter;
+
+    this.fightValue.attack = Math.floor(attack);
+    this.fightValue.defense = Math.floor(defense);
+    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.hp = hp;
+    this.fightValue.maxHp = hp;
+    this.fightValue.focus = focus;
+    this.fightValue.criticalHit = criticalHit;
+    this.fightValue.critDamage = critDamage;
+    this.fightValue.dodge = dodge;
+    this.fightValue.block = block;
+    this.fightValue.counter = counter;
 }
 
 /**
