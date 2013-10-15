@@ -302,7 +302,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
         }).hexists(key, "characters", function(err, reply) {
             if(reply == 0) {
                 userDao.getCharacterId(client, function(err, characterId) {
-                    var level = 0;
+                    var level = 1;
                     var hero = dataApi.heros.findById(cId);
                     var date = new Date();
                     var curTasks = {
@@ -327,7 +327,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         currentScene: "city01",
                         x: 1000,
                         y: 100,
-                        experience: 0,
+                        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         level: level,
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
                         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
