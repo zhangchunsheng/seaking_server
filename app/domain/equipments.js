@@ -131,7 +131,8 @@ Equipments.prototype.upgradeByMoney = function(player, type, equipment_levelup) 
         player.money -= equipment_levelup.upgradeMoney;
         status = 1;
         this[type].epid = equipment_levelup.id;
-        this[type].level = parseInt(this[type].level) + 1;
+        //this[type].level = parseInt(this[type].level) + 1;
+        this[type].level = equipment_levelup.strengthenLevel;
         player.updateTaskRecord(consts.TaskGoalType.UPGRADE_EQUIPMENT, {
             itemId: this[type].epid,
             itemNum: this[type].level

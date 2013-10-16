@@ -536,6 +536,15 @@ exports.upgrade = function(req, res) {
         var level = parseInt(character.equipmentsEntity.get(type).level);
         level += 1;
         var nextEqId = dataApi.equipmentLevelup.findById(epId).nextEqId;
+
+        if(nextEqId == "") {
+            data = {
+                code: Code.EQUIPMENT.NOMORE_LEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         // var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
         var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
 

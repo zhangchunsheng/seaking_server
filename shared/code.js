@@ -44,7 +44,8 @@ module.exports = {
         NO_ENOUGH_LEVEL: 1220,
         NO_WEAPON: 1221,
         WRONG_WEAPON: 1222,
-        NO_UPGRADE: 1223
+        NO_UPGRADE: 1223,
+        NOMORE_LEVEL: 1224
     },
 
     SHOP: {
