@@ -82,7 +82,7 @@ exports.wearWeapon = function(req, res) {
             if(!eq) {
                 data = {
                     //status: -1//等级不够
-                    code: Code.EQUIPMENT.NO_ENOUGH_LEVEL
+                    code: Code.EQUIPMENT.WRONG_WEAPON
                 };
                 utils.send(msg, res, data);
                 return;
@@ -102,7 +102,6 @@ exports.wearWeapon = function(req, res) {
                 },
                 function(callback) {
                     packageService.update(player.packageEntity.strip(), callback);
-                    callback();
                 },
                 function(callback) {
                     equipmentsService.update(character.equipmentsEntity.strip(), callback);
@@ -318,7 +317,7 @@ exports.equip = function(req, res) {
         if(!eq) {
             data = {
                 //status: -1
-                code: Code.EQUIPMENT.NO_ENOUGH_LEVEL
+                code: Code.EQUIPMENT.WRONG_WEAPON
             };
             utils.send(msg, res, data);
             return;
@@ -426,7 +425,7 @@ exports.unEquip = function(req, res) {
         }
 
         var pkgType = "";
-        if(epId.length == 5) {
+        if(epId.indexOf("W9") < 0) {
             pkgType = consts.PackageType.WEAPONS;
         } else {
             pkgType = consts.PackageType.EQUIPMENTS;
@@ -536,8 +535,9 @@ exports.upgrade = function(req, res) {
 
         var level = parseInt(character.equipmentsEntity.get(type).level);
         level += 1;
+        var nextEqId = dataApi.equipmentLevelup.findById(epId).nextEqId;
         // var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
-        var equipment_levelup = dataApi.equipmentLevelup.findById(epId);
+        var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
 
         if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
             status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
@@ -554,11 +554,7 @@ exports.upgrade = function(req, res) {
                     packageService.update(player.packageEntity.strip(), callback);
                 },
                 function(callback) {
-                    if(isSelf) {
-                        equipmentsService.update(character.equipmentsEntity.strip(), callback);
-                    } else {// partner
-                        equipmentsService.update(character.equipmentsEntity.strip(), callback);
-                    }
+                    equipmentsService.update(character.equipmentsEntity.strip(), callback);
                 },
                 function(callback) {
                     taskService.updateTask(player, player.curTasksEntity.strip(), callback);

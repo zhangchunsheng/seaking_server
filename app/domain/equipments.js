@@ -130,6 +130,7 @@ Equipments.prototype.upgradeByMoney = function(player, type, equipment_levelup) 
     if(player.money >= equipment_levelup.upgradeMoney) {
         player.money -= equipment_levelup.upgradeMoney;
         status = 1;
+        this[type].epid = equipment_levelup.id;
         this[type].level = parseInt(this[type].level) + 1;
         player.updateTaskRecord(consts.TaskGoalType.UPGRADE_EQUIPMENT, {
             itemId: this[type].epid,
