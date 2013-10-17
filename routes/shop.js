@@ -5,6 +5,10 @@
  * Date: 2013-09-22
  * Description: shop
  */
+var packageService = require('../app/services/packageService');
+var userService = require('../app/services/userService');
+var equipmentsService = require('../app/services/equipmentsService');
+var taskService = require('../app/services/taskService');
 var shopService = require('../app/services/shopService');
 var userService = require('../app/services/userService');
 var Code = require('../shared/code');
@@ -12,6 +16,7 @@ var utils = require('../app/utils/utils');
 var dataApi = require('../app/utils/dataApi');
 var PackageType = require('../app/consts/consts').PackageType;
 var consts = require('../app/consts/consts');
+var async = require("async");
 
 exports.index = function(req, res) {
     res.send("index");
@@ -36,12 +41,12 @@ exports.buyItem = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-
+    var currentScene = msg.currentScene || player.currentScene;
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var result=false;
 
-        var items = dataApi.shops.findById(player.currentScene).shopData;
+        var items = dataApi.shops.findById(currentScene).shopData;
         for(var i = 0 ; i < items.length ; i++) {
             if(items[i].indexOf(wid) == 0) {
                 result = true;
@@ -69,10 +74,10 @@ exports.buyItem = function(req, res) {
             itemInfo = dataApi.item.findById(wid);
         } else if(wid.indexOf("W") >= 0) {
             type = PackageType.WEAPONS;
-            itemInfo = dataApi.equipmentLevelup.findById(wid);
+            itemInfo = dataApi.equipment.findById(wid);
         } else {
             type = PackageType.EQUIPMENTS;
-            itemInfo = dataApi.equipmentLevelup.findById(wid);
+            itemInfo = dataApi.equipment.findById(wid);
         }
         if(typeof itemInfo == "undefined" || itemInfo == null){
             data = {
@@ -87,10 +92,11 @@ exports.buyItem = function(req, res) {
                 return;    
             }
         }else{
-            if(itemInfo.pileNum != num) {
+            
+           /* if(itemInfo.pileNum != num) {
                 utils.send(msg, res, {code:'数据错误'});
                 return;      
-            }
+            }*/
         }
         var price = itemInfo.price;
         var costMoney = price * num;
@@ -134,9 +140,27 @@ exports.buyItem = function(req, res) {
             data = {
                 code: consts.MESSAGE.RES,
                 money: result.money,
-                packageChange: result.packageChange
+                packageChange: result.packageChange,
+                type: type
             };
-            utils.send(msg, res, data);
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                utils.send(msg, res, data);
+            });
+            
+            
         }
     });
 }
