@@ -87,6 +87,10 @@ Package.prototype.getData = function(type) {
 Package.prototype.addItem = function(player, type, item, rIndex) {
     var index = [];
 
+    var _items = {};
+    for(var o in item) {
+        _items[o] = item[o];
+    }
     if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
         //返回{}并没有返回null 容易判断
         return {
@@ -116,7 +120,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             }
         }
     } else {
-       /* var flag = false;
+        /* var flag = false;
         for(var i  in  this[type].items) {
             if(this[type].items[i].itemId == item.itemId) {
                 _items.itemNum += this[type].items[i].itemNum;
@@ -177,41 +181,40 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     break;
                 }
             }
-        }
-    }*/
-    for(var i in items.items) {
-        if(items.items[i].itemId == item.itemId) {
-            var mitem = items.items[i];
-            if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 &&mitem.itemNum < 99 ) {
-                item.itemNum += parseInt(mitem.itemNum) - 99;
-                mitem.itemNum = 99;
-                index.push({
-                    index: i,
-                    item: mitem
-                });
-                
-            }else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) < 99) {
-                mitem.itemNum = parseInt(mitem.itemNum)+  parseInt(item.itemNum);
-                item.itemNum = 0 ;
-                index.push({
-                    index: i,
-                    item: mitem
-                });
-                return {index: index};
+        }*/
+        for(var i in items.items) {
+            if(items.items[i].itemId == item.itemId) {
+                var mitem = items.items[i];
+                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 && mitem.itemNum < 99) {
+                    item.itemNum += parseInt(mitem.itemNum) - 99;
+                    mitem.itemNum = 99;
+                    index.push({
+                        index: i,
+                        item: mitem
+                    });
+
+                } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) < 99) {
+                    mitem.itemNum = parseInt(mitem.itemNum) + parseInt(item.itemNum);
+                    item.itemNum = 0 ;
+                    index.push({
+                        index: i,
+                        item: mitem
+                    });
+                    return {index: index};
+                }
             }
         }
-    }
-    if(item.itemNum > 0){
-        var spaceCount = 0;
-         for(var i = 1,l=items.itemCount;i <= l;i++){
-            if(!items[i]){
-                spaceCount = i;
+        if(item.itemNum > 0) {
+            var spaceCount = 0;
+             for(var i = 1,l = items.itemCount ; i <= l ; i++) {
+                if(!items[i]) {
+                    spaceCount = i;
+                }
             }
-        }
-        if(!spaceCount) {
-            return {index: []};
-        }
-        for(var i = 1 ; i <= this[type].itemCount ; i++) {
+            if(!spaceCount) {
+                return {index: []};
+            }
+            for(var i = 1 ; i <= this[type].itemCount ; i++) {
                 if(!this[type].items[i]) {
                     // 一定小于99个所以直接添加就好了，传入数值最大99
                     this[type].items[i] = {
@@ -226,11 +229,11 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     return {index: index};
                 }
             }
-    }
-    /*if(index.length > 0) {
-        this.save();
-        player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
-    }*/
+        }
+        if(index.length > 0) {
+            this.save();
+            player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+        }
     }
     return {
         index: index
@@ -341,7 +344,7 @@ Package.prototype.removeItem = function(type, index,itemNum) {
 Package.prototype.checkItem = function(type, index, itemId) {
     var result = 0, i, item;
     item = this[type].items[index];
-    if(!item){
+    if(!item) {
         return result;
     } else if (item.itemId == itemId) {
         result = item.itemNum;
