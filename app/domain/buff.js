@@ -17,10 +17,10 @@ function Buff(opts) {
     this.type = opts.type;// skill attr
     this.buffType = opts.buffType;
     this.buffKind = consts.buffKind.ITEM;// 1 - 道具 2 - 技能
-    this.count = opts.count;// 持续次数
-    this.round = opts.round;// 持续回合
+    this.timeType = opts.timeType;
+    this.timeValue = opts.timeValue;// 持续次数 持续回合
     this.isTempBuff = opts.isTempBuff || false;
-    this.buffData = opts.buffData || {};
+    this.buffData = opts.buffData || {};// effect
     this.skillId = opts.skillId;
     this.skillType = opts.skillType;// 主动技能buff 被动技能buff
     this.skillLevel = opts.skillLevel;

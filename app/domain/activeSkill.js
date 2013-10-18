@@ -320,11 +320,8 @@ ActiveSkill.prototype.calculateSpeed = function(effect, attack_formation, defens
     } else if(effect.targetType == consts.targetType.OWNER_RANDOM) {
 
     } else if(effect.targetType == consts.targetType.OWNER_ALL) {// 加buff
-        if(effect.timeType == consts.timeType.ROUND) {
-
-        } else if(effect.timeType == consts.timeType.COUNT) {
-
-        }
+        var buff = skillUtil.getActiveSkillBuff(effect, consts.buffType.ADDSPEED, this);
+        attackFightTeam.addBuff(buff);// 团队buff
     } else if(effect.targetType == consts.targetType.OPPONENT_SINGLE) {
 
     } else if(effect.targetType == consts.targetType.OPPONENT_SPECIFIC) {

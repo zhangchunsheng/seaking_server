@@ -361,7 +361,9 @@ module.exports = {
         BLOCK_FOCUS: "block_focus",//格挡focus加成
         COUNTER_FOCUS: "counter_focus",//反击focus加成
         CRITICALHIT_FOCUS: "criticalHit_focus",//暴击几率focus加成
-        REVIVE: "revive"
+        REVIVE: "revive",
+        ADDSPEED: "addspeed",
+        REDUCESPEED: "reducespeed"
     },
 
     correspondingEffect_attr: {
