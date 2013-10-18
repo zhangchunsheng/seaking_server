@@ -141,7 +141,8 @@ exports.buyItem = function(req, res) {
                 code: consts.MESSAGE.RES,
                 money: result.money,
                 packageChange: result.packageChange,
-                type: type
+                type: type,
+                //costMoney: costMoney
             };
             async.parallel([
                 function(callback) {
