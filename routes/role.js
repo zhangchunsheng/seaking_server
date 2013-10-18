@@ -236,6 +236,9 @@ exports.testCreateMainPlayer = function(req, res) {
     var self = this;
 
     i++;
+    if(i > 40000) {
+        i = 10000;
+    }
     var serverId = 1;
 
     var data = {};

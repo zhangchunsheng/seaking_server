@@ -340,10 +340,7 @@ Package.prototype.removeItem = function(type, index,itemNum) {
 //Check out item by id and type
 Package.prototype.checkItem = function(type, index, itemId) {
     var result = 0, i, item;
-    console.log(this[type]);
     item = this[type].items[index];
-    console.log(item);
-    console.log(itemId);
     if(!item){
         return result;
     } else if (item.itemId == itemId) {

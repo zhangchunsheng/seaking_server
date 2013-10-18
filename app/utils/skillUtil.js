@@ -31,7 +31,7 @@ skillUtil.getBuff = function(effect, skill) {
  * @param effect
  * @param activeSkill
  */
-skillUtil.getActiveSkillBuff = function(effect, activeSkill) {
+skillUtil.getActiveSkillBuff = function(effect, buffType, activeSkill) {
     var buff = new Buff({
         useEffectId: effect.id,
         type: effect.attr,
@@ -39,7 +39,10 @@ skillUtil.getActiveSkillBuff = function(effect, activeSkill) {
         skillType: activeSkill.skillType,
         skillLevel: activeSkill.skillLevel,
         skillData: activeSkill.skillData,
-        buffData: effect
+        buffData: effect,
+        buffType: buffType,
+        timeType: effect.timeType,
+        timeValue: effect.timeValue
     });
     return buff;
 }
