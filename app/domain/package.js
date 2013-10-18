@@ -206,8 +206,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 }
             }
         }
-
-                    var run =function(){
+         var run =function(){
 
         if(item.itemNum > 0) {
             var spaceCount = 0;
@@ -255,8 +254,6 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         this.save();
         player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
     }*/
-
-
     }
     return {
         index: index
