@@ -18,7 +18,8 @@
         "connect-redis": "*",
         "generic-pool": "*",
         "async": "*",
-        "mongoskin": "0.6.0"
+        "mongoskin": "0.6.0",
+        "log4js":"*"
     },
     "devDependencies": {
         "should": "*",

@@ -46,7 +46,12 @@ equipmentsDao.getEquipmentsByCharacterId = function(characterId, cb) {
  * @param {function} cb
  */
 equipmentsDao.update = function(val, cb) {
-    var key = dbUtil.getPlayerKey(val.serverId, val.registerType, val.loginName, val.characterId);
+    var characterId = val.characterId;
+    if(characterId.indexOf("P") > 0) {
+        var array = characterId.split("P");
+        characterId = array[0] + "_P" + array[1];
+    }
+    var key = dbUtil.getPlayerKey(val.serverId, val.registerType, val.loginName, characterId);
     var value = {
         weapon: val.weapon,
         necklace: val.necklace,

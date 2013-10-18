@@ -44,3 +44,15 @@ playerService.learnSkill = function() {
 playerService.upgradeSkill = function() {
 
 }
+
+playerService.useSkill = function(skillId) {
+
+}
+
+playerService.updatePlayerHP = function(character, players, cb) {
+    playerDao.updatePlayerHP(character, players, cb);
+}
+
+playerService.changeFormation = function(player, cb) {
+    playerDao.changeFormation(player, cb);
+}

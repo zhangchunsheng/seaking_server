@@ -58,7 +58,8 @@ Opponent.prototype.strip = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         equipments: this.equipmentsEntity.getInfo(),
-        skills: this.skills
+        skills: this.skills,
+        buffs: this.buffs
     };
 };
 
@@ -87,6 +88,7 @@ Opponent.prototype.toJSON = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         equipments: this.equipmentsEntity.getInfo(),
-        skills: this.skills
+        skills: this.skills,
+        buffs: this.buffs
     };
 };

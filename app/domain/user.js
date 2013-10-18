@@ -23,10 +23,14 @@ var User = function(opts) {
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
     this.from = opts.from || '';
-    this.password = opts.password;
+    this.characters = opts.characters;
     this.registerDate = opts.registerDate;
     this.loginCount = opts.loginCount;
-    this.lastLoginTime = opts.lastLoginTime;
+    this.lastLoginDate = opts.lastLoginDate;
+    this.onlineTime = opts.onlineTime;
+    this.onlineDayNum = opts.onlineDayNum;
+    this.onlineDayNumContinuous = opts.onlineDayNumContinuous;
+    this.isOnline = opts.isOnline;
 };
 
 /**

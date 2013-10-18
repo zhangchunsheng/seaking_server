@@ -8,7 +8,6 @@
 var Item = require('../entity/item');
 var Equipment = require('../entity/equipment');
 var dataApi = require('../../utils/dataApi');
-var messageService = require('../messageService');
 var utils = require('../../utils/utils');
 
 /**
@@ -66,7 +65,5 @@ fightReward.reward = function(mainPlayer, players, monsters, isWin, cb) {
             items: items
         };
         utils.invokeCallback(cb, null, rewards);
-
-        messageService.pushMessageToPlayer({uid:mainPlayer.userId, sid : mainPlayer.serverId}, 'onRewards', rewards);
     });
 };

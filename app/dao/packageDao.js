@@ -104,7 +104,7 @@ packageDao.fullItem  = function(item){
     if("items" == type) {
         itemInfo = dataApi.item.findById(itemId);
     } else {
-        itemInfo = dataApi.equipment.findById(itemId);
+        itemInfo = dataApi.equipmentLevelup.findById(itemId);
     }
     item.level = itemInfo.level;
     return item;

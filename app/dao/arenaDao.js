@@ -41,10 +41,7 @@ arenaDao.add = function(player, cb) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
         }).zcard(key, function(err, reply) {
-            var score = reply
-            if(reply == 0) {
-                score = 1;
-            }
+            var score = ++reply;
             array.push(["zadd", key, score, player.id]);
             client.multi(array).exec(function (err, replies) {
                 redis.release(client);
@@ -71,7 +68,7 @@ arenaDao.getRank = function(player, cb) {
 
         }).zrank(key, player.id, function(err, reply) {
             redis.release(client);
-            utils.invokeCallback(cb, null, reply);
+            utils.invokeCallback(cb, err, reply);
         }).exec(function (err, replies) {
 
         });
@@ -113,7 +110,6 @@ arenaDao.exchange = function(player, opponent, cb) {
 }
 arenaDao.getOpponents = function(player, cb) {
     this.getRank(player, function(err, reply) {
-        reply = 11;// test
         var randoms = new Array();
         for(var i = 0 ; i < 8 ; i++) {
             if((reply = getRandom(reply)) < 0) {
@@ -134,9 +130,8 @@ arenaDao.getOpponents = function(player, cb) {
                     client.multi(array).exec(function(err, replies) {
                         var list = new Array();
                         for(var i = 0 ; i < replies.length ; i++ ) {
-                            list.push(["get", replies[i]]);
+                            list.push(["get", replies[i][0]]);
                         }
-
                         client.multi(list).exec(function(err, playerIds) {
                             if(!!err) {
                                 console.log(err);
@@ -150,22 +145,22 @@ arenaDao.getOpponents = function(player, cb) {
                                 array.push(["hgetall", playerIds[i]]);
                             }
                             client.multi(array).exec(function(err, hgetallresult) {
+                                redis.release(client);
                                 if(!!err) {
-                                    redis.release(client);
                                     utils.invokeCallback(cb, null);
                                     return;
                                 }
-
-                                var opponents = new Array();
+                                var opponents = new Array(); 
                                 for(var i = 0; i < hgetallresult.length ; i++) {
-                                    opponents.push({
-                                        cid: hgetallresult[i].cId,
-                                        playId: hgetallresult[i].id,
-                                        nickname: hgetallresult[i].nickname,
-                                        rank: randoms[i]
-                                    });
+                                    if(hgetallresult[i] != null){
+                                        opponents.push({
+                                            cid: hgetallresult[i].cId,
+                                            playId: hgetallresult[i].id,
+                                            nickname: hgetallresult[i].nickname,
+                                            rank: randoms[i]+1
+                                        });
+                                    }
                                 }
-                                redis.release(client);
                                 utils.invokeCallback(cb, null, opponents);
                             });
                         });

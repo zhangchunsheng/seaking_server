@@ -9,8 +9,8 @@
         },
         "user" : "root",
         "password" : "root",
-        "maxPoolNum": 10,
-        "idleTimeoutMillis": 3000
+        "maxPoolNum": 10000,
+        "idleTimeoutMillis": 30000
     },
 
     "production": {
@@ -23,7 +23,7 @@
         },
         "user" : "root",
         "password" : "root",
-        "maxPoolNum": 10,
-        "idleTimeoutMillis": 3000
+        "maxPoolNum": 10000,
+        "idleTimeoutMillis": 30000
     }
 }

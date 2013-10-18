@@ -21,27 +21,14 @@ if(redisConfig[env]) {
 
 var gmDao = module.exports;
 
-/**
- *
- * @param player
- * @param arguments
- * @param next
- */
-gmDao.resetTask = function(session, arguments, next) {
-    var type = arguments[0];
-    var taskId = arguments[1] || "";
-    if(typeof type == "string") {
+gmDao.resetTask = function(type, taskId, cb) {
 
-    } else {
-        type = consts.correspondingCurTaskType[type];
-    }
-    var playerId = session['playerId'];
 }
 
-gmDao.updateMoney = function(session, arguments, next) {
-    var money = arguments[0];
+gmDao.updateMoney = function(money, cb) {
+
 }
 
-gmDao.updateExp = function(session, arguments, next) {
-    var exp = arguments[0];
+gmDao.updateExp = function(exp, cb) {
+
 }

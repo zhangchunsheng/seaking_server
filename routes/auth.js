@@ -7,12 +7,14 @@
  */
 var authService = require('../app/services/authService');
 var userService = require('../app/services/userService');
+var roleService = require('../app/services/roleService');
 var tokenService = require('../shared/token');
 var sessionToken = require('../config/session');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var session = require('../app/http/session');
 var region = require('../config/region');
+var consts = require('../app/consts/consts');
 
 var DEFAULT_SECRET = 'wozlla_session_secret';
 var DEFAULT_EXPIRE = 6 * 60 * 60 * 1000;	// default session expire time: 6 hours
@@ -45,10 +47,36 @@ exports.auth = function(req, res) {
     }
 
     userInfo.serverId = region.serverId;
-    session.setSession(req, res, userInfo);
 
-    data = {code: Code.OK};
-    utils.send(msg, res, data);
+    userService.getCharactersByLoginName(userInfo.serverId, userInfo.registerType, userInfo.loginName, function(err, results) {
+        console.log(results);
+        if(err || !results) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(results[0] == null || results[0] == {}) {
+            data = {
+                code: Code.OK,
+                player: null
+            };
+            roleService.getNickname(userInfo.serverId, function(err, reply) {
+                data.nicknames = reply;
+                utils.send(msg, res, data);
+            });
+        } else {
+            data = {
+                code: consts.MESSAGE.RES,
+                player: results[0].strip()
+            };
+            userInfo.playerId = results[0].id;
+            utils.send(msg, res, data);
+        }
+        session.setSession(req, res, userInfo);
+    });
 }
 
 /**

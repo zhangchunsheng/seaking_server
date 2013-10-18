@@ -5,9 +5,12 @@
  * Date: 2013-09-22
  * Description: friend
  */
-var authService = require('../app/services/authService');
+var friendService = require('../app/services/friendService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
+var friendDao = require('../app/dao/friendDao');
+var userDao = require('../app/dao/userDao');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -22,20 +25,23 @@ exports.get = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
+    
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName")
-        , start = msg.start
-        , stop = msg.stop;
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
-
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    var start = msg.start || 0 ;
+    var stop = msg.stop || -1;
     // 需要验证
-    friendDao.getFriends(player, start, stop, function(err, reply) {
-        next(null, {
-            code: Code.OK,
-            result: reply[0]
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        friendDao.getFriends(player, start, stop, function(err, reply) {
+            utils.send(msg, res, {
+                code: Code.OK,
+                result: reply[0]
+            });
         });
     });
 }
@@ -50,28 +56,32 @@ exports.add = function(req, res) {
     var session = req.session;
 
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName")
-        , playerId = msg.playerId;
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    var friendId = msg.friendId;
 
-    addFriendById(player, playerId, next);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        addFriendById(player, friendId, msg, res);
+    });
 }
 
-function addFriendById(player, playerId, next) {
+function addFriendById(player, playerId, msg, res) {
     friendDao.addFriend(player, playerId, function(err, reply) {
         if(reply.reply == 1) {
-            next(null, {
-                code: Code.OK
+            utils.send(msg, res, {
+                code: Code.OK   
+                
             });
         } else if(reply.reply == 0) {
-            next(null, {
-                code: Code.FRIEND.EXIST_FRIEND
+            utils.send(msg, res, {
+                 code: Code.FRIEND.EXIST_FRIEND 
             });
         } else {
-            next(null, {
+            utils.send(msg, res, {
                 code: Code.FRIEND.NOT_EXIST_PLAYER
             });
         }
@@ -87,18 +97,26 @@ exports.addByName = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var player  = area.getPlayer(session.get('playerId'));
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
     // var nickName = msg.nickname;
-    var serverId = session.get("serverId");
-    var self = addFriendById;
-    userDao.getPlayerIdByNickname(serverId, msg.nickname, function(err, playerId) {
-        if(!playerId) {
-            next(null,{
-                code:Code.FRIEND.NOT_EXIST_PLAYER
-            });
-            return;
-        }
-        self(player, playerId, next);
+   // var self = addFriendById;
+        userDao.getPlayerIdByNickname(serverId, msg.nickname, function(err, playerId) {
+            if(!playerId) {
+                utils.send(msg, res, {
+                    code:Code.FRIEND.NOT_EXIST_PLAYER
+                });
+                return;
+            }
+            addFriendById(player, playerId, msg, res);
+        });
     });
 }
 
@@ -112,17 +130,20 @@ exports.remove = function(req, res) {
     var session = req.session;
 
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName")
-        , playerId = msg.playerId;
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    var friendId = msg.friendId; 
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
 
     // 需要验证
-    friendDao.removeFriend(player, playerId, function(err, reply) {
-        next(null, {
-            code: Code.OK
+        friendDao.removeFriend(player, friendId, function(err, reply) {
+            utils.send(msg, res, {
+                code: Code.OK
+            });
         });
     });
 }

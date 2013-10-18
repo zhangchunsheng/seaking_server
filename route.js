@@ -8,6 +8,7 @@
 var routes = require('./routes')
     , auth = require('./routes/auth')
     , role = require('./routes/role')
+    , area = require('./routes/area')
     , arena = require('./routes/arena')
     , battle = require('./routes/battle')
     , casino = require('./routes/casino')
@@ -34,6 +35,13 @@ module.exports = function (app) {
 
     app.get('/role/createMainPlayer', authRequired, role.createMainPlayer);
     app.get('/role/getMainPlayer', authRequired, role.getMainPlayer);
+    app.get('/role/initNickname', authRequired, role.initNickname);
+    app.get('/role/getNickname', authRequired, role.getNickname);
+    app.get('/role/removeMainPlayer', authRequired, role.removeMainPlayer);
+    app.get('/role/testCreateMainPlayer', role.testCreateMainPlayer);
+
+    app.get('/area/getAreaInfo', area.getAreaInfo);
+    app.get('/area/getAreaPlayers', area.getAreaPlayers);
 
     // 竞技场
     app.get('/arena/pk', authRequired, arena.pk);
@@ -56,7 +64,7 @@ module.exports = function (app) {
 
     app.get('/formation/change', authRequired, formation.change);
 
-    app.get('/friend/add', authRequired, friend.get);
+    app.get('/friend/get', authRequired, friend.get);
     app.get('/friend/add', authRequired, friend.add);
     app.get('/friend/addByName', authRequired, friend.addByName);
     app.get('/friend/remove', authRequired, friend.remove);
@@ -68,11 +76,15 @@ module.exports = function (app) {
 
     app.get('/mail/systemSendMail', authRequired, mail.systemSendMail);
     app.get('/mail/sendMail', authRequired, mail.sendMail);
+    app.get('/mail/send',authRequired,mail.sendMail);
     app.get('/mail/getInbox', authRequired, mail.getInbox);
     app.get('/mail/getOutbox', authRequired, mail.getOutbox);
     app.get('/mail/readMail', authRequired, mail.readMail);
+    app.get('/mail/read',authRequired,mail.readMail);
     app.get('/mail/delMail', authRequired, mail.delMail);
+    app.get('/mail/del',authRequired,mail.delMail);
     app.get('/mail/hasNewMail', authRequired, mail.hasNewMail);
+    app.get('/mail/newMail',authRequired,mail.hasNewMail);
     app.get('/mail/collectItem', authRequired, mail.collectItem);
 
     app.get('/package/addItem', authRequired, package.addItem);
@@ -83,6 +95,7 @@ module.exports = function (app) {
     app.get('/package/userItem', authRequired, package.userItem);
 
     app.get('/player/enterScene', authRequired, player.enterScene);
+    app.get('/player/changeAndGetSceneData', authRequired, player.changeAndGetSceneData);
     app.get('/player/enterIndu', authRequired, player.enterIndu);
     app.get('/player/leaveIndu', authRequired, player.leaveIndu);
     app.get('/player/getPartner', authRequired, player.getPartner);
@@ -91,6 +104,7 @@ module.exports = function (app) {
     app.get('/player/npcTalk', authRequired, player.npcTalk);
     app.get('/player/learnSkill', authRequired, player.learnSkill);
     app.get('/player/upgradeSkill', authRequired, player.upgradeSkill);
+    app.get('/player/useSkill', authRequired, player.useSkill);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 
@@ -101,7 +115,7 @@ module.exports = function (app) {
     app.get('/task/startTask', authRequired, task.startTask);
     app.get('/task/handOverTask', authRequired, task.handOverTask);
 
-    app.get('/gm/resetTask', authRequired, gm.resetTask);
-    app.get('/gm/updateMoney', authRequired, gm.updateMoney);
-    app.get('/gm/updateExp', authRequired, gm.updateExp);
+    app.get('/gm/resetTask', gm.resetTask);
+    app.get('/gm/updateMoney', gm.updateMoney);
+    app.get('/gm/updateExp', gm.updateExp);
 }

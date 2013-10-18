@@ -29,6 +29,7 @@ Session.prototype.setSession = function(req, res, data) {
     for(var i in data) {
         req.session[i] = data[i];
     }
+    req.session.save();
 }
 
 Session.prototype.clearSession = function(req, res, next) {

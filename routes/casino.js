@@ -5,10 +5,11 @@
  * Date: 2013-09-22
  * Description: casino
  */
-var authService = require('../app/services/authService');
+var casinoService = require('../app/services/casinoService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
-
+var dataApi = require('../app/utils/dataApi');
 exports.index = function(req, res) {
     res.send("index");
 }
@@ -22,19 +23,26 @@ exports.getItems = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var playerId = session.get('playerId');
-    var player = area.getPlayer(playerId);
-    var items = prize(player.level);
-    //是否进行海市次数判断
-    player.casino = {
-        index : 0,
-        items : items
-    };
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    next(null, {
-        code : Code.OK,
-        items : items
-    });
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+   userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        var items = prize(player.level);
+        //是否进行海市次数判断
+        player.casino = {
+            index : 0,
+            items : items
+        };
+    
+        utils.send(msg, res, {
+            code : Code.OK,
+            items : items
+        });
+   });
 }
 
 /**
@@ -42,6 +50,7 @@ exports.getItems = function(req, res) {
  * @param req
  * @param res
  */
+//找个地方来存
 exports.gambling = function(req, res) {
     var msg = req.query;
     var session = req.session;
@@ -55,7 +64,7 @@ exports.gambling = function(req, res) {
         return;
     }
     var allPice = (msg.fill * player.casino.items[msg.index].price * 0.2);
-    logger.debug(allPice);
+
     if (player.money < allPice) {
         next(null, {
             code : Code.FAIL
@@ -69,13 +78,13 @@ exports.gambling = function(req, res) {
         item.itemNum = 1;
         var package = player.packageEntity.addItemWithNoType(player, item);
         player.packageEntity.save();
-        next(null, {
+        utils.send(msg, res, {
             code : Code.OK,
             result : true,
             package : package
         });
     } else {
-        next(null, {
+        utils.send(msg, res, {
             code : Code.OK,
             result : false
         });

@@ -32,7 +32,7 @@ var Entity = function(opts) {
     this.x = opts.x || 100;
     this.y = opts.y || 100;
 
-    this.areaId = Number(opts.areaId || 1);
+    this.areaId = opts.areaId || "city01";
 
     this.currentScene = opts.currentScene;
 

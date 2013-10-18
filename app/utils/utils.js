@@ -138,6 +138,11 @@ utils.sort = function(array, sortBy) {
     }
 }
 
+/**
+ *
+ * @param partnerId
+ * @returns {string}
+ */
 utils.getRealPartnerId = function(partnerId) {
     partnerId = partnerId.substr(partnerId.indexOf("P") + 1);
     return partnerId;
@@ -167,6 +172,26 @@ utils.getTaskType = function(task) {
     return type;
 }
 
+utils.getEffectValue = function(effect, baseValue) {
+    var value = 0;
+    if(effect.valueType == consts.valueType.NUMBER)
+        value = effect.value;
+    if(effect.valueType == consts.valueType.PERCENTAGE)
+        value = baseValue * effect.value / 100;
+
+    return value;
+}
+
+utils.getEffectFocusValue = function(effect, baseValue, focus) {
+    var value = 0;
+    if(effect.valueType == consts.valueType.NUMBER)
+        value = baseValue * focus * effect.value;
+    if(effect.valueType == consts.valueType.PERCENTAGE)
+        value = baseValue * focus * effect.value / 100;
+
+    return value;
+}
+
 /**
  * get equipment type
  * 第3位表示位置序号
@@ -180,7 +205,7 @@ utils.getTaskType = function(task) {
  */
 utils.getEqType = function(eqId) {
     var type = "";
-    if(eqId.length == 5) {
+    if(eqId.indexOf("W9") < 0) {
         type = consts.EqType.WEAPON;
     } else {
         var num = eqId.substr(3, 1);
@@ -257,4 +282,23 @@ utils.send = function(msg, res, data) {
 
 utils.log = function(msg) {
     console.log(msg);
+}
+
+/**
+ *
+ * @param process
+ */
+utils.doProcess = function(process) {
+    var argv = process.argv;
+    var array = [];
+    for(var i = 2 ; i < argv.length ; i++) {
+        array = argv[i].split("=");
+        if(array[0] == "env") {
+            process.env.NODE_ENV = array[1];
+        } else if(array[0] == "serverType") {
+            process.env.SERVER_TYPE = array[1];
+        } else if(array[0] == "port") {
+            process.env.PORT = array[1];
+        }
+    }
 }

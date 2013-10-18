@@ -2,13 +2,6 @@
  * Copyright(c)2013,Wozlla,www.wozlla.com
  * Version: 1.0
  * Author: Peter Zhang
- * Date: 2013-06-30
- * Description: dbUtils
- */
-/**
- * Copyright(c)2013,Wozlla,www.wozlla.com
- * Version: 1.0
- * Author: Peter Zhang
  * Date: 2013-06-28
  * Description: dbUtil
  */
@@ -67,6 +60,30 @@ dbUtil.getMultiCommand = function(key, object) {
 dbUtil.saveNickname = function(array, serverId, nickname) {
     var key = "S" + serverId + "_exist_nickname";
     array.push(["sadd", key, nickname]);
+}
+
+/**
+ *
+ * @param array
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ */
+dbUtil.saveCharacters = function(array, serverId, registerType, loginName, characterId) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName;
+    array.push(["hset", key, "characters", characterId]);
+}
+
+/**
+ *
+ * @param array
+ * @param serverId
+ * @param nickname
+ */
+dbUtil.removeFromCanUseNickname = function(array, serverId, nickname) {
+    var key = "S" + serverId + "_canUseNickname";
+    array.push(["srem", key, nickname]);
 }
 
 /**
@@ -135,6 +152,12 @@ dbUtil.getFieldValue = function(field, object) {
                     value: JSON.stringify(object[field][o1])
                 });
             }
+        } else if(field == "formation") {
+            obj[field] = object[field];
+            array.push({
+                field: field,
+                value: JSON.stringify(obj)
+            });
         } else {
             array.push({
                 field: field,
@@ -243,4 +266,146 @@ dbUtil.getFriendKey = function(serverId, registerType, loginName, characterId) {
 dbUtil.getPartnerKey = function(serverId, registerType, loginName, characterId, partnerId) {
     var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_P" + partnerId;
     return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ * @returns {string}
+ */
+dbUtil.getMailESKey = function(serverId, registerType, loginName, characterId) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_ES";
+    return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ * @returns {string}
+ */
+dbUtil.getMailERKey = function(serverId, registerType, loginName, characterId) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_ER";
+    return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ * @returns {string}
+ */
+dbUtil.getMailERRKey = function(serverId, registerType, loginName, characterId) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_ERR";
+    return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ * @returns {string}
+ */
+dbUtil.getMailERWKey = function(serverId, registerType, loginName, characterId) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_ERW";
+    return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ * @returns {string}
+ */
+dbUtil.getMailERNKey = function(serverId, registerType, loginName, characterId) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_ERN";
+    return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @returns {string}
+ */
+dbUtil.getExistNicknameKey = function(serverId) {
+    var key = "S" + serverId + "_exist_nickname";
+    return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @returns {string}
+ */
+dbUtil.getCanUseNicknameKey = function(serverId) {
+    var key = "S" + serverId + "_canUseNickname";
+    return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @param nickname
+ * @returns {string}
+ */
+dbUtil.getNicknamePlayerKey = function(serverId, nickname) {
+    var key = "S" + serverId + "_N" + nickname;
+    return key;
+}
+
+/**
+ *
+ * @param serverId
+ * @param characterId
+ * @returns {string}
+ */
+dbUtil.getCharacterIdPlayerKey = function(serverId, characterId) {
+    var key = "S" + serverId + "C" + characterId;
+    return key;
+}
+
+dbUtil.getArenaKey = function(serverId) {
+    var key = "S" + serverId + "_ARENA";
+    return key;
+}
+
+dbUtil.getBattleKey = function(serverId, registerType, loginName, characterId) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_BATTLE";
+    return key;
+}
+
+dbUtil.getInduKey = function(serverId, registerType, loginName, characterId, induId) {
+    var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_INDU" + induId;
+    return key;
+}
+
+dbUtil.removeMailKey = function(array, serverId, registerType, loginName, characterId) {
+    array.push(["del", dbUtil.getMailESKey(serverId, registerType, loginName, characterId)]);//邮件
+    array.push(["del", dbUtil.getMailERRKey(serverId, registerType, loginName, characterId)]);
+    array.push(["del", dbUtil.getMailERWKey(serverId, registerType, loginName, characterId)]);
+    array.push(["del", dbUtil.getMailERNKey(serverId, registerType, loginName, characterId)]);
+}
+
+dbUtil.saveToCanUseNickname = function(array, serverId, nickname) {
+    array.push(["sadd", dbUtil.getCanUseNicknameKey(serverId), nickname]);
+}
+
+dbUtil.removeNickname = function(array, serverId, nickname) {
+    var key = "S" + serverId + "_exist_nickname";
+    array.push(["srem", key, nickname]);
+}
+
+dbUtil.removeFromArena = function(array, serverId, characterId) {
+    array.push(["zrem", "S" + serverId + "_ARENA", "S" + serverId + "C" + characterId]);
 }

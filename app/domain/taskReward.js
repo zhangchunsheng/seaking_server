@@ -11,7 +11,6 @@
 var Item = require('./entity/item');
 var Equipment = require('./entity/equipment');
 var dataApi = require('../utils/dataApi');
-var messageService = require('./messageService');
 var utils = require('../utils/utils');
 
 /**
@@ -61,8 +60,6 @@ taskReward.reward = function(mainPlayer, players, ids, cb) {
             items: items
         };
         utils.invokeCallback(cb, null, rewards);
-
-        messageService.pushMessageToPlayer({uid:mainPlayer.userId, sid : mainPlayer.serverId}, 'onRewards', rewards);
     });
 };
 

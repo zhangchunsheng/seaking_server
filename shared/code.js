@@ -15,7 +15,8 @@ module.exports = {
         FA_TOKEN_ILLEGAL: 1000,
         FA_TOKEN_INVALID: 1001,
         FA_TOKEN_EXPIRE: 	1002,
-        FA_USER_NOT_EXIST: 1003
+        FA_USER_NOT_EXIST: 1003,
+        NO_CHARACTER: 1004
     },
 
     GATE: {
@@ -23,9 +24,9 @@ module.exports = {
     },
 
     CHAT: {
-        FA_CHANNEL_CREATE: 		3001,
-        FA_CHANNEL_NOT_EXIST: 	3002,
-        FA_UNKNOWN_CONNECTOR: 	3003,
+        FA_CHANNEL_CREATE: 3001,
+        FA_CHANNEL_NOT_EXIST: 3002,
+        FA_UNKNOWN_CONNECTOR: 3003,
         FA_USER_NOT_ONLINE: 	3004
     },
 
@@ -37,6 +38,14 @@ module.exports = {
         NOT_ENOUGHT_SPACE: 1201,
         NOT_EXIST_ITEM:1202,
         NOT_ENOUGH_ITEM:1203
+    },
+
+    EQUIPMENT: {
+        NO_ENOUGH_LEVEL: 1220,
+        NO_WEAPON: 1221,
+        WRONG_WEAPON: 1222,
+        NO_UPGRADE: 1223,
+        NOMORE_LEVEL: 1224
     },
 
     SHOP: {
@@ -65,7 +74,20 @@ module.exports = {
         NO_RECEIVE_ID: 1602
     },
 
-    EQUIPMENT: {
+    AREA: {
+        WRONG_CURRENTSCENE: 1701
+    },
 
+    CHARACTER: {
+        EXISTS_NICKNAME: 1801
+    },
+
+    SKILL: {
+        HAVED_SKILL: 1820,
+        NO_HAVE_SKILL: 1821,
+        TOP_LEVEL: 1822,
+        NEED_REQUIREMENT: 1823,
+        NO_REACH_SKILL: 1824,
+        NO_SKILL: 1825
     }
 };

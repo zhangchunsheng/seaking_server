@@ -18,11 +18,11 @@ partnerService.getRealPartnerId = function() {
 }
 
 partnerService.getPartner = function() {
-
+    partnerDao.getPartner();
 }
 
-partnerService.createPartner = function() {
-
+partnerService.createPartner = function(serverId, userId, registerType, loginName, characterId, cId, cb) {
+    partnerDao.createPartner(serverId, userId, registerType, loginName, characterId, cId, cb);
 }
 
 partnerService.getPartnerId = function() {

@@ -12,20 +12,20 @@ var gmService = module.exports;
 /**
  * 重置任务
  */
-gmService.resetTask = function() {
-
+gmService.resetTask = function(type, taskId, cb) {
+    gmDao.resetTask(type, taskId, cb);
 }
 
 /**
  * 更新金币
  */
-gmService.updateMoney = function() {
-
+gmService.updateMoney = function(money, cb) {
+    gmDao.updateMoney(money, cb);
 }
 
 /**
  * 更新经验
  */
-gmService.updateExp = function() {
-
+gmService.updateExp = function(exp, cb) {
+    gmDao.updateExp(exp, cb);
 }

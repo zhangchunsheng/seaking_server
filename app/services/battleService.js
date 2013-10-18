@@ -12,3 +12,7 @@ var battleService = module.exports;
 battleService.battle = function() {
 
 }
+
+battleService.savePlayerBattleData = function(player, owners, monsters, battleData, cb) {
+    battleDao.savePlayerBattleData(player, owners, monsters, battleData, cb);
+}

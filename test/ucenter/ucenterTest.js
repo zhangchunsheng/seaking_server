@@ -25,4 +25,38 @@ describe('ucenter test', function() {
         }
         ucenter.saveInduLog(data);
     });
+
+    it('addPlayer', function() {
+        var date = new Date();
+        var data = {
+            registerType: 1,
+            loginName: "wozlla",
+            serverId: 1,
+            cId: 1,
+            nickname: "测试",
+            level: 1
+        }
+        ucenter.addPlayer(data);
+    });
+
+    it('updatePlayer', function() {
+        var date = new Date();
+        var data = {
+            registerType: 1,
+            loginName: "wozlla",
+            serverId: 1,
+            cId: 1,
+            level: 2
+        }
+        ucenter.updatePlayer(data);
+    });
+
+    it('removePlayer', function() {
+        var data = {
+            registerType: 1,
+            loginName: "wozlla",
+            serverId: 1
+        }
+        ucenter.removePlayer(data);
+    });
 });

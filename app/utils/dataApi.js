@@ -9,7 +9,6 @@
 var character = require('../../config/data/character');
 var experience = require('../../config/data/experience');
 var skillList = require('../../config/data/skillList');
-var heroSkills = require('../../config/data/heroSkills');
 var item = require('../../config/data/item');
 var npc = require('../../config/data/npc');
 var task = require('../../config/data/task');
@@ -145,6 +144,6 @@ module.exports = {
     partners: new Data(partners),
     city: new Data(city),
     indu_event: new Data(indu_event)  ,
-    shops:new Data(shops),
+    shops: new Data(shops),
     casino : new Data(casino)
 };

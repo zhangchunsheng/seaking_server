@@ -13,6 +13,7 @@ var util = require('util');
 var Entity = require('./entity/entity');
 var EntityType = require('../consts/consts').EntityType;
 var Persistent = require('./persistent');
+var consts = require('../consts/consts');
 
 /**
  * Initialize a new 'Equipments' with the given 'opts'.
@@ -85,6 +86,10 @@ Equipments.prototype.get = function(type) {
     return this[type];
 };
 
+Equipments.prototype.syncData = function() {
+
+}
+
 //Equip equipment by type and id
 Equipments.prototype.equip = function(type, equip) {
     this[type] = {
@@ -125,7 +130,9 @@ Equipments.prototype.upgradeByMoney = function(player, type, equipment_levelup) 
     if(player.money >= equipment_levelup.upgradeMoney) {
         player.money -= equipment_levelup.upgradeMoney;
         status = 1;
-        this[type].level += 1;
+        this[type].epid = equipment_levelup.id;
+        //this[type].level = parseInt(this[type].level) + 1;
+        this[type].level = equipment_levelup.strengthenLevel;
         player.updateTaskRecord(consts.TaskGoalType.UPGRADE_EQUIPMENT, {
             itemId: this[type].epid,
             itemNum: this[type].level
@@ -138,11 +145,42 @@ Equipments.prototype.upgradeByMoney = function(player, type, equipment_levelup) 
     return status;
 }
 
+Equipments.prototype.updateId = function() {
+    if(this.weapon.epid != 0) {
+        this.weapon.epid += this.weapon.level;
+    }
+    if(this.necklace.epid != 0) {
+        this.necklace.epid += this.necklace.level;
+    }
+    if(this.helmet.epid != 0) {
+        this.helmet.epid += this.helmet.level;
+    }
+    if(this.armor.epid != 0) {
+        this.armor.epid += this.armor.level;
+    }
+    if(this.belt.epid != 0) {
+        this.belt.epid += this.belt.level;
+    }
+    if(this.legguard.epid != 0) {
+        this.legguard.epid += this.legguard.level;
+    }
+    if(this.amulet.epid != 0) {
+        this.amulet.epid += this.amulet.level;
+    }
+    if(this.shoes.epid != 0) {
+        this.shoes.epid += this.shoes.level;
+    }
+    if(this.ring.epid != 0) {
+        this.ring.epid += this.ring.level;
+    }
+}
+
 /**
  * strip
  */
 Equipments.prototype.strip = function() {
     var characterId = this.playerId.substr(this.playerId.indexOf("C") + 1);
+    //this.updateId();
     return {
         characterId: characterId,
         serverId: this.serverId,
@@ -164,6 +202,7 @@ Equipments.prototype.strip = function() {
  * getInfo
  */
 Equipments.prototype.getInfo = function() {
+    //this.updateId();
     return {
         weapon: this.weapon,
         necklace: this.necklace,

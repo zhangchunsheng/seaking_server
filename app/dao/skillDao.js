@@ -3,12 +3,11 @@
  * Version: 1.0
  * Author: Peter Zhang
  * Date: 2013-06-28
- * Description: fightskillDao
+ * Description: skillDao
  */
-var fightskill = require('../domain/fightskill');
 var utils = require('../utils/utils');
 
-var fightskillDao = module.exports;
+var skillDao = module.exports;
 
 /**
  * Add a new fight skill
@@ -16,7 +15,7 @@ var fightskillDao = module.exports;
  * @param {Number} characterId
  * @param {function} cb
  */
-fightskillDao.add = function(skill, cb) {
+skillDao.add = function(skill, cb) {
 
 };
 
@@ -24,16 +23,20 @@ fightskillDao.add = function(skill, cb) {
  * Update fight skill
  * @param val {Object} Update params, contains level and skill id
  */
-fightskillDao.update = function(val, cb) {
+skillDao.update = function(val, cb) {
+
+};
+
+skillDao.updateSkill = function(skills, type, cb) {
 
 };
 
 /**
- * Find fightskills by characterId
+ * Find skills by characterId
  *
  * @param {Number} characterId
  * @param {function} cb
  */
-fightskillDao.getFightSkillsByCharacterId = function(characterId, cb) {
+skillDao.getSkillsByCharacterId = function(characterId, cb) {
     
 };

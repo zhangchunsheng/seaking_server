@@ -37,3 +37,11 @@ packageService.userItem = function() {
 packageService.createPackage = function(playerId, callback) {
     utils.invokeCallback(callback, null, {});
 }
+
+packageService.update = function(val, cb) {
+    packageDao.update(val, cb);
+}
+
+packageService.getUpdateArray = function() {
+
+}

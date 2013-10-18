@@ -6,8 +6,16 @@
  * Description: arena
  */
 var arenaService = require('../app/services/arenaService');
+var userService = require('../app/services/userService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
+var session = require('../app/http/session');
+var region = require('../config/region');
+var EntityType = require('../app/consts/consts').EntityType;
+var Fight = require('../app/domain/battle/fight');
+var FightTeam = require('../app/domain/battle/fightTeam');
+var consts = require('../app/consts/consts');
+var arenaDao = require('../app/dao/arenaDao');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -23,81 +31,116 @@ exports.pk = function(req, res) {
     var session = req.session;
 
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName")
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
         , vsPlayerId = msg.vsPlayerId;
 
-    var opponent = area.getPlayer(vsPlayerId);
-    if(opponent == null) {
-        userDao.getPlayerById(vsPlayerId, function(err, reply) {
-            pk(msg, session, next, reply);
-        });
-    } else {
-        pk(msg, session, next, opponent);
-    }
+    userService.getPlayerById(vsPlayerId, function(err, reply) {
+        pk(req, res, msg, session, reply);
+    });
 }
 
-function pk(msg, session, next, opponent) {
-    var character = area.getPlayer(session.get('playerId'));
+function pk(req, res, msg, session, opponent) {
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var owners = {};
-    var opponents = {};
-    var player;
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
 
-    var owner_formationData = character.formation;
-    var opponent_formationData = opponent.formation;
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
+        var owners = {};
+        var opponents = {};
+        var player;
 
-    for(var i = 0 ; i < owner_formationData.length ; i++) {
-        if(owner_formationData[i] != null && owner_formationData[i] != 0) {
-            if(owner_formationData[i].playerId.indexOf("P") >= 0) {
-                player = character.getPartner(owner_formationData[i].playerId);
-                player.formationId = i;
-                owners[i] = player;
-            } else {
-                player = character;
-                player.formationId = i;
-                owners[i] = player;
-            }
-        }
-    }
+        var owner_formationData = character.formation;
+        var opponent_formationData = opponent.formation;
 
-    for(var i = 0 ; i < opponent_formationData.length ; i++) {
-        if(opponent_formationData[i] != null && opponent_formationData[i] != 0) {
-            if(opponent_formationData[i].playerId.indexOf("P") >= 0) {
-                player = opponent.getPartner(opponent_formationData[i].playerId);
-                player.type = EntityType.OPPONENT_PARTNER;
-                player.formationId = i;
-                opponents[i] = player;
-            } else {
-                player = opponent;
-                player.formationId = i;
-                opponents[i] = player;
-            }
-        }
-    }
+        var players = [];
+        var enemies = [];
 
-    var fight = new Fight({
-        mainPlayer: character,
-        owner_formation: owner_formationData,
-        monster_formation: opponent_formationData,
-        owners: owners,
-        monsters: opponents
-    });
-    fight.pk(function(err, reply) {
-        var battle = reply;
-        player.updateTaskRecord(consts.TaskGoalType.PVP, {
-            itemId: reply.battleResult.isWin == true ? 1 : 0
+        var ownerTeam = new FightTeam({
+            type: consts.teamType.PLAYER_TEAM
         });
-        if(reply.battleResult.isWin == true) {
-            arenaDao.exchange(character, opponent, function(err, reply) {
-                next(null, {
-                    code: Code.OK,
-                    rank: reply,
-                    battle: battle
+        var monsterTeam = new FightTeam({
+            type: consts.teamType.MONSTER_TEAM
+        });
+
+        for(var i = 0 ; i < owner_formationData.length ; i++) {
+            if(owner_formationData[i] != null && owner_formationData[i] != 0) {
+                if(owner_formationData[i].playerId.indexOf("P") >= 0) {
+                    player = character.getPartner(owner_formationData[i].playerId);
+                    player.formationId = i;
+                    owners[i] = player;
+                } else {
+                    player = character;
+                    player.formationId = i;
+                    owners[i] = player;
+                }
+                ownerTeam.addMember(player);
+                players.push({
+                    "id" : player.id,
+                    "maxHP" : player.maxHp,
+                    "HP" : player.hp,
+                    "anger" : player.anger,
+                    "formation" : i
                 });
-            });
+            }
         }
+
+        for(var i = 0 ; i < opponent_formationData.length ; i++) {
+            if(opponent_formationData[i] != null && opponent_formationData[i] != 0) {
+                if(opponent_formationData[i].playerId.indexOf("P") >= 0) {
+                    player = opponent.getPartner(opponent_formationData[i].playerId);
+                    player.type = EntityType.OPPONENT_PARTNER;
+                    player.formationId = i;
+                    opponents[i] = player;
+                } else {
+                    player = opponent;
+                    player.formationId = i;
+                    opponents[i] = player;
+                }
+                monsterTeam.addMember(player);
+                enemies.push({
+                    "id" : player.id,
+                    "maxHP" : player.maxHp,
+                    "HP" : player.hp,
+                    "anger" : player.anger,
+                    "formation" : i
+                });
+            }
+        }
+
+        var fight = new Fight({
+            mainPlayer: character,
+            owner_formation: owner_formationData,
+            monster_formation: opponent_formationData,
+            owners: owners,
+            monsters: opponents,
+            ownerTeam: ownerTeam,
+            monsterTeam: monsterTeam
+        });
+        var data = {};
+        fight.pk(function(err, reply) {
+            var battle = reply;
+            player.updateTaskRecord(consts.TaskGoalType.PVP, {
+                itemId: reply.battleResult.isWin == true ? 1 : 0
+            });
+            if(reply.battleResult.isWin == true) {
+                arenaService.exchange(character, opponent, function(err, reply) {
+                    battle.players = players;
+                    battle.enemies = enemies;
+                    data = {
+                        code: Code.OK,
+                        rank: reply,
+                        battle: battle
+                    };
+                    utils.send(msg, res, data);
+                });
+            }
+        });
     });
 }
 
@@ -111,16 +154,18 @@ exports.add = function(req, res) {
     var session = req.session;
 
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName");
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
-
-    arenaDao.add(player, function(err, reply) {
-        next(null, {
-            code: Code.OK,
-            rank: reply
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        arenaDao.add(player, function(err, reply) {
+            next(null, {
+                code: Code.OK,
+                rank: reply
+            });
         });
     });
 }
@@ -133,20 +178,27 @@ exports.add = function(req, res) {
 exports.getOpponents = function(req, res) {
     var msg = req.query;
     var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
-    arenaDao.getOpponents(player, function(err, result) {
-        if( result == null ) {
-            next(null,{
-                code: Code.FAIL
-            });
-            return;
-        } else {
-            next(null,{
-                code: Code.OK,
-                Opponents: result
-            });
-        }
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        arenaDao.getOpponents(player, function(err, result) {
+            if( result == null ) {
+                utils.send(msg, res,{
+                    code: Code.FAIL
+                });
+                return;
+            } else {
+                utils.send(msg, res,{
+                    code: Code.OK,
+                    Opponents: result
+                });
+            }
+        });
     });
 }
 
@@ -160,16 +212,28 @@ exports.getRank = function(req, res) {
     var session = req.session;
 
     var uid = session.uid
-        , serverId = session.get("serverId")
-        , registerType = session.get("registerType")
-        , loginName = session.get("loginName");
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-    var player = area.getPlayer(session.get('playerId'));
-
-    arenaDao.getRank(player, function(err, reply) {
-        next(null, {
-            code: Code.OK,
-            rank: reply + 1
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        arenaDao.getRank(player, function(err, reply) {
+            if(err){console.log(err.message);utils.send(msg,res,{code:500});}
+            if(reply == null) {
+                arenaDao.add(player,function(err,reply){
+                    utils.send(msg, res, {
+                        code:Code.OK,
+                        rank: reply
+                    });
+                });
+            } else {
+                utils.send(msg, res, {
+                    code: Code.OK,
+                    rank: reply + 1
+                });
+            }
         });
     });
 }

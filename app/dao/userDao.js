@@ -8,10 +8,12 @@
 var dataApi = require('../utils/dataApi');
 var Player = require('../domain/entity/player');
 var Tasks = require('../domain/tasks');
+var Skills = require('../domain/skills');
 var User = require('../domain/user');
 var consts = require('../consts/consts');
 var equipmentsDao = require('./equipmentsDao');
 var packageDao = require('./packageDao');
+var packageUtil = require('../utils/packageUtil');
 var induDao = require('./induDao');
 var taskDao = require('./taskDao');
 var partnerDao = require('./partnerDao');
@@ -32,28 +34,6 @@ if(redisConfig[env]) {
 }
 
 var userDao = module.exports;
-
-userDao.login = function (registerType, loginName, password, cb) {
-    var key = "T" + registerType + "_" + loginName;
-
-     redis.command(function(client) {
-        client.multi().select(redisConfig.database.UC_USER_REDIS_DB, function() {
-
-        }).hgetall(key, function(err, reply) {
-                if(reply.password == password) {
-                    utils.invokeCallback(cb, null, reply);
-                } else {
-                    utils.invokeCallback(cb, {
-                        errCode: 101
-                    });
-                }
-                redis.release(client);
-            })
-            .exec(function (err, replies) {
-
-            });
-    });
-};
 
 /**
  * Get user data by loginName.
@@ -105,7 +85,9 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
 
         var time = date.getTime() - lastLoginDate;
         time = Math.floor(time / 1000);
-        playerDao.appPlayerAndPartnersHP(player, time, cb);
+        var hp = player.hpRecoverySpeed * time;
+        console.log(player.hpRecoverySpeed * time);
+        playerDao.appPlayerAndPartnersHP(player, hp, cb);
 
         var userInfo = {
             lastLoginDate: date.getTime()
@@ -128,20 +110,6 @@ userDao.logLogout = function(serverId, registerType, loginName, cb) {
 }
 
 /**
- * 记录在线玩家
- */
-userDao.addOnlineUser = function(serverId, registerType, loginName, cb) {
-
-}
-
-/**
- * 删除在线玩家
- */
-userDao.removeOnlineUser = function(serverId, registerType, loginName, cb) {
-
-}
-
-/**
  * 初始化用户信息
  * @param userId
  * @param serverId
@@ -160,7 +128,6 @@ userDao.initUserInfo = function(userId, serverId, registerType, loginName, cb) {
         onlineDayNumContinuous: 0,
         isOnline: 1,
         date: date.getTime(),
-        gameCurrency: 0,
         bz: 1
     };
 
@@ -201,7 +168,7 @@ userDao.saveUserInfo = function(userInfo, serverId, registerType, loginName, cb)
  * @param {loginName} loginName
  * @param {function} cb Callback function.
  */
-userDao.getCharactersByLoginName = function(app, serverId, registerType, loginName, cb) {
+userDao.getCharactersByLoginName = function(serverId, registerType, loginName, cb) {
     userDao.getCharacterAllInfo(serverId, registerType, loginName, 0, function(err, character) {
         var array = [];
         array.push(character);
@@ -259,32 +226,28 @@ userDao.has_nickname_player = function(serverId, nickname, next) {
  * @param cb
  */
 userDao.getNicknameByPlayerId = function(playerId, cb ) {
-    if(player != null){
-        utils.invokeCallback(cb,null,player.nickname);
-    }else{
-        redis.command(function(client) {
-            client.multi().select(redisConfig.database.SEAKING_REDIS_DB,function(){
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB,function() {
 
-            }).get(playerId,function(err,reply) {
-                    if(!!err){
+        }).get(playerId, function(err, reply) {
+                if(!!err) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, "不存在playerId");
+                    return;
+                }
+                client.hget(reply, "nickname", function(err, reply) {
+                    if(!!err) {
                         redis.release(client);
-                        utils.invokeCallback(cb, "不存在playerId");
+                        utils.invokeCallback(cb, err);
                         return;
                     }
-                    client.hget(reply, "nickname", function(err, reply) {
-                        if(!!err) {
-                            redis.release(client);
-                            utils.invokeCallback(cb, err);
-                            return;
-                        }
-                        redis.release(client);
-                        utils.invokeCallback(cb, null, reply);
-                    });
-                }).exec(function(err,reply) {
-
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
                 });
-        });
-    }
+            }).exec(function(err,reply) {
+
+            });
+    });
 }
 
 /**
@@ -293,7 +256,7 @@ userDao.getNicknameByPlayerId = function(playerId, cb ) {
  * @param nickname
  * @param cb
  */
-userDao.getPlayerIdByNickname=function(serverId, nickname, cb) {
+userDao.getPlayerIdByNickname = function(serverId, nickname, cb) {
     var key = "S" + serverId + "_N" + nickname;
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
@@ -314,19 +277,23 @@ userDao.getPlayerIdByNickname=function(serverId, nickname, cb) {
     });
 }
 
-/**
- * Get an user's all players by userId
- * @param {Number} characterId
- * @param {function} cb Callback function.
- */
-userDao.getPlayer = function(characterId, cb){
+userDao.getCharacterInfoByNickname = function(serverId, nickname, cb) {
+    var key = "S" + serverId + "_N" + nickname;
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
 
-};
+        }).get(key, function(err, reply) {//S1_T2_w106451_C10212
+                utils.invokeCallback(cb, null, reply);
+            }).exec(function (err, replies) {
+
+            });
+    });
+}
 
 /**
  * 創建角色
  */
-userDao.createCharacter = function(serverId, userId, registerType, loginName, cId, nickname, cb) {
+userDao.createCharacter = function(serverId, userId, registerType, loginName, cId, nickname, isRandom, cb) {
     var key = "S" + serverId + "_T" + registerType + "_" + loginName;// 先判断是否已创建角色
 
     redis.command(function(client) {
@@ -335,7 +302,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
         }).hexists(key, "characters", function(err, reply) {
             if(reply == 0) {
                 userDao.getCharacterId(client, function(err, characterId) {
-                    var level = 0;
+                    var level = 1;
                     var hero = dataApi.heros.findById(cId);
                     var date = new Date();
                     var curTasks = {
@@ -344,6 +311,9 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
                         currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
                     };
+                    var skills = new Skills();
+                    skills.initSkills(cId);
+                    var package = packageUtil.initPackage(cId);
                     var character = {
                         id: "S" + serverId + "C" + characterId,
                         characterId: "S" + serverId + "C" + characterId,
@@ -353,14 +323,16 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         registerType: registerType,
                         loginName: loginName,
                         nickname: nickname,
+                        isRandom: isRandom,
                         currentScene: "city01",
                         x: 1000,
                         y: 100,
-                        experience: 0,
+                        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         level: level,
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
                         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         photo: '',
+                        buffs: [],
                         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         anger: 0,
@@ -375,7 +347,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), level),
                         counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), level),
                         gameCurrency: 100,
-                        money: 100,
+                        money: 1000000,
                         equipments: {
                             weapon: {
                                 epid: 0,
@@ -415,24 +387,11 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                                 level: 0
                             }//戒指
                         },
-                        package: {
-                            weapons: {
-                                itemCount: 9,
-                                items: {}
-                            },
-                            equipments: {
-                                itemCount: 9,
-                                items: {}
-                            },
-                            items: {
-                                itemCount: 9,
-                                items: {}
-                            }
-                        },
+                        package: package,
                         skills: {
-                            currentSkill: {"skillId":""},
-                            activeSkills: [{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0}],
-                            passiveSkills: [{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0},{"skillId":"","status":0}]
+                            currentSkill: skills.currentSkill,
+                            activeSkills: skills.activeSkills,
+                            passiveSkills: skills.passiveSkills
                         },
                         formation: [{playerId:"S" + serverId + "C" + characterId},null,null,null,null,null,null],
                         partners: [],
@@ -441,17 +400,32 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         currentIndu: {"induId":0}
                     };
 
-                    client.hset(key, "characters", characterId);
+                    //client.hset(key, "characters", characterId);
                     userDao.initUserInfo(userId, serverId, registerType, loginName, function(err, reply) {
 
                     });
 
                     key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
 
+                    var data = {
+                        registerType: registerType,
+                        loginName: loginName,
+                        serverId: serverId,
+                        cId: cId,
+                        characterId: characterId,
+                        nickname: nickname,
+                        level: level
+                    }
+                    ucenter.addPlayer(data);
+
                     var array = dbUtil.getMultiCommand(key, character);
+                    dbUtil.saveCharacters(array, serverId, registerType, loginName, characterId)
                     dbUtil.saveNickname(array, serverId, nickname);
                     dbUtil.savePlayerIdToCharacter(array, character.id, key);
                     dbUtil.saveNicknameToCharacter(array, serverId, nickname, key);
+                    if(isRandom == 1) {
+                        dbUtil.removeFromCanUseNickname(array, serverId, nickname);
+                    }
                     client.multi(array).exec(function(err, replies) {
                         var taskInfo = {};
                         for(var o in character.curTasks) {
@@ -482,6 +456,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                             nickname: character.nickname,
                             level: character.level,
                             experience: character.experience,
+                            buffs: character.buffs,
                             hp: character.hp,
                             maxHp: character.maxHp,
                             anger: character.anger,
@@ -639,6 +614,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                         x: parseInt(replies.x),
                         y: parseInt(replies.y),
                         experience: parseInt(replies.experience),
+                        buffs: JSON.parse(replies.buffs).buffs,
                         level: parseInt(level),
                         needExp: parseInt(replies.needExp),
                         accumulated_xp: parseInt(replies.accumulated_xp),
@@ -717,6 +693,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                             nickname: character.nickname,
                             level: character.level,
                             experience: character.experience,
+                            buffs: character.buffs,
                             hp: character.hp,
                             maxHp: character.maxHp,
                             anger: character.anger,
@@ -787,6 +764,7 @@ userDao.getPlayerById = function(playerId, cb) {
                         x: parseInt(replies.x),
                         y: parseInt(replies.y),
                         experience: parseInt(replies.experience),
+                        buffs: JSON.parse(replies.buffs).buffs,
                         level: parseInt(level),
                         needExp: parseInt(replies.needExp),
                         accumulated_xp: parseInt(replies.accumulated_xp),
@@ -808,6 +786,7 @@ userDao.getPlayerById = function(playerId, cb) {
                         money: parseInt(replies.money),
                         equipments: JSON.parse(replies.equipments),
                         skills: {
+                            currentSkill: JSON.parse(replies.currentSkill),
                             activeSkills: JSON.parse(replies.activeSkills),
                             passiveSkills: JSON.parse(replies.passiveSkills)
                         },
@@ -844,14 +823,13 @@ userDao.getPlayerById = function(playerId, cb) {
 };
 
 /**
- * Get userInfo by loginName
- * @param {Object} app
- * @param {String} username
+ * Get playerInfo by loginName
+ * @param {String} loginName
  * @param {function} cb
  */
-userDao.getUserByLoginName = function (app, registerType, loginName, cb) {
-    dbUtil.selectDb(redisConfig.database.UC_USER_REDIS_DB, function(client) {
-        var key = "T" + registerType + "_" + loginName;
+userDao.getUserByLoginName = function (serverId, registerType, loginName, cb) {
+    dbUtil.selectDb(redisConfig.database.SEAKING_REDIS_DB, function(client) {
+        var key = "S" + serverId + "_T" + registerType + "_" + loginName;
         client.exists(key, function(err, reply) {
             if (reply == 0) {
                 redis.release(client);
@@ -863,50 +841,14 @@ userDao.getUserByLoginName = function (app, registerType, loginName, cb) {
                         redis.release(client);
                         utils.invokeCallback(cb, err.message, null);
                     } else {
-                        var user = new User({
-                            id: userInfo.userId,
-                            registerType: userInfo.registerType,
-                            loginName: userInfo.loginName,
-                            password: userInfo.password
-                        });
+                        var playerId = "S" + serverId + "C" + userInfo.characters;
                         redis.release(client);
-                        utils.invokeCallback(cb, null, user);
+                        utils.invokeCallback(cb, null, playerId);
                     }
                 });
             }
         });
     });
-};
-
-/**
- * delete user by username
- * @param {String} username
- * @param {function} cb Call back function.
- */
-userDao.deleteUserByName = function (username, cb) {
-
-};
-
-/**
- * Create a new user
- * @param (String) username
- * @param {String} password
- * @param {String} from Register source
- * @param {function} cb Call back function.
- */
-userDao.createUser = function (username, password, from, cb){
-
-};
-
-/**
- * Create a new player
- * @param {String} uid User id.
- * @param {String} name Player's name in the game.
- * @param {Number} roleId Player's roleId, decide which kind of player to create.
- * @param {function} cb Callback function
- */
-userDao.createMainPlayer = function (uid, name, cId, cb) {
-
 };
 
 /**
@@ -963,7 +905,21 @@ userDao.updatePlayer = function (player, field, cb) {
     });
 };
 
-userDao.updatePlayerAttribute = function(player, cb) {    var column = player.updateColumn().columns;
+userDao.update = function(array, cb) {
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+            client.multi(array).exec(function(err, replies) {
+                redis.release(client);
+                utils.invokeCallback(cb, null, 1);
+            });
+        }).exec(function(err, reply) {
+
+        });
+    })
+}
+
+userDao.updatePlayerAttribute = function(player, cb) {
+    var column = player.updateColumn().columns;
     var key = "S" + player.sid + "_T" + player.registerType + "_" + player.loginName;
 
     redis.command(function(client) {
@@ -975,7 +931,7 @@ userDao.updatePlayerAttribute = function(player, cb) {    var column = player.up
 
                     var array = [];
                     for(var o in column) {
-                        array.push(["hset", key, o, column[o]]);
+                        dbUtil.getCommand(array, key, o, player);
                     }
                     client.multi(array).exec(function(err, replies) {
                         redis.release(client);
@@ -1260,13 +1216,4 @@ userDao.updateMoneyAndExp = function(data, cb) {
             }
         });
     });
-};
-
-/**
- * Delete player
- * @param {Number} characterId
- * @param {function} cb Callback function.
- */
-userDao.deletePlayer = function (characterId, cb){
-
 };
