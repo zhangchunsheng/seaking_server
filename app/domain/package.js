@@ -184,6 +184,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         }*/
         for(var i in items.items) {
             if(items.items[i].itemId == item.itemId) {
+                _items.itemNum += this[type].items[i].itemNum;
                 var mitem = items.items[i];
                 if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 && mitem.itemNum < 99) {
                     item.itemNum += parseInt(mitem.itemNum) - 99;
