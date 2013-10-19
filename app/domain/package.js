@@ -184,76 +184,82 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
 
         }*/
         for(var i in items.items) {
-            if(items.items[i].itemId == item.itemId) {
+            if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {
                 _items.itemNum += this[type].items[i].itemNum;
                 var mitem = items.items[i];
-                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 && mitem.itemNum < 99) {
-                    item.itemNum += parseInt(mitem.itemNum) - 99;
+                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 ) {
+                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - 99;
                     mitem.itemNum = 99;
+                    console.log(item.itemNum);
                     index.push({
                         index: i,
                         item: mitem
                     });
 
-                } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) < 99) {
+                } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) <= 99) {
                     mitem.itemNum = parseInt(mitem.itemNum) + parseInt(item.itemNum);
                     item.itemNum = 0 ;
                     index.push({
                         index: i,
                         item: mitem
                     });
-                    return {index: index};
+                    break; 
                 }
             }
         }
+
          var run =function(){
 
-        if(item.itemNum > 0) {
-            var spaceCount = 0;
-             for(var i = 1,l = items.itemCount ; i <= l ; i++) {
-                if(!items[i]) {
-                    spaceCount = i;
+            if(item.itemNum > 0) {
+                var spaceCount = 0;
+                 for(var i = 1,l = items.itemCount ; i <= l ; i++) {
+                    if(!items.items[i]) {
+                        console.log("wm:"+i);
+                        spaceCount = i;
+                        break;
+                    }
                 }
-            }
-            if(!spaceCount) {
-                return {index: []};
-            }
-            for(var i = 1 ; i <= this[type].itemCount ; i++) {
-                if(!this[type].items[i]) {
-                    // 一定小于99个所以直接添加就好了，传入数值最大99
-                    this[type].items[i] = {
+                if(spaceCount == 0) {
+                    return {index: []};
+                }
+                    if( item.itemNum >99) {
+                        // 一定小于99个所以直接添加就好了，传入数值最大99
+                        items.items[spaceCount] = {
+                            itemId: item.itemId,
+                            itemNum: 99,
+                            level: item.level
+                        };
+                        index.push({
+                            index: spaceCount,
+                            item: items.items[spaceCount]
+                        });
+                        item.itemNum -= 99;
+                        
+                        return run();
+                    }
+                    console.log(item.itemNum);
+                    items.items[spaceCount] = {
                         itemId: item.itemId,
-                        itemNum: 99,
+                        itemNum: item.itemNum,
                         level: item.level
                     };
                     index.push({
                         index: spaceCount,
                         item: items.items[spaceCount]
                     });
-                    item.itemNum -= 99;
-                    return run();
-                }
-                items.items[spaceCount] = {
-                    itemId: item.itemId,
-                    itemNum: item.itemNum,
-                    level: item.level
-                };
-                index.push({
-                    index: spaceCount,
-                    item: items.items[spaceCount]
-                });
-                return {index: index};
-                   
+                    return {index: index};
+                       
+                
             }
+        
         }
-
-                    }
-
-    return  run();
-    /*if(index.length > 0) {
+        run();
+        
+       
+    }
+     if(index.length > 0) {
         this.save();
         player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
-    }*/
     }
     return {
         index: index

@@ -93,7 +93,7 @@ exports.buyItem = function(req, res) {
             }
         }else{
             
-           /* if(itemInfo.pileNum != num) {
+            /*if(itemInfo.pileNum < num) {
                 utils.send(msg, res, {code:'数据错误'});
                 return;      
             }*/
@@ -116,7 +116,7 @@ exports.buyItem = function(req, res) {
         }
 
         var result = player.buyItem(type, item, costMoney);
-
+        
         /*if(result.packageIndex == -1) {
             data = {
                 code: Code.PACKAGE.NOT_ENOUGHT_SPACE
