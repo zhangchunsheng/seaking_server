@@ -177,11 +177,9 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                         index: i,
                         itemNum: item.itemNum
                     });
-
                     break;
                 }
             }
-
         }*/
         for(var i in items.items) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {
@@ -208,56 +206,50 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             }
         }
 
-         var run =function(){
-
+        var run = function() {
             if(item.itemNum > 0) {
                 var spaceCount = 0;
-                 for(var i = 1,l = items.itemCount ; i <= l ; i++) {
+                for(var i = 1,l = items.itemCount ; i <= l ; i++) {
                     if(!items.items[i]) {
-                        console.log("wm:"+i);
                         spaceCount = i;
                         break;
                     }
                 }
                 if(spaceCount == 0) {
-                    return {index: []};
+                    index = [];
+                    return {index: index};
                 }
-                    if( item.itemNum >99) {
-                        // 一定小于99个所以直接添加就好了，传入数值最大99
-                        items.items[spaceCount] = {
-                            itemId: item.itemId,
-                            itemNum: 99,
-                            level: item.level
-                        };
-                        index.push({
-                            index: spaceCount,
-                            item: items.items[spaceCount]
-                        });
-                        item.itemNum -= 99;
-                        
-                        return run();
-                    }
-                    console.log(item.itemNum);
+                if(item.itemNum > 99) {
+                    // 一定小于99个所以直接添加就好了，传入数值最大99
                     items.items[spaceCount] = {
                         itemId: item.itemId,
-                        itemNum: item.itemNum,
+                        itemNum: 99,
                         level: item.level
                     };
                     index.push({
                         index: spaceCount,
                         item: items.items[spaceCount]
                     });
-                    return {index: index};
-                       
-                
+                    item.itemNum -= 99;
+
+                    return run();
+                }
+                console.log(item.itemNum);
+                items.items[spaceCount] = {
+                    itemId: item.itemId,
+                    itemNum: item.itemNum,
+                    level: item.level
+                };
+                index.push({
+                    index: spaceCount,
+                    item: items.items[spaceCount]
+                });
+                return {index: index};
             }
-        
         }
         run();
-        
-       
     }
-     if(index.length > 0) {
+    if(index.length > 0) {
         this.save();
         player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
     }
@@ -354,12 +346,12 @@ Package.prototype.removeItem = function(type, index,itemNum) {
     if(item) {
         if(!itemNum || itemNum == item.itemNum){
             delete this[type].items[index];
-            //this.save();
-            status = {};
+            this.save();
+            status = true;
         }else if(item.itemNum >itemNum){
             item.itemNum -= itemNum;
-            //this.save();
-            status = item;
+            this.save();
+            status = true;
         }
     }
 
@@ -369,8 +361,11 @@ Package.prototype.removeItem = function(type, index,itemNum) {
 //Check out item by id and type
 Package.prototype.checkItem = function(type, index, itemId) {
     var result = 0, i, item;
+    console.log(this[type]);
     item = this[type].items[index];
-    if(!item) {
+    console.log(item);
+    console.log(itemId);
+    if(!item){
         return result;
     } else if (item.itemId == itemId) {
         result = item.itemNum;
