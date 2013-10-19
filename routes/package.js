@@ -166,7 +166,7 @@ exports.sellItem = function(req, res) {
         if("items" == type) {
             itemInfo = dataApi.item.findById(itemId);
         } else {
-            itemInfo = dataApi.equipmentLevelup.findById(itemId);
+            itemInfo = dataApi.equipment.findById(itemId);
         }
         if(!itemInfo) {
             data = {
@@ -175,7 +175,7 @@ exports.sellItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        if(!itemInfo.canSell) {
+        if(itemInfo.canSell) {
             data = {
                 code:Code.FAIL
             };
@@ -187,16 +187,13 @@ exports.sellItem = function(req, res) {
         var result = removeItem(req, res, msg, player);
         if(!!result) {
             player.money += incomeMoney;
-            player.save();
+            //player.save();
             data = {
                 code: consts.MESSAGE.RES,
                 money: player.money,
-                item: {
-                    type: type,
-                    index: msg.index,
-                    itemNum: result,
-                    itemId: itemId
-                }
+                changePackage: result,
+                type: type
+                //,itemInfo: itemInfo
             };
             async.parallel([
                 function(callback) {
@@ -212,6 +209,10 @@ exports.sellItem = function(req, res) {
                     taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
+                /*if(err){utils.send(msg, res, {
+                    code: Code.FAIL,
+                    err: err
+                });return;}*/
                 utils.send(msg, res, data);
             });
         }
@@ -227,16 +228,10 @@ function removeItem(req, res, msg, player) {
     if("items" == type) {
         itemInfo = dataApi.item.findById(itemId);
     } else {
-        itemInfo = dataApi.equipmentLevelup.findById(itemId);
+        itemInfo = dataApi.equipment.findById(itemId);
     }
 
     var data = {};
-    if(!itemInfo.canDestroy) {
-        data = {
-            code: Code.FAIL
-        };
-        utils.send(msg, res, data);
-    }
 
     var checkResult = player.packageEntity.checkItem(type, index, itemId);
     if(!checkResult ) {
@@ -253,10 +248,10 @@ function removeItem(req, res, msg, player) {
         utils.send(msg, res, data);
         return 0;
     }
-    if(player.packageEntity.removeItem(type, index, itemNum)) {
-        return checkResult - itemNum;
+    if(item = player.packageEntity.removeItem(type, index, itemNum)) {
+        return item;
     }
-    return  0;
+    return  {};
 }
 
 /**

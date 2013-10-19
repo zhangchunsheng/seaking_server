@@ -181,6 +181,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     break;
                 }
             }
+
         }*/
         for(var i in items.items) {
             if(items.items[i].itemId == item.itemId) {
@@ -205,6 +206,8 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 }
             }
         }
+         var run =function(){
+
         if(item.itemNum > 0) {
             var spaceCount = 0;
              for(var i = 1,l = items.itemCount ; i <= l ; i++) {
@@ -220,21 +223,37 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     // 一定小于99个所以直接添加就好了，传入数值最大99
                     this[type].items[i] = {
                         itemId: item.itemId,
-                        itemNum: item.itemNum,
+                        itemNum: 99,
                         level: item.level
                     };
                     index.push({
-                        index: i,
-                        item: this[type].items[i]
+                        index: spaceCount,
+                        item: items.items[spaceCount]
                     });
-                    return {index: index};
+                    item.itemNum -= 99;
+                    return run();
                 }
+                items.items[spaceCount] = {
+                    itemId: item.itemId,
+                    itemNum: item.itemNum,
+                    level: item.level
+                };
+                index.push({
+                    index: spaceCount,
+                    item: items.items[spaceCount]
+                });
+                return {index: index};
+                   
             }
         }
-        if(index.length > 0) {
-            this.save();
-            player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
-        }
+
+                    }
+
+    return  run();
+    /*if(index.length > 0) {
+        this.save();
+        player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+    }*/
     }
     return {
         index: index
@@ -344,8 +363,11 @@ Package.prototype.removeItem = function(type, index,itemNum) {
 //Check out item by id and type
 Package.prototype.checkItem = function(type, index, itemId) {
     var result = 0, i, item;
+    console.log(this[type]);
     item = this[type].items[index];
-    if(!item) {
+    console.log(item);
+    console.log(itemId);
+    if(!item){
         return result;
     } else if (item.itemId == itemId) {
         result = item.itemNum;
