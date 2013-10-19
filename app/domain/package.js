@@ -188,7 +188,6 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 ) {
                     item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - 99;
                     mitem.itemNum = 99;
-                    console.log(item.itemNum);
                     index.push({
                         index: i,
                         item: mitem
