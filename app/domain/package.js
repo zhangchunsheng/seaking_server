@@ -211,7 +211,6 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 var spaceCount = 0;
                 for(var i = 1,l = items.itemCount ; i <= l ; i++) {
                     if(!items.items[i]) {
-                        console.log("wm:"+i);
                         spaceCount = i;
                         break;
                     }
