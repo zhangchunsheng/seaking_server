@@ -80,14 +80,14 @@ exports.buyItem = function(req, res) {
         if(wid.indexOf("D") >= 0) {
             type = PackageType.ITEMS;
             itemInfo = dataApi.item.findById(wid);
-        } else if(wid.indexOf("W") >= 0) {
-            type = PackageType.WEAPONS;
-            itemInfo = dataApi.equipmentLevelup.findById(wid);
-        } else {
+        } else if(wid.indexOf("W9") >= 0) {
             type = PackageType.EQUIPMENTS;
             itemInfo = dataApi.equipmentLevelup.findById(wid);
+        } else {
+            type = PackageType.WEAPONS;
+            itemInfo = dataApi.equipmentLevelup.findById(wid);
         }
-        if(typeof itemInfo == "undefined" || itemInfo == null){
+        if(typeof itemInfo == "undefined" || itemInfo == null) {
             data = {
                 code: Code.SHOP.NOT_EXIST_ITEM
             };
