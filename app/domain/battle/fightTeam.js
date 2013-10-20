@@ -26,3 +26,5 @@ FightTeam.prototype.addMember = function(player) {
 FightTeam.prototype.calculateBuff = function(player) {
 
 }
+
+module.exports = FightTeam;
