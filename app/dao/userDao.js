@@ -86,7 +86,7 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
         var time = date.getTime() - lastLoginDate;
         time = Math.floor(time / 1000);
         var hp = player.hpRecoverySpeed * time;
-        console.log(player.hpRecoverySpeed * time);
+
         playerDao.appPlayerAndPartnersHP(player, hp, cb);
 
         var userInfo = {
@@ -1029,7 +1029,8 @@ userDao.enterIndu = function(serverId, registerType, loginName, induId, cb) {
                         var currentIndu = JSON.parse(reply);
 
                         if(currentIndu.induId == induId) {
-
+                            redis.release(client);
+                            utils.invokeCallback(cb, null, currentIndu);
                         } else {
                             var induData = dataApi.instancedungeon.findById(induId);
                             if(induData) {
@@ -1050,7 +1051,6 @@ userDao.enterIndu = function(serverId, registerType, loginName, induId, cb) {
                             }
                         }
                     });
-
                 } else {
                     redis.release(client);
                     utils.invokeCallback(cb, {
