@@ -166,7 +166,7 @@ exports.sellItem = function(req, res) {
         if("items" == type) {
             itemInfo = dataApi.item.findById(itemId);
         } else {
-            itemInfo = dataApi.equipment.findById(itemId);
+            itemInfo = dataApi.equipmentLevelup.findById(itemId);
         }
         if(!itemInfo) {
             data = {
@@ -228,7 +228,7 @@ function removeItem(req, res, msg, player) {
     if("items" == type) {
         itemInfo = dataApi.item.findById(itemId);
     } else {
-        itemInfo = dataApi.equipment.findById(itemId);
+        itemInfo = dataApi.equipmentLevelup.findById(itemId);
     }
 
     var data = {};
