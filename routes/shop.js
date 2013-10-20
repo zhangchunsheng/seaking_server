@@ -63,7 +63,7 @@ exports.buyItem = function(req, res) {
         }
         if(!result) {
             data = {
-                code: Code.FAIL
+                code: Code.SHOP.NOT_EXIST_ITEM
             };
             utils.send(msg, res, data);
             return;
