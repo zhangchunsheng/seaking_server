@@ -41,10 +41,18 @@ exports.buyItem = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-    var currentScene = msg.currentScene || player.currentScene;
+    var currentScene = msg.currentScene;
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var result=false;
+        var result = false;
+
+        if(currentScene != player.currentScene) {
+            data = {
+                code: Code.AREA.WRONG_CURRENTSCENE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
 
         var items = dataApi.shops.findById(currentScene).shopData;
         for(var i = 0 ; i < items.length ; i++) {
@@ -91,8 +99,7 @@ exports.buyItem = function(req, res) {
                 utils.send(msg, res, {code:'数据错误'});
                 return;    
             }
-        }else{
-            
+        } else {
             /*if(itemInfo.pileNum < num) {
                 utils.send(msg, res, {code:'数据错误'});
                 return;      
@@ -141,7 +148,7 @@ exports.buyItem = function(req, res) {
                 code: consts.MESSAGE.RES,
                 money: result.money,
                 packageChange: result.packageChange,
-                type: type,
+                type: type
                 //costMoney: costMoney
             };
             async.parallel([
@@ -160,8 +167,6 @@ exports.buyItem = function(req, res) {
             ], function(err, reply) {
                 utils.send(msg, res, data);
             });
-            
-            
         }
     });
 }
