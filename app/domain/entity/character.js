@@ -79,6 +79,8 @@ var Character = function(opts) {
     this.hasBuff = false;
     this.buffs = opts.buffs || [];
     this.skillBuffs = [];//技能buff
+
+    this.hasUpgrade = false;
 };
 
 util.inherits(Character, Entity);

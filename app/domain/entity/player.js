@@ -128,6 +128,7 @@ Player.prototype.updateHP = function(cb) {
  */
 Player.prototype.upgrade = function() {
     var upgradeColumn = {};
+    this.hasUpgrade = true;
     while (this.experience >= this.nextLevelExp) {
         upgradeColumn = this._upgrade();
     }
@@ -167,6 +168,27 @@ Player.prototype._upgrade = function() {
 Player.prototype.setNextLevelExp = function() {
     var hero = dataApi.heros.findById(this.cId);
     this.nextLevelExp = formula.calculateAccumulated_xp(hero["xpNeeded"], hero["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
+}
+
+Player.prototype.getUpgradeInfo = function() {
+    return {
+        level: this.level,
+        needExp: this.needExp,
+        accumulated_xp: this.accumulated_xp,
+        hp: this.hp,
+        maxHp: this.maxHp,
+        attack: this.attack,
+        defense: this.defense,
+        focus: this.focus,
+        speedLevel: this.speedLevel,
+        speed: this.speed,
+        dodge: this.dodge,
+        criticalHit: this.criticalHit,
+        critDamage: this.critDamage,
+        block: this.block,
+        counter: this.counter,
+        nextLevelExp: this.nextLevelExp
+    }
 }
 
 Player.prototype.updateAttribute = function() {
