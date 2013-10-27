@@ -156,11 +156,12 @@ exports.handOverTask = function(req, res) {
 
         var players = [];
         players.push(player);
-        taskReward.reward(player, players, taskIds, function(err, reply) { //奖励
+        taskReward.reward(player, players, taskIds, function(err, rewards) { //奖励
             var nextTasks = player.handOverTask(taskIds); //下一次任务
             data = {
                 code: consts.MESSAGE.RES,
-                nextTasks: nextTasks
+                nextTasks: nextTasks,
+                getItems: rewards
             };
             async.parallel([
                 function(callback) {
@@ -176,6 +177,10 @@ exports.handOverTask = function(req, res) {
                     taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
+                if(player.hasUpgrade) {
+                    data.hasUpgrade = true;
+                    data.playerInfo = player.getUpgradeInfo();
+                }
                 utils.send(msg, res, data);
             });
         });
