@@ -99,6 +99,10 @@ module.exports = {
         4: "currentExerciseTask"
     },
 
+    pushMessageType: {
+        ARENA_PK: 1
+    },
+
     /**
      * 任务目标类型
      * 0 - 接取即完成

@@ -69,6 +69,8 @@ var Player = function(opts) {
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
 
+    this.pushMessage = opts.pushMessage || [];
+
     this.fightValue = {
         attack: this.attack,
         defense: this.defense,
@@ -1373,6 +1375,14 @@ Player.prototype.updateMoney = function(money) {
         this.money = 0;
     this.save();
 };
+
+/**
+ *
+ * @param message
+ */
+Player.prototype.pushMessage = function(message) {
+
+}
 
 /**
  * 更新经验
