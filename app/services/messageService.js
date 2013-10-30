@@ -14,9 +14,13 @@ messageService.getMessage = function(serverId, registerType, loginName, cb) {
 }
 
 messageService.pushMessage = function(serverId, registerType, loginName, message, cb) {
-    messageDao.pushMessage(cb);
+    messageDao.pushMessage(serverId, registerType, loginName, message, cb);
 }
 
 messageService.removeMessage = function(serverId, registerType, loginName, cb) {
-    messageDao.removeMessage(cb);
+    messageDao.removeMessage(serverId, registerType, loginName, cb);
+}
+
+messageService.publishMessage = function(message, cb) {
+    messageDao.publishMessage(message, cb);
 }

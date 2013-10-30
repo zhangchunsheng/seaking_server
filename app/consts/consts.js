@@ -100,7 +100,12 @@ module.exports = {
     },
 
     pushMessageType: {
-        ARENA_PK: 1
+        ARENA_PK: 1,
+        TIP_MESSAGE: 2
+    },
+
+    messageChannel: {
+        PUSH_MESSAGE: "pushMessage"
     },
 
     /**

@@ -26,11 +26,11 @@ if(redisConfig[env]) {
 
 var messageDao = module.exports;
 
-messageDao.getMessage = function(cb) {
+messageDao.getMessage = function(serverId, registerType, loginName, cb) {
 
 }
 
-messageDao.pushMessage = function(cb) {
+messageDao.pushMessage = function(serverId, registerType, loginName, message, cb) {
     var key = "S" + player.sid + "_ARENA";
     var array = [];
 
@@ -52,6 +52,20 @@ messageDao.pushMessage = function(cb) {
     });
 }
 
-messageDao.removeMessage = function(cb) {
+messageDao.removeMessage = function(serverId, registerType, loginName, cb) {
 
+}
+
+messageDao.publishMessage = function(message, cb) {
+    var channel = consts.messageChannel.PUSH_MESSAGE;
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+
+        }).publish(channel, message, function(err, reply) {
+                redis.release(client);
+                utils.invokeCallback(cb, null, reply);
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
