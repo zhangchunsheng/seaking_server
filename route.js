@@ -125,4 +125,5 @@ module.exports = function (app) {
     app.get('/message/getBattleReport', authRequired, message.getBattleReport);
     app.get('/message/removeBattleReport', authRequired, message.removeBattleReport);
     app.get('/message/removeMessage', authRequired, message.removeMessage);
+    app.get('/message/publishMessage', message.publishMessage);
 }
