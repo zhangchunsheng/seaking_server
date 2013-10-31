@@ -43,7 +43,7 @@ exports.addMessage = function(req, res) {
         date: date.getTime()
     };
     var data = {};
-    messageService.addMessage(serverId, registerType, loginName, characterId, message, function(data) {
+    messageService.addMessage(serverId, registerType, loginName, characterId, message, function(err, reply) {
         data = {
             code: Code.OK
         };
@@ -69,10 +69,10 @@ exports.getMessage = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
-    messageService.getMessage(serverId, registerType, loginName, characterId, function(data) {
+    messageService.getMessage(serverId, registerType, loginName, characterId, function(err, reply) {
         data = {
             code: Code.OK,
-            message: data
+            message: reply
         };
         utils.send(msg, res, data);
     });
@@ -96,7 +96,7 @@ exports.removeMessage = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
-    messageService.removeMessage(serverId, registerType, loginName, characterId, function(data) {
+    messageService.removeMessage(serverId, registerType, loginName, characterId, function(err, reply) {
         data = {
             code: Code.OK
         };
@@ -123,7 +123,7 @@ exports.addTipMessage = function(req, res) {
         num: num
     };
     var data = {};
-    messageService.addTipMessage(serverId, registerType, loginName, characterId, message, function(data) {
+    messageService.addTipMessage(serverId, registerType, loginName, characterId, message, function(err, reply) {
         data = {
             code: Code.OK
         };
@@ -144,10 +144,10 @@ exports.getTipMessage = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
-    messageService.getTipMessage(serverId, registerType, loginName, characterId, function(data) {
+    messageService.getTipMessage(serverId, registerType, loginName, characterId, function(err, reply) {
         data = {
             code: Code.OK,
-            message: data
+            message: reply
         };
         utils.send(msg, res, data);
     });
@@ -166,7 +166,7 @@ exports.removeTipMessage = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
-    messageService.removeTipMessage(serverId, registerType, loginName, characterId, function(data) {
+    messageService.removeTipMessage(serverId, registerType, loginName, characterId, function(err, reply) {
         data = {
             code: Code.OK
         };
@@ -193,7 +193,7 @@ exports.addBattleReport = function(req, res) {
         date: date.getTime()
     };
     var data = {};
-    messageService.addBattleReport(serverId, registerType, loginName, characterId, battleReport, function(data) {
+    messageService.addBattleReport(serverId, registerType, loginName, characterId, battleReport, function(err, reply) {
         data = {
             code: Code.OK
         };
@@ -219,10 +219,10 @@ exports.getBattleReport = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
-    messageService.getBattleReport(serverId, registerType, loginName, characterId, function(data) {
+    messageService.getBattleReport(serverId, registerType, loginName, characterId, function(err, reply) {
         data = {
             code: Code.OK,
-            battleReports: data
+            battleReports: reply
         };
         utils.send(msg, res, data);
     });
@@ -246,7 +246,7 @@ exports.removeBattleReport = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
-    messageService.removeBattleReport(serverId, registerType, loginName, characterId, function(data) {
+    messageService.removeBattleReport(serverId, registerType, loginName, characterId, function(err, reply) {
         data = {
             code: Code.OK
         };
