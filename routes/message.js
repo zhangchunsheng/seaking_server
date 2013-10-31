@@ -71,7 +71,8 @@ exports.getMessage = function(req, res) {
     var data = {};
     messageService.getMessage(serverId, registerType, loginName, characterId, function(data) {
         data = {
-            code: Code.OK
+            code: Code.OK,
+            message: data
         };
         utils.send(msg, res, data);
     });
@@ -145,7 +146,8 @@ exports.getTipMessage = function(req, res) {
     var data = {};
     messageService.getTipMessage(serverId, registerType, loginName, characterId, function(data) {
         data = {
-            code: Code.OK
+            code: Code.OK,
+            message: data
         };
         utils.send(msg, res, data);
     });
@@ -219,7 +221,8 @@ exports.getBattleReport = function(req, res) {
     var data = {};
     messageService.getBattleReport(serverId, registerType, loginName, characterId, function(data) {
         data = {
-            code: Code.OK
+            code: Code.OK,
+            battleReports: data
         };
         utils.send(msg, res, data);
     });
