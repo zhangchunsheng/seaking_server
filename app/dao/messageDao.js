@@ -26,33 +26,43 @@ if(redisConfig[env]) {
 
 var messageDao = module.exports;
 
+messageDao.addMessage = function(serverId, registerType, loginName, message, cb) {
+
+}
+
 messageDao.getMessage = function(serverId, registerType, loginName, cb) {
 
 }
 
 messageDao.pushMessage = function(serverId, registerType, loginName, message, cb) {
-    var key = "S" + player.sid + "_ARENA";
-    var array = [];
 
-
-    //dbUtil.executeCommand(redis, redisConfig, array, {playerId: f_playerId}, cb);
-    redis.command(function(client) {
-        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
-
-        }).zcard(key, function(err, reply) {
-                var score = ++reply;
-                array.push(["zadd", key, score, player.id]);
-                client.multi(array).exec(function (err, replies) {
-                    redis.release(client);
-                    utils.invokeCallback(cb, null, score);
-                });
-            }).exec(function (err, replies) {
-
-            });
-    });
 }
 
 messageDao.removeMessage = function(serverId, registerType, loginName, cb) {
+
+}
+
+messageDao.addTipMessage = function(serverId, registerType, loginName, message, cb) {
+
+}
+
+messageDao.getTipMessage = function(serverId, registerType, loginName, cb) {
+
+}
+
+messageDao.removeTipMessage = function(serverId, registerType, loginName, cb) {
+
+}
+
+messageDao.addBattleReport = function(serverId, registerType, loginName, cb) {
+
+}
+
+messageDao.getBattleReport = function(serverId, registerType, loginName, cb) {
+
+}
+
+messageDao.removeBattleReport = function(serverId, registerType, loginName, cb) {
 
 }
 

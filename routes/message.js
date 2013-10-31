@@ -23,9 +23,29 @@ exports.index = function(req, res) {
  * @param res
  */
 exports.addMessage = function(req, res) {
-    var message = {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , type = msg.type
+        , message = msg.message;
+
+    var date = new Date();
+    var message = {
+        type: type,
+        message: message,
+        date: date.getTime()
     };
+    var data = {};
+    messageService.addMessage(serverId, registerType, loginName, message, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
 }
 
 /**
@@ -34,25 +54,21 @@ exports.addMessage = function(req, res) {
  * @param res
  */
 exports.getMessage = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
-}
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
-/**
- *
- * @param req
- * @param res
- */
-exports.getBattleReport = function(req, res) {
-
-}
-
-/**
- *
- * @param req
- * @param res
- */
-exports.removeBattleReport = function(req, res) {
-
+    var data = {};
+    messageService.getMessage(serverId, registerType, loginName, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
 }
 
 /**
@@ -61,7 +77,151 @@ exports.removeBattleReport = function(req, res) {
  * @param res
  */
 exports.removeMessage = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var data = {};
+    messageService.removeMessage(serverId, registerType, loginName, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
+}
+
+exports.addTipMessage = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , type = msg.type
+        , num = msg.num;
+
+    var message = {
+        type: type,
+        num: num
+    };
+    var data = {};
+    messageService.addTipMessage(serverId, registerType, loginName, message, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
+}
+
+exports.getTipMessage = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var data = {};
+    messageService.getTipMessage(serverId, registerType, loginName, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
+}
+
+exports.removeTipMessage = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var data = {};
+    messageService.removeTipMessage(serverId, registerType, loginName, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
+}
+
+exports.addBattleReport = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , battleInfo = msg.battleInfo;
+
+    var date = new Date();
+    var message = {
+        battleInfo: battleInfo,
+        date: date.getTime()
+    };
+    var data = {};
+    messageService.addBattleReport(serverId, registerType, loginName, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
+}
+
+/**
+ *
+ * @param req
+ * @param res
+ */
+exports.getBattleReport = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var data = {};
+    messageService.getBattleReport(serverId, registerType, loginName, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
+}
+
+/**
+ *
+ * @param req
+ * @param res
+ */
+exports.removeBattleReport = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var data = {};
+    messageService.removeBattleReport(serverId, registerType, loginName, function(data) {
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
 }
 
 /**
