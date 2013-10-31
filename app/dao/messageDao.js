@@ -117,7 +117,7 @@ messageDao.addTipMessage = function(serverId, registerType, loginName, character
                     tipMessage[message.type].num = 0;
                 }
                 tipMessage[message.type].num += message.num;
-                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(tipMessage), function(err, reply) {
+                client.hset(key, dbUtil.getTipMessageName(), JSON.stringify(tipMessage), function(err, reply) {
                     redis.release(client);
                     utils.invokeCallback(cb, null, reply);
                 });
@@ -154,7 +154,7 @@ messageDao.removeTipMessage = function(serverId, registerType, loginName, charac
                     reply = '{}';
                 var tipMessage = JSON.parse(reply);
                 tipMessage = {};
-                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(tipMessage), function(err, reply) {
+                client.hset(key, dbUtil.getTipMessageName(), JSON.stringify(tipMessage), function(err, reply) {
                     redis.release(client);
                     utils.invokeCallback(cb, null, reply);
                 });
@@ -174,7 +174,7 @@ messageDao.addBattleReport = function(serverId, registerType, loginName, charact
                     reply = '{"battleReports":[]}';
                 var battleReports = JSON.parse(reply);
                 battleReports.battleReports.push(battleReport);
-                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(battleReports), function(err, reply) {
+                client.hset(key, dbUtil.getBattleReportsName(), JSON.stringify(battleReports), function(err, reply) {
                     redis.release(client);
                     utils.invokeCallback(cb, null, reply);
                 });
@@ -211,7 +211,7 @@ messageDao.removeBattleReport = function(serverId, registerType, loginName, char
                     reply = '{"battleReports":[]}';
                 var battleReports = JSON.parse(reply);
                 battleReports.battleReports = [];
-                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(battleReports), function(err, reply) {
+                client.hset(key, dbUtil.getBattleReportsName(), JSON.stringify(battleReports), function(err, reply) {
                     redis.release(client);
                     utils.invokeCallback(cb, null, reply);
                 });
