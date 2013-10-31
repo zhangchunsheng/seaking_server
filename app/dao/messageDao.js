@@ -108,7 +108,7 @@ messageDao.addTipMessage = function(serverId, registerType, loginName, character
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
-        }).hget(key, dbUtil.getTipMessage(), function(err, reply) {
+        }).hget(key, dbUtil.getTipMessageName(), function(err, reply) {
                 if(typeof reply == "undefined" || reply == null || reply == "")
                     reply = '{}';
                 var tipMessage = JSON.parse(reply);
@@ -132,7 +132,7 @@ messageDao.getTipMessage = function(serverId, registerType, loginName, character
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
-        }).hget(key, dbUtil.getTipMessage(), function(err, reply) {
+        }).hget(key, dbUtil.getTipMessageName(), function(err, reply) {
                 if(typeof reply == "undefined" || reply == null || reply == "")
                     reply = '{}';
                 var tipMessage = JSON.parse(reply);
@@ -149,7 +149,7 @@ messageDao.removeTipMessage = function(serverId, registerType, loginName, charac
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
-        }).hget(key, dbUtil.getTipMessage(), function(err, reply) {
+        }).hget(key, dbUtil.getTipMessageName(), function(err, reply) {
                 if(typeof reply == "undefined" || reply == null || reply == "")
                     reply = '{}';
                 var tipMessage = JSON.parse(reply);
@@ -169,7 +169,7 @@ messageDao.addBattleReport = function(serverId, registerType, loginName, charact
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
-        }).hget(key, dbUtil.getBattleReport(), function(err, reply) {
+        }).hget(key, dbUtil.getBattleReportsName(), function(err, reply) {
                 if(typeof reply == "undefined" || reply == null || reply == "")
                     reply = '{"battleReports":[]}';
                 var battleReports = JSON.parse(reply);
@@ -189,7 +189,7 @@ messageDao.getBattleReport = function(serverId, registerType, loginName, charact
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
-        }).hget(key, dbUtil.getBattleReport(), function(err, reply) {
+        }).hget(key, dbUtil.getBattleReportsName(), function(err, reply) {
                 if(typeof reply == "undefined" || reply == null || reply == "")
                     reply = '{"battleReports":[]}';
                 var battleReports = JSON.parse(reply).battleReports;
@@ -206,7 +206,7 @@ messageDao.removeBattleReport = function(serverId, registerType, loginName, char
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
-        }).hget(key, dbUtil.getBattleReport(), function(err, reply) {
+        }).hget(key, dbUtil.getBattleReportsName(), function(err, reply) {
                 if(typeof reply == "undefined" || reply == null || reply == "")
                     reply = '{"battleReports":[]}';
                 var battleReports = JSON.parse(reply);
