@@ -116,7 +116,7 @@ messageDao.addTipMessage = function(serverId, registerType, loginName, character
                     tipMessage[message.type] = {};
                     tipMessage[message.type].num = 0;
                 }
-                tipMessage[message.type].num += message.num;
+                tipMessage[message.type].num += parseInt(message.num);
                 client.hset(key, dbUtil.getTipMessageName(), JSON.stringify(tipMessage), function(err, reply) {
                     redis.release(client);
                     utils.invokeCallback(cb, null, reply);
