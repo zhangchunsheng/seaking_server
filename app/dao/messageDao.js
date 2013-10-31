@@ -26,44 +26,199 @@ if(redisConfig[env]) {
 
 var messageDao = module.exports;
 
-messageDao.addMessage = function(serverId, registerType, loginName, message, cb) {
+messageDao.addMessage = function(serverId, registerType, loginName, characterId, message, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getPushMessageName(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{"pushMessage":[]}';
+                var pushMessage = JSON.parse(reply);
+                pushMessage.pushMessage.push(message);
+                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(pushMessage), function(err, reply) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
+                });
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.getMessage = function(serverId, registerType, loginName, cb) {
+messageDao.getMessage = function(serverId, registerType, loginName, characterId, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getPushMessageName(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{"pushMessage":[]}';
+                var message = JSON.parse(reply).pushMessage;
+                redis.release(client);
+                utils.invokeCallback(cb, null, message);
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.pushMessage = function(serverId, registerType, loginName, message, cb) {
+messageDao.pushMessage = function(serverId, registerType, loginName, characterId, message, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getPushMessageName(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{"pushMessage":[]}';
+                var pushMessage = JSON.parse(reply);
+                pushMessage.pushMessage.push(message);
+                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(pushMessage), function(err, reply) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
+                });
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.removeMessage = function(serverId, registerType, loginName, cb) {
+messageDao.removeMessage = function(serverId, registerType, loginName, characterId, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getPushMessageName(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{"pushMessage":[]}';
+                var pushMessage = JSON.parse(reply);
+                pushMessage.pushMessage = [];
+                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(pushMessage), function(err, reply) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
+                });
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.addTipMessage = function(serverId, registerType, loginName, message, cb) {
+messageDao.addTipMessage = function(serverId, registerType, loginName, characterId, message, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getTipMessage(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{}';
+                var tipMessage = JSON.parse(reply);
+                if(utils.empty(tipMessage[message.type])) {
+                    tipMessage[message.type] = {};
+                    tipMessage[message.type].num = 0;
+                }
+                tipMessage[message.type].num += message.num;
+                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(tipMessage), function(err, reply) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
+                });
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.getTipMessage = function(serverId, registerType, loginName, cb) {
+messageDao.getTipMessage = function(serverId, registerType, loginName, characterId, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getTipMessage(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{}';
+                var tipMessage = JSON.parse(reply);
+                redis.release(client);
+                utils.invokeCallback(cb, null, tipMessage);
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.removeTipMessage = function(serverId, registerType, loginName, cb) {
+messageDao.removeTipMessage = function(serverId, registerType, loginName, characterId, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getTipMessage(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{}';
+                var tipMessage = JSON.parse(reply);
+                tipMessage = {};
+                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(tipMessage), function(err, reply) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
+                });
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.addBattleReport = function(serverId, registerType, loginName, cb) {
+messageDao.addBattleReport = function(serverId, registerType, loginName, characterId, battleReport, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getBattleReport(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{"battleReports":[]}';
+                var battleReports = JSON.parse(reply);
+                battleReports.battleReports.push(battleReport);
+                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(battleReports), function(err, reply) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
+                });
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.getBattleReport = function(serverId, registerType, loginName, cb) {
+messageDao.getBattleReport = function(serverId, registerType, loginName, characterId, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getBattleReport(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{"battleReports":[]}';
+                var battleReports = JSON.parse(reply).battleReports;
+                redis.release(client);
+                utils.invokeCallback(cb, null, battleReports);
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
-messageDao.removeBattleReport = function(serverId, registerType, loginName, cb) {
+messageDao.removeBattleReport = function(serverId, registerType, loginName, characterId, cb) {
+    var key = dbUtil.getPlayerKey(serverId, registerType, loginName, characterId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
 
+        }).hget(key, dbUtil.getBattleReport(), function(err, reply) {
+                if(typeof reply == "undefined" || reply == null || reply == "")
+                    reply = '{"battleReports":[]}';
+                var battleReports = JSON.parse(reply);
+                battleReports.battleReports = [];
+                client.hset(key, dbUtil.getPushMessageName(), JSON.stringify(battleReports), function(err, reply) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, reply);
+                });
+            }).exec(function (err, replies) {
+
+            });
+    });
 }
 
 messageDao.publishMessage = function(message, cb) {

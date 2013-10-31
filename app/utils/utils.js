@@ -319,3 +319,7 @@ utils.getDaytime = function(date) {
     }
     return date.getFullYear() + "-" + month + "-" + day;
 }
+
+utils.empty = function(obj) {
+    return typeof obj == "undefined" || obj == null || obj == "";
+}

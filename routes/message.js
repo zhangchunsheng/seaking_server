@@ -33,6 +33,9 @@ exports.addMessage = function(req, res) {
         , type = msg.type
         , message = msg.message;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var date = new Date();
     var message = {
         type: type,
@@ -40,7 +43,7 @@ exports.addMessage = function(req, res) {
         date: date.getTime()
     };
     var data = {};
-    messageService.addMessage(serverId, registerType, loginName, message, function(data) {
+    messageService.addMessage(serverId, registerType, loginName, characterId, message, function(data) {
         data = {
             code: Code.OK
         };
@@ -62,8 +65,11 @@ exports.getMessage = function(req, res) {
         , registerType = session.registerType
         , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var data = {};
-    messageService.getMessage(serverId, registerType, loginName, function(data) {
+    messageService.getMessage(serverId, registerType, loginName, characterId, function(data) {
         data = {
             code: Code.OK
         };
@@ -85,8 +91,11 @@ exports.removeMessage = function(req, res) {
         , registerType = session.registerType
         , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var data = {};
-    messageService.removeMessage(serverId, registerType, loginName, function(data) {
+    messageService.removeMessage(serverId, registerType, loginName, characterId, function(data) {
         data = {
             code: Code.OK
         };
@@ -105,12 +114,15 @@ exports.addTipMessage = function(req, res) {
         , type = msg.type
         , num = msg.num;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var message = {
         type: type,
         num: num
     };
     var data = {};
-    messageService.addTipMessage(serverId, registerType, loginName, message, function(data) {
+    messageService.addTipMessage(serverId, registerType, loginName, characterId, message, function(data) {
         data = {
             code: Code.OK
         };
@@ -127,8 +139,11 @@ exports.getTipMessage = function(req, res) {
         , registerType = session.registerType
         , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var data = {};
-    messageService.getTipMessage(serverId, registerType, loginName, function(data) {
+    messageService.getTipMessage(serverId, registerType, loginName, characterId, function(data) {
         data = {
             code: Code.OK
         };
@@ -145,8 +160,11 @@ exports.removeTipMessage = function(req, res) {
         , registerType = session.registerType
         , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var data = {};
-    messageService.removeTipMessage(serverId, registerType, loginName, function(data) {
+    messageService.removeTipMessage(serverId, registerType, loginName, characterId, function(data) {
         data = {
             code: Code.OK
         };
@@ -164,13 +182,16 @@ exports.addBattleReport = function(req, res) {
         , loginName = session.loginName
         , battleInfo = msg.battleInfo;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var date = new Date();
-    var message = {
-        battleInfo: battleInfo,
+    var battleReport = {
+        battleInfo: JSON.parse(battleInfo),
         date: date.getTime()
     };
     var data = {};
-    messageService.addBattleReport(serverId, registerType, loginName, function(data) {
+    messageService.addBattleReport(serverId, registerType, loginName, characterId, battleReport, function(data) {
         data = {
             code: Code.OK
         };
@@ -192,8 +213,11 @@ exports.getBattleReport = function(req, res) {
         , registerType = session.registerType
         , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var data = {};
-    messageService.getBattleReport(serverId, registerType, loginName, function(data) {
+    messageService.getBattleReport(serverId, registerType, loginName, characterId, function(data) {
         data = {
             code: Code.OK
         };
@@ -215,8 +239,11 @@ exports.removeBattleReport = function(req, res) {
         , registerType = session.registerType
         , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
     var data = {};
-    messageService.removeBattleReport(serverId, registerType, loginName, function(data) {
+    messageService.removeBattleReport(serverId, registerType, loginName, characterId, function(data) {
         data = {
             code: Code.OK
         };
