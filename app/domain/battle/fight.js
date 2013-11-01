@@ -300,6 +300,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     //attack.anger = 100;
 
     // 攻击方式
+    attack.maxAnger = 10000;
     if(attack.anger >= attack.maxAnger) {// 1 - 普通攻击 2 - 技能攻击
         attackData.action = consts.attackAction.skill;
         if(attack.type == EntityType.MONSTER) {

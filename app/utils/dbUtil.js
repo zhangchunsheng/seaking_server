@@ -409,3 +409,15 @@ dbUtil.removeNickname = function(array, serverId, nickname) {
 dbUtil.removeFromArena = function(array, serverId, characterId) {
     array.push(["zrem", "S" + serverId + "_ARENA", "S" + serverId + "C" + characterId]);
 }
+
+dbUtil.getPushMessageName = function() {
+    return "pushMessage";
+}
+
+dbUtil.getTipMessageName = function() {
+    return "tipMessage";
+}
+
+dbUtil.getBattleReportsName = function() {
+    return "battleReports";
+}

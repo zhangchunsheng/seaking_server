@@ -25,6 +25,7 @@ var routes = require('./routes')
     , skill = require('./routes/skill')
     , task = require('./routes/task')
     , gm = require('./routes/gm')
+    , message = require('./routes/message')
     , authRequired = require('./middlewares/auth_required');
 
 module.exports = function (app) {
@@ -118,4 +119,15 @@ module.exports = function (app) {
     app.get('/gm/resetTask', gm.resetTask);
     app.get('/gm/updateMoney', gm.updateMoney);
     app.get('/gm/updateExp', gm.updateExp);
+
+    app.get('/message/addMessage', authRequired, message.addMessage);
+    app.get('/message/getMessage', authRequired, message.getMessage);
+    app.get('/message/removeMessage', authRequired, message.removeMessage);
+    app.get('/message/addTipMessage', authRequired, message.addTipMessage);
+    app.get('/message/getTipMessage', authRequired, message.getTipMessage);
+    app.get('/message/removeTipMessage', authRequired, message.removeTipMessage);
+    app.get('/message/addBattleReport', authRequired, message.addBattleReport);
+    app.get('/message/getBattleReport', authRequired, message.getBattleReport);
+    app.get('/message/removeBattleReport', authRequired, message.removeBattleReport);
+    app.get('/message/publishMessage', message.publishMessage);
 }

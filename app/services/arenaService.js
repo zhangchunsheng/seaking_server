@@ -13,16 +13,16 @@ arenaService.pk = function() {
 
 }
 
-arenaService.add = function() {
-
+arenaService.add = function(player, cb) {
+    arenaDao.add(player, cb);
 }
 
-arenaService.getOpponents = function() {
-
+arenaService.getOpponents = function(player, cb) {
+    arenaDao.getOpponents(player, cb);
 }
 
-arenaService.getRank = function() {
-
+arenaService.getRank = function(player, cb) {
+    arenaDao.getRank(player, cb);
 }
 
 arenaService.exchange = function(player, opponent, cb) {

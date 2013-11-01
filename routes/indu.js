@@ -207,6 +207,10 @@ exports.triggerEvent = function(req, res) {
                                 },
                                 eventResult: eventResult
                             }
+                            if(character.hasUpgrade) {
+                                result.hasUpgrade = true;
+                                result.playerInfo = character.getUpgradeInfo();
+                            }
                             utils.send(msg, res, result);
                         }
                     });

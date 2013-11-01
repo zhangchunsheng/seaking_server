@@ -176,6 +176,13 @@ exports.enterIndu = function(req, res) {
 
         var data = {};
         userService.enterIndu(serverId, registerType, loginName, induId, function(err, induInfo) {
+            if(err) {
+                data = {
+                    code: Code.INDU.WRONG_INDU
+                };
+                utils.send(msg, res, data);
+                return;
+            }
             player.currentIndu = induInfo;
             data = {
                 code: consts.MESSAGE.RES,
