@@ -36,6 +36,14 @@ exports.pk = function(req, res) {
         , loginName = session.loginName
         , vsPlayerId = msg.vsPlayerId;
 
+    var data = {};
+    if(utils.empty(vsPlayerId)) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
     userService.getPlayerById(vsPlayerId, function(err, reply) {
         pk(req, res, msg, session, reply);
     });
