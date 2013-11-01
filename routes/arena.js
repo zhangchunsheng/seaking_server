@@ -162,12 +162,28 @@ exports.add = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        arenaService.add(player, function(err, reply) {
-            data = {
-                code: Code.OK,
-                rank: reply
-            };
-            utils.send(msg, res, data);
+        arenaService.getRank(player, function(err, reply) {
+            if(err) {
+                data = {
+                    code:500
+                };
+                utils.send(msg, res, data);
+            }
+            if(reply == null) {
+                arenaService.add(player,function(err,reply) {
+                    data = {
+                        code: Code.OK,
+                        rank: reply
+                    };
+                    utils.send(msg, res, data);
+                });
+            } else {
+                data = {
+                    code: Code.OK,
+                    rank: reply + 1
+                };
+                utils.send(msg, res, data);
+            }
         });
     });
 }
