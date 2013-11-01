@@ -7,6 +7,7 @@
  */
 var arenaService = require('../app/services/arenaService');
 var userService = require('../app/services/userService');
+var messageService = require('../app/services/messageService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var session = require('../app/http/session');
@@ -15,7 +16,6 @@ var EntityType = require('../app/consts/consts').EntityType;
 var Fight = require('../app/domain/battle/fight');
 var FightTeam = require('../app/domain/battle/fightTeam');
 var consts = require('../app/consts/consts');
-var arenaDao = require('../app/dao/arenaDao');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -161,7 +161,7 @@ exports.add = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        arenaDao.add(player, function(err, reply) {
+        arenaService.add(player, function(err, reply) {
             next(null, {
                 code: Code.OK,
                 rank: reply
@@ -186,7 +186,7 @@ exports.getOpponents = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        arenaDao.getOpponents(player, function(err, result) {
+        arenaService.getOpponents(player, function(err, result) {
             if( result == null ) {
                 utils.send(msg, res,{
                     code: Code.FAIL
@@ -219,10 +219,14 @@ exports.getRank = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        arenaDao.getRank(player, function(err, reply) {
-            if(err){console.log(err.message);utils.send(msg,res,{code:500});}
+        arenaService.getRank(player, function(err, reply) {
+            if(err) {
+                utils.send(msg, res, {
+                    code:500
+                });
+            }
             if(reply == null) {
-                arenaDao.add(player,function(err,reply){
+                arenaService.add(player,function(err,reply) {
                     utils.send(msg, res, {
                         code:Code.OK,
                         rank: reply
@@ -234,6 +238,41 @@ exports.getRank = function(req, res) {
                     rank: reply + 1
                 });
             }
+        });
+    });
+}
+
+/**
+ * 进入竞技场
+ * @param req
+ * @param res
+ */
+exports.enterArena = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        messageService.getBattleReport(serverId, registerType, loginName, characterId, function(err, battleReports) {
+            arenaService.getOpponents(player, function(err, result) {
+                if( result == null ) {
+                    utils.send(msg, res,{
+                        code: Code.FAIL
+                    });
+                    return;
+                } else {
+                    utils.send(msg, res,{
+                        code: Code.OK,
+                        Opponents: result,
+                        battleReports: battleReports
+                    });
+                }
+            });
         });
     });
 }
