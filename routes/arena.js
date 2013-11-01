@@ -160,12 +160,14 @@ exports.add = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
+    var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         arenaService.add(player, function(err, reply) {
-            next(null, {
+            data = {
                 code: Code.OK,
                 rank: reply
-            });
+            };
+            utils.send(msg, res, data);
         });
     });
 }
