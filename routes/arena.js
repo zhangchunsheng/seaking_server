@@ -45,6 +45,13 @@ exports.pk = function(req, res) {
         return;
     }
     userService.getPlayerById(vsPlayerId, function(err, reply) {
+        if(err) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         pk(req, res, msg, session, reply);
     });
 }
@@ -133,7 +140,7 @@ function pk(req, res, msg, session, opponent) {
         var data = {};
         fight.pk(function(err, reply) {
             var battle = reply;
-            player.updateTaskRecord(consts.TaskGoalType.PVP, {
+            character.updateTaskRecord(consts.TaskGoalType.PVP, {
                 itemId: reply.battleResult.isWin == true ? 1 : 0
             });
             if(reply.battleResult.isWin == true) {

@@ -530,13 +530,18 @@ Fight.prototype.attack = function(battleData, players, index) {
     });
     this.round++;
 
-    if(players[index + 1].costTime == players[index].costTime) {
-        var playerId = this.sequence.shift();
-        this.sequence.push(playerId);
-        return this.attack(battleData, players, index + 1);
-    } else {
+    if(index + 1 == players.length) {
         return false;
+    } else {
+        if(players[index + 1].costTime == players[index].costTime) {
+            var playerId = this.sequence.shift();
+            this.sequence.push(playerId);
+            return this.attack(battleData, players, index + 1);
+        } else {
+            return false;
+        }
     }
+
 };
 
 /**

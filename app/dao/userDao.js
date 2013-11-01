@@ -98,6 +98,10 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
     });
 }
 
+userDao.updateHP = function(player, serverId, registerType, loginName, cb) {
+
+}
+
 /**
  * 记录玩家离开游戏
  */
@@ -736,6 +740,11 @@ userDao.getPlayerById = function(playerId, cb) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             key = playerId;
             client.get(key, function(err, reply) {
+                if(reply == null) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, {}, null);
+                    return;
+                }
                 key = reply;
                 var array = key.split("_");
                 var serverId = array[0].replace("S", "");
@@ -810,6 +819,8 @@ userDao.getPlayerById = function(playerId, cb) {
                         var partners = results[0];
                         var player = new Opponent(character);
                         player.partners = partners;
+                        var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
+                        player.equipmentsEntity = equipments;
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
                             redis.release(client);
                             utils.invokeCallback(cb, null, player);
