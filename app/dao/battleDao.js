@@ -125,7 +125,11 @@ battleDao.getBattleData = function(serverId, battleId, cb) {
             client.hget(key, battleId, function(err, reply) {
                 utils.invokeCallback(cb, null, reply);
                 redis.release(client);
-            })
-        });
+            }).exec(function(err, replies) {
+
+                });
+        }).exec(function(err, replies) {
+
+            });
     });
 }
