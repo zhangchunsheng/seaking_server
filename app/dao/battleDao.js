@@ -117,3 +117,15 @@ battleDao.getLogData = function(player, battleId, battleData) {
     }
     return logData;
 }
+
+battleDao.getBattleData = function(serverId, battleId, cb) {
+    var key = dbUtil.getBattleLogKey(serverId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+            client.hget(key, battleId, function(err, reply) {
+                utils.invokeCallback(cb, null, reply);
+                redis.release(client);
+            })
+        });
+    });
+}
