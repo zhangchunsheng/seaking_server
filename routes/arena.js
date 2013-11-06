@@ -158,6 +158,7 @@ function pk(req, res, msg, session, opponent) {
                     eventResult.players = players;
                     eventResult.enemies = enemies;
                     battleService.savePlayerPKData(character, playersInfo, enemiesInfo, eventResult, function(err, battleId) {
+                        var date = new Date();
                         var content = "你挑战" + opponent.nickname + "，";
                         if(eventResult.battleResult.isWin == true) {
                             content += "你战胜了，排名上升";
@@ -171,7 +172,8 @@ function pk(req, res, msg, session, opponent) {
                             opponent: enemies,
                             opponentId: opponent.id,
                             content: content,
-                            battleId: battleId
+                            battleId: battleId,
+                            date: date.getTime()
                         };
 
                         content = character.nickname + "挑战你，";
@@ -186,8 +188,9 @@ function pk(req, res, msg, session, opponent) {
                             playerId: opponent.id,
                             opponent: players,
                             opponentId: character.id,
-                            content: "",
-                            battleId: battleId
+                            content: content,
+                            battleId: battleId,
+                            date: date.getTime()
                         }
 
                         messageService.addBothBattleReport(character, opponent, owner_battleReport, opponent_battleReport, function(err, reply) {
