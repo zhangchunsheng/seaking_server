@@ -8,7 +8,6 @@
 var battleService = require('../app/services/battleService');
 var userService = require('../app/services/userService');
 var playerService = require('../app/services/playerService');
-var battleService = require('../app/services/battleService');
 var packageService = require('../app/services/packageService');
 var equipmentsService = require('../app/services/equipmentsService');
 var taskService = require('../app/services/taskService');
@@ -85,6 +84,8 @@ exports.battle = function(req, res) {
 
         var players = [];
         var enemies = [];
+        var playersInfo = [];
+        var enemiesInfo = [];
 
         var ownerTeam = new FightTeam({
             type: consts.teamType.PLAYER_TEAM
@@ -114,6 +115,7 @@ exports.battle = function(req, res) {
                     "anger" : player.anger,
                     "formation" : i
                 });
+                playersInfo.push(player.strip());
             }
         }
         // get monster info from file config
@@ -136,6 +138,7 @@ exports.battle = function(req, res) {
                     "anger" : player.anger,
                     "formation" : i
                 });
+                enemiesInfo.push(player.strip());
             }
         }
 
@@ -159,7 +162,7 @@ exports.battle = function(req, res) {
                 function(callback) {
                     eventResult.players = players;
                     eventResult.enemies = enemies;
-                    battleService.savePlayerBattleData(character, fight.owner_players, fight.monsters, eventResult, function(err, reply) {
+                    battleService.savePlayerBattleData(character, playersInfo, enemiesInfo, eventResult, function(err, reply) {
 
                     });
                     callback(null, 1);
@@ -168,6 +171,7 @@ exports.battle = function(req, res) {
                 function(err, results) {
                     var playerInfo = results[0];
                     if(eventResult.battleResult.isWin == true) {
+                        // character.updateTaskRecord(consts.TaskGoalType.KILL_MONSTER, fight.monsters);
                         async.parallel([
                             function(callback) {
                                 userService.updatePlayerInduInfo(character, "test", callback);

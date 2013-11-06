@@ -6,8 +6,10 @@
  * Description: arena
  */
 var arenaService = require('../app/services/arenaService');
+var battleService = require('../app/services/battleService');
 var userService = require('../app/services/userService');
 var messageService = require('../app/services/messageService');
+var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var session = require('../app/http/session');
@@ -16,6 +18,7 @@ var EntityType = require('../app/consts/consts').EntityType;
 var Fight = require('../app/domain/battle/fight');
 var FightTeam = require('../app/domain/battle/fightTeam');
 var consts = require('../app/consts/consts');
+var async = require('async');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -75,6 +78,8 @@ function pk(req, res, msg, session, opponent) {
 
         var players = [];
         var enemies = [];
+        var playersInfo = [];
+        var enemiesInfo = [];
 
         var ownerTeam = new FightTeam({
             type: consts.teamType.PLAYER_TEAM
@@ -102,6 +107,7 @@ function pk(req, res, msg, session, opponent) {
                     "anger" : player.anger,
                     "formation" : i
                 });
+                playersInfo.push(player.strip());
             }
         }
 
@@ -125,6 +131,7 @@ function pk(req, res, msg, session, opponent) {
                     "anger" : player.anger,
                     "formation" : i
                 });
+                enemiesInfo.push(player.strip());
             }
         }
 
@@ -138,23 +145,86 @@ function pk(req, res, msg, session, opponent) {
             monsterTeam: monsterTeam
         });
         var data = {};
-        fight.pk(function(err, reply) {
-            var battle = reply;
-            character.updateTaskRecord(consts.TaskGoalType.PVP, {
-                itemId: reply.battleResult.isWin == true ? 1 : 0
-            });
-            if(reply.battleResult.isWin == true) {
-                arenaService.exchange(character, opponent, function(err, reply) {
-                    battle.players = players;
-                    battle.enemies = enemies;
-                    data = {
-                        code: Code.OK,
-                        rank: reply,
-                        battle: battle
-                    };
-                    utils.send(msg, res, data);
+        fight.pk(function(err, eventResult) {
+            var battle = eventResult;
+            async.parallel([
+                function(callback) {
+                    character.updateTaskRecord(consts.TaskGoalType.PVP, {
+                        itemId: eventResult.battleResult.isWin == true ? 1 : 0
+                    });
+                    callback(null, 1);
+                },
+                function(callback) {
+                    eventResult.players = players;
+                    eventResult.enemies = enemies;
+                    battleService.savePlayerPKData(character, playersInfo, enemiesInfo, eventResult, function(err, battleId) {
+                        var content = "你挑战" + opponent.nickname + "，";
+                        if(eventResult.battleResult.isWin == true) {
+                            content += "你战胜了，排名上升";
+                        } else {
+                            content += "你战败了，排名不变";
+                        }
+
+                        var owner_battleReport = {
+                            player: players,
+                            playerId: character.id,
+                            opponent: enemies,
+                            opponentId: opponent.id,
+                            content: content,
+                            battleId: battleId
+                        };
+
+                        content = character.nickname + "挑战你，";
+                        if(eventResult.battleResult.isWin == true) {
+                            content += "你战败了，排名下降";
+                        } else {
+                            content += "你战胜了，排名不变";
+                        }
+
+                        var opponent_battleReport = {
+                            player: enemies,
+                            playerId: opponent.id,
+                            opponent: players,
+                            opponentId: character.id,
+                            content: "",
+                            battleId: battleId
+                        }
+
+                        messageService.addBothBattleReport(character, opponent, owner_battleReport, opponent_battleReport, function(err, reply) {
+                            callback(null, 1);
+                        });
+                    });
+                }
+            ],
+                function(err, results) {
+                    if(eventResult.battleResult.isWin == true) {
+                        async.parallel([
+                            function(callback) {
+                                taskService.updateTask(character, character.curTasksEntity.strip(), callback);
+                            }
+                        ], function(err, reply) {
+                            arenaService.exchange(character, opponent, function(err, reply) {
+                                battle.players = players;
+                                battle.enemies = enemies;
+                                data = {
+                                    code: Code.OK,
+                                    rank: reply,
+                                    battle: battle
+                                };
+                                utils.send(msg, res, data);
+                            });
+                        });
+                    } else {
+                        battle.players = players;
+                        battle.enemies = enemies;
+                        data = {
+                            code: Code.OK,
+                            rank: 0,
+                            battle: battle
+                        };
+                        utils.send(msg, res, data);
+                    }
                 });
-            }
         });
     });
 }
@@ -299,7 +369,7 @@ exports.enterArena = function(req, res) {
                     });
                     return;
                 } else {
-                    utils.send(msg, res,{
+                    utils.send(msg, res, {
                         code: Code.OK,
                         Opponents: result,
                         battleReports: battleReports
@@ -308,4 +378,29 @@ exports.enterArena = function(req, res) {
             });
         });
     });
+}
+
+/**
+ *
+ * @param req
+ * @param res
+ */
+exports.getPKData = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var battleId = msg.battleId;
+
+    var data = {};
+    battleService.getBattleData(serverId, battleId, function(err, reply) {
+        data = {
+            code: Code.OK,
+            battleData: reply
+        };
+        utils.send(msg, res, data);
+    })
 }

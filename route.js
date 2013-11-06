@@ -50,6 +50,7 @@ module.exports = function (app) {
     app.get('/arena/getOpponents', authRequired, arena.getOpponents);
     app.get('/arena/getRank', authRequired, arena.getRank);
     app.get('/arena/enterArena', authRequired, arena.enterArena);
+    app.get('/arena/getPKData', authRequired, arena.getPKData);
 
     //战斗
     app.get('/battle/battle', authRequired, battle.battle);

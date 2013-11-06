@@ -173,10 +173,19 @@ messageDao.addBattleReport = function(serverId, registerType, loginName, charact
                 if(typeof reply == "undefined" || reply == null || reply == "")
                     reply = '{"battleReports":[]}';
                 var battleReports = JSON.parse(reply);
+                var array = [];
+                if(battleReports.battleReports.length >= 5) {
+                    var battleInfo = battleReports.battleReports.shift();
+                    var battleId = battleInfo.battleId;
+                    dbUtil.removeLogData(array, serverId, battleId);
+                }
                 battleReports.battleReports.push(battleReport);
-                client.hset(key, dbUtil.getBattleReportsName(), JSON.stringify(battleReports), function(err, reply) {
+
+                array.push(["hset", key, dbUtil.getBattleReportsName(), JSON.stringify(battleReports)]);
+
+                client.multi(array).exec(function(err, replies) {
                     redis.release(client);
-                    utils.invokeCallback(cb, null, reply);
+                    utils.invokeCallback(cb, null, replies);
                 });
             }).exec(function (err, replies) {
 
@@ -231,6 +240,54 @@ messageDao.publishMessage = function(message, cb) {
                 utils.invokeCallback(cb, null, reply);
             }).exec(function (err, replies) {
 
+            });
+    });
+}
+
+messageDao.addBothBattleReport = function(character, opponent, owner_battleReport, opponent_battleReport, cb) {
+    var characterId = utils.getRealCharacterId(character.id);
+    var owner_key = dbUtil.getPlayerKey(character.sid, character.registerType, character.loginName, characterId);
+
+    characterId = utils.getRealCharacterId(opponent.id);
+    var opponent_key = dbUtil.getPlayerKey(opponent.sid, opponent.registerType, opponent.loginName, characterId);
+
+    var array = [];
+    array.push(["hget", owner_key, dbUtil.getBattleReportsName()]);
+    array.push(["hget", opponent_key, dbUtil.getBattleReportsName()]);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+
+        }).multi(array).exec(function (err, replies) {
+                array = [];
+                for(var i = 0 ; i < replies.length ; i++) {
+                    if(typeof replies[i] == "undefined" || replies[i] == null || replies[i] == "")
+                        replies[i] = '{"battleReports":[]}';
+                }
+
+                var owner_battleReports = JSON.parse(replies[0]);
+                var opponent_battleReports = JSON.parse(replies[1]);
+
+                if(owner_battleReports.battleReports.length >= 5) {
+                    var battleInfo = owner_battleReports.battleReports.shift();
+                    var battleId = battleInfo.battleId;
+                    dbUtil.removeLogData(array, character.sid, battleId);
+                }
+                owner_battleReports.battleReports.push(owner_battleReport);
+
+                if(opponent_battleReports.battleReports.length >= 5) {
+                    var battleInfo = opponent_battleReports.battleReports.shift();
+                    var battleId = battleInfo.battleId;
+                    dbUtil.removeLogData(array, character.sid, battleId);
+                }
+                opponent_battleReports.battleReports.push(opponent_battleReport);
+
+                array.push(["hset", owner_key, dbUtil.getBattleReportsName(), JSON.stringify(owner_battleReports)]);
+                array.push(["hset", opponent_key, dbUtil.getBattleReportsName(), JSON.stringify(opponent_battleReports)]);
+
+                client.multi(array).exec(function(err, replies) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, null, replies);
+                });
             });
     });
 }
