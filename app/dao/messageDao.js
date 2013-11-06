@@ -256,8 +256,8 @@ messageDao.addBothBattleReport = function(character, opponent, owner_battleRepor
     array.push(["hget", opponent_key, dbUtil.getBattleReportsName()]);
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
-
-        }).multi(array).exec(function (err, replies) {
+            client.multi(array).exec(function(err, replies) {
+                console.log(replies);
                 array = [];
                 for(var i = 0 ; i < replies.length ; i++) {
                     if(typeof replies[i] == "undefined" || replies[i] == null || replies[i] == "")
@@ -288,6 +288,9 @@ messageDao.addBothBattleReport = function(character, opponent, owner_battleRepor
                     redis.release(client);
                     utils.invokeCallback(cb, null, replies);
                 });
+            });
+        }).exec(function (err, replies) {
+
             });
     });
 }
