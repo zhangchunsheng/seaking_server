@@ -13,6 +13,7 @@ var item = require('../../config/data/item');
 var npc = require('../../config/data/npc');
 var task = require('../../config/data/task');
 var heros = require('../../config/data/heros');
+var herosV2 = require('../../config/data/herosV2');
 var monster = require('../../config/data/monster');
 var induMonstergroup = require('../../config/data/induMonstergroup');
 var instancedungeon = require('../../config/data/instancedungeon');
@@ -136,6 +137,7 @@ module.exports = {
     skillList: new Data(skillList),
     task: new Data(task),
     heros: new Data(heros),
+    herosV2: new Data(herosV2),
     monster: new Data(monster),
     induMonstergroup: new Data(induMonstergroup),
     instancedungeon: new Data(instancedungeon),
