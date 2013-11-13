@@ -672,6 +672,51 @@ Fight.createMonster = function(opts) {
     return data;
 }
 
+Fight.createPlayer = function(opts) {
+    var heros = dataApi.herosV2.data;
+    var hero = heros[opts.id];
+    var data = {
+        id: opts.id,
+        kindId: opts.id,
+        formationId: opts.formationId,
+        type: opts.type,
+        hp: hero.hp,
+        anger: 0,
+        maxAnger: 100,
+        restoreAngerSpeed: {ea:10, ehr: 3, eshr: 6},
+        attackers: [],
+        costTime: 0,
+        distance: 0,
+        died: false,
+        maxHp: hero.hp,
+        restoreHpSpeed: 10,
+        attack: hero.attack,
+        defense: hero.defense,
+        focus: hero.focus,
+        speedLevel: hero.speed,
+        speed: hero.speed,
+        dodge: hero.dodge,
+        criticalHit: 1,
+        critDamage: hero.critDamage,
+        block: hero.block,
+        counter: hero.counter,
+        level: hero.level
+    };
+    data.fightValue = {};
+    data.fightValue.attack = Math.floor(data.attack);
+    data.fightValue.defense = Math.floor(data.defense);
+    data.fightValue.speedLevel = Math.floor(data.speedLevel);
+    data.fightValue.hp = data.hp;
+    data.fightValue.maxHp = data.hp;
+    data.fightValue.focus = data.focus;
+    data.fightValue.criticalHit = data.criticalHit;
+    data.fightValue.critDamage = data.critDamage;
+    data.fightValue.dodge = data.dodge;
+    data.fightValue.block = data.block;
+    data.fightValue.counter = data.counter;
+    return data;
+}
+
 Fight.createTestCharacter = function(opts) {
     var heros = dataApi.heros.data;
     var hero = heros[opts.id];
