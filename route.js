@@ -54,6 +54,7 @@ module.exports = function (app) {
 
     //战斗
     app.get('/battle/battle', authRequired, battle.battle);
+    app.get('/battle/battle2', battle.battle2);
 
     //赌场
     app.get('/casino/getItems', authRequired, casino.getItems);
