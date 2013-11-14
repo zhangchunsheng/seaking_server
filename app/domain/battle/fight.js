@@ -476,7 +476,8 @@ Fight.prototype.attack = function(battleData, players, index) {
                 fId: defense.formationId,
                 action: defenseData.action,
                 hp: defenseData.hp,
-                anger: defenseData.anger
+                anger: defenseData.anger,
+                reduceBlood: defenseData.reduceBlood
             };
             if(defenseData.isCounter) {
                 target.isCounter = true;
