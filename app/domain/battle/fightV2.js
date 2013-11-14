@@ -531,6 +531,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     data.attackType = attackData.action;
     data.damageType = attackData.damageType;
     data.attackAnger = attackData.anger;
+    data.hp = attackData.hp;
     // 守方
     //data.defenseData = defenseData;
 
