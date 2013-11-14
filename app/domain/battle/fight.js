@@ -329,9 +329,9 @@ Fight.prototype.attack = function(battleData, players, index) {
     //格挡
     var block = defense.block * 100;
     //闪避
-    var dodgeRate = defense.dodgeRate * 100;
+    var dodge = defense.dodge * 100;
     var num1 = criticalHit + block;
-    var num2 = num1 + dodgeRate;
+    var num2 = num1 + dodge;
     random = utils.random(1, 10000);
     if(random >= 1 && random <= criticalHit) {
         isCriticalHit = true;
@@ -426,9 +426,9 @@ Fight.prototype.attack = function(battleData, players, index) {
             // 守方
 
             // 判定是否反击
-            var counterAttack = defense.counterAttack * 100;
+            var counter = defense.counter * 100;
             random = utils.random(1, 10000);
-            if(random >= 1 && random <= counterAttack) {// 反击
+            if(random >= 1 && random <= counter) {// 反击
                 var damage = defense.attack * 25 / 100;
                 defenseData.isCounter = true;
                 defenseData.counterValue = damage;//反击伤害

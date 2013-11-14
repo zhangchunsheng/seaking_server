@@ -8,8 +8,32 @@
 var formula = module.exports;
 var dataApi = require('../utils/dataApi');
 
-formula.calDamage = function(attacker, target) {
+/**
+ * 伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
+ * @param attackData
+ * @param defenseData
+ */
+formula.calDamage = function(attackData, defenseData, attack, defense) {
+    var damage = (100 + attack.sunderArmor) * attackData.attack / (100 + defenseData.defense);
+    return damage;
+}
 
+formula.calCritDamage = function(attackData, defenseData, attack, defense) {
+    var damage = formula.calDamage(attackData, defenseData, attack, defense);
+    damage = damage * attack.fightValue.critDamage;
+    return damage;
+}
+
+formula.calBlockDamage = function(attackData, defenseData, attack, defense) {
+    var damage = formula.calDamage(attackData, defenseData, attack, defense);
+    damage = damage / 2;
+    return damage;
+}
+
+formula.calCounterDamage = function(attackData, defenseData, attack, defense) {
+    var damage = formula.calDamage(attackData, defenseData, attack, defense);
+    damage = damage * 0.6;
+    return damage;
 }
 
 /**

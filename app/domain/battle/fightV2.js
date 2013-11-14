@@ -331,9 +331,9 @@ Fight.prototype.attack = function(battleData, players, index) {
     //格挡
     var block = defense.block * 100;
     //闪避
-    var dodgeRate = defense.dodgeRate * 100;
+    var dodge = defense.dodge * 100;
     var num1 = criticalHit + block;
-    var num2 = num1 + dodgeRate;
+    var num2 = num1 + dodge;
     random = utils.random(1, 10000);
     if(random >= 1 && random <= criticalHit) {
         isCriticalHit = true;
@@ -402,7 +402,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             // random = utils.random(1, 10000);
             if(isCriticalHit) {// 暴击
                 attackData.isCritHit = true;
-                attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
+                //attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
             }
 
             defenseData.action = consts.defenseAction.beHitted;
@@ -410,14 +410,23 @@ Fight.prototype.attack = function(battleData, players, index) {
             // 判定是否格挡
             // random = utils.random(1, 10000);
             if(isBlock) {// 格挡
-                attackData.attack = attackData.attack / 2;
+                //attackData.attack = attackData.attack / 2;
                 defenseData.isBlock = true;
                 defenseData.action = consts.defenseAction.block;
             }
 
             // attackData.hasBuff = true;// buff，可以有多个buff
 
-            defenseData.reduceBlood = attackData.attack - defenseData.defense;
+            if(isCriticalHit) {// 暴击
+                defenseData.reduceBlood = formulaV2.calCritDamage(attackData, defenseData, attack, defense);
+            } else if(isBlock) {
+                defenseData.reduceBlood = formulaV2.calBlockDamage(attackData, defenseData, attack, defense);
+            } else {
+                //defenseData.reduceBlood = formula.calDamage(attackData, defenseData);
+                //伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
+                defenseData.reduceBlood = formulaV2.calDamage(attackData, defenseData, attack, defense);
+            }
+
             if(defenseData.reduceBlood < 0) {
                 defenseData.reduceBlood = 0;
             }
@@ -428,10 +437,10 @@ Fight.prototype.attack = function(battleData, players, index) {
             // 守方
 
             // 判定是否反击
-            var counterAttack = defense.counterAttack * 100;
+            var counter = defense.counter * 100;
             random = utils.random(1, 10000);
-            if(random >= 1 && random <= counterAttack) {// 反击
-                var damage = defense.attack * 25 / 100;
+            if(random >= 1 && random <= counter) {// 反击
+                var damage = formulaV2.calCounterDamage(defenseData, attackData, defense, attack);
                 defenseData.isCounter = true;
                 defenseData.counterValue = damage;//反击伤害
                 attack.hp -= damage;
@@ -736,7 +745,7 @@ Fight.createTestPlayer = function(opts) {
     data.fightValue.hp = data.hp;
     data.fightValue.maxHp = data.hp;
     data.fightValue.focus = data.focus;
-    data.sunderArmor = data.sunderArmor;
+    data.fightValue.sunderArmor = data.sunderArmor;
     data.fightValue.criticalHit = data.criticalHit;
     data.fightValue.critDamage = data.critDamage;
     data.fightValue.dodge = data.dodge;

@@ -165,8 +165,8 @@ Enemy.prototype.strip = function() {
         speedLevel: this.speedLevel,
         speed: this.speed,
         currentScene: this.currentScene,
-        focusRate: this.focusRate,
-        dodgeRate: this.dodgeRate,
+        focus: this.focus,
+        dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
         gameCurrency: this.gameCurrency,
@@ -174,7 +174,7 @@ Enemy.prototype.strip = function() {
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         block: this.block,//格挡
-        counterAttack: this.counterAttack,//反击
+        counter: this.counter,//反击
         skills: this.skills,
         buffs: this.buffs
     };
@@ -220,8 +220,8 @@ Enemy.prototype.toJSON = function() {
         speedLevel: this.speedLevel,
         speed: this.speed,
         currentScene: this.currentScene,
-        focusRate: this.focusRate,
-        dodgeRate: this.dodgeRate,
+        focus: this.focus,
+        dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
         gameCurrency: this.gameCurrency,
@@ -229,7 +229,7 @@ Enemy.prototype.toJSON = function() {
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         block: this.block,//格挡
-        counterAttack: this.counterAttack,//反击
+        counter: this.counter,//反击
         skills: this.skills,
         buffs: this.buffs
     };
@@ -254,8 +254,8 @@ Enemy.prototype.getBaseInfo = function() {
         speedLevel: this.speedLevel,
         speed: this.speed,
         currentScene: this.currentScene,
-        focusRate: this.focusRate,
-        dodgeRate: this.dodgeRate,
+        focus: this.focus,
+        dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
         gameCurrency: this.gameCurrency,
@@ -263,7 +263,7 @@ Enemy.prototype.getBaseInfo = function() {
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         block: this.block,//格挡
-        counterAttack: this.counterAttack,//反击
+        counter: this.counter,//反击
         skills: this.skills,
         buffs: this.buffs
     };

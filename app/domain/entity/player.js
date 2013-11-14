@@ -184,6 +184,7 @@ Player.prototype.getUpgradeInfo = function() {
         attack: this.attack,
         defense: this.defense,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         speedLevel: this.speedLevel,
         speed: this.speed,
         dodge: this.dodge,
