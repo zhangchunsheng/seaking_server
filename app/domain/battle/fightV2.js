@@ -444,7 +444,7 @@ Fight.prototype.attack = function(battleData, players, index) {
                 var damage = formulaV2.calCounterDamage(defense, attack);
                 defenseData.isCounter = true;
                 defenseData.counterValue = damage;//反击伤害
-                attack.hp -= damage;
+                attack.hp = Math.round(attack.hp - damage);
                 if(attack.hp <= 0) {
                     attack.hp = 0;
                     attack.died = attackData.died = true;
@@ -455,7 +455,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             // 更新数据
             defenseData.fId = monsterIndex;
 
-            defense.hp -= defenseData.reduceBlood;
+            defense.hp = Math.round(defense.hp - defenseData.reduceBlood);
             if(defense.hp <= 0) {
                 defense.hp = 0;
                 defense.died = defenseData.died = true;
