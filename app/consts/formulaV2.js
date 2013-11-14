@@ -70,19 +70,38 @@ formula.calculateAccumulated_xp = function(value, rate, level) {
     return Math.floor(accumulated_xp);
 }
 
-formula.calculateHp = function(value, rate, level) {
-    rate = rate / 100;
-    return this.calculateAddUp(value, rate, level);
+/**
+ * 	伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
+ * 	生命 = 基础生命 + 等级 * 成长系数
+ * 	攻击 = 基础攻击 + 等级 * 成长系数
+ * 	速度 = 基础速度 * （1 + 等级 * 0.01）
+ * 	护甲 = 基础护甲 * （1+0.5 * 等级）
+ * 	破甲 = 基础破甲 * （1+0.5 * 等级）
+ * 	暴击 = 基础暴击 * （1+等级 * 0.1）
+ * 	格挡 = 基础格挡 * （1+等级 * 0.1）
+ * 	闪避 = 基础闪避 * （1+等级 * 0.1）
+ * 	反击 = 基础反击 * （1+等级 * 0.1）
+ * @param hp
+ * @param addHp
+ * @param level
+ * @returns {number}
+ */
+formula.calculateHp = function(hp, addHp, level) {
+    return hp + level * addHp;
 }
 
-formula.calculateAttack = function(value, rate, level) {
-    rate = rate / 100;
-    return this.calculateAddUp(value, rate, level);
+formula.calculateAttack = function(attack, addAttack, level) {
+    return attack + level * addAttack;
 }
 
-formula.calculateDefense = function(value, rate, level) {
-    rate = rate / 100;
-    return this.calculateAddUp(value, rate, level);
+/**
+ * 计算护甲
+ * @param defense
+ * @param level
+ * @returns {number}
+ */
+formula.calculateDefense = function(defense, level) {
+    return defense * (1 + level * 0.5);
 }
 
 formula.calculateFocus = function(value, rate, level) {
@@ -90,37 +109,38 @@ formula.calculateFocus = function(value, rate, level) {
     return this.calculateValue(value, rate, level);
 }
 
-formula.calculateSpeedLevel = function(value, rate, level) {
-    rate = rate / 40;
-    return Math.floor(this.calculateValue(value, rate, level));
+/**
+ * 计算破甲
+ */
+formula.calculateSunderArmor = function(value, level) {
+    return value * (1 + level * 0.5);
 }
 
-formula.calculateSpeed = function(value, rate, level) {
-    var number = this.calculateSpeedLevel(value, rate, level);
+formula.calculateSpeedLevel = function(speed, level) {
+    return speed * (1 + level * 0.01);
+}
+
+formula.calculateSpeed = function(value, level) {
+    var number = this.calculateSpeedLevel(value, level);
     return 100 / number;
 }
 
-formula.calculateDodge = function(value, rate, level) {
-    rate = rate / 40;
-    return this.calculateValue(value, rate, level);
+formula.calculateDodge = function(value, level) {
+    return value * (1 + level * 0.1);
 }
 
-formula.calculateCriticalHit = function(value, rate, level) {
-    rate = rate / 40;
-    return this.calculateValue(value, rate, level);
+formula.calculateCriticalHit = function(value, level) {
+    return value * (1 + level * 0.1);
 }
 
-formula.calculateCritDamage = function(value, rate, level) {
-    rate = rate / 40;
-    return this.calculateValue(value, rate, level);
+formula.calculateCritDamage = function(value, level) {
+    return 1.6;
 }
 
-formula.calculateBlock = function(value, rate, level) {
-    rate = rate / 40;
-    return this.calculateValue(value, rate, level);
+formula.calculateBlock = function(value, level) {
+    return value * (1 + level * 0.1);
 }
 
-formula.calculateCounter = function(value, rate, level) {
-    rate = rate / 40;
-    return this.calculateValue(value, rate, level);
+formula.calculateCounter = function(value, level) {
+    return value * (1 + level * 0.1);
 }

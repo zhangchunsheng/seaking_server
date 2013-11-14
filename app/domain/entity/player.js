@@ -78,6 +78,7 @@ var Player = function(opts) {
         hp: this.hp,
         maxHp: this.maxHp,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         dodge: this.dodge,

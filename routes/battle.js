@@ -220,6 +220,11 @@ exports.battle = function(req, res) {
     });
 }
 
+var fullName = {
+    h: "heroId",
+    l: "level",
+    f: "formationId"
+}
 /**
  * 战斗
  * @param req
@@ -231,17 +236,32 @@ exports.battle2 = function(req, res) {
     var owner_heros = JSON.parse(msg.owner_heros);//[{ heroId: '1', level: '1', formationId: 1 }]
     var opponent_heros = JSON.parse(msg.opponent_heros);
 
+    for(var i = 0 ; i < owner_heros.length ; i++) {
+        for(var o in owner_heros[i]) {
+            owner_heros[i][fullName[o]] = owner_heros[i][o];
+        }
+    }
+    for(var i = 0 ; i < opponent_heros.length ; i++) {
+        for(var o in opponent_heros[i]) {
+            opponent_heros[i][fullName[o]] = opponent_heros[i][o];
+        }
+    }
+
     var data = {};
 
-    var owner_formationData = [0,0,0,0,0,0,0];
-    var monster_formationData = [0,0,0,0,0,0,0];
+    var owner_formationData = [null,null,null,null,null,null,null];
+    var monster_formationData = [null,null,null,null,null,null,null];
 
     for(var i = 0 ; i < owner_heros.length ; i++) {
-        owner_formationData[owner_heros[i].formationId - 1] = owner_heros[i].heroId;
+        owner_formationData[owner_heros[i].formationId - 1] = {};
+        owner_formationData[owner_heros[i].formationId - 1].heroId = owner_heros[i].heroId;
+        owner_formationData[owner_heros[i].formationId - 1].level = owner_heros[i].level;
     }
 
     for(var i = 0 ; i < opponent_heros.length ; i++) {
-        monster_formationData[opponent_heros[i].formationId - 1] = opponent_heros[i].heroId;
+        monster_formationData[opponent_heros[i].formationId - 1] = {};
+        monster_formationData[opponent_heros[i].formationId - 1].heroId = opponent_heros[i].heroId;
+        monster_formationData[opponent_heros[i].formationId - 1].level = opponent_heros[i].level;
     }
 
     var owners = {};
@@ -265,7 +285,8 @@ exports.battle2 = function(req, res) {
     for(var i = 0 ; i < owner_formationData.length ; i++) {
         if(owner_formationData[i] != null && owner_formationData[i] != 0) {
             player = new Player(FightV2.createPlayer({
-                id: owner_formationData[i],
+                id: owner_formationData[i].heroId,
+                level: owner_formationData[i].level,
                 formationId: i,
                 type: EntityType.PLAYER
             }));
@@ -288,7 +309,8 @@ exports.battle2 = function(req, res) {
     for(var i = 0 ; i < monster_formationData.length ; i++) {
         if(monster_formationData[i] != null && monster_formationData[i] != 0) {
             player = new Monster(FightV2.createPlayer({
-                id: monster_formationData[i],
+                id: monster_formationData[i].heroId,
+                level: monster_formationData[i].level,
                 formationId: i,
                 type: EntityType.MONSTER
             }));

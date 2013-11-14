@@ -10,6 +10,7 @@ var async = require('async');
 var utils = require('../../utils/utils');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
+var formulaV2 = require('../../consts/formulaV2');
 var EntityType = require('../../consts/consts').EntityType;
 var fightReward = require('./fightReward');
 var consts = require('../../consts/consts');
@@ -672,15 +673,36 @@ Fight.createMonster = function(opts) {
     return data;
 }
 
-Fight.createPlayer = function(opts) {
+/**
+ *
+ * 	伤害 = (100 + 破甲)*攻击力/（100 + 护甲）
+ * 	生命 = 基础生命 + 等级 * 成长系数
+ * 	攻击 = 基础攻击 + 等级 * 成长系数
+ * 	速度 = 基础速度 * （1 + 等级 * 0.01）
+ * 	护甲 = 基础护甲 * （1+0.5 * 等级）
+ * 	破甲 = 基础破甲 * （1+0.5 * 等级）
+ * 	暴击 = 基础暴击 * （1+等级 * 0.1）
+ * 	格挡 = 基础格挡 * （1+等级 * 0.1）
+ * 	闪避 = 基础闪避 * （1+等级 * 0.1）
+ * 	反击 = 基础反击 * （1+等级 * 0.1）
+ * @param opts
+ * @returns {}
+ */
+Fight.createTestPlayer = function(opts) {
+    var heroId = opts.id;
+    var level = opts.level;
+    var formationId = opts.formationId;
+    var type = opts.type;
+
     var heros = dataApi.herosV2.data;
     var hero = heros[opts.id];
+
     var data = {
-        id: opts.id,
-        kindId: opts.id,
-        formationId: opts.formationId,
-        type: opts.type,
-        hp: hero.hp,
+        id: heroId,
+        kindId: heroId,
+        formationId: formationId,
+        type: type,
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
         anger: 0,
         maxAnger: 100,
         restoreAngerSpeed: {ea:10, ehr: 3, eshr: 6},
@@ -688,18 +710,19 @@ Fight.createPlayer = function(opts) {
         costTime: 0,
         distance: 0,
         died: false,
-        maxHp: hero.hp,
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
         restoreHpSpeed: 10,
-        attack: hero.attack,
-        defense: hero.defense,
-        focus: hero.focus,
-        speedLevel: hero.speed,
-        speed: hero.speed,
-        dodge: hero.dodge,
-        criticalHit: 1,
-        critDamage: hero.critDamage,
-        block: hero.block,
-        counter: hero.counter,
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: hero.focus || 0,
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level),
         level: hero.level
     };
     data.fightValue = {};
@@ -709,6 +732,7 @@ Fight.createPlayer = function(opts) {
     data.fightValue.hp = data.hp;
     data.fightValue.maxHp = data.hp;
     data.fightValue.focus = data.focus;
+    data.sunderArmor = data.sunderArmor;
     data.fightValue.criticalHit = data.criticalHit;
     data.fightValue.critDamage = data.critDamage;
     data.fightValue.dodge = data.dodge;
