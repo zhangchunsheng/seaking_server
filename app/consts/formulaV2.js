@@ -15,24 +15,24 @@ var dataApi = require('../utils/dataApi');
  */
 formula.calDamage = function(attack, defense) {
     var damage = (100 + attack.sunderArmor) * attack.fightValue.attack / (100 + defense.fightValue.defense);
-    return Math.round(damage);
+    return Math.ceil(damage);
 }
 
 formula.calCritDamage = function(attack, defense) {
     var damage = formula.calDamage(attack, defense);
     damage = damage * attack.fightValue.critDamage;
-    return Math.round(damage);
+    return Math.ceil(damage);
 }
 
 formula.calBlockDamage = function(attack, defense) {
     var damage = formula.calDamage(attack, defense);
     damage = damage / 2;
-    return Math.round(damage);
+    return Math.ceil(damage);
 }
 
 formula.calCounterDamage = function(attack, defense) {
     var damage = formula.calDamage(attack, defense);
-    damage = Math.round(damage * 0.6);
+    damage = Math.ceil(damage * 0.6);
     return damage;
 }
 
