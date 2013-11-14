@@ -377,7 +377,8 @@ Fight.prototype.attack = function(battleData, players, index) {
             fId: defense.formationId,
             action: defenseData.action,
             hp: defenseData.hp,
-            anger: defenseData.anger
+            anger: defenseData.anger,
+            reduceBlood: defenseData.reduceBlood
         };
         data.target.push(target);
     } else {
@@ -418,13 +419,13 @@ Fight.prototype.attack = function(battleData, players, index) {
             // attackData.hasBuff = true;// buff，可以有多个buff
 
             if(isCriticalHit) {// 暴击
-                defenseData.reduceBlood = formulaV2.calCritDamage(attackData, defenseData, attack, defense);
+                defenseData.reduceBlood = formulaV2.calCritDamage(attack, defense);
             } else if(isBlock) {
-                defenseData.reduceBlood = formulaV2.calBlockDamage(attackData, defenseData, attack, defense);
+                defenseData.reduceBlood = formulaV2.calBlockDamage(attack, defense);
             } else {
-                //defenseData.reduceBlood = formula.calDamage(attackData, defenseData);
+                //defenseData.reduceBlood = formula.calDamage(attack, defense);
                 //伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
-                defenseData.reduceBlood = formulaV2.calDamage(attackData, defenseData, attack, defense);
+                defenseData.reduceBlood = formulaV2.calDamage(attack, defense);
             }
 
             if(defenseData.reduceBlood < 0) {
@@ -440,7 +441,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             var counter = defense.counter * 100;
             random = utils.random(1, 10000);
             if(random >= 1 && random <= counter) {// 反击
-                var damage = formulaV2.calCounterDamage(defenseData, attackData, defense, attack);
+                var damage = formulaV2.calCounterDamage(defense, attack);
                 defenseData.isCounter = true;
                 defenseData.counterValue = damage;//反击伤害
                 attack.hp -= damage;

@@ -13,26 +13,26 @@ var dataApi = require('../utils/dataApi');
  * @param attackData
  * @param defenseData
  */
-formula.calDamage = function(attackData, defenseData, attack, defense) {
-    var damage = (100 + attack.sunderArmor) * attackData.attack / (100 + defenseData.defense);
-    return damage;
+formula.calDamage = function(attack, defense) {
+    var damage = (100 + attack.sunderArmor) * attack.fightValue.attack / (100 + defense.fightValue.defense);
+    return parseInt(damage);
 }
 
-formula.calCritDamage = function(attackData, defenseData, attack, defense) {
-    var damage = formula.calDamage(attackData, defenseData, attack, defense);
+formula.calCritDamage = function(attack, defense) {
+    var damage = formula.calDamage(attack, defense);
     damage = damage * attack.fightValue.critDamage;
-    return damage;
+    return parseInt(damage);
 }
 
-formula.calBlockDamage = function(attackData, defenseData, attack, defense) {
-    var damage = formula.calDamage(attackData, defenseData, attack, defense);
+formula.calBlockDamage = function(attack, defense) {
+    var damage = formula.calDamage(attack, defense);
     damage = damage / 2;
-    return damage;
+    return parseInt(damage);
 }
 
-formula.calCounterDamage = function(attackData, defenseData, attack, defense) {
-    var damage = formula.calDamage(attackData, defenseData, attack, defense);
-    damage = damage * 0.6;
+formula.calCounterDamage = function(attack, defense) {
+    var damage = formula.calDamage(attack, defense);
+    damage = parseInt(damage * 0.6);
     return damage;
 }
 
