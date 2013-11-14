@@ -59,10 +59,10 @@ Fight.prototype.fight = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
-        owners[i].updateFightValue();
+        //owners[i].updateFightValue();
     }
     for(var i in monsters) {
-        monsters[i].updateFightValue();
+        //monsters[i].updateFightValue();
     }
 
     // 计算最大速度
@@ -107,10 +107,10 @@ Fight.prototype.fight = function(cb) {
             this.owner_players.push(this.players[i]);
         }
     }
-    fightReward.reward(this.mainPlayer, this.owner_players, monsters, this.isWin, function(err, reply) {
+    //fightReward.reward(this.mainPlayer, this.owner_players, monsters, this.isWin, function(err, reply) {
         var battleResult = {};
         battleResult.isWin = that.isWin;
-        battleResult.getItems = reply;
+        //battleResult.getItems = reply;
         // 战斗结果
         var result = {
             "formationData": {
@@ -122,7 +122,7 @@ Fight.prototype.fight = function(cb) {
         };
 
         utils.invokeCallback(cb, null, result);
-    });
+    //});
 };
 
 /**
@@ -299,6 +299,7 @@ Fight.prototype.attack = function(battleData, players, index) {
 
     // test skill
     //attack.anger = 100;
+    attack.anger = 0;
 
     // 攻击方式
     attack.maxAnger = 10000;
@@ -710,6 +711,8 @@ Fight.createTestPlayer = function(opts) {
         costTime: 0,
         distance: 0,
         died: false,
+        starLevel: hero.starLevel,
+        heroType: hero.type,
         maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
         restoreHpSpeed: 10,
         attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
@@ -723,7 +726,8 @@ Fight.createTestPlayer = function(opts) {
         critDamage: formulaV2.calculateCritDamage(hero.attack, level),
         block: formulaV2.calculateBlock(hero.block, level),
         counter: formulaV2.calculateCounter(hero.counter, level),
-        level: hero.level
+        level: level,
+        skills: {}
     };
     data.fightValue = {};
     data.fightValue.attack = Math.floor(data.attack);

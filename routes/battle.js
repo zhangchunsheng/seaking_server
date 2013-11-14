@@ -233,7 +233,7 @@ var fullName = {
 exports.battle2 = function(req, res) {
     var msg = req.query;
 
-    var owner_heros = JSON.parse(msg.owner_heros);//[{ heroId: '1', level: '1', formationId: 1 }]
+    var owner_heros = JSON.parse(msg.owner_heros);//[{ heroId: '1', level: '1', formationId: 1 }] [{ h: '1', l: '1', f: 1 }]
     var opponent_heros = JSON.parse(msg.opponent_heros);
 
     for(var i = 0 ; i < owner_heros.length ; i++) {
@@ -280,11 +280,13 @@ exports.battle2 = function(req, res) {
         type: consts.teamType.MONSTER_TEAM
     });
 
+    var character = null;
+
     // 阵型中角色数据
     // get player info from db
     for(var i = 0 ; i < owner_formationData.length ; i++) {
         if(owner_formationData[i] != null && owner_formationData[i] != 0) {
-            player = new Player(FightV2.createPlayer({
+            player = new Player(FightV2.createTestPlayer({
                 id: owner_formationData[i].heroId,
                 level: owner_formationData[i].level,
                 formationId: i,
@@ -301,14 +303,17 @@ exports.battle2 = function(req, res) {
                 "anger" : player.anger,
                 "formation" : i
             });
-            playersInfo.push(player.strip());
+            playersInfo.push(player.getBaseInfo());
+            if(character == null) {
+                character = player;
+            }
         }
     }
     // get monster info from file config
     var monster = {};
     for(var i = 0 ; i < monster_formationData.length ; i++) {
         if(monster_formationData[i] != null && monster_formationData[i] != 0) {
-            player = new Monster(FightV2.createPlayer({
+            player = new Monster(FightV2.createTestPlayer({
                 id: monster_formationData[i].heroId,
                 level: monster_formationData[i].level,
                 formationId: i,
@@ -325,12 +330,12 @@ exports.battle2 = function(req, res) {
                 "anger" : player.anger,
                 "formation" : i
             });
-            enemiesInfo.push(player.strip());
+            enemiesInfo.push(player.getBaseInfo());
         }
     }
 
     var fight = new FightV2({
-        mainPlayer: {},
+        mainPlayer: character,
         owner_formation: owner_formationData,
         monster_formation: monster_formationData,
         owners: owners,

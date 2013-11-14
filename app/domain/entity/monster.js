@@ -234,3 +234,37 @@ Enemy.prototype.toJSON = function() {
         buffs: this.buffs
     };
 };
+
+Enemy.prototype.getBaseInfo = function() {
+    return {
+        id: this.id,
+        entityId: this.entityId,
+        nickname: this.nickname,
+        cId: this.cId,
+        type: this.type,
+        x: Math.floor(this.x),
+        y: Math.floor(this.y),
+        hp: this.hp,
+        maxHp: this.maxHp,
+        anger: this.anger,
+        level: this.level,
+        experience: this.experience,
+        attack: this.attack,
+        defense: this.defense,
+        speedLevel: this.speedLevel,
+        speed: this.speed,
+        currentScene: this.currentScene,
+        focusRate: this.focusRate,
+        dodgeRate: this.dodgeRate,
+        nextLevelExp: this.nextLevelExp,
+        money: this.money,
+        gameCurrency: this.gameCurrency,
+        photo: this.photo,
+        criticalHit: this.criticalHit,
+        critDamage: this.critDamage,
+        block: this.block,//格挡
+        counterAttack: this.counterAttack,//反击
+        skills: this.skills,
+        buffs: this.buffs
+    };
+};

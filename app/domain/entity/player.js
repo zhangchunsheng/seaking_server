@@ -50,7 +50,8 @@ var Player = function(opts) {
     this.gift = opts.gift;
 
     var heros = dataApi.heros.data;
-    this.nextLevelExp = formula.calculateAccumulated_xp(heros[this.cId]["xpNeeded"], heros[this.cId]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
+    //this.nextLevelExp = formula.calculateAccumulated_xp(heros[this.cId]["xpNeeded"], heros[this.cId]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
+    this.nextLevelExp = opts.nextLevelExp;
     this.herosData = dataApi.heros.findById(this.kindId);
     this.curTasks = opts.curTasks;
     this.range = opts.range || 2;
@@ -439,6 +440,8 @@ Player.prototype.updateFightValue = function() {
  * 获得怒气数值
  */
 Player.prototype.updateRestoreAngerSpeed = function() {
+    if(typeof this.activeSkill.skillData == "undefined")
+        return;
     var speed = this.activeSkill.skillData.speed;
     for(var i = 0 ; i < speed.length ; i++) {
         this.restoreAngerSpeed[speed[i].type] = parseInt(speed[i].value);
@@ -1441,6 +1444,43 @@ Player.prototype.toJSON = function() {
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
+        gift: this.gift
+    };
+};
+
+Player.prototype.getBaseInfo = function() {
+    return {
+        id: this.id,
+        entityId: this.entityId,
+        nickname: this.nickname,
+        cId: this.cId,
+        type: this.type,
+        x: Math.floor(this.x),
+        y: Math.floor(this.y),
+        hp: this.hp,
+        maxHp: this.maxHp,
+        anger: this.anger,
+        level: this.level,
+        experience: this.experience,
+        attack: this.attack,
+        defense: this.defense,
+        speedLevel: this.speedLevel,
+        speed: this.speed,
+        currentScene: this.currentScene,
+        currentIndu: this.currentIndu,
+        focus: this.focus,
+        dodge: this.dodge,
+        nextLevelExp: this.nextLevelExp,
+        money: this.money,
+        gameCurrency: this.gameCurrency,
+        photo: this.photo,
+        criticalHit: this.criticalHit,
+        critDamage: this.critDamage,
+        block: this.block,//格挡
+        counter: this.counter,//反击
+        skills: this.skills,
+        buffs: this.buffs,
+        formation: this.formation,
         gift: this.gift
     };
 };
