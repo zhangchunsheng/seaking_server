@@ -44,7 +44,7 @@ Fight.prototype.fight = function(cb) {
     var monsters = this.monsters;
     var players = this.players;
 
-    var max_time = 30;
+    var max_time = 30 * 10;
     var currentTime = 0;
     var previousTime = 0;
     var battleData = [];
@@ -73,6 +73,7 @@ Fight.prototype.fight = function(cb) {
     for(var i in monsters) {
         max_speed = Math.max(max_speed, monsters[i].fightValue.speedLevel);
     }
+    max_speed = 10;
     perDistance = max_speed;
 
     var flag = false;
@@ -555,7 +556,6 @@ Fight.prototype.attack = function(battleData, players, index) {
             return false;
         }
     }
-
 };
 
 /**

@@ -90,7 +90,7 @@ Enemy.prototype.updateFightValue = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -134,7 +134,7 @@ Enemy.prototype.calculateBuff = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;

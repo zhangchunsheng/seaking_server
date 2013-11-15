@@ -426,7 +426,7 @@ Player.prototype.updateFightValue = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -513,7 +513,7 @@ Player.prototype.equipmentAdditional = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -561,7 +561,7 @@ Player.prototype.activeSkillAdditional = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -662,7 +662,7 @@ Player.prototype.calculateBuff = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -769,7 +769,7 @@ Player.prototype.passiveSkillAdditional = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
