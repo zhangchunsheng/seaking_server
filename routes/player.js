@@ -560,3 +560,49 @@ exports.useSkill = function(req, res) {
         }
     });
 }
+
+/**
+ * 遗忘技能
+ * @param req
+ * @param res
+ */
+exports.forgetSkill = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var skillId = msg.skillId;
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var status = player.checkUseSkill(skillId);
+        if(status == 1) {
+            player.useSkill(msg.skillId, function(err, reply) {
+                if(err) {
+                    data = {
+                        code:Code.SKILL.NO_SKILL
+                    };
+                    utils.send(msg, res, data);
+                    return;
+                }
+                data = {
+                    skillId: skillId,
+                    code:Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        } else {
+            data = {
+                code: Code.SKILL.NO_SKILL
+            };
+            utils.send(msg, res, data);
+        }
+    });
+}
