@@ -710,6 +710,14 @@ Fight.createTestPlayer = function(opts) {
     var heros = dataApi.herosV2.data;
     var hero = heros[opts.id];
 
+    var skills = {};
+    for(var i = 0 ; i < opts.skills ; i++) {
+        skills[i + 1] = {
+            skillId: opts.skills[i],
+            level: 1
+        };
+    }
+
     var data = {
         id: heroId,
         kindId: heroId,
@@ -739,7 +747,7 @@ Fight.createTestPlayer = function(opts) {
         block: formulaV2.calculateBlock(hero.block, level),
         counter: formulaV2.calculateCounter(hero.counter, level),
         level: level,
-        skills: {}
+        skills: skills
     };
     data.fightValue = {};
     data.fightValue.attack = Math.floor(data.attack);
