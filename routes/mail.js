@@ -27,13 +27,7 @@ exports.index = function(req, res) {
     res.send("index");
 }
 
-exports.test = function(req, res) {
-    var msg = req.query;
-    mailDao.test(msg, function(err, r) {
-        if(err){utils.send(msg, res, r);return;}
-        utils.send(msg, res, r);
-    });
-}
+
 /**
  * 系统发邮件
  * @param req
