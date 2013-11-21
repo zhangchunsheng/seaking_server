@@ -1143,10 +1143,12 @@ Player.prototype.updateTask = function() {
 
 Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
     var task = {};
+    var res = [];
     for(var type in this.curTasksEntity.strip()) {
         task = this.curTasksEntity[type];
         if(task.taskGoal.type == TaskGoalType) {
             task.updateRecord(this, TaskGoalType, items);
+            console.info (task.itmeId );
         }
     }
 }

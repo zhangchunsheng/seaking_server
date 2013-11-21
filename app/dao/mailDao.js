@@ -30,6 +30,7 @@ mailDao.createMail = function (msg) {
 	return new Mail(msg);
 };
 
+
 /**
  * 补齐邮件信息
  * @param msg
@@ -54,6 +55,7 @@ mailDao.setTo = function (msg, cb) {
 	} else if (msg.toName != null && msg.to == null) {
 		userDao.getPlayerIdByNickname(msg.serverId, msg.toName, function (err, reply) {
 			msg.to = reply;
+			console.log("callback:"+reply);
 			mailDao.setToKey(msg, cb);
 		});
 	}
@@ -109,8 +111,7 @@ mailDao.getOutbox = function (key, start, end, cb) {
         }).lrange(key + "_" + MailKeyType.SEND, start, end, function (err, reply) {
             redis.release(client);
 			utils.invokeCallback(cb, null, reply);
-		})
-		.exec(function (err, reply) {
+		}).exec(function (err, reply) {
 
         });
 	});
@@ -123,49 +124,55 @@ mailDao.getOutbox = function (key, start, end, cb) {
  * @param end
  * @param cb
  */
-mailDao.getInbox = function (key, start, end, cb) {
-	redis.command(function (client) {
-		client.select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
-			var msg = {
-				keys : [key + "_" + MailKeyType.HASITEM, key + "_" + MailKeyType.NOREAD, key + "_" + MailKeyType.READ],
-				client : client,
-				list : new Array(),
-				start : start,
-				end : end
-			};
-			mailDao.getMailList(redis, msg, cb);
+
+mailDao.getInbox = function(keys, nums, start, end, callback){
+	//keys=[W,N,R]
+	var array = [["select", redisConfig.database.SEAKING_REDIS_DB]];
+	if(start>=nums[0]){
+		start -= nums[0];
+		end -=nums[0];
+		if(start>=nums[1]) {
+			start -= nums[1];
+			end -= nums[1];
+			//都在read里面
+			array.push(["lrange", keys[2], start, end]);
+		}else{
+			array.push(["lrange", keys[1], start, end]);
+			if(end >= nums[1]){
+				start = 0;end -= nums[1];
+				array.push(["lrange", keys[2], start, end]);
+			}
+		}
+
+	}else{
+		if(end >= nums[0]){
+			array.push(["lrange", keys[0], start, nums[0]]);
+			start = 0;end -= nums[0];
+			array.push(["lrange" ,keys[1], start, end]);
+			if(end>= nums[1]){
+				end -= nums[1];
+				array.push(["lrange", keys[2], start, end]);
+			}
+
+		}else{
+			//都在item里面
+			array.push(["lrange",keys[0], start, end]);
+		}
+		
+	}
+	redis.command(function(client){
+		client.multi(array).exec(function(err, res){
+			redis.release(client);
+			if(err){callback(err,null);return;}
+			var rarray = [];
+			for(var i = 1,l =res.length; i < l ; i++) {
+				rarray = rarray.concat(res[i]);
+			}
+			callback(null,rarray);
 		});
 	});
 }
 
-mailDao.getMailList = function (redis, msg, cb) {
-	var client = msg.client;
-	var key = msg.keys.shift();
-	if (key == null || typeof key == undefined) {
-        redis.release(client);
-		utils.invokeCallback(cb, null, msg.list);
-		return;
-	}
-	client.llen(key, function (err, reply) {
-		if (msg.start > reply) {
-			msg.start -= reply;
-			mailDao.getMailList(redis, msg, cb);
-			return;
-		}
-		client.lrange(key, msg.start, msg.end, function (err, reply) {
-			if (reply == undefined) {
-				reply = [];
-			}
-			msg.list = msg.list.concat(reply);
-			if ((msg.end = msg.end - msg.start - reply.length) > 0) {
-				msg.start = 0;
-			} else {
-				msg.keys = [];
-			}
-			mailDao.getMailList(redis, msg, cb);
-		});
-	});
-}
 
 /**
  * 系统发送给玩家
@@ -208,7 +215,9 @@ mailDao.systemSendMail = function (toBox, mail, cb) {
  * @param cb
  */
 mailDao.addMail = function (fromBox, toBox, mail, cb) {
-	var sendMail = JSON.stringify(mail);
+	var cmail = utils.clone(mail);
+	cmail.mailId = MailKeyType.SEND+cmail.mailId;
+	var sendMail = JSON.stringify(cmail);
 	mail.mailId = MailKeyType.NOREAD + mail.mailId;
 	var receive = JSON.stringify(mail);
     console.log(fromBox);
@@ -262,15 +271,16 @@ mailDao.SendMailCount = function (Key, cb) {
 /**
  * 系统删除发送邮箱里的邮件
  */
-mailDao.DelOutboxMail = function (Key, cb) {
+mailDao.DelOutboxMail = function (Key,num, cb) {
+	var array = [];
+	array.push(["select", redisConfig.database.SEAKING_REDIS_DB]);
+	for(var i = 0,l =num;i<num ;i++){
+		array.push(["rpop",Key + "_" + MailKeyType.SEND]);
+	}
 	redis.command(function (client) {
-		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
-
-        }).rpop(Key + "_" + MailKeyType.SEND, function (err, reply) {
-            redis.release(client);
+		client.multi(array).exec(function (err, reply) {
+			redis.release(client);
 			utils.invokeCallback(cb, null, reply);
-		}).exec(function (err, reply) {
-
         });
 	});
 }
@@ -278,54 +288,64 @@ mailDao.DelOutboxMail = function (Key, cb) {
 /**
  * 收件箱子邮件个数
  */
-mailDao.ToMailCount = function (Keys, cb) {
+mailDao.ToMailCount = function (Keys, cb, mode) {
 	var array = [['select', redisConfig.database.SEAKING_REDIS_DB]];
 	for (var i in Keys) {
 		array.push(['llen', Keys[i]]);
 	}
 	redis.command(function (client) {
 		client.multi(array).exec(function (err, reply) {
-			var all = 0;
-			for (var i = 1; i <= Keys.length; i++) {
+			redis.release(client);
+			if(err) {utils.invokeCallback(err,null);return;}
+			if(mode) {
+				reply.shift();
+				utils.invokeCallback(cb, null, reply);return;
+			}
+           	var all = 0;
+			for (var i = 1, l = Keys.length; i < l; i++) {
 				all += reply[i];
 			}
-            redis.release(client);
 			utils.invokeCallback(cb, null, all);
+			
 		});
 	});
 }
 
-/**
- *删除接收邮件
- */
-mailDao.DelInboxMail = function (Key, cb) {
-	redis.command(function (client) {
-		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {}).rpop(Key + "_" + MailKeyType.READ, function (err, reply) {
-			if (!!err) {
-				client.rpop(Key + "_" + MailKeyType.NOREAD, function (err, reply) {
-					if (!!err) {
-						client.rpop(Key + "_" + MailKeyType.HASITEM, function (err, reply) {
-							if (!!err) {
-                                redis.release(client);
-								utils.invokeCallback(cb, "删除失败");
-								return;
-							}
-                            redis.release(client);
-							utils.invokeCallback(cb, null, reply);
-						});
-						return;
-					}
-                    redis.release(client);
-					utils.invokeCallback(cb, null, reply);
-				});
-				return;
-			}
-			utils.invokeCallback(cb, null, reply);
-		}).exec(function (err, reply) {
 
-        });
+mailDao.DelInboxMail = function(Key) {
+	var array =[
+        Key + "_" + MailKeyType.HASITEM,
+        Key + "_" + MailKeyType.NOREAD,
+        Key + "_" + MailKeyType.READ
+    ];
+	mailDao.ToMailCount(array, function(err, all){
+		if(err)return;
+		if(all >= 200){
+			redis.command(function(client) {
+				mailDao.clean(array, all-200+1, client);
+			});
+		}
+	});
+};
+mailDao.clean = function(keys, num, client) {
+	if(keys == null || num == 0) {
+		redis.release(client);
+		return;
+	}
+	client.rpop(keys[0],function(err, res) {
+		if(err){
+			redis.release(client);
+			return;
+		}
+		if(!res){
+			keys.shift();
+			mailDao.clean(keys, num, client);
+		}else{
+			mailDao.clean(keys, --num, client);	
+		}
 	});
 }
+
 
 /**
  * 删除邮件的功能
@@ -333,34 +353,41 @@ mailDao.DelInboxMail = function (Key, cb) {
  * @param Key
  * @param cb
  */
-mailDao.delMail = function (mails, Key, cb) {
-	redis.command(function (client) {
-		client.EVALSHA(LuaSha(lua.delMailLua), 3, redisConfig.database.SEAKING_REDIS_DB, Key + "_" + mails[0], mails[0] + mails[1], function (err, reply) {
-			if (err) {
-				client.eval(lua.delMailLua, 3, redisConfig.database.SEAKING_REDIS_DB, Key + "_" + mails[0], mails[0] + mails[1], function (err, reply) {
-                    redis.release(client);
-					utils.invokeCallback(cb, err, reply);
-				});
-				return;
-			}
-            redis.release(client);
-			utils.invokeCallback(cb, err, reply);
+mailDao.delMail = function(mails, Key, cb) {
+	redis.command(function(client) {
+		mailDao.del(client, mails,Key, function(err, res){
+			redis.release(client);
+			cb(err, res);
 		});
 	});
 }
+ mailDao.del = function(client, mails, Key, cb, mode) {
+ 	mailDao.get(client, Key+"_"+mails[0], mails[0]+mails[1], function(err, res) {
+ 		if(err){cb(err,res);return;}
+ 		var order = 1;
+ 		if(res.index > res.length/2) {
+ 			order = -1;
+ 		}
+ 		var sql = ["lrem", Key+"_"+mails[0], order, getstring(res.data)];
+ 		if(mode) {
+ 			cb(null, sql);
+ 		}else{
+ 			client.multi([sql]).exec(function(err, r) {
+ 				cb(err, res);
+ 			});
+ 		}
+ 	});
+ }
+/*mailDao.delMail = function (mails, Key, cb) {
+	redis.command(function (client) {
+		client.eval(lua.delMailLua, 3, redisConfig.database.SEAKING_REDIS_DB, Key + "_" + mails[0], mails[0] + mails[1], function (err, reply) {
+	        redis.release(client);
+			utils.invokeCallback(cb, err, reply);
+		});	
+	});
+}*/
 
-/**
- * lua 加密sha1
- * @param lua_script
- * @returns {*}
- * @constructor
- */
-function LuaSha(lua_script) {
-	var shasum = crypto.createHash('sha1');
-	shasum.update(lua_script);
-	var lua_script_sha = shasum.digest('hex');
-	return lua_script_sha;
-}
+
 
 /**
  * 未读到已读
@@ -368,7 +395,207 @@ function LuaSha(lua_script) {
  * @param Key
  * @param cb
  */
-mailDao.readMail = function (mails, Key, cb) {
+
+ function getjson(object) {
+ 	if(typeof object == "string") {
+ 		return JSON.parse(object);
+ 	}
+ 	return object;
+ }
+ mailDao.readMail = function(mails, Key, cb) {
+ 	if(mails[0] == MailKeyType.NOREAD) {
+ 		redis.command(function(client) {
+ 			mailDao.get(client, Key+"_"+mails[0], mails[0]+mails[1],function(err, res){
+ 				if(err) {redis.release(client);cb(err, null);return;}
+ 				if(!res.data) {
+ 					redis.release(client);cb("not find",null);return;
+ 				}
+ 				var data = res.data;
+ 				var rdata= getjson(data);
+ 				var array = [];
+ 				if(res.index > (res.length/2)) {
+ 					array.push(["LREM",Key+"_"+mails[0], 1, getstring(data)]);
+ 				}else{
+ 					array.push(["LREM",Key+"_"+mails[0], -1, getstring(data)]);
+ 				}
+ 				rdata.mailId = MailKeyType.READ+mails[1];
+ 				mailDao.insert(client, Key+"_"+MailKeyType.READ, rdata, function(err, res){
+ 					if(err){redis.release(client);cb(err,null);return;}
+ 					array.push(res);
+ 					client.multi(array).exec(function(err, res) {
+ 						redis.release(client);
+ 						if(err){cb(err,null);return;}
+ 						cb(null, rdata);
+ 					});
+ 				},1);
+ 			});
+ 		});
+ 	}else{
+ 		redis.command(function(client) {
+	 		mailDao.get(client, Key+"_"+mails[0], mails[0]+mails[1],function(err, res){
+				redis.release(client);
+	 			if(err){cb(err,null);return;}
+	 			cb(null,res.data);
+	 		});
+ 		});
+ 	}
+ };
+ function getstring(object) {
+ 	if(typeof object != "string") {
+ 		return JSON.stringify(object);
+ 	}
+ 	return object;
+}
+ 	
+mailDao.insert = function(client, key1, key2, callback, mode) {
+	var array = [["select",redisConfig.database.SEAKING_REDIS_DB]];
+	array.push(["llen",key1]);
+	array.push(["lindex",key1, 0]);
+	array.push(["lindex",key1, -1]);
+	console.log(array);
+	client.multi(array).exec(function(err, res) {
+		if(err){callback(err,null);return;}
+		res.shift();
+		var length = res[0];
+		if(length ==0) {
+			var sql = ["lpush",key1,getstring(key2)];
+			if(mode) {
+				callback(null, sql);return;
+			}else{
+				client.multi([sql]).exec(function(err, res){
+					callback(err, res);
+				});
+				return;
+			}
+		}
+		var time = key2.time;
+		var order = "AFTER";
+		var index;
+		function cb( order, data){
+			var sql = ["LINSERT",key1,order, getstring(data),getstring(key2) ];
+			console.log(sql);
+			if(mode){
+				callback(null,sql);
+			}else{
+				client.multi([sql]).exec(function(err, res){
+					callback(err, res);
+				});
+			}
+		}
+		if(getjson(res[1]).time < time) {
+			index = 0;
+			order = "BEFORE";
+			cb(order, res[1]);
+		}else if(JSON.parse(res[2]).time > time) {
+			index = length -1;
+			cb(order, res[2]);
+		}else{
+			if(length > getNum) {
+				var find = function(start, end) {
+					var m = Math.ceil((start+end)/2);
+					client.lindex(key1,m , function(err, res) {
+						if(err){callback(err, null);return;}
+						res = JSON.parse(res);
+						if(res.time > time) {
+							if(m+1==end){cb("AFTER",res);return;}
+							 find(m,end);
+						}else if(res.time < time) {
+							if(start+1==m){cb("BEFORE",res);return;}
+							 find(start, m);
+						}else{
+							cb(order, res);
+						}
+					});
+				}
+				find(0, length-1);
+			}else{
+				client.lrange(key1, 0, -1, function(err, res) {
+					if(err){callback(err, null);return;}
+					 function find (start, end) {
+						if(start +1 == end) {
+							return start;
+						}
+						var m = Math.ceil((start+end)/2);
+						var json = JSON.parse(res[m]);
+						if(json.time > time) {
+							return find(m,end);
+						}else if(json.time < time) {
+							return find(start,m);
+						}else{
+							return m;
+						}
+					}
+					var c = find(0,length-1);
+					cb(order, res[c]);
+				});
+			}
+		}
+	});
+}
+var getNum = 40;
+ mailDao.get = function(client, key1, key2, callback) {
+ 	var array = [['select', redisConfig.database.SEAKING_REDIS_DB]];
+ 	array.push(["llen", key1]);
+ 	array.push(["lindex",key1, 0]);
+ 	array.push(["lindex",key1, -1]);
+ 	client.multi(array).exec(function(err, res){
+ 		if(err){callback(err, res);return;}
+ 		res.shift();
+ 		var length =res[0];
+ 		if(length == 0){
+ 			callback(null,{index:0, data:null, length:length});
+ 			return;
+ 		}
+ 		var m1 = getjson(res[1]).mailId;
+ 		if(m1 == key2) {
+ 			callback(null,{index: 0, data: res[1], length: length});return;
+ 		}else if(m1 < key2 || length ==1) {
+ 			callback("not find",null);return;
+ 		}
+ 		var m2 = getjson(res[2]).mailId;
+ 		if(m2 == key2) {
+ 			callback(null,{index: length-1, data: res[2], length: length});return;
+ 		}else if(m2 > key2 || length == 2){
+ 			callback("not find", null);return;
+ 		}
+ 		if(length > getNum) {
+ 			var find = function(start, end) {
+ 				if(start+1 == end){callback("not find:"+key2, null);return;}
+ 				var m = Math.ceil((start+end)/2);
+ 				client.lindex(key1, m, function(err, rfind){
+ 					rfind = JSON.parse(rfind);
+ 					if(rfind.mailId > key2) {
+ 						return find(m , end);
+ 					}else if(rfind.mailId < key2) {
+ 						return find(start, m);
+ 					}else{
+ 						callback(null , {index: m, data: rfind, length: length});
+ 					}
+ 				});
+ 			}
+ 			 find(0, length);
+ 		}else {
+ 			client.lrange(key1, 0 ,-1, function(err, res){
+ 				if(err){callback(err,res);return;}
+ 				var find = function(start, end){
+ 					var m = Math.ceil((start+end)/2);
+ 					var mailId = getjson(res[m]).mailId;
+ 					if(mailId > key2) {
+ 						return find(m, end);
+ 					}else if(mailId < key2) {
+ 						return find(start, m);
+ 					}else{
+ 						return m;
+ 					}
+ 				}
+ 				var m = find(0, length-1);
+ 				callback(null, {index: m, data: res[m], length: length});
+ 			});
+ 			
+ 		}
+ 	});
+ }
+/*mailDao.readMail = function (mails, Key, cb) {
     if(mails[0]==MailKeyType.NOREAD ){
         mailDao.delMail(mails, Key, function (err, reply) {
     
@@ -390,7 +617,7 @@ mailDao.readMail = function (mails, Key, cb) {
              });
         });
     }
-}
+}*/
 
 /**
  * 插入mail
@@ -398,21 +625,14 @@ mailDao.readMail = function (mails, Key, cb) {
  * @param mailStr
  * @param cb
  */
-function insertMail(Key, mailStr, cb) {
+/*function insertMail(Key, mailStr, cb) {
 	redis.command(function (client) {
-		client.EVALSHA(LuaSha(lua.insertMailLua), 3, redisConfig.database.SEAKING_REDIS_DB, Key, mailStr, function (err, reply) {
-			if (!!err) {
-				client.EVAL(lua.insertMailLua, 3, redisConfig.database.SEAKING_REDIS_DB, Key, mailStr, function (err, reply) {
-                    redis.release(client);
-					utils.invokeCallback(cb, err, reply);
-				});
-				return;
-			}
+		client.EVAL(lua.insertMailLua, 3, redisConfig.database.SEAKING_REDIS_DB, Key, mailStr, function (err, reply) {
             redis.release(client);
 			utils.invokeCallback(cb, err, reply);
 		});
 	});
-}
+}*/
 
 /**
  * 领取物品
@@ -422,7 +642,81 @@ function insertMail(Key, mailStr, cb) {
  * @param player
  * @param cb
  */
-mailDao.collectItem = function (Key, mails, itemIndex, player, cb) {
+
+ mailDao.collectItem = function(Key, mails, index, player, cb) {
+ 	redis.command(function(client) {
+ 		mailDao.get(client, Key+"_"+mails[0], mails[0]+mails[1], function(err, res) {
+ 			if(err){redis.release(client);cb(err,null);return;}
+ 			if(!res){redis.release(client);cb("not find",null);return;}
+ 			var mail = getjson(res.data);
+ 			mail.items = getjson(mail.items);
+ 			if(mail.items[index].hasCollect) {
+ 				utils.invokeCallback(cb, "已经领过了");
+ 				return;
+ 			}
+ 			var item = mail.items[index];
+ 			item.hasCollect = 1;
+ 			var v = false;
+			for(var i = 0, l= mail.items.length;i<l;i++) {
+				if(!mail.items[i].hasCollect){
+					v = true;
+				}
+			}
+			var sql;
+			var i = player.packageEntity.addItemWithNoType(player, item);
+			if(v){
+				sql = ["lset", Key+"_"+mails[0], res.index, getstring(mail)];
+				/*redis.release(client);
+				cb(null, {changeMail:data, addItem:item, sql: sql});*/
+				client.multi([sql]).exec(function(err, res){
+					redis.release(client);
+					if(err){cb(err,null);return;}
+					cb(null,{changeMail:mail, changItem: i});
+				});
+			}else{
+				var array =[];
+				var order = 1;
+				if(res.index > res.length/2){
+					order = -1;
+				}
+				array.push(["lrem", Key+"_"+MailKeyType.HASITEM,order,res.data]);
+				mail.mailId = MailKeyType.READ+mails[1];
+				mailDao.insert(client, Key+"_"+MailKeyType.READ,mail , function(err, re) {
+					if(err){redis.release(client);cb(err,null);return;}
+					array.push(re);
+	
+					client.multi(array).exec(function(err, r) {
+						redis.release(client);
+						if(err){cb(err,null);return;}
+						if(r[0] == 1 && r[1] ==1){
+							cb(null,{changeMail:mail, changeItem: i});
+						}else{
+							cb(null,array);
+						}
+						
+						
+					});
+					//sql = ["eval", insertLua, "P"+playerId+"_"+MailConstant.READ,data];
+				},1);
+			}
+ 		});
+ 	});
+ }
+
+ mailDao.sendAll = function(msg, callback) {
+ 	var array = [["select", redisConfig.database.SEAKING_REDIS_DB]];
+ 	if(msg.data.items) {
+ 		array.push(["keys","*_ERW"]);
+ 	}else{
+ 		array.push(["keys","*_ERN"]);
+ 	}
+ 	redis.command(function(client) {
+ 		client.multi(array).exec(function(err, res) {
+ 			new MailObject(msg.data).full();
+ 		});
+ 	});
+ }
+/*mailDao.collectItem = function (Key, mails, itemIndex, player, cb) {
 	mailDao.delMail(mails, Key, function (err, reply) {
 		if (err) {
 			utils.invokeCallback(cb, err);
@@ -468,4 +762,4 @@ mailDao.collectItem = function (Key, mails, itemIndex, player, cb) {
 			});
 		}
 	});
-}
+}*/

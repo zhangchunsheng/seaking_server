@@ -87,12 +87,15 @@ module.exports = function (app) {
     app.get('/mail/newMail',authRequired,mail.hasNewMail);
     app.get('/mail/collectItem', authRequired, mail.collectItem);
 
+
     app.get('/package/addItem', authRequired, package.addItem);
     app.get('/package/dropItem', authRequired, package.dropItem);
     app.get('/package/sellItem', authRequired, package.sellItem);
     app.get('/package/discardItem', authRequired, package.discardItem);
     app.get('/package/resetItem', authRequired, package.resetItem);
     app.get('/package/userItem', authRequired, package.userItem);
+    app.get('/package/unlock', authRequired, package.unlock);
+    
 
     app.get('/player/enterScene', authRequired, player.enterScene);
     app.get('/player/changeAndGetSceneData', authRequired, player.changeAndGetSceneData);

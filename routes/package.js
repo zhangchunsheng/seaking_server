@@ -21,6 +21,28 @@ exports.index = function(req, res) {
     res.send("index");
 }
 
+exports.test = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        item = {itemId: "D10010101", itemNum:3};
+        var i = player.packageEntity.addItemWithNoType(player, item);
+        utils.send(msg, res, {data:i});
+
+    });
+}
 /**
  * 添加物品
  * @param req
@@ -274,7 +296,7 @@ exports.discardItem = function(req, res) {
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var result = removeItem(req, res, msg, player);
-        if(!!result) {
+        if(result >= 0) {
             data = {
                 code:consts.MESSAGE.RES,
                 item: {
@@ -548,4 +570,67 @@ exports.userItem = function(req, res) {
                 break;
         }
     });
+}
+exports.unlock = function(req, res) {
+    var msg = req.query;
+    var end = msg.end;
+    var type = msg.type;
+    var session = req.session;
+       var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+         var items =  player.packageEntity[type];
+         if( end < items.itemCount) {
+            utils.send(msg, res, {
+                code: Code.FAIL
+            });
+             return;
+         }
+         var costMoney = 0, costGameCurrency =0;
+         if(end < 23) {
+            costMoney = (23 - items.itemCount)*(2000*(itemCount+1-14)+2000*(end-14))/2;
+         } else if(end >= 23 && items.itemCount <= 23 ) {
+            costMoney = (23 - items.itemCount) * (2000*(items.itemCount -14 +1)+2000*(23-14))/2;
+            costGameCurrency = (end - 23)*((end-23)+1)/2;
+         }else{
+             costGameCurrency = (end-items.itemCount)*((end-23)+(items.itemCount-23+1))/2;
+         }
+         if(player.money < costMoney || player.gameCurrency < costGameCurrency) {
+            utils.send(msg, res, {
+                code: Code.FAIL
+            });
+             return;
+         }
+         player.money = player.money - costMoney;
+         player.gameCurrency = player.gameCurrency - costGameCurrency;
+         player.packageEntity.unlock(type, end);
+         player.save();
+         var data = {
+            code: consts.MESSAGE.RES,
+            money: player.money,
+            gameCurrency: player.gameCurrency
+         }
+         async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+        ], function(err, reply) {
+                utils.send(msg, res, data);
+        });
+         
+     });
 }

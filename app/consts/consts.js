@@ -163,7 +163,7 @@ module.exports = {
         NOREAD:"ERN",
         HASITEM:"ERW",
         READ:"ERR",
-        SEND:"ES"
+        SEND:"ESS"
     },
 
     EventType: {
