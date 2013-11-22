@@ -52,7 +52,7 @@ var Player = function(opts) {
     var heros = dataApi.heros.data;
     //this.nextLevelExp = formula.calculateAccumulated_xp(heros[this.cId]["xpNeeded"], heros[this.cId]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
     this.nextLevelExp = opts.nextLevelExp;
-    this.herosData = dataApi.heros.findById(this.kindId);
+    this.herosData = dataApi.herosV2.findById(this.kindId);//heros
     this.curTasks = opts.curTasks;
     this.range = opts.range || 2;
 

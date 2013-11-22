@@ -711,7 +711,7 @@ Fight.createTestPlayer = function(opts) {
     var hero = heros[opts.id];
 
     var skills = {};
-    for(var i = 0 ; i < opts.skills ; i++) {
+    for(var i = 0 ; i < opts.skills.length ; i++) {
         skills[i + 1] = {
             skillId: opts.skills[i],
             level: 1

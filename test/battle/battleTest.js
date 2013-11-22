@@ -29,12 +29,18 @@ describe('battle test', function() {
         var owner_heros = [{
             heroId: '1',
             level: '1',
-            formationId: 1
+            formationId: 1,
+            skillId1: 1,
+            skillId2: 2,
+            skillId3: 3
         }];
         var opponent_heros = [{
             heroId: '1',
             level: '1',
-            formationId: 1
+            formationId: 1,
+            skillId1: 1,
+            skillId2: 2,
+            skillId3: 3
         }];
 
         var data = {};
@@ -46,12 +52,32 @@ describe('battle test', function() {
             owner_formationData[owner_heros[i].formationId - 1] = {};
             owner_formationData[owner_heros[i].formationId - 1].heroId = owner_heros[i].heroId;
             owner_formationData[owner_heros[i].formationId - 1].level = owner_heros[i].level;
+            owner_formationData[owner_heros[i].formationId - 1].skills = [];
+            if(owner_heros[i].skillId1 != 0) {
+                owner_formationData[owner_heros[i].formationId - 1].skills.push(owner_heros[i].skillId1);
+            }
+            if(owner_heros[i].skillId2 != 0) {
+                owner_formationData[owner_heros[i].formationId - 1].skills.push(owner_heros[i].skillId2);
+            }
+            if(owner_heros[i].skillId3 != 0) {
+                owner_formationData[owner_heros[i].formationId - 1].skills.push(owner_heros[i].skillId3);
+            }
         }
 
         for(var i = 0 ; i < opponent_heros.length ; i++) {
             monster_formationData[opponent_heros[i].formationId - 1] = {};
             monster_formationData[opponent_heros[i].formationId - 1].heroId = opponent_heros[i].heroId;
             monster_formationData[opponent_heros[i].formationId - 1].level = opponent_heros[i].level;
+            monster_formationData[opponent_heros[i].formationId - 1].skills = [];
+            if(opponent_heros[i].skillId1 != 0) {
+                monster_formationData[opponent_heros[i].formationId - 1].skills.push(opponent_heros[i].skillId1);
+            }
+            if(opponent_heros[i].skillId2 != 0) {
+                monster_formationData[opponent_heros[i].formationId - 1].skills.push(opponent_heros[i].skillId2);
+            }
+            if(opponent_heros[i].skillId3 != 0) {
+                monster_formationData[opponent_heros[i].formationId - 1].skills.push(opponent_heros[i].skillId3);
+            }
         }
 
         var owners = {};
@@ -80,7 +106,8 @@ describe('battle test', function() {
                     id: owner_formationData[i].heroId,
                     level: owner_formationData[i].level,
                     formationId: i,
-                    type: EntityType.PLAYER
+                    type: EntityType.PLAYER,
+                    skills: owner_formationData[i].skills
                 }));
                 player.formationId = i;
                 owners[i] = player;
@@ -107,7 +134,8 @@ describe('battle test', function() {
                     id: monster_formationData[i].heroId,
                     level: monster_formationData[i].level,
                     formationId: i,
-                    type: EntityType.MONSTER
+                    type: EntityType.MONSTER,
+                    skills: monster_formationData[i].skills
                 }));
                 monsters[i] = player;
 
