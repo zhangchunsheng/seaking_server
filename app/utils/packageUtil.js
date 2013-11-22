@@ -12,7 +12,7 @@ packageUtil.initPackage = function(heroId) {
     if(parseInt(heroId) < 10) {
         heroId = "0" + heroId;
     }
-    itemId = "W" + heroId + "01";
+    itemId = "W" + heroId + "011";
     var package = {
         weapons: {
             itemCount: 15,

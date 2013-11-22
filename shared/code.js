@@ -66,7 +66,8 @@ module.exports = {
 
     INDU: {
         NOT_AT_INDU: 1501,
-        NO_EVENT_EXIST: 1502
+        NO_EVENT_EXIST: 1502,
+        WRONG_INDU: 1503
     },
 
     MAIL: {

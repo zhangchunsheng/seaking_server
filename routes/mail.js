@@ -210,7 +210,7 @@ exports.getInbox = function(req, res) {
             return;
         }
         if(start > allCount) {
-            index = Math.floor(allCount /packageNum);
+            index = Math.floor((allCount-1) /packageNum);
             start = index * packageNum;
         }
         end = (index+1) *  packageNum;

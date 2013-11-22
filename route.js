@@ -25,6 +25,7 @@ var routes = require('./routes')
     , skill = require('./routes/skill')
     , task = require('./routes/task')
     , gm = require('./routes/gm')
+    , message = require('./routes/message')
     , authRequired = require('./middlewares/auth_required');
 
 module.exports = function (app) {
@@ -48,9 +49,12 @@ module.exports = function (app) {
     app.get('/arena/add', authRequired, arena.add);
     app.get('/arena/getOpponents', authRequired, arena.getOpponents);
     app.get('/arena/getRank', authRequired, arena.getRank);
+    app.get('/arena/enterArena', authRequired, arena.enterArena);
+    app.get('/arena/getPKData', authRequired, arena.getPKData);
 
     //战斗
     app.get('/battle/battle', authRequired, battle.battle);
+    app.get('/battle/battle2', battle.battle2);
 
     //赌场
     app.get('/casino/getItems', authRequired, casino.getItems);
@@ -87,15 +91,12 @@ module.exports = function (app) {
     app.get('/mail/newMail',authRequired,mail.hasNewMail);
     app.get('/mail/collectItem', authRequired, mail.collectItem);
 
-
     app.get('/package/addItem', authRequired, package.addItem);
     app.get('/package/dropItem', authRequired, package.dropItem);
     app.get('/package/sellItem', authRequired, package.sellItem);
     app.get('/package/discardItem', authRequired, package.discardItem);
     app.get('/package/resetItem', authRequired, package.resetItem);
     app.get('/package/userItem', authRequired, package.userItem);
-    app.get('/package/unlock', authRequired, package.unlock);
-    
 
     app.get('/player/enterScene', authRequired, player.enterScene);
     app.get('/player/changeAndGetSceneData', authRequired, player.changeAndGetSceneData);
@@ -108,6 +109,7 @@ module.exports = function (app) {
     app.get('/player/learnSkill', authRequired, player.learnSkill);
     app.get('/player/upgradeSkill', authRequired, player.upgradeSkill);
     app.get('/player/useSkill', authRequired, player.useSkill);
+    app.get('/player/forgetSkill', authRequired, player.forgetSkill);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 
@@ -121,4 +123,16 @@ module.exports = function (app) {
     app.get('/gm/resetTask', gm.resetTask);
     app.get('/gm/updateMoney', gm.updateMoney);
     app.get('/gm/updateExp', gm.updateExp);
+
+    app.get('/message/addMessage', authRequired, message.addMessage);
+    app.get('/message/getMessage', authRequired, message.getMessage);
+    app.get('/message/removeMessage', authRequired, message.removeMessage);
+    app.get('/message/addTipMessage', authRequired, message.addTipMessage);
+    app.get('/message/getTipMessage', authRequired, message.getTipMessage);
+    app.get('/message/removeTipMessage', authRequired, message.removeTipMessage);
+    app.get('/message/addBattleReport', authRequired, message.addBattleReport);
+    app.get('/message/getBattleReport', authRequired, message.getBattleReport);
+    app.get('/message/removeBattleReport', authRequired, message.removeBattleReport);
+    app.get('/message/publishMessage', message.publishMessage);
+
 }

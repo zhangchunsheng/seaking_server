@@ -87,6 +87,8 @@ exports.triggerEvent = function(req, res) {
 
             var players = [];
             var enemies = [];
+            var playersInfo = [];
+            var enemiesInfo = [];
 
             var ownerTeam = new FightTeam({
                 type: consts.teamType.PLAYER_TEAM
@@ -116,6 +118,7 @@ exports.triggerEvent = function(req, res) {
                         "anger" : player.anger,
                         "formation" : i
                     });
+                    playersInfo.push(player.strip());
                 }
             }
             // get monster info from file config
@@ -138,6 +141,7 @@ exports.triggerEvent = function(req, res) {
                         "anger" : player.anger,
                         "formation" : i
                     });
+                    enemiesInfo.push(player.strip());
                 }
             }
 
@@ -161,7 +165,7 @@ exports.triggerEvent = function(req, res) {
                     function(callback) {
                         eventResult.players = players;
                         eventResult.enemies = enemies;
-                        battleService.savePlayerBattleData(character, fight.owner_players, fight.monsters, eventResult, function(err, reply) {
+                        battleService.savePlayerBattleData(character, playersInfo, enemiesInfo, eventResult, function(err, reply) {
 
                         });
                         callback(null, 1);
@@ -206,6 +210,10 @@ exports.triggerEvent = function(req, res) {
                                     died: false
                                 },
                                 eventResult: eventResult
+                            }
+                            if(character.hasUpgrade) {
+                                result.hasUpgrade = true;
+                                result.playerInfo = character.getUpgradeInfo();
                             }
                             utils.send(msg, res, result);
                         }

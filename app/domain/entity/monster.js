@@ -38,6 +38,7 @@ var Enemy = function(opts) {
         hp: this.hp,
         maxHp: this.maxHp,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         dodge: this.dodge,
@@ -89,7 +90,7 @@ Enemy.prototype.updateFightValue = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -133,7 +134,7 @@ Enemy.prototype.calculateBuff = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -164,8 +165,8 @@ Enemy.prototype.strip = function() {
         speedLevel: this.speedLevel,
         speed: this.speed,
         currentScene: this.currentScene,
-        focusRate: this.focusRate,
-        dodgeRate: this.dodgeRate,
+        focus: this.focus,
+        dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
         gameCurrency: this.gameCurrency,
@@ -173,7 +174,7 @@ Enemy.prototype.strip = function() {
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         block: this.block,//格挡
-        counterAttack: this.counterAttack,//反击
+        counter: this.counter,//反击
         skills: this.skills,
         buffs: this.buffs
     };
@@ -219,8 +220,8 @@ Enemy.prototype.toJSON = function() {
         speedLevel: this.speedLevel,
         speed: this.speed,
         currentScene: this.currentScene,
-        focusRate: this.focusRate,
-        dodgeRate: this.dodgeRate,
+        focus: this.focus,
+        dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
         gameCurrency: this.gameCurrency,
@@ -228,7 +229,41 @@ Enemy.prototype.toJSON = function() {
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         block: this.block,//格挡
-        counterAttack: this.counterAttack,//反击
+        counter: this.counter,//反击
+        skills: this.skills,
+        buffs: this.buffs
+    };
+};
+
+Enemy.prototype.getBaseInfo = function() {
+    return {
+        id: this.id,
+        entityId: this.entityId,
+        nickname: this.nickname,
+        cId: this.cId,
+        type: this.type,
+        x: Math.floor(this.x),
+        y: Math.floor(this.y),
+        hp: this.hp,
+        maxHp: this.maxHp,
+        anger: this.anger,
+        level: this.level,
+        experience: this.experience,
+        attack: this.attack,
+        defense: this.defense,
+        speedLevel: this.speedLevel,
+        speed: this.speed,
+        currentScene: this.currentScene,
+        focus: this.focus,
+        dodge: this.dodge,
+        nextLevelExp: this.nextLevelExp,
+        money: this.money,
+        gameCurrency: this.gameCurrency,
+        photo: this.photo,
+        criticalHit: this.criticalHit,
+        critDamage: this.critDamage,
+        block: this.block,//格挡
+        counter: this.counter,//反击
         skills: this.skills,
         buffs: this.buffs
     };

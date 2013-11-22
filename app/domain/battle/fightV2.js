@@ -2,14 +2,15 @@
  * Copyright(c)2013,Wozlla,www.wozlla.com
  * Version: 1.0
  * Author: Peter Zhang
- * Date: 2013-07-02
- * Description: fight
+ * Date: 2013-11-13
+ * Description: fightV2
  */
 var Code = require('../../../shared/code');
 var async = require('async');
 var utils = require('../../utils/utils');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
+var formulaV2 = require('../../consts/formulaV2');
 var EntityType = require('../../consts/consts').EntityType;
 var fightReward = require('./fightReward');
 var consts = require('../../consts/consts');
@@ -43,7 +44,7 @@ Fight.prototype.fight = function(cb) {
     var monsters = this.monsters;
     var players = this.players;
 
-    var max_time = 30;
+    var max_time = 30 * 10;
     var currentTime = 0;
     var previousTime = 0;
     var battleData = [];
@@ -58,10 +59,10 @@ Fight.prototype.fight = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
-        owners[i].updateFightValue();
+        //owners[i].updateFightValue();
     }
     for(var i in monsters) {
-        monsters[i].updateFightValue();
+        //monsters[i].updateFightValue();
     }
 
     // 计算最大速度
@@ -72,6 +73,7 @@ Fight.prototype.fight = function(cb) {
     for(var i in monsters) {
         max_speed = Math.max(max_speed, monsters[i].fightValue.speedLevel);
     }
+    max_speed = 10;
     perDistance = max_speed;
 
     var flag = false;
@@ -106,10 +108,10 @@ Fight.prototype.fight = function(cb) {
             this.owner_players.push(this.players[i]);
         }
     }
-    fightReward.reward(this.mainPlayer, this.owner_players, monsters, this.isWin, function(err, reply) {
+    //fightReward.reward(this.mainPlayer, this.owner_players, monsters, this.isWin, function(err, reply) {
         var battleResult = {};
         battleResult.isWin = that.isWin;
-        battleResult.getItems = reply;
+        //battleResult.getItems = reply;
         // 战斗结果
         var result = {
             "formationData": {
@@ -121,7 +123,7 @@ Fight.prototype.fight = function(cb) {
         };
 
         utils.invokeCallback(cb, null, result);
-    });
+    //});
 };
 
 /**
@@ -298,6 +300,7 @@ Fight.prototype.attack = function(battleData, players, index) {
 
     // test skill
     //attack.anger = 100;
+    attack.anger = 0;
 
     // 攻击方式
     attack.maxAnger = 10000;
@@ -375,7 +378,8 @@ Fight.prototype.attack = function(battleData, players, index) {
             fId: defense.formationId,
             action: defenseData.action,
             hp: defenseData.hp,
-            anger: defenseData.anger
+            anger: defenseData.anger,
+            reduceBlood: defenseData.reduceBlood
         };
         data.target.push(target);
     } else {
@@ -400,7 +404,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             // random = utils.random(1, 10000);
             if(isCriticalHit) {// 暴击
                 attackData.isCritHit = true;
-                attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
+                //attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
             }
 
             defenseData.action = consts.defenseAction.beHitted;
@@ -408,14 +412,23 @@ Fight.prototype.attack = function(battleData, players, index) {
             // 判定是否格挡
             // random = utils.random(1, 10000);
             if(isBlock) {// 格挡
-                attackData.attack = attackData.attack / 2;
+                //attackData.attack = attackData.attack / 2;
                 defenseData.isBlock = true;
                 defenseData.action = consts.defenseAction.block;
             }
 
             // attackData.hasBuff = true;// buff，可以有多个buff
 
-            defenseData.reduceBlood = attackData.attack - defenseData.defense;
+            if(isCriticalHit) {// 暴击
+                defenseData.reduceBlood = formulaV2.calCritDamage(attack, defense);
+            } else if(isBlock) {
+                defenseData.reduceBlood = formulaV2.calBlockDamage(attack, defense);
+            } else {
+                //defenseData.reduceBlood = formula.calDamage(attack, defense);
+                //伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
+                defenseData.reduceBlood = formulaV2.calDamage(attack, defense);
+            }
+
             if(defenseData.reduceBlood < 0) {
                 defenseData.reduceBlood = 0;
             }
@@ -429,10 +442,10 @@ Fight.prototype.attack = function(battleData, players, index) {
             var counter = defense.counter * 100;
             random = utils.random(1, 10000);
             if(random >= 1 && random <= counter) {// 反击
-                var damage = defense.attack * 25 / 100;
+                var damage = formulaV2.calCounterDamage(defense, attack);
                 defenseData.isCounter = true;
                 defenseData.counterValue = damage;//反击伤害
-                attack.hp -= damage;
+                attack.hp = Math.ceil(attack.hp - damage);
                 if(attack.hp <= 0) {
                     attack.hp = 0;
                     attack.died = attackData.died = true;
@@ -443,7 +456,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             // 更新数据
             defenseData.fId = monsterIndex;
 
-            defense.hp -= defenseData.reduceBlood;
+            defense.hp = Math.ceil(defense.hp - defenseData.reduceBlood);
             if(defense.hp <= 0) {
                 defense.hp = 0;
                 defense.died = defenseData.died = true;
@@ -543,7 +556,6 @@ Fight.prototype.attack = function(battleData, players, index) {
             return false;
         }
     }
-
 };
 
 /**
@@ -666,6 +678,85 @@ Fight.createMonster = function(opts) {
     data.fightValue.hp = data.hp;
     data.fightValue.maxHp = data.hp;
     data.fightValue.focus = data.focus;
+    data.fightValue.criticalHit = data.criticalHit;
+    data.fightValue.critDamage = data.critDamage;
+    data.fightValue.dodge = data.dodge;
+    data.fightValue.block = data.block;
+    data.fightValue.counter = data.counter;
+    return data;
+}
+
+/**
+ *
+ * 	伤害 = (100 + 破甲)*攻击力/（100 + 护甲）
+ * 	生命 = 基础生命 + 等级 * 成长系数
+ * 	攻击 = 基础攻击 + 等级 * 成长系数
+ * 	速度 = 基础速度 * （1 + 等级 * 0.01）
+ * 	护甲 = 基础护甲 * （1+0.5 * 等级）
+ * 	破甲 = 基础破甲 * （1+0.5 * 等级）
+ * 	暴击 = 基础暴击 * （1+等级 * 0.1）
+ * 	格挡 = 基础格挡 * （1+等级 * 0.1）
+ * 	闪避 = 基础闪避 * （1+等级 * 0.1）
+ * 	反击 = 基础反击 * （1+等级 * 0.1）
+ * @param opts
+ * @returns {}
+ */
+Fight.createTestPlayer = function(opts) {
+    var heroId = opts.id;
+    var level = opts.level;
+    var formationId = opts.formationId;
+    var type = opts.type;
+
+    var heros = dataApi.herosV2.data;
+    var hero = heros[opts.id];
+
+    var skills = {};
+    for(var i = 0 ; i < opts.skills.length ; i++) {
+        skills[i + 1] = {
+            skillId: opts.skills[i],
+            level: 1
+        };
+    }
+
+    var data = {
+        id: heroId,
+        kindId: heroId,
+        formationId: formationId,
+        type: type,
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        anger: 0,
+        maxAnger: 100,
+        restoreAngerSpeed: {ea:10, ehr: 3, eshr: 6},
+        attackers: [],
+        costTime: 0,
+        distance: 0,
+        died: false,
+        starLevel: hero.starLevel,
+        heroType: hero.type,
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        restoreHpSpeed: 10,
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: hero.focus || 0,
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level),
+        level: level,
+        skills: skills
+    };
+    data.fightValue = {};
+    data.fightValue.attack = Math.floor(data.attack);
+    data.fightValue.defense = Math.floor(data.defense);
+    data.fightValue.speedLevel = Math.floor(data.speedLevel);
+    data.fightValue.hp = data.hp;
+    data.fightValue.maxHp = data.hp;
+    data.fightValue.focus = data.focus;
+    data.fightValue.sunderArmor = data.sunderArmor;
     data.fightValue.criticalHit = data.criticalHit;
     data.fightValue.critDamage = data.critDamage;
     data.fightValue.dodge = data.dodge;

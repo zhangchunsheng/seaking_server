@@ -229,6 +229,15 @@ dbUtil.getBattleKey = function(serverId, registerType, loginName, characterId) {
 }
 
 /**
+ * getBattleLogKey
+ * @param serverId
+ */
+dbUtil.getBattleLogKey = function(serverId) {
+    var key = "S" + serverId + "_Battle";
+    return key;
+}
+
+/**
  * getTaskKey
  * @param serverId
  * @param registerType
@@ -380,11 +389,6 @@ dbUtil.getArenaKey = function(serverId) {
     return key;
 }
 
-dbUtil.getBattleKey = function(serverId, registerType, loginName, characterId) {
-    var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_BATTLE";
-    return key;
-}
-
 dbUtil.getInduKey = function(serverId, registerType, loginName, characterId, induId) {
     var key = "S" + serverId + "_T" + registerType + "_" + loginName + "_C" + characterId + "_INDU" + induId;
     return key;
@@ -408,4 +412,21 @@ dbUtil.removeNickname = function(array, serverId, nickname) {
 
 dbUtil.removeFromArena = function(array, serverId, characterId) {
     array.push(["zrem", "S" + serverId + "_ARENA", "S" + serverId + "C" + characterId]);
+}
+
+dbUtil.removeLogData = function(array, serverId, battleId) {
+    var key = dbUtil.getBattleLogKey(serverId);
+    array.push(["hdel", key, battleId]);
+}
+
+dbUtil.getPushMessageName = function() {
+    return "pushMessage";
+}
+
+dbUtil.getTipMessageName = function() {
+    return "tipMessage";
+}
+
+dbUtil.getBattleReportsName = function() {
+    return "battleReports";
 }

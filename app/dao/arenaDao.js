@@ -97,6 +97,12 @@ arenaDao.exchange = function(player, opponent, cb) {
             var player_score = replies[1];//replies[0] OK
             var opponent_score = replies[2];
 
+            if(player_score <= opponent_score) {
+                redis.release(client);
+                utils.invokeCallback(cb, null, player_score);
+                return;
+            }
+
             var array = [];
             array.push(["zadd", key, opponent_score, player.id]);
             array.push(["zadd", key, player_score, opponent.id]);

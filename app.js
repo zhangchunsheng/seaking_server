@@ -5,6 +5,9 @@
  * Date: 2013-06-21
  * Description: app
  */
+var utils = require('./app/utils/utils');
+utils.doProcess(process);
+
 var express = require('express')
     , route = require('./route')
     , urlrouter = require('urlrouter')
@@ -14,15 +17,12 @@ var express = require('express')
     , connect = require('connect')
     , config = require('./config')
     , fs = require('fs')
-    , utils = require('./app/utils/utils')
     , redis = require('./app/dao/redis/redis')
     , RedisStore = require('connect-redis')(express);
 
 var redisConfig = require('./shared/config/redis');
 
 var app = express();
-
-utils.doProcess(process);
 
 var env = process.env.NODE_ENV || 'development';
 if(redisConfig[env]) {

@@ -29,6 +29,9 @@ var Character = function(opts) {
     this.enemies = {};
 
     this.died = false;
+    this.starLevel = opts.starLevel;
+    this.heroType = opts.heroType;//英雄类型
+    this.sunderArmor = opts.sunderArmor;//破甲
     this.hp = opts.hp;
     this.anger = opts.anger || 0;// 能量值
     this.maxHp = opts.maxHp;
@@ -44,8 +47,11 @@ var Character = function(opts) {
     this.dodge = opts.dodge;//闪避
     this.block = opts.block;//格挡
     this.criticalHit = opts.criticalHit;//暴击
-    this.critDamage = opts.critDamage;//暴击
+    this.critDamage = opts.critDamage || 1.6;//暴击
     this.counter = opts.counter;//反击
+
+    this.addHp = opts.addHp;//生命成长值
+    this.addAttack = opts.addAttack;//攻击成长值
 
     this.baseAttack = opts.attack;
     this.baseDefense = opts.defense;
@@ -79,6 +85,8 @@ var Character = function(opts) {
     this.hasBuff = false;
     this.buffs = opts.buffs || [];
     this.skillBuffs = [];//技能buff
+
+    this.hasUpgrade = false;
 };
 
 util.inherits(Character, Entity);

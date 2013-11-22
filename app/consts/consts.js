@@ -99,6 +99,15 @@ module.exports = {
         4: "currentExerciseTask"
     },
 
+    pushMessageType: {
+        ARENA_PK: 1,
+        TIP_MESSAGE: 2
+    },
+
+    messageChannel: {
+        PUSH_MESSAGE: "pushMessage"
+    },
+
     /**
      * 任务目标类型
      * 0 - 接取即完成

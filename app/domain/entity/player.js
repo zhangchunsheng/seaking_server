@@ -50,8 +50,9 @@ var Player = function(opts) {
     this.gift = opts.gift;
 
     var heros = dataApi.heros.data;
-    this.nextLevelExp = formula.calculateAccumulated_xp(heros[this.cId]["xpNeeded"], heros[this.cId]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
-    this.herosData = dataApi.heros.findById(this.kindId);
+    //this.nextLevelExp = formula.calculateAccumulated_xp(heros[this.cId]["xpNeeded"], heros[this.cId]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
+    this.nextLevelExp = opts.nextLevelExp;
+    this.herosData = dataApi.herosV2.findById(this.kindId);//heros
     this.curTasks = opts.curTasks;
     this.range = opts.range || 2;
 
@@ -69,6 +70,8 @@ var Player = function(opts) {
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
 
+    this.pushMessage = opts.pushMessage || [];
+
     this.fightValue = {
         attack: this.attack,
         defense: this.defense,
@@ -76,6 +79,7 @@ var Player = function(opts) {
         hp: this.hp,
         maxHp: this.maxHp,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         criticalHit: this.criticalHit,
         critDamage: this.critDamage,
         dodge: this.dodge,
@@ -128,6 +132,7 @@ Player.prototype.updateHP = function(cb) {
  */
 Player.prototype.upgrade = function() {
     var upgradeColumn = {};
+    this.hasUpgrade = true;
     while (this.experience >= this.nextLevelExp) {
         upgradeColumn = this._upgrade();
     }
@@ -167,6 +172,28 @@ Player.prototype._upgrade = function() {
 Player.prototype.setNextLevelExp = function() {
     var hero = dataApi.heros.findById(this.cId);
     this.nextLevelExp = formula.calculateAccumulated_xp(hero["xpNeeded"], hero["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
+}
+
+Player.prototype.getUpgradeInfo = function() {
+    return {
+        level: this.level,
+        needExp: this.needExp,
+        accumulated_xp: this.accumulated_xp,
+        hp: this.hp,
+        maxHp: this.maxHp,
+        attack: this.attack,
+        defense: this.defense,
+        focus: this.focus,
+        sunderArmor: this.sunderArmor,
+        speedLevel: this.speedLevel,
+        speed: this.speed,
+        dodge: this.dodge,
+        criticalHit: this.criticalHit,
+        critDamage: this.critDamage,
+        block: this.block,
+        counter: this.counter,
+        nextLevelExp: this.nextLevelExp
+    }
 }
 
 Player.prototype.updateAttribute = function() {
@@ -399,7 +426,7 @@ Player.prototype.updateFightValue = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -414,6 +441,8 @@ Player.prototype.updateFightValue = function() {
  * 获得怒气数值
  */
 Player.prototype.updateRestoreAngerSpeed = function() {
+    if(typeof this.activeSkill.skillData == "undefined")
+        return;
     var speed = this.activeSkill.skillData.speed;
     for(var i = 0 ; i < speed.length ; i++) {
         this.restoreAngerSpeed[speed[i].type] = parseInt(speed[i].value);
@@ -484,7 +513,7 @@ Player.prototype.equipmentAdditional = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -532,7 +561,7 @@ Player.prototype.activeSkillAdditional = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -633,7 +662,7 @@ Player.prototype.calculateBuff = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -740,7 +769,7 @@ Player.prototype.passiveSkillAdditional = function() {
 
     this.fightValue.attack = Math.floor(attack);
     this.fightValue.defense = Math.floor(defense);
-    this.fightValue.speedLevel = Math.floor(speedLevel);
+    this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
@@ -1143,12 +1172,10 @@ Player.prototype.updateTask = function() {
 
 Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
     var task = {};
-    var res = [];
     for(var type in this.curTasksEntity.strip()) {
         task = this.curTasksEntity[type];
         if(task.taskGoal.type == TaskGoalType) {
             task.updateRecord(this, TaskGoalType, items);
-            console.info (task.itmeId );
         }
     }
 }
@@ -1355,6 +1382,14 @@ Player.prototype.updateMoney = function(money) {
 };
 
 /**
+ *
+ * @param message
+ */
+Player.prototype.pushMessage = function(message) {
+
+}
+
+/**
  * 更新经验
  * @param exp
  */
@@ -1410,6 +1445,43 @@ Player.prototype.toJSON = function() {
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
+        gift: this.gift
+    };
+};
+
+Player.prototype.getBaseInfo = function() {
+    return {
+        id: this.id,
+        entityId: this.entityId,
+        nickname: this.nickname,
+        cId: this.cId,
+        type: this.type,
+        x: Math.floor(this.x),
+        y: Math.floor(this.y),
+        hp: this.hp,
+        maxHp: this.maxHp,
+        anger: this.anger,
+        level: this.level,
+        experience: this.experience,
+        attack: this.attack,
+        defense: this.defense,
+        speedLevel: this.speedLevel,
+        speed: this.speed,
+        currentScene: this.currentScene,
+        currentIndu: this.currentIndu,
+        focus: this.focus,
+        dodge: this.dodge,
+        nextLevelExp: this.nextLevelExp,
+        money: this.money,
+        gameCurrency: this.gameCurrency,
+        photo: this.photo,
+        criticalHit: this.criticalHit,
+        critDamage: this.critDamage,
+        block: this.block,//格挡
+        counter: this.counter,//反击
+        skills: this.skills,
+        buffs: this.buffs,
+        formation: this.formation,
         gift: this.gift
     };
 };

@@ -86,7 +86,7 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
         var time = date.getTime() - lastLoginDate;
         time = Math.floor(time / 1000);
         var hp = player.hpRecoverySpeed * time;
-        console.log(player.hpRecoverySpeed * time);
+
         playerDao.appPlayerAndPartnersHP(player, hp, cb);
 
         var userInfo = {
@@ -96,6 +96,10 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
 
         });
     });
+}
+
+userDao.updateHP = function(player, serverId, registerType, loginName, cb) {
+
 }
 
 /**
@@ -283,6 +287,7 @@ userDao.getCharacterInfoByNickname = function(serverId, nickname, cb) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
 
         }).get(key, function(err, reply) {//S1_T2_w106451_C10212
+                redis.release(client);
                 utils.invokeCallback(cb, null, reply);
             }).exec(function (err, replies) {
 
@@ -735,6 +740,11 @@ userDao.getPlayerById = function(playerId, cb) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             key = playerId;
             client.get(key, function(err, reply) {
+                if(reply == null) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, {}, null);
+                    return;
+                }
                 key = reply;
                 var array = key.split("_");
                 var serverId = array[0].replace("S", "");
@@ -809,6 +819,8 @@ userDao.getPlayerById = function(playerId, cb) {
                         var partners = results[0];
                         var player = new Opponent(character);
                         player.partners = partners;
+                        var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
+                        player.equipmentsEntity = equipments;
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
                             redis.release(client);
                             utils.invokeCallback(cb, null, player);
@@ -1028,23 +1040,30 @@ userDao.enterIndu = function(serverId, registerType, loginName, induId, cb) {
                         var currentIndu = JSON.parse(reply);
 
                         if(currentIndu.induId == induId) {
-
+                            redis.release(client);
+                            utils.invokeCallback(cb, null, currentIndu);
                         } else {
                             var induData = dataApi.instancedungeon.findById(induId);
-                            var date = new Date();
+                            if(induData) {
+                                var date = new Date();
 
-                            currentIndu.induId = induId;
-                            currentIndu.induData = induData.induData;
-                            currentIndu.enterDate = date.getTime();
-                            client.hset(key, "currentIndu", JSON.stringify(currentIndu), function(err, reply) {
+                                currentIndu.induId = induId;
+                                currentIndu.induData = induData.induData;
+                                currentIndu.enterDate = date.getTime();
+                                client.hset(key, "currentIndu", JSON.stringify(currentIndu), function(err, reply) {
+                                    redis.release(client);
+                                    utils.invokeCallback(cb, null, currentIndu);
+                                });
+                            } else {
                                 redis.release(client);
-                            });
+                                utils.invokeCallback(cb, {
+                                    errCode: 101
+                                });
+                            }
                         }
-
-                        utils.invokeCallback(cb, null, currentIndu);
                     });
-
                 } else {
+                    redis.release(client);
                     utils.invokeCallback(cb, {
                         errCode: 101
                     });
@@ -1086,9 +1105,10 @@ userDao.updatePlayerInduInfo = function(player, eid, cb) {
                     player.currentIndu.induData = currentIndu.induData = induData;
                     client.hset(key, "currentIndu", JSON.stringify(currentIndu), function(err, reply) {
                         redis.release(client);
+                        utils.invokeCallback(cb, null, currentIndu);
                     });
-                    utils.invokeCallback(cb, null, currentIndu);
                 } else {
+                    redis.release(client);
                     utils.invokeCallback(cb, {
                         errCode: 101
                     })
@@ -1137,8 +1157,10 @@ userDao.leaveIndu = function(serverId, registerType, loginName, induId, cb) {
                             var logData = induDao.getLogData(serverId, registerType, loginName, characterId, induId, currentIndu, isFinished);
                             ucenter.saveInduLog(logData);
 
+                            redis.release(client);
                             utils.invokeCallback(cb, null, _currentIndu);
                         } else {//不是同一个副本
+                            redis.release(client);
                             utils.invokeCallback(cb, {
                                 errCode: 101
                             });
@@ -1146,6 +1168,7 @@ userDao.leaveIndu = function(serverId, registerType, loginName, induId, cb) {
                     });
 
                 } else {
+                    redis.release(client);
                     utils.invokeCallback(cb, {
                         errCode: 101
                     });
