@@ -12,6 +12,7 @@ var consts = require('../consts/consts');
 var buff = require('./buff');
 var Persistent = require('./persistent');
 var utils = require('../utils/utils');
+var skill_script = require('../../scripts/skill_scriptV2');
 
 /**
  *
@@ -24,10 +25,10 @@ var Skill = function(opts) {
     });
     this.skillId = opts.skillId;
     this.additional = {};//额外加成
-    this.skillData = dataApi.skillList.findById(opts.skillId);
+    this.skillData = dataApi.skillsV2.findById(opts.skillId);
     this.name = this.skillData.skillName;
     this.type = this.skillData.type;
-    this.level = this.skillData.level;
+    this.level = opts.level || this.skillData.level;
 };
 
 Skill.prototype.attack = function() {
@@ -55,6 +56,10 @@ Skill.prototype.updateFightValue = function(player) {
             this[effects[j].attr] = utils.getEffectValue(effects[j], player[effects[j].attr]);
         }
     }
+}
+
+Skill.prototype.invokeScript = function(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    skill_script["skill" + this.skillId](attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 }
 
 Skill.create = function(opts) {

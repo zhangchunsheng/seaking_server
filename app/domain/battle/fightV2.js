@@ -13,6 +13,7 @@ var formula = require('../../consts/formula');
 var formulaV2 = require('../../consts/formulaV2');
 var EntityType = require('../../consts/consts').EntityType;
 var fightReward = require('./fightReward');
+var Skill = require('../skill/skillV2');
 var consts = require('../../consts/consts');
 
 var Fight = function(opts) {
@@ -712,10 +713,10 @@ Fight.createTestPlayer = function(opts) {
 
     var skills = {};
     for(var i = 0 ; i < opts.skills.length ; i++) {
-        skills[i + 1] = {
+        skills[i + 1] = new Skill({
             skillId: opts.skills[i],
             level: 1
-        };
+        });
     }
 
     var data = {
