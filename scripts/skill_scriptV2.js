@@ -5,12 +5,51 @@
  * Date: 2013-11-21
  * Description: skill_scriptV2
  */
-//var Buff = require('../app/domain/buff');
-var Buff = require('../app/domain/buffV2');
+var Buff = require('../app/domain/buff');
+var BuffV2 = require('../app/domain/buffV2');
+var utils = require('../app/utils/utils');
+var constsV2 = require('../app/consts/constsV2');
+
+function getSkillBuff(buffType, skill, buffData) {
+    var effectId = "XG" + skill.skillId;
+    var buff = new BuffV2({
+        buffId: skill.skillId,
+        useEffectId: effectId,
+        type: buffType,
+        skillId: skill.skillId,
+        skillType: skill.skillType,
+        skillLevel: skill.skillLevel,
+        skillData: skill.skillData,
+        buffData: buffData,
+        buffType: buffType
+    });
+    return buff;
+}
 
 var skill_script = {
+    /**
+     * 有75%的几率生成一个护盾，该护盾将使下次受到的攻击伤害减免20%
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param fightData
+     */
     "skill101101": function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
-        console.log(attack_formation);
+        console.log(this);
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= 75) {
+            var buffData = {
+                value: 20
+            };
+            var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+            attack.addBuff(buff);
+            return 100;
+        } else {
+            return 0;
+        }
     },
     "skill101201": function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
 

@@ -29,6 +29,10 @@ function Buff(opts) {
     this.updateAttribute();
 }
 
+util.inherits(Buff, Persistent);
+
+module.exports = Buff;
+
 Buff.prototype.updateAttribute = function() {
     if(this.useEffectId.indexOf("XG") == 0) {
         this.buffKind = consts.buffKind.SKILL;
@@ -74,8 +78,4 @@ Buff.prototype.getInfo = function() {
 Buff.create = function(skill) {
 
 }
-
-util.inherits(Buff, Persistent);
-
-module.exports = Buff;
 

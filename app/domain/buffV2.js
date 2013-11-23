@@ -12,6 +12,7 @@ var dataApi = require('../utils/dataApi');
 
 function Buff(opts) {
     Persistent.call(this, opts);
+    this.buffId = opts.buffId;
     this.useEffectId = opts.useEffectId;// 物品Id，效果Id XG
     this.startTime = opts.startTime;
     this.type = opts.type;// skill attr
@@ -28,6 +29,10 @@ function Buff(opts) {
 
     this.updateAttribute();
 }
+
+util.inherits(Buff, Persistent);
+
+module.exports = Buff;
 
 Buff.prototype.updateAttribute = function() {
     if(this.useEffectId.indexOf("XG") == 0) {
@@ -74,7 +79,3 @@ Buff.prototype.getInfo = function() {
 Buff.create = function(skill) {
 
 }
-
-util.inherits(Buff, Persistent);
-
-module.exports = Buff;

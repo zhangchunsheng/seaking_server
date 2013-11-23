@@ -392,16 +392,16 @@ Fight.prototype.attack = function(battleData, players, index) {
             if(attack.type == EntityType.MONSTER) {
 
             } else {
-                attack.activeSkillAdditional();
+                //attack.activeSkillAdditional();
                 attackData.attack = attack.fightValue.attack;
                 attackData.buffs = [];
                 defenseData.groupDamage = {};
                 defenseData.buffs = [];
             }
             //计算防御
-            defenseData.defense = defense.defense;
+            defenseData.defense = defense.fightValue.defense;
 
-            attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+            //attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         } else {
             // 判定是否暴击
             // random = utils.random(1, 10000);
