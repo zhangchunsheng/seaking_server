@@ -337,7 +337,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
                         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         photo: '',
-                        buffs: [],
+                        buffs: consts.initBuff,
                         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         anger: 0,

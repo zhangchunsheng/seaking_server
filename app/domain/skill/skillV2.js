@@ -62,8 +62,10 @@ Skill.prototype.updateFightValue = function(player) {
     }
 }
 
-Skill.prototype.invokeScript = function(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+Skill.prototype.invokeScript = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var array = [];
+    array.push(attackSide);
+    array.push(condition);
     array.push(attack_formation);
     array.push(defense_formation);
     array.push(attack);

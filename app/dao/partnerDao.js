@@ -128,7 +128,7 @@ function generalPartner(serverId, registerType, loginName, characterId, partnerI
             activeSkills: JSON.parse(replies.activeSkills),
             passiveSkills: JSON.parse(replies.passiveSkills)
         },
-        buffs: replies.buffs ? JSON.parse(replies.buffs).buffs : []
+        buffs: replies.buffs ? JSON.parse(replies.buffs).buffs : consts.initBuff
     };
     character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
     var Partner = require('../domain/entity/partner');
@@ -169,7 +169,7 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                         registerType: registerType,
                         loginName: loginName,
                         nickname: hero.name,
-                        buffs: [],
+                        buffs: consts.initBuff,
                         experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         level: level,
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),

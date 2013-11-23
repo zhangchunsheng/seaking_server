@@ -11,7 +11,9 @@ var consts = require('../consts/consts');
 var dataApi = require('../utils/dataApi');
 
 function Buff(opts) {
-    Persistent.call(this, opts);
+    Persistent.call(this, {
+        id: opts.buffId
+    });
     this.buffId = opts.buffId;
     this.useEffectId = opts.useEffectId;// 物品Id，效果Id XG
     this.startTime = opts.startTime;
@@ -26,6 +28,7 @@ function Buff(opts) {
     this.skillType = opts.skillType;// 主动技能buff 被动技能buff
     this.skillLevel = opts.skillLevel;
     this.skillData = opts.skillData;
+    this.count = opts.count || 1;
 
     this.updateAttribute();
 }
@@ -73,6 +76,12 @@ Buff.prototype.getInfo = function() {
     return {
         useEffectId: this.useEffectId,
         startTime: this.startTime
+    }
+}
+
+Buff.prototype.baseInfo = function() {
+    return {
+        skillId: this.skillId
     }
 }
 

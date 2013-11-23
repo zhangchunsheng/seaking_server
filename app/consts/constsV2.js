@@ -388,6 +388,20 @@ module.exports = {
         SHIELDS: "1"
     },
 
+    initBuff: [],
+
+    skillTriggerConditionType: {
+        ATTACK: 1,
+        BEATTACKED: 2,
+        HP: 3,
+        BLOCK: 4,
+        DODGE: 5,
+        CRITICALHIT: 6,
+        COUNTER: 7,
+        BATTLE: 8,
+        DEATH: 9
+    },
+
     correspondingEffect_attr: {
         1: "hp",
         2: "experience",

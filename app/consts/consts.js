@@ -375,6 +375,8 @@ module.exports = {
         REDUCESPEED: "reducespeed"
     },
 
+    initBuff: [],
+
     correspondingEffect_attr: {
         1: "hp",
         2: "experience",

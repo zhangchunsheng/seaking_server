@@ -83,7 +83,7 @@ var Character = function(opts) {
     this.restoreAngerSpeed = opts.restoreAngerSpeed || {ea:10, ehr: 3, eshr: 6};//能量恢复速度
 
     this.hasBuff = false;
-    this.buffs = opts.buffs || [];
+    this.buffs = opts.buffs || consts.initBuff;
     this.skillBuffs = [];//技能buff
 
     this.hasUpgrade = false;
@@ -202,13 +202,41 @@ Character.prototype.addBuff = function(buff) {
 };
 
 /**
+ * 技能buff
+ * @param buff
+ */
+Character.prototype.addSkillBuff = function(buff) {
+    this.buffs.push(buff);
+};
+
+/**
+ * 道具buff
+ * @param buff
+ */
+Character.prototype.addToolBuff = function(buff) {
+    this.buffs.push(buff);
+};
+
+Character.prototype.getBuffs = function() {
+    var buffs = [];
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        buffs.push(this.buffs[i].baseInfo());
+    }
+    return buffs;
+}
+
+/**
  * Remove buff from buffs.
  *
  * @param {Buff} buff
  * @api public
  */
 Character.prototype.removeBuff = function(buff) {
-
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        if(this.buffs[i].buffId == buff.buffId) {
+            this.buffs.splice(i, 1);
+        }
+    }
 };
 
 Character.prototype.addAttack = function(value) {
@@ -308,22 +336,53 @@ Character.prototype.reduceValue = function(attrName, value) {
 };
 
 /**
+ * 触发技能
+ * 触发条件:
+ * 1 - 主动攻击
+ * 2 - 被攻击
+ * 3 - 生命值
+ * 4 - 格挡
+ * 5 - 闪避
+ * 6 - 暴击
+ * 7 - 反击
+ * 8 - 进入战斗
+ * 9 - 死亡
+ */
+Character.prototype.triggerSkill = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+
+}
+
+/**
  * 使用触发技能
  */
-Character.prototype.useTriggerSkill = function(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=1为触发技能
+Character.prototype.useTriggerSkill = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=1为触发技能
     var anger = 0;
     if(utils.empty(this.skills[consts.skillV2Type.TRIGGER_SKILL])) {
         return anger;
     }
-    return this.skills[consts.skillV2Type.TRIGGER_SKILL].invokeScript(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    return this.skills[consts.skillV2Type.TRIGGER_SKILL].invokeScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 }
 
 /**
  * 使用觉醒技能
  */
-Character.prototype.useAwakenSkill = function(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=2为觉醒技能
+Character.prototype.useAwakenSkill = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=2为觉醒技能
     if(utils.empty(this.skills[consts.skillV2Type.AWAKEN_SKILL])) {
         return;
     }
-    return this.skills[consts.skillV2Type.AWAKEN_SKILL].invokeScript(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    return this.skills[consts.skillV2Type.AWAKEN_SKILL].invokeScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+}
+
+Character.prototype.useBuff = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=1为触发技能
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+
+    }
+}
+
+Character.prototype.useTriggerBuff = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=1为触发技能
+
+}
+
+Character.prototype.useAwakenBuff = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=2为觉醒技能
+
 }
