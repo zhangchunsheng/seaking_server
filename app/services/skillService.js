@@ -6,7 +6,7 @@
  * Description: arenaService
  */
 var skillDao = require('../dao/skillDao');
-var Skills = require('../domain/skills');
+var Skills = require('../domain/skill/skills');
 var dataApi = require('../utils/dataApi');
 
 var skillService = module.exports;

@@ -5,7 +5,6 @@
  * Date: 2013-06-28
  * Description: fightskill
  */
-
 var util = require('util');
 var dataApi = require('../utils/dataApi');
 var formula = require('../consts/formula');

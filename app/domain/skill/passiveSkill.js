@@ -7,10 +7,10 @@
  */
 
 var util = require('util');
-var dataApi = require('../utils/dataApi');
-var formula = require('../consts/formula');
-var consts = require('../consts/consts');
-var buff = require('./buff');
+var dataApi = require('../../utils/dataApi');
+var formula = require('../../consts/formula');
+var consts = require('../../consts/consts');
+var buff = require('./../buff');
 var Skill = require('./skill');
 
 /**

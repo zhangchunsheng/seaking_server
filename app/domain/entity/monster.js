@@ -12,8 +12,8 @@ var consts = require('../../consts/consts');
 var EntityType = require('../../consts/consts').EntityType;
 var Character = require('./character');
 var skillDao = require('../../dao/skillDao');
-var ActiveSkill = require('./../activeSkill');
-var PassiveSkill = require('./../passiveSkill');
+var ActiveSkill = require('./../skill/activeSkill');
+var PassiveSkill = require('./../skill/passiveSkill');
 
 /**
  * Initialize a new 'Enemy' with the given 'opts'.

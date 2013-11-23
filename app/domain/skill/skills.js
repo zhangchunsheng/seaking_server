@@ -6,11 +6,11 @@
  * Description: skills
  */
 var util = require('util');
-var Entity = require('./entity/entity');
-var heroSkills = require('../../config/data/heroSkills');
-var Persistent = require('./persistent');
-var consts = require('../consts/consts');
-var dataApi = require('../utils/dataApi');
+var Entity = require('./../entity/entity');
+var heroSkills = require('../../../config/data/heroSkills');
+var Persistent = require('./../persistent');
+var consts = require('../../consts/consts');
+var dataApi = require('../../utils/dataApi');
 
 var Skills = function(opts) {
     if(typeof opts == "undefined")

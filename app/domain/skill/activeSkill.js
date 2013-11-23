@@ -7,16 +7,16 @@
  */
 
 var util = require('util');
-var dataApi = require('../utils/dataApi');
-var formula = require('../consts/formula');
-var consts = require('../consts/consts');
-var buff = require('./buff');
+var dataApi = require('../../utils/dataApi');
+var formula = require('../../consts/formula');
+var consts = require('../../consts/consts');
+var buff = require('./../buff');
 var Skill = require('./skill');
-var utils = require('../utils/utils');
-var skillUtil = require('../utils/skillUtil');
-var formationUtil = require('../utils/formationUtil');
-var fightUtil = require('../utils/fightUtil');
-var FightData = require('./battle/fightData');
+var utils = require('../../utils/utils');
+var skillUtil = require('../../utils/skillUtil');
+var formationUtil = require('../../utils/formationUtil');
+var fightUtil = require('../../utils/fightUtil');
+var FightData = require('./../battle/fightData');
 
 /**
  *

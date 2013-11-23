@@ -17,7 +17,7 @@ var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
-var Skills = require('../domain/skills');
+var Skills = require('../domain/skill/skills');
 
 var redis = require('../dao/redis/redis')
     , redisConfig = require('../../shared/config/redis');
