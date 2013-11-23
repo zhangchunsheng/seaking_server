@@ -23,8 +23,8 @@ var taskDao = require('../../dao/taskDao');
 var utils = require('../../utils/utils');
 var dbUtil = require('../../utils/dbUtil');
 var ucenter = require('../../lib/ucenter/ucenter');
-var ActiveSkill = require('./../activeSkill');
-var PassiveSkill = require('./../passiveSkill');
+var ActiveSkill = require('./../skill/activeSkill');
+var PassiveSkill = require('./../skill/passiveSkill');
 var Buff = require('./../buff');
 var skillUtil = require('../../utils/skillUtil');
 

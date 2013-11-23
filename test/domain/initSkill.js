@@ -6,7 +6,7 @@
  * Description: initSkill
  */
 var should = require('should');
-var Skills = require('../../app/domain/skills');
+var Skills = require('../../app/domain/skill/skills');
 var redis = require('../../app/dao/redis/redis');
 var userService = require('../../app/services/userService');
 

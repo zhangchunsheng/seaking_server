@@ -341,7 +341,7 @@ module.exports = {
     },
 
     buffType: {
-
+        SHIELDS: "1"
     },
 
     correspondingEffect_attr: {
