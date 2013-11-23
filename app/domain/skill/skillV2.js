@@ -6,13 +6,13 @@
  * Description: fightskill
  */
 var util = require('util');
-var dataApi = require('../utils/dataApi');
-var formula = require('../consts/formula');
-var consts = require('../consts/consts');
-var buff = require('./buff');
-var Persistent = require('./persistent');
-var utils = require('../utils/utils');
-var skill_script = require('../../scripts/skill_scriptV2');
+var dataApi = require('../../utils/dataApi');
+var formula = require('../../consts/formula');
+var consts = require('../../consts/consts');
+var buff = require('../buff');
+var Persistent = require('../persistent');
+var utils = require('../../utils/utils');
+var skill_script = require('../../../scripts/skill_scriptV2');
 
 /**
  *

@@ -109,6 +109,7 @@ describe('battle test', function() {
                     type: EntityType.PLAYER,
                     skills: owner_formationData[i].skills
                 }));
+                console.log(player);
                 player.formationId = i;
                 owners[i] = player;
 
