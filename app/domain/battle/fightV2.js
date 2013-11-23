@@ -13,7 +13,7 @@ var formula = require('../../consts/formula');
 var formulaV2 = require('../../consts/formulaV2');
 var EntityType = require('../../consts/consts').EntityType;
 var fightReward = require('./fightReward');
-var Skill = require('../skill/skillV2');
+var SkillV2 = require('../skill/skillV2');
 var consts = require('../../consts/consts');
 
 var Fight = function(opts) {
@@ -303,6 +303,8 @@ Fight.prototype.attack = function(battleData, players, index) {
     //attack.anger = 100;
     attack.anger = 0;
 
+    attack.anger = attack.useTriggerSkill(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);//触发技能
+    defense.useAwakenSkill(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);//觉醒技能
     // 攻击方式
     attack.maxAnger = 10000;
     if(attack.anger >= attack.maxAnger) {// 1 - 普通攻击 2 - 技能攻击
@@ -712,9 +714,12 @@ Fight.createTestPlayer = function(opts) {
     var hero = heros[opts.id];
 
     var skills = {};
+    var skillId = "";
     for(var i = 0 ; i < opts.skills.length ; i++) {
-        skills[i + 1] = new Skill({
-            skillId: opts.skills[i],
+        skillId = dataApi.skillsV2.findById(opts.skills[i]).skillId;
+        skills[i + 1] = new SkillV2({
+            id: opts.skills[i],
+            skillId: skillId,
             level: 1
         });
     }

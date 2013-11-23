@@ -12,7 +12,7 @@ var util = require('util');
 var utils = require('../../utils/utils');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
-var consts = require('../../consts/consts');
+var consts = require('../../consts/constsV2');
 var Entity = require('./entity');
 
 var Character = function(opts) {
@@ -307,3 +307,23 @@ Character.prototype.reduceValue = function(attrName, value) {
     this[attrName] -= parseInt(value);
 };
 
+/**
+ * 使用触发技能
+ */
+Character.prototype.useTriggerSkill = function(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=1为触发技能
+    var anger = 0;
+    if(utils.empty(this.skills[consts.skillV2Type.TRIGGER_SKILL])) {
+        return anger;
+    }
+    return this.skills[consts.skillV2Type.TRIGGER_SKILL].invokeScript(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+}
+
+/**
+ * 使用觉醒技能
+ */
+Character.prototype.useAwakenSkill = function(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=2为觉醒技能
+    if(utils.empty(this.skills[consts.skillV2Type.AWAKEN_SKILL])) {
+        return;
+    }
+    return this.skills[consts.skillV2Type.AWAKEN_SKILL].invokeScript(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+}

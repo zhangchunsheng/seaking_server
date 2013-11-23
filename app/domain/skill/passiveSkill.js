@@ -22,6 +22,10 @@ var PassiveSkill = function(opts) {
     Skill.call(this, opts);
 };
 
+util.inherits(PassiveSkill, Skill);
+
+module.exports = PassiveSkill;
+
 PassiveSkill.prototype.attack = function() {
 
 }
@@ -29,7 +33,3 @@ PassiveSkill.prototype.attack = function() {
 PassiveSkill.create = function(skill) {
 
 }
-
-util.inherits(PassiveSkill, Skill);
-
-module.exports = PassiveSkill;

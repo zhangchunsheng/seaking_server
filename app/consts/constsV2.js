@@ -208,6 +208,15 @@ module.exports = {
         PASSIVE_SKILL: 2
     },
 
+    skillV2Type: {
+        TRIGGER_SKILL: 1,//触发技能
+        AWAKEN_SKILL: 2,//觉醒技能
+        FREE_SKILL: 3,//自由技能
+        MAINATTR_SKILL: 4,//主属性技能
+        SECONDATTR_SKILL: 5,//次属性技能
+        IMPROVE_SKILL: 6//强化技能
+    },
+
     skillsType: {
         CURRENT_SKILL: "currentSkill",
         ACTIVE_SKILLS: "activeSkills",

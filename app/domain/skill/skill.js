@@ -20,7 +20,7 @@ var utils = require('../../utils/utils');
  */
 var Skill = function(opts) {
     Persistent.call(this, {
-        id: opts.skillId
+        id: opts.id
     });
     this.skillId = opts.skillId;
     this.additional = {};//额外加成
@@ -29,6 +29,10 @@ var Skill = function(opts) {
     this.type = this.skillData.type;
     this.level = this.skillData.level;
 };
+
+util.inherits(Skill, Persistent);
+
+module.exports = Skill;
 
 Skill.prototype.attack = function() {
 
@@ -60,7 +64,3 @@ Skill.prototype.updateFightValue = function(player) {
 Skill.create = function(opts) {
 
 }
-
-util.inherits(Skill, Persistent);
-
-module.exports = Skill;

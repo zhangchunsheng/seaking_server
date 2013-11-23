@@ -109,7 +109,6 @@ describe('battle test', function() {
                     type: EntityType.PLAYER,
                     skills: owner_formationData[i].skills
                 }));
-                console.log(player);
                 player.formationId = i;
                 owners[i] = player;
 
@@ -164,7 +163,7 @@ describe('battle test', function() {
         });
 
         fight.fight(function(err, eventResult) {
-            console.log(eventResult);
+            //console.log(eventResult);
         });
     });
 });

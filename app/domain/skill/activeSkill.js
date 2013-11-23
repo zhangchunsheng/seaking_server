@@ -49,6 +49,10 @@ var ActiveSkill = function(opts) {
     Skill.call(this, opts);
 };
 
+util.inherits(ActiveSkill, Skill);
+
+module.exports = ActiveSkill;
+
 /**
  *
  */
@@ -918,7 +922,3 @@ ActiveSkill.prototype.revive = function(effect, attack_formation, defense_format
 ActiveSkill.create = function(opts) {
 
 }
-
-util.inherits(ActiveSkill, Skill);
-
-module.exports = ActiveSkill;

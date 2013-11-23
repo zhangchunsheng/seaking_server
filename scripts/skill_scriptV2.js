@@ -10,7 +10,7 @@ var Buff = require('../app/domain/buffV2');
 
 var skill_script = {
     "skill101101": function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
-        attack.addBuff();
+        console.log(attack_formation);
     },
     "skill101201": function(attack_formation, defense_formation, attack, defense, attacks, defenses, fightData) {
 
