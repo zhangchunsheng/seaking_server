@@ -6,6 +6,7 @@
  * Description: skillUtil
  */
 var Buff = require('../domain/buff');
+var consts = require('../consts/consts');
 
 var skillUtil = module.exports;
 

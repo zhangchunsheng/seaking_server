@@ -377,6 +377,16 @@ module.exports = {
 
     initBuff: [],
 
+    characterFightStatus: {
+        COMMON: 1,//正常
+        FREEZEN: 2//冻结
+    },
+
+    characterFightType: {
+        ATTACK: 1,
+        DEFENSE: 2
+    },
+
     correspondingEffect_attr: {
         1: "hp",
         2: "experience",

@@ -14,7 +14,11 @@ var dataApi = require('../utils/dataApi');
  * @param defenseData
  */
 formula.calDamage = function(attack, defense) {
-    var damage = (100 + attack.sunderArmor) * attack.fightValue.attack / (100 + defense.fightValue.defense);
+    var damage = (100 + attack.fightValue.sunderArmor) * attack.fightValue.attack / (100 + defense.fightValue.defense);
+    if(defense.fight.reduceDamage > 0) {// 减免伤害
+        defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
+        damage = damage - defense.fight.reduceDamageValue;
+    }
     return Math.ceil(damage);
 }
 

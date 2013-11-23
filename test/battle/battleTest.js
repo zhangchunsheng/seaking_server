@@ -32,16 +32,16 @@ describe('battle test', function() {
             level: '1',
             formationId: 1,
             skillId1: 1,
-            skillId2: 2,
-            skillId3: 3
+            skillId2: 0,
+            skillId3: 0
         }];
         var opponent_heros = [{
             heroId: '1',
             level: '1',
             formationId: 1,
             skillId1: 1,
-            skillId2: 2,
-            skillId3: 3
+            skillId2: 0,
+            skillId3: 0
         }];
 
         var data = {};
@@ -164,7 +164,14 @@ describe('battle test', function() {
         });
 
         fight.fight(function(err, eventResult) {
-            //console.log(eventResult);
+            console.log(eventResult);
+            //getTarget(eventResult);
         });
     });
 });
+
+function getTarget(eventResult) {
+    for(var i = 0 ; i < eventResult.battleData.length ; i++) {
+        console.log(eventResult.battleData[i].target);
+    }
+}

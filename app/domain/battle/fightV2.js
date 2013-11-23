@@ -8,6 +8,7 @@
 var Code = require('../../../shared/code');
 var async = require('async');
 var utils = require('../../utils/utils');
+var skillUtil = require('../../utils/skillUtil');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
 var formulaV2 = require('../../consts/formulaV2');
@@ -15,6 +16,7 @@ var EntityType = require('../../consts/consts').EntityType;
 var fightReward = require('./fightReward');
 var SkillV2 = require('../skill/skillV2');
 var consts = require('../../consts/consts');
+var constsV2 = require('../../consts/constsV2');
 
 var Fight = function(opts) {
     this.mainPlayer = opts.mainPlayer;
@@ -60,10 +62,10 @@ Fight.prototype.fight = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
-        //owners[i].updateFightValue();
+        owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
-        //monsters[i].updateFightValue();
+        monsters[i].updateFightValueV2();
     }
 
     // 计算最大速度
@@ -150,10 +152,10 @@ Fight.prototype.pk = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
-        owners[i].updateFightValue();
+        owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
-        monsters[i].updateFightValue();
+        monsters[i].updateFightValueV2();
     }
 
     // 计算最大速度
@@ -240,6 +242,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     var attackFightTeam = {};
     var defenseFightTeam = {};
     var triggerCondition = {};
+    var dataType = 0;//0 - 普通逻辑处理 1 - buff逻辑处理
 
     for(var i = 0 ; i < players.length ; i++) {
         if(players[i].type == EntityType.PLAYER || players[i].type == EntityType.PARTNER) {
@@ -307,6 +310,27 @@ Fight.prototype.attack = function(battleData, players, index) {
     // 攻击方式
     //attack.maxAnger = 10000;
 
+    // 使用技能
+    dataType = attack.useSkillBuffs(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+    if(dataType == 0) {
+
+    }
+    defense.useSkillBuffs(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+    // 触发主动攻击技能
+    triggerCondition = {
+        type: constsV2.skillTriggerConditionType.ATTACK
+    };
+    attack.triggerSkill(consts.characterFightType.ATTACK, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+    // 触发被攻击技能
+    triggerCondition = {
+        type: constsV2.skillTriggerConditionType.BEATTACKED
+    }
+    defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+    // 计算战斗
     attackData.attack = attack.fightValue.attack;
     defenseData.defense = defense.fightValue.defense;
 
@@ -370,9 +394,12 @@ Fight.prototype.attack = function(battleData, players, index) {
             action: defenseData.action,
             hp: defenseData.hp,
             anger: defenseData.anger,
-            reduceBlood: defenseData.reduceBlood
+            reduceBlood: defenseData.reduceBlood,
+            buffs: defense.buffs
         };
         data.target.push(target);
+
+        attackData.buffs = attack.buffs;
     } else {
         // 判定是否暴击
         // random = utils.random(1, 10000);
@@ -433,6 +460,9 @@ Fight.prototype.attack = function(battleData, players, index) {
         defenseData.fId = monsterIndex;
 
         defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
+        if(defense.fight.reduceDamageValue > 0) {
+            defenseData.reduceDamage = defense.fight.reduceDamageValue;
+        }
         if(defense.fightValue.hp <= 0) {
             defense.fightValue.hp = 0;
             defense.died = defenseData.died = true;
@@ -467,11 +497,15 @@ Fight.prototype.attack = function(battleData, players, index) {
             action: defenseData.action,
             hp: defenseData.hp,
             anger: defenseData.anger,
-            reduceBlood: defenseData.reduceBlood
+            reduceBlood: defenseData.reduceBlood,
+            buffs: defenseData.buffs
         };
         if(defenseData.isCounter) {
             target.isCounter = true;
             target.counterValue = defenseData.counterValue;
+        }
+        if(defenseData.reduceDamage > 0) {
+            target.reduceDamage = defenseData.reduceDamage;
         }
         data.target.push(target);
     }
@@ -510,6 +544,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     data.damageType = attackData.damageType;
     data.attackAnger = attackData.anger;
     data.hp = attackData.hp;
+    data.buffs = attackData.buffs;
     // 守方
     //data.defenseData = defenseData;
 

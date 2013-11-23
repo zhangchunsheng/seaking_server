@@ -388,7 +388,22 @@ module.exports = {
         SHIELDS: "1"
     },
 
+    buffCategory: {
+        ATTACK: 1,
+        DEFENSE: 2
+    },
+
     initBuff: [],
+
+    characterFightStatus: {
+        COMMON: 1,//正常
+        FREEZEN: 2//冻结
+    },
+
+    characterFightType: {
+        ATTACK: 1,
+        DEFENSE: 2
+    },
 
     skillTriggerConditionType: {
         ATTACK: 1,
