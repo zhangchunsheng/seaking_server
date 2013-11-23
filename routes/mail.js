@@ -50,6 +50,7 @@ exports.systemSendMail = function(req, res) {
     mailDao.Fill(msg, function (err, all) {
         var Key = all.toKey;
         mailDao.ToMailCount([Key+ "_" + MailKeyType.NOREAD, Key + "_"+MailKeyType.HASITEM, Key + "_"+ MailKeyType.READ], function (err, reply) {
+            if(err){utils.send(msg, res, {code:FAIL, err:err});}
             if (reply >= 200) {
                 mailDao.DelInboxMail(all.toKey, function (err, reply) {});
             }
@@ -87,22 +88,24 @@ var mailIdreg = /([0-9]+)/ig;
 exports.sendMail = function(req, res) {
     var msg = req.query;
     var session = req.session;
-    console.log("fk");
     if (!msg.content || msg.content.length > 50) {
         utils.send(msg, res, {
-            code:Code.FAIL
+            code:Code.FAIL,
+            err:"信息错误"
         });
         return;
     }
     if(!msg.title || msg.title.length> 20) {
         utils.send(msg, res, {
             code: Code.FAIL
+            ,err: "信息错误"
         });
         return;
     }
     if (msg.to == null && msg.toName == null) {
        utils.send(msg, res, {
             code:Code.FAIL   
+            ,err: "没有发送人"
         });
         return;
     }
@@ -118,7 +121,7 @@ exports.sendMail = function(req, res) {
         if (msg.to == playerId || msg.toName == player.nickname) {
             utils.send(msg,res, {
                 code : Code.FAIL
-
+                err:"不能发给自己"
             });
             return;
         }
@@ -138,9 +141,8 @@ exports.sendMail = function(req, res) {
         var fromKey = picecBoxName(session);
         mailDao.SendMailCount(fromKey, function (err, reply) {
             if (reply >= 50) {
-
                 mailDao.DelOutboxMail(fromKey,reply-50+1, function (err, reply) {
-                    console.log(err);
+                    if(err){console.log(err);}
                 });
             }
             mailDao.Fill(msg, function (err, all) {
@@ -155,6 +157,7 @@ exports.sendMail = function(req, res) {
                             console.log(err);
                             utils.send(msg,res, {
                                 code : Code.FAIL
+                                ,err:err
                             });
                             return;
                         }
@@ -198,11 +201,12 @@ exports.getInbox = function(req, res) {
     ];
     mailDao.ToMailCount(keys,
     function(err, r) {
+        if(err){utils.send(msg, res,{code: FAIL,err:err});return;}
         var allCount = r[0]+r[1]+r[2];
         if(allCount == 0) {
             utils.send(msg, res,{
                 code: Code.OK,
-                outbox: [],
+                mails: [],
                 P:packageNum,
                 C:allCount,
                 I:0
@@ -213,19 +217,20 @@ exports.getInbox = function(req, res) {
             index = Math.floor((allCount-1) /packageNum);
             start = index * packageNum;
         }
-        end = (index+1) *  packageNum;
+        end = (index+1) *  packageNum-1;
 
         mailDao.getInbox(keys,r, start, end, function (err, reply) {
             if(!!err) {
                 utils.send(msg,res, {
                     code : Code.FAIL
+                    ,err:err
                 });
                 return;
             }
             utils.send(msg,res,{
                 code:Code.OK,
                 data:{
-                    inbox:reply,
+                    mails:reply,
                     P:packageNum,
                     C:allCount,
                     I:index
@@ -252,10 +257,12 @@ exports.getOutbox = function(req, res) {
         if(allCount == 0) {
             utils.send(msg, res,{
                 code: Code.OK,
-                outbox: [],
-                P:packageNum,
-                C:allCount,
-                I:0
+                data:{
+                    mails: [],
+                    P:packageNum,
+                    C:allCount,
+                    I:0
+                }
             });
             return;
         }
@@ -263,7 +270,7 @@ exports.getOutbox = function(req, res) {
             index = Math.floor((allCount-1)/packageNum);
             start = index * packageNum;
         }
-        end = (index+1) * packageNum;
+        end = (index+1) * packageNum - 1;
         mailDao.getOutbox(key, start, end, function (err, reply) {
             if( !!err ) {
                 utils.send(msg,res, {
@@ -274,10 +281,13 @@ exports.getOutbox = function(req, res) {
             }
             utils.send(msg,res,{
                 code:Code.OK,
-                outbox:reply,
-                P:packageNum,
-                C:allCount,
-                I:index
+                data:{
+                    mails:reply,
+                    P:packageNum,
+                    C:allCount,
+                    I:index
+                }
+               
             })
         });
 
@@ -313,6 +323,7 @@ exports.readMail = function(req, res) {
     if (MailKeyType.NOREAD != mails[0]) {
         utils.send(msg, res, {
             code: Code.MAIL.HAVE_READ
+            ,err: "不是未读邮件"
         });
         return;
     }
@@ -321,12 +332,13 @@ exports.readMail = function(req, res) {
         if (!!err) {
             utils.send(msg, res, {
                 code: Code.FAIL
+                ,err: err
             });
             return;
         }
         utils.send(msg, res, {
             code: Code.OK,
-            mail:reply
+            data:reply
         });
     });
 }
@@ -342,6 +354,7 @@ exports.delMail = function(req, res) {
     if(!msg.mailId && msg.mailId.length<4) {
         utils.send(msg, res, {
             code: Code.FAIL
+            ,err:"信息错误"
         });
         return;
     }
@@ -353,6 +366,7 @@ exports.delMail = function(req, res) {
         if (!!err) {
            utils.send(msg, res, {
                 code : Code.FAIL
+                ,err: err
             });
             return;
         }
@@ -372,20 +386,19 @@ exports.hasNewMail = function(req, res) {
     var session = req.session;
 
     var Key = picecBoxName(session);
-    mailDao.ToMailCount([Key + "_" + MailKeyType.NOREAD, Key + "_" + MailKeyType.HASITEM], function (err, reply) {
+    var Keys = [Key + "_" + MailKeyType.NOREAD, Key + "_" + MailKeyType.HASITEM];
+    mailDao.ToMailCount(Keys, function (err, reply) {
         if (!!err) {
              utils.send(msg, res, {
-                code : Code.FAIL
+                code : Code.FAIL,
+                err: err
             });
             return;
         }
         var all = 0;
-        for (var i = 1; i <= Keys.length; i++) {
-            all += reply[i];
-        }
-         utils.send(msg, res, {
+        utils.send(msg, res, {
             code : Code.OK,
-            count : all
+            data : reply
         });
     });
 }
@@ -399,7 +412,7 @@ exports.collectItem = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var itemIndex = msg.itemIndex -0 || 0;
+    var itemIndex = msg.index -0 || 0;
     var mailId = msg.mailId;
     var Key = picecBoxName(session);
     var mails = [mailId.substring(0, 3), mailId.substring(3)];
@@ -417,10 +430,11 @@ exports.collectItem = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
-        mailDao.collectItem(Key, mails, itemIndex, player, function (err, reply) {
+        mailDao.collectItem(Key, mails, itemIndex, player, function (err, r) {
             if( !!err ) {
                 utils.send(msg, res, {
-                    code: Code.FAIL
+                    code: Code.FAIL,
+                    err: err
                 });
                 return;
             }
@@ -438,12 +452,41 @@ exports.collectItem = function(req, res) {
                     taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
+                if(err){utils.send(msg, res, {code: Code.FAIL,err:err});return;}
                 utils.send(msg, res, {
-                code : Code.OK,
-                data : reply
+                    code : Code.OK,
+                    data : r
                  });
             });
             
+        });
+    });
+}
+
+exports.collectMail = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var itemIndex = msg.itemIndex -0 || 0;
+    msg.Key = picecBoxName(session);
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+        var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        msg.playerId = session.playerId;
+        msg.nickName =  player.nickname;
+        mailDao.collectMail(msg, function(err, r) {
+            if(err){utils.send(msg, res, {
+                code: Code.FAIL,
+                err: err
+            });return;}
+            utils.send(msg, res, {
+                code: Code.OK,
+                data: r
+            });
         });
     });
 }

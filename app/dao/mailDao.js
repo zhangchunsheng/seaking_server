@@ -39,6 +39,20 @@ mailDao.createMail = function (msg) {
  */
 mailDao.Fill = function (msg, cb) {
 	mailDao.setTo(msg, cb); //可以写一个函数让他成为链式执行
+	/*async.parallel([
+		function(callback) {
+			mailDao.setTo(msg, callback);
+		},
+		function(callback) {
+			mailDao.setToKey(msg, callback);
+		},
+		function(callback) {
+			mailDao.setMailId(msg,callback);
+		}
+	], function(err, res) {
+		if(err){cb(err,null);return;}
+		cb(null,msg);
+	});*/
 }
 
 /**
@@ -49,11 +63,13 @@ mailDao.Fill = function (msg, cb) {
 mailDao.setTo = function (msg, cb) {
 	if (msg.to != null && msg.toName == null) {
 		userDao.getNicknameByPlayerId(msg.to, function (err, reply) {
+			if(err){cb("setname err:"+err.message, null);return;}
 			msg.toName = reply;
 			mailDao.setToKey(msg, cb);
 		});
 	} else if (msg.toName != null && msg.to == null) {
 		userDao.getPlayerIdByNickname(msg.serverId, msg.toName, function (err, reply) {
+			if(err){cb("setplayerId err:"+err.message, null);return;}
 			msg.to = reply;
 			console.log("callback:"+reply);
 			mailDao.setToKey(msg, cb);
@@ -69,6 +85,7 @@ mailDao.setTo = function (msg, cb) {
 mailDao.setToKey = function (msg, cb) {
 	redis.command(function (client) {
 		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {}).get(msg.to, function (err, reply) {
+			if(err){cb("setToKey err:"+err.message, null);return;}
 			msg.toKey = reply;
             redis.release(client);
 			mailDao.setMailId(msg, cb);
@@ -88,6 +105,7 @@ mailDao.setMailId = function (msg, cb) {
 		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {
 
         }).incr("mailId", function (err, reply) {
+        	if(err){cb("setMailId:"+err.message, null);return;}
 			msg.mailId = reply;
             redis.release(client);
 			utils.invokeCallback(cb, null, msg);
@@ -220,10 +238,6 @@ mailDao.addMail = function (fromBox, toBox, mail, cb) {
 	var sendMail = JSON.stringify(cmail);
 	mail.mailId = MailKeyType.NOREAD + mail.mailId;
 	var receive = JSON.stringify(mail);
-    console.log(fromBox);
-    console.log(sendMail);
-    console.log(toBox);
-    console.log(receive);
 	redis.command(function (client) {
 		client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function (err, reply) {})
 		.lpush(fromBox, sendMail, function (err, reply) {
@@ -576,8 +590,9 @@ var getNum = 40;
  			 find(0, length);
  		}else {
  			client.lrange(key1, 0 ,-1, function(err, res){
- 				if(err){callback(err,res);return;}
+ 				if(err){callback(err,res );return;}
  				var find = function(start, end){
+ 					if(start+1==end){callback("not find:"+key2,null);return;}
  					var m = Math.ceil((start+end)/2);
  					var mailId = getjson(res[m]).mailId;
  					if(mailId > key2) {
@@ -650,11 +665,16 @@ var getNum = 40;
  			if(!res){redis.release(client);cb("not find",null);return;}
  			var mail = getjson(res.data);
  			mail.items = getjson(mail.items);
- 			if(mail.items[index].hasCollect) {
+ 			var item = mail.items[index];
+ 			if(item.hasCollect) {
  				utils.invokeCallback(cb, "已经领过了");
  				return;
  			}
- 			var item = mail.items[index];
+ 			
+ 			if(!item) {
+ 				utils.invokeCallback(cb, "没有该物品!");
+ 				return;
+ 			}
  			item.hasCollect = 1;
  			var v = false;
 			for(var i = 0, l= mail.items.length;i<l;i++) {
@@ -673,6 +693,7 @@ var getNum = 40;
 					if(err){cb(err,null);return;}
 					cb(null,{changeMail:mail, changItem: i});
 				});
+
 			}else{
 				var array =[];
 				var order = 1;
@@ -684,17 +705,12 @@ var getNum = 40;
 				mailDao.insert(client, Key+"_"+MailKeyType.READ,mail , function(err, re) {
 					if(err){redis.release(client);cb(err,null);return;}
 					array.push(re);
-	
 					client.multi(array).exec(function(err, r) {
 						redis.release(client);
 						if(err){cb(err,null);return;}
-						if(r[0] == 1 && r[1] ==1){
+							console.log(r);
 							cb(null,{changeMail:mail, changeItem: i});
-						}else{
-							cb(null,array);
-						}
-						
-						
+
 					});
 					//sql = ["eval", insertLua, "P"+playerId+"_"+MailConstant.READ,data];
 				},1);
@@ -763,3 +779,36 @@ var getNum = 40;
 		}
 	});
 }*/
+
+mailDao.collectMail = function(msg, cb) {
+	var mail ={
+		"from": "0",
+		"fromName":"管理员",
+	    "to": msg.playerId,
+	    "title": "系统礼物",
+	    "time": Date.now(),
+	    "content": "欢迎来到wozlla时空,这是给你的新手礼物！请收好",
+	    "items":[{itemId: "D10010101", itemNum:3},{itemId:"D10010102", itemNum: 50}],
+	    "type": 2,
+	    "toName": msg.nickName
+		};
+	redis.command(function(client) {
+		client.select(redisConfig.database.SEAKING_REDIS_DB,function(){
+			client.incr("mailId", function(err, res) {
+				if(err){cb(err, null);return;}
+				mail.mailId = "ERW"+res;
+
+				var array = [];
+				array.push(["lpush",msg.Key+"_"+MailKeyType.HASITEM, getstring(mail)]);
+				client.multi(array).exec(function(err, res) {
+					redis.release(client);
+					cb(err,mail);
+				});
+			});
+
+		})
+		
+		
+	});
+
+}

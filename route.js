@@ -90,6 +90,7 @@ module.exports = function (app) {
     app.get('/mail/hasNewMail', authRequired, mail.hasNewMail);
     app.get('/mail/newMail',authRequired,mail.hasNewMail);
     app.get('/mail/collectItem', authRequired, mail.collectItem);
+    app.get('/mail/collectMail', authRequired, mail.collectMail);
 
     app.get('/package/addItem', authRequired, package.addItem);
     app.get('/package/dropItem', authRequired, package.dropItem);
