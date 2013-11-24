@@ -169,9 +169,11 @@ module.exports = {
     },
 
     MailKeyType:{
+        MAILIN:"MI",
+        MAILOUT:"MO",
+        READ:"ERR",
         NOREAD:"ERN",
         HASITEM:"ERW",
-        READ:"ERR",
         SEND:"ESS"
     },
 
