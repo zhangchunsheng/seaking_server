@@ -120,7 +120,7 @@ exports.sendMail = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
         if (msg.to == playerId || msg.toName == player.nickname) {
             utils.send(msg,res, {
-                code : Code.FAIL
+                code : Code.FAIL,
                 err:"不能发给自己"
             });
             return;
