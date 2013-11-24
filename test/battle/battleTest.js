@@ -17,6 +17,7 @@ var utils = require('../../app/utils/utils');
 var consts = require('../../app/consts/consts');
 var EntityType = require('../../app/consts/consts').EntityType;
 var Player = require('../../app/domain/entity/player');
+var Opponent = require('../../app/domain/entity/opponent');
 var Monster = require('../../app/domain/entity/monster');
 var dataApi = require('../../app/utils/dataApi');
 var Fight = require('../../app/domain/battle/fight');
@@ -31,16 +32,16 @@ describe('battle test', function() {
             level: '1',
             formationId: 1,
             skillId1: 1,
-            skillId2: 2,
-            skillId3: 3
+            skillId2: 0,
+            skillId3: 0
         }];
         var opponent_heros = [{
             heroId: '1',
             level: '1',
             formationId: 1,
             skillId1: 1,
-            skillId2: 2,
-            skillId3: 3
+            skillId2: 0,
+            skillId3: 0
         }];
 
         var data = {};
@@ -130,11 +131,11 @@ describe('battle test', function() {
         var monster = {};
         for(var i = 0 ; i < monster_formationData.length ; i++) {
             if(monster_formationData[i] != null && monster_formationData[i] != 0) {
-                player = new Monster(FightV2.createTestPlayer({
+                player = new Opponent(FightV2.createTestPlayer({
                     id: monster_formationData[i].heroId,
                     level: monster_formationData[i].level,
                     formationId: i,
-                    type: EntityType.MONSTER,
+                    type: EntityType.OPPONENT,
                     skills: monster_formationData[i].skills
                 }));
                 monsters[i] = player;
@@ -164,6 +165,13 @@ describe('battle test', function() {
 
         fight.fight(function(err, eventResult) {
             console.log(eventResult);
+            //getTarget(eventResult);
         });
     });
 });
+
+function getTarget(eventResult) {
+    for(var i = 0 ; i < eventResult.battleData.length ; i++) {
+        console.log(eventResult.battleData[i].target);
+    }
+}

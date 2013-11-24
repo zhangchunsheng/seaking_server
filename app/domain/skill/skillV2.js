@@ -6,12 +6,13 @@
  * Description: fightskill
  */
 var util = require('util');
-var dataApi = require('../utils/dataApi');
-var formula = require('../consts/formula');
-var consts = require('../consts/consts');
-var buff = require('./buff');
-var Persistent = require('./persistent');
-var utils = require('../utils/utils');
+var dataApi = require('../../utils/dataApi');
+var formula = require('../../consts/formula');
+var consts = require('../../consts/consts');
+var buff = require('../buff');
+var Persistent = require('../persistent');
+var utils = require('../../utils/utils');
+var skill_script = require('../../../scripts/skill_scriptV2');
 
 /**
  *
@@ -20,15 +21,19 @@ var utils = require('../utils/utils');
  */
 var Skill = function(opts) {
     Persistent.call(this, {
-        id: opts.skillId
+        id: opts.id
     });
     this.skillId = opts.skillId;
     this.additional = {};//额外加成
-    this.skillData = dataApi.skillList.findById(opts.skillId);
+    this.skillData = dataApi.skillsV2.findById(opts.id);
     this.name = this.skillData.skillName;
     this.type = this.skillData.type;
-    this.level = this.skillData.level;
+    this.level = opts.level || this.skillData.level;
 };
+
+util.inherits(Skill, Persistent);
+
+module.exports = Skill;
 
 Skill.prototype.attack = function() {
 
@@ -57,10 +62,33 @@ Skill.prototype.updateFightValue = function(player) {
     }
 }
 
-Skill.create = function(opts) {
+Skill.prototype.invokeScript = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var array = [];
+    array.push(attackSide);
+    array.push(condition);
+    array.push(attack_formation);
+    array.push(defense_formation);
+    array.push(attack);
+    array.push(defense);
+    array.push(attacks);
+    array.push(defenses);
+    array.push(attackFightTeam);
+    array.push(defenseFightTeam);
+    array.push(fightData);
+    array.push(attackData);
+    array.push(defenseData);
+    skill_script["skill" + this.skillId].apply(this, array);
+}
+
+/**
+ * 释放技能
+ * @param player
+ * @param attackType
+ */
+Skill.prototype.release = function(player, attackType) {
 
 }
 
-util.inherits(Skill, Persistent);
+Skill.create = function(opts) {
 
-module.exports = Skill;
+}

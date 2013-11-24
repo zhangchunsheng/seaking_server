@@ -8,12 +8,15 @@
 var Code = require('../../../shared/code');
 var async = require('async');
 var utils = require('../../utils/utils');
+var skillUtil = require('../../utils/skillUtil');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
 var formulaV2 = require('../../consts/formulaV2');
 var EntityType = require('../../consts/consts').EntityType;
 var fightReward = require('./fightReward');
+var SkillV2 = require('../skill/skillV2');
 var consts = require('../../consts/consts');
+var constsV2 = require('../../consts/constsV2');
 
 var Fight = function(opts) {
     this.mainPlayer = opts.mainPlayer;
@@ -59,10 +62,10 @@ Fight.prototype.fight = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
-        //owners[i].updateFightValue();
+        owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
-        //monsters[i].updateFightValue();
+        monsters[i].updateFightValueV2();
     }
 
     // 计算最大速度
@@ -149,10 +152,10 @@ Fight.prototype.pk = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
-        owners[i].updateFightValue();
+        owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
-        monsters[i].updateFightValue();
+        monsters[i].updateFightValueV2();
     }
 
     // 计算最大速度
@@ -238,6 +241,8 @@ Fight.prototype.attack = function(battleData, players, index) {
     var monsterIndex = 0;
     var attackFightTeam = {};
     var defenseFightTeam = {};
+    var triggerCondition = {};
+    var dataType = 0;//0 - 普通逻辑处理 1 - buff逻辑处理
 
     for(var i = 0 ; i < players.length ; i++) {
         if(players[i].type == EntityType.PLAYER || players[i].type == EntityType.PARTNER) {
@@ -303,21 +308,31 @@ Fight.prototype.attack = function(battleData, players, index) {
     attack.anger = 0;
 
     // 攻击方式
-    attack.maxAnger = 10000;
-    if(attack.anger >= attack.maxAnger) {// 1 - 普通攻击 2 - 技能攻击
-        attackData.action = consts.attackAction.skill;
-        if(attack.type == EntityType.MONSTER) {
-            attackData.skillId = 0;
-        } else {
-            attackData.skillId = attack.activeSkill.skillId;
-        }
-        attack.anger = 0;
-    } else {
-        attackData.action = consts.attackAction.common;
-    }
+    //attack.maxAnger = 10000;
 
+    // 使用技能
+    dataType = attack.useSkillBuffs(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+    if(dataType == 0) {
+
+    }
+    defense.useSkillBuffs(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+    // 触发主动攻击技能
+    triggerCondition = {
+        type: constsV2.skillTriggerConditionType.ATTACK
+    };
+    attack.triggerSkill(consts.characterFightType.ATTACK, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+    // 触发被攻击技能
+    triggerCondition = {
+        type: constsV2.skillTriggerConditionType.BEATTACKED
+    }
+    defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+    // 计算战斗
     attackData.attack = attack.fightValue.attack;
-    defenseData.defense = defense.defense;
+    defenseData.defense = defense.fightValue.defense;
 
     var random = 0;
 
@@ -330,9 +345,9 @@ Fight.prototype.attack = function(battleData, players, index) {
     //暴击
     var criticalHit = attack.fightValue.criticalHit * 100;
     //格挡
-    var block = defense.block * 100;
+    var block = defense.fightValue.block * 100;
     //闪避
-    var dodge = defense.dodge * 100;
+    var dodge = defense.fightValue.dodge * 100;
     var num1 = criticalHit + block;
     var num2 = num1 + dodge;
     random = utils.random(1, 10000);
@@ -369,7 +384,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             }
         }
 
-        defenseData.hp = defense.hp;
+        defenseData.hp = defense.fightValue.hp;
         defenseData.hp = defense.anger;
 
         data.targetType = consts.effectTargetType.OPPONENT;
@@ -379,125 +394,120 @@ Fight.prototype.attack = function(battleData, players, index) {
             action: defenseData.action,
             hp: defenseData.hp,
             anger: defenseData.anger,
-            reduceBlood: defenseData.reduceBlood
+            reduceBlood: defenseData.reduceBlood,
+            buffs: defense.buffs
         };
         data.target.push(target);
+
+        attackData.buffs = attack.buffs;
     } else {
-        if(attackData.action == consts.attackAction.skill) {//技能攻击
-            damageType = consts.damageType.common;
-            //计算攻击力 技能加成
-            if(attack.type == EntityType.MONSTER) {
-
-            } else {
-                attack.activeSkillAdditional();
-                attackData.attack = attack.fightValue.attack;
-                attackData.buffs = [];
-                defenseData.groupDamage = {};
-                defenseData.buffs = [];
-            }
-            //计算防御
-            defenseData.defense = defense.defense;
-
-            attack.useActiveSkill(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
-        } else {
-            // 判定是否暴击
-            // random = utils.random(1, 10000);
-            if(isCriticalHit) {// 暴击
-                attackData.isCritHit = true;
-                //attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
-            }
-
-            defenseData.action = consts.defenseAction.beHitted;
-
-            // 判定是否格挡
-            // random = utils.random(1, 10000);
-            if(isBlock) {// 格挡
-                //attackData.attack = attackData.attack / 2;
-                defenseData.isBlock = true;
-                defenseData.action = consts.defenseAction.block;
-            }
-
-            // attackData.hasBuff = true;// buff，可以有多个buff
-
-            if(isCriticalHit) {// 暴击
-                defenseData.reduceBlood = formulaV2.calCritDamage(attack, defense);
-            } else if(isBlock) {
-                defenseData.reduceBlood = formulaV2.calBlockDamage(attack, defense);
-            } else {
-                //defenseData.reduceBlood = formula.calDamage(attack, defense);
-                //伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
-                defenseData.reduceBlood = formulaV2.calDamage(attack, defense);
-            }
-
-            if(defenseData.reduceBlood < 0) {
-                defenseData.reduceBlood = 0;
-            }
-
-            // 更新状态
-            // 攻方
-
-            // 守方
-
-            // 判定是否反击
-            var counter = defense.counter * 100;
-            random = utils.random(1, 10000);
-            if(random >= 1 && random <= counter) {// 反击
-                var damage = formulaV2.calCounterDamage(defense, attack);
-                defenseData.isCounter = true;
-                defenseData.counterValue = damage;//反击伤害
-                attack.hp = Math.ceil(attack.hp - damage);
-                if(attack.hp <= 0) {
-                    attack.hp = 0;
-                    attack.died = attackData.died = true;
-                    attack.costTime = 10000;
-                }
-            }
-
-            // 更新数据
-            defenseData.fId = monsterIndex;
-
-            defense.hp = Math.ceil(defense.hp - defenseData.reduceBlood);
-            if(defense.hp <= 0) {
-                defense.hp = 0;
-                defense.died = defenseData.died = true;
-                defense.costTime = 10000;
-            }
-
-            // 守方
-            // 增加怒气
-            if(attackData.action == consts.attackAction.common) {// each hit received
-                if(defense.type == EntityType.MONSTER) {
-                    defense.anger += defense.restoreAngerSpeed.ehr;
-                } else {
-                    defense.anger += defense.restoreAngerSpeed.ehr;
-                }
-            } else if(attackData.action == consts.attackAction.skill) {// each skill hit received
-                if(defense.type == EntityType.MONSTER) {
-                    defense.anger += defense.restoreAngerSpeed.eshr;
-                } else {
-                    defense.anger += defense.restoreAngerSpeed.eshr;
-                }
-            }
-
-            // 更新状态
-            defenseData.hp = defense.hp;
-            defenseData.anger = defense.anger;
-
-            data.targetType = consts.effectTargetType.OPPONENT;
-            var target = {
-                id: defense.id,
-                fId: defense.formationId,
-                action: defenseData.action,
-                hp: defenseData.hp,
-                anger: defenseData.anger,
-                reduceBlood: defenseData.reduceBlood
-            };
-            if(defenseData.isCounter) {
-                target.isCounter = true;
-                target.counterValue = defenseData.counterValue;
-            }
-            data.target.push(target);
+        // 判定是否暴击
+        // random = utils.random(1, 10000);
+        if(isCriticalHit) {// 暴击
+            attackData.isCritHit = true;
+            //attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
         }
+
+        defenseData.action = consts.defenseAction.beHitted;
+
+        // 判定是否格挡
+        // random = utils.random(1, 10000);
+        if(isBlock) {// 格挡
+            //attackData.attack = attackData.attack / 2;
+            defenseData.isBlock = true;
+            defenseData.action = consts.defenseAction.block;
+        }
+
+        // attackData.hasBuff = true;// buff，可以有多个buff
+
+        if(isCriticalHit) {// 暴击
+            defenseData.reduceBlood = formulaV2.calCritDamage(attack, defense);
+        } else if(isBlock) {
+            defenseData.reduceBlood = formulaV2.calBlockDamage(attack, defense);
+        } else {
+            //defenseData.reduceBlood = formula.calDamage(attack, defense);
+            //伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
+            defenseData.reduceBlood = formulaV2.calDamage(attack, defense);
+        }
+
+        if(defenseData.reduceBlood < 0) {
+            defenseData.reduceBlood = 0;
+        }
+
+        // 更新状态
+        // 攻方
+        attackData.buffs = attack.buffs;
+
+        // 守方
+        defenseData.buffs = defense.buffs;
+
+        // 判定是否反击
+        var counter = defense.fightValue.counter * 100;
+        random = utils.random(1, 10000);
+        if(random >= 1 && random <= counter) {// 反击
+            var damage = formulaV2.calCounterDamage(defense, attack);
+            defenseData.isCounter = true;
+            defenseData.counterValue = damage;//反击伤害
+            attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
+            if(attack.fightValue.hp <= 0) {
+                attack.fightValue.hp = 0;
+                attack.died = attackData.died = true;
+                attack.costTime = 10000;
+            }
+        }
+
+        // 更新数据
+        defenseData.fId = monsterIndex;
+
+        defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
+        if(defense.fight.reduceDamageValue > 0) {
+            defenseData.reduceDamage = defense.fight.reduceDamageValue;
+        }
+        if(defense.fightValue.hp <= 0) {
+            defense.fightValue.hp = 0;
+            defense.died = defenseData.died = true;
+            defense.costTime = 10000;
+        }
+
+        // 守方
+        // 增加怒气
+        if(attackData.action == consts.attackAction.common) {// each hit received
+            if(defense.type == EntityType.MONSTER) {
+                defense.anger += defense.restoreAngerSpeed.ehr;
+            } else {
+                defense.anger += defense.restoreAngerSpeed.ehr;
+            }
+        } else if(attackData.action == consts.attackAction.skill) {// each skill hit received
+            if(defense.type == EntityType.MONSTER) {
+                defense.anger += defense.restoreAngerSpeed.eshr;
+            } else {
+                defense.anger += defense.restoreAngerSpeed.eshr;
+            }
+        }
+
+        // 更新状态
+        defenseData.hp = defense.fightValue.hp;
+        defenseData.anger = defense.anger;
+
+        // 攻击目标
+        data.targetType = consts.effectTargetType.OPPONENT;
+        var target = {
+            id: defense.id,
+            fId: defense.formationId,
+            action: defenseData.action,
+            hp: defenseData.hp,
+            anger: defenseData.anger,
+            reduceBlood: defenseData.reduceBlood,
+            buffs: defenseData.buffs
+        };
+        if(defenseData.isCounter) {
+            target.isCounter = true;
+            target.counterValue = defenseData.counterValue;
+        }
+        if(defenseData.reduceDamage > 0) {
+            target.reduceDamage = defenseData.reduceDamage;
+        }
+        data.target.push(target);
     }
 
     // 更新数据
@@ -515,7 +525,7 @@ Fight.prototype.attack = function(battleData, players, index) {
         attack.anger += attack.restoreAngerSpeed.ea;
     }
 
-    attackData.hp = attack.hp;
+    attackData.hp = attack.fightValue.hp;
     attackData.anger = attack.anger;
     attackData.damageType = damageType;
 
@@ -534,6 +544,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     data.damageType = attackData.damageType;
     data.attackAnger = attackData.anger;
     data.hp = attackData.hp;
+    data.buffs = attackData.buffs;
     // 守方
     //data.defenseData = defenseData;
 
@@ -711,11 +722,14 @@ Fight.createTestPlayer = function(opts) {
     var hero = heros[opts.id];
 
     var skills = {};
+    var skillId = "";
     for(var i = 0 ; i < opts.skills.length ; i++) {
-        skills[i + 1] = {
-            skillId: opts.skills[i],
+        skillId = dataApi.skillsV2.findById(opts.skills[i]).skillId;
+        skills[i + 1] = new SkillV2({
+            id: opts.skills[i],
+            skillId: skillId,
             level: 1
-        };
+        });
     }
 
     var data = {

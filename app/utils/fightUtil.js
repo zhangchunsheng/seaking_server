@@ -14,3 +14,7 @@ fightUtil.calculateHP = function(defense, defenseData) {
         defense.costTime = 10000;
     }
 }
+
+fightUtil.getTriggerCondition = function() {
+
+}

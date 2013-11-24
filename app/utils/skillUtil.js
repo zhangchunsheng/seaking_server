@@ -6,6 +6,7 @@
  * Description: skillUtil
  */
 var Buff = require('../domain/buff');
+var consts = require('../consts/consts');
 
 var skillUtil = module.exports;
 
@@ -36,8 +37,8 @@ skillUtil.getActiveSkillBuff = function(effect, buffType, activeSkill) {
         useEffectId: effect.id,
         type: effect.attr,
         skillId: activeSkill.skillId,
-        skillType: activeSkill.skillType,
-        skillLevel: activeSkill.skillLevel,
+        skillType: activeSkill.type,
+        skillLevel: activeSkill.level,
         skillData: activeSkill.skillData,
         buffData: effect,
         buffType: buffType,
