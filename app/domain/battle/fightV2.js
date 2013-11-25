@@ -389,11 +389,11 @@ Fight.prototype.attack = function(battleData, players, index) {
             hp: defenseData.hp,
             anger: defenseData.anger,
             reduceBlood: defenseData.reduceBlood,
-            buffs: defense.buffs
+            buffs: defense.getBuffs()
         };
         data.target.push(target);
 
-        attackData.buffs = attack.buffs;
+        attackData.buffs = attack.getBuffs();
     } else {
         // 触发被攻击技能
         triggerCondition = {
@@ -436,10 +436,10 @@ Fight.prototype.attack = function(battleData, players, index) {
 
         // 更新状态
         // 攻方
-        attackData.buffs = attack.buffs;
+        attackData.buffs = attack.getBuffs();
 
         // 守方
-        defenseData.buffs = defense.buffs;
+        defenseData.buffs = defense.getBuffs();
 
         // 判定是否反击
         var counter = defense.fightValue.counter * 100;

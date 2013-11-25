@@ -721,6 +721,9 @@ Player.prototype.calculateBuff = function() {
     this.fightValue.dodge = dodge;
     this.fightValue.block = block;
     this.fightValue.counter = counter;
+
+    this.fight.reduceDamage = 0;//减免伤害
+    this.fight.reduceDamageValue = 0;
 }
 
 /**
