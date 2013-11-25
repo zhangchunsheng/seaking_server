@@ -20,7 +20,7 @@ var buff_script = {
      * @param fightData
      */
     "buff101101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        defense.fight.reduceDamage = 0.2;
+        defense.fight.reduceDamage = this.buffData.value;
         defense.removeBuff(this);
     },
     "buff101201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {

@@ -56,7 +56,7 @@ var skill_script = {
                 }
             }
             var buffData = {
-                value: 20
+                value: 0.2
             };
             attackData.skillId = this.skillId;
             var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);

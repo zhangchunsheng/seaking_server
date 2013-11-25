@@ -77,7 +77,7 @@ Skill.prototype.invokeScript = function(attackSide, condition, attack_formation,
     array.push(fightData);
     array.push(attackData);
     array.push(defenseData);
-    skill_script["skill" + this.skillId].apply(this, array);
+    return skill_script["skill" + this.skillId].apply(this, array);
 }
 
 /**
