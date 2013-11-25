@@ -311,6 +311,8 @@ Fight.prototype.attack = function(battleData, players, index) {
     // 攻击方式
     //attack.maxAnger = 10000;
 
+    attack.updateBuff(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
     // 使用技能
     dataType = attack.useSkillBuffs(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
     if(dataType == 0) {
