@@ -377,8 +377,6 @@ module.exports = {
         REDUCESPEED: "reducespeed"
     },
 
-    initBuff: [],
-
     characterFightStatus: {
         COMMON: 1,//正常
         FREEZEN: 2//冻结

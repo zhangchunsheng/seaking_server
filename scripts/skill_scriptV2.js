@@ -89,7 +89,7 @@ var skill_script = {
         var buffs = defense.buffs;
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == this.skillId) {
-                return 100;
+                return 0;
             }
         }
         var buffData = {

@@ -15,6 +15,7 @@ var taskDao = require('./taskDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
+var buffUtil = require('../utils/buffUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
 var Skills = require('../domain/skill/skills');
@@ -128,7 +129,7 @@ function generalPartner(serverId, registerType, loginName, characterId, partnerI
             activeSkills: JSON.parse(replies.activeSkills),
             passiveSkills: JSON.parse(replies.passiveSkills)
         },
-        buffs: replies.buffs ? JSON.parse(replies.buffs).buffs : consts.initBuff
+        buffs: replies.buffs ? JSON.parse(replies.buffs).buffs : buffUtil.getInitBuff()
     };
     character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
     var Partner = require('../domain/entity/partner');
@@ -169,7 +170,7 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                         registerType: registerType,
                         loginName: loginName,
                         nickname: hero.name,
-                        buffs: consts.initBuff,
+                        buffs: buffUtil.getInitBuff(),
                         experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         level: level,
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),

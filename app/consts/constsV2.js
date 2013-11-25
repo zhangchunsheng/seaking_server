@@ -393,8 +393,6 @@ module.exports = {
         DEFENSE: 2
     },
 
-    initBuff: [],
-
     characterFightStatus: {
         COMMON: 1,//正常
         FREEZEN: 2//冻结

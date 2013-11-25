@@ -21,6 +21,7 @@ var playerDao = require('./playerDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
+var buffUtil = require('../utils/buffUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
 var ucenter = require('../lib/ucenter/ucenter');
@@ -337,7 +338,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
                         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         photo: '',
-                        buffs: consts.initBuff,
+                        buffs: buffUtil.getInitBuff(),
                         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         anger: 0,

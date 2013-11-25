@@ -10,6 +10,7 @@
  */
 var util = require('util');
 var utils = require('../../utils/utils');
+var buffUtil = require('../../utils/buffUtil');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
 var consts = require('../../consts/constsV2');
@@ -83,7 +84,7 @@ var Character = function(opts) {
     this.restoreAngerSpeed = opts.restoreAngerSpeed || {ea:10, ehr: 3, eshr: 6};//能量恢复速度
 
     this.hasBuff = false;
-    this.buffs = opts.buffs || consts.initBuff;
+    this.buffs = opts.buffs || buffUtil.getInitBuff();
     this.skillBuffs = [];//技能buff
 
     //上一次使用技能
@@ -468,12 +469,13 @@ Character.prototype.useAwakenSkill = function(attackSide, condition, attack_form
 Character.prototype.useSkillBuffs = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var dataTypes = [];
     var dataType = 0;
-    var skillBuffs = this.getSkillBuffs();
     if(fightType == consts.characterFightType.ATTACK) {
+        var skillBuffs = attack.getSkillBuffs();
         for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
 
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {
+        var skillBuffs = defense.getSkillBuffs();
         for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
             if(skillBuffs[i].buffCategory == consts.buffCategory.DEFENSE) {
                 dataType = skillBuffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);

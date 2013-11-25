@@ -2,8 +2,8 @@
  * Copyright(c)2013,Wozlla,www.wozlla.com
  * Version: 1.0
  * Author: Peter Zhang
- * Date: 2013-11-14
- * Description: testBattle
+ * Date: 2013-11-25
+ * Description: testEntity
  */
 var should = require('should');
 var battleService = require('../../app/services/battleService');
@@ -25,12 +25,19 @@ var FightV2 = require('../../app/domain/battle/fightV2');
 var FightTeam = require('../../app/domain/battle/fightTeam');
 var async = require('async');
 
-describe('battle test', function() {
+describe('entity test', function() {
     it('should successully', function() {
         var owner_heros = [{
             heroId: '1',
             level: '1',
             formationId: 1,
+            skillId1: 3,
+            skillId2: 0,
+            skillId3: 0
+        }, {
+            heroId: '2',
+            level: '1',
+            formationId: 2,
             skillId1: 3,
             skillId2: 0,
             skillId3: 0
@@ -152,26 +159,5 @@ describe('battle test', function() {
                 enemiesInfo.push(player.getBaseInfo());
             }
         }
-
-        var fight = new FightV2({
-            mainPlayer: character,
-            owner_formation: owner_formationData,
-            monster_formation: monster_formationData,
-            owners: owners,
-            monsters: monsters,
-            ownerTeam: ownerTeam,
-            monsterTeam: monsterTeam
-        });
-
-        fight.fight(function(err, eventResult) {
-            //console.log(eventResult);
-            //getTarget(eventResult);
-        });
     });
 });
-
-function getTarget(eventResult) {
-    for(var i = 0 ; i < eventResult.battleData.length ; i++) {
-        console.log(eventResult.battleData[i].target);
-    }
-}
