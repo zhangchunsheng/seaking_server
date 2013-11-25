@@ -27,7 +27,8 @@ var buff_script = {
 
     },
     "buff102101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        defense.fight.reduceDamage = this.buffData.value;
+        defense.removeBuff(this);
     },
     "buff102201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

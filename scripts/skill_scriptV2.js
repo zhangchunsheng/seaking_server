@@ -69,8 +69,36 @@ var skill_script = {
     "skill101201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 被攻击时，如果身上没有护盾，则产生一个护盾，该护盾使下次受到的攻击伤害减免30%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill102101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = defense.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 0.3
+        };
+        attackData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+        attack.addBuff(buff);
+        return 100;
     },
     "skill102201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
