@@ -102,8 +102,36 @@ var skill_script = {
     "skill102201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 每次被攻击，则使下次受到的攻击伤害减免10%，无限叠加，直到下次发起攻击
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill103101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = defense.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                this.buffData.value += 0.1;
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 0.1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+        defense.addBuff(buff);
+        return 100;
     },
     "skill103201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

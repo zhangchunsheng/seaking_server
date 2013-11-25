@@ -2,39 +2,45 @@
  * Copyright(c)2013,Wozlla,www.wozlla.com
  * Version: 1.0
  * Author: Peter Zhang
- * Date: 2013-11-23
- * Description: buff_scriptV2
+ * Date: 2013-11-25
+ * Description: buffUpdate_scriptV2
  */
 var utils = require('../app/utils/utils');
 var constsV2 = require('../app/consts/constsV2');
 
-var buff_script = {
+var buffUpdate_script = {
+    "buff101101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+
+    },
+    "buff101201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+
+    },
+    "buff102101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+
+    },
+    "buff102201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+
+    },
     /**
-     * 有75%的几率生成一个护盾，该护盾将使下次受到的攻击伤害减免20%
+     * 每次被攻击，则使下次受到的攻击伤害减免10%，无限叠加，直到下次发起攻击
+     * @param attackSide
      * @param attack_formation
      * @param defense_formation
      * @param attack
      * @param defense
      * @param attacks
      * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
      * @param fightData
+     * @param attackData
+     * @param defenseData
      */
-    "buff101101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        defense.fight.reduceDamage = this.buffData.value;
-        defense.removeBuff(this);
-    },
-    "buff101201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
-    },
-    "buff102101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        defense.fight.reduceDamage = this.buffData.value;
-        defense.removeBuff(this);
-    },
-    "buff102201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
-    },
     "buff103101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        defense.fight.reduceDamageOverlay = this.buffData.value;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            attack.fight.reduceDamageOverlay = 0;
+            attack.removeBuff(this);
+        }
     },
     "buff103201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -197,4 +203,4 @@ var buff_script = {
     }
 }
 
-module.exports = buff_script;
+module.exports = buffUpdate_script;

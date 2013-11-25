@@ -100,7 +100,8 @@ var Character = function(opts) {
     this.fight = {
         fightStatus: consts.characterFightStatus.COMMON,
         reduceDamage: 0,//减免伤害
-        reduceDamageValue: 0
+        reduceDamageValue: 0,
+        reduceDamageOverlay: 0//无限叠加
     };
 
     this.hasUpgrade = false;
@@ -492,4 +493,19 @@ Character.prototype.useTriggerBuff = function(attackSide, attack_formation, defe
 
 Character.prototype.useAwakenBuff = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
+}
+
+Character.prototype.updateBuff = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var dataType = 0;
+    if(fightType == consts.characterFightType.ATTACK) {
+        var skillBuffs = attack.getSkillBuffs();
+        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
+            skillBuffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        }
+    } else if(fightType == consts.characterFightType.DEFENSE) {
+        var skillBuffs = defense.getSkillBuffs();
+        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
+            skillBuffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        }
+    }
 }

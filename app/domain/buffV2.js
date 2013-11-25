@@ -10,6 +10,7 @@ var Persistent = require('./persistent');
 var consts = require('../consts/consts');
 var dataApi = require('../utils/dataApi');
 var buff_script = require('../../scripts/buff_scriptV2');
+var buffUpdate_script = require('../../scripts/buffUpdate_scriptV2');
 
 function Buff(opts) {
     Persistent.call(this, {
@@ -102,6 +103,23 @@ Buff.prototype.invokeScript = function(attackSide, attack_formation, defense_for
     array.push(attackData);
     array.push(defenseData);
     buff_script["buff" + this.buffId].apply(this, array);
+}
+
+Buff.prototype.invokeUpdateScript = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var array = [];
+    array.push(attackSide);
+    array.push(attack_formation);
+    array.push(defense_formation);
+    array.push(attack);
+    array.push(defense);
+    array.push(attacks);
+    array.push(defenses);
+    array.push(attackFightTeam);
+    array.push(defenseFightTeam);
+    array.push(fightData);
+    array.push(attackData);
+    array.push(defenseData);
+    buffUpdate_script["buff" + this.buffId].apply(this, array);
 }
 
 Buff.create = function(skill) {

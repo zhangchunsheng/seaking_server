@@ -19,7 +19,23 @@ formula.calDamage = function(attack, defense) {
         defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
         damage = damage - defense.fight.reduceDamageValue;
     }
+    if(defense.fight.reduceDamageOverlay > 0) {// 减免伤害
+        defense.fight.reduceDamageValue = damage * defense.fight.reduceDamageOverlay;
+        damage = damage - defense.fight.reduceDamageValue;
+    }
+    if(damage <= 0) {
+        damage = 1;
+    }
     return Math.ceil(damage);
+}
+
+/**
+ * 群攻
+ * @param attack
+ * @param defenses
+ */
+formula.calGroupDamage = function(attack, defenses) {
+
 }
 
 formula.calCritDamage = function(attack, defense) {
