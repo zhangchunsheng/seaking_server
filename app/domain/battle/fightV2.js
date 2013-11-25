@@ -9,6 +9,7 @@ var Code = require('../../../shared/code');
 var async = require('async');
 var utils = require('../../utils/utils');
 var skillUtil = require('../../utils/skillUtil');
+var fightUtil = require('../../utils/fightUtil');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
 var formulaV2 = require('../../consts/formulaV2');
