@@ -18,3 +18,16 @@ fightUtil.calculateHP = function(defense, defenseData) {
 fightUtil.getTriggerCondition = function() {
 
 }
+
+fightUtil.changeTargetState = function(target, defenseData) {
+    if(defenseData.isCounter) {
+        target.isCounter = true;
+        target.counterValue = defenseData.counterValue;
+    }
+    if(defenseData.reduceDamage > 0) {
+        target.reduceDamage = defenseData.reduceDamage;
+    }
+    if(defenseData.triggerSkill > 0) {
+        target.triggerSkill = defenseData.triggerSkill;
+    }
+}

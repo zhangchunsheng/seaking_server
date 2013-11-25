@@ -312,7 +312,6 @@ Fight.prototype.attack = function(battleData, players, index) {
 
     // 使用技能
     dataType = attack.useSkillBuffs(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
-
     if(dataType == 0) {
 
     }
@@ -323,12 +322,6 @@ Fight.prototype.attack = function(battleData, players, index) {
         type: constsV2.skillTriggerConditionType.ATTACK
     };
     attack.triggerSkill(consts.characterFightType.ATTACK, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
-
-    // 触发被攻击技能
-    triggerCondition = {
-        type: constsV2.skillTriggerConditionType.BEATTACKED
-    }
-    defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
     // 计算战斗
     attackData.attack = attack.fightValue.attack;
@@ -401,6 +394,12 @@ Fight.prototype.attack = function(battleData, players, index) {
 
         attackData.buffs = attack.buffs;
     } else {
+        // 触发被攻击技能
+        triggerCondition = {
+            type: constsV2.skillTriggerConditionType.BEATTACKED
+        }
+        defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
         // 判定是否暴击
         // random = utils.random(1, 10000);
         if(isCriticalHit) {// 暴击
@@ -500,13 +499,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             reduceBlood: defenseData.reduceBlood,
             buffs: defenseData.buffs
         };
-        if(defenseData.isCounter) {
-            target.isCounter = true;
-            target.counterValue = defenseData.counterValue;
-        }
-        if(defenseData.reduceDamage > 0) {
-            target.reduceDamage = defenseData.reduceDamage;
-        }
+        fightUtil.changeTargetState(target, defenseData);
         data.target.push(target);
     }
 

@@ -95,9 +95,8 @@ var skill_script = {
         var buffData = {
             value: 0.3
         };
-        attackData.skillId = this.skillId;
         var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
-        attack.addBuff(buff);
+        defense.addBuff(buff);
         return 100;
     },
     "skill102201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {

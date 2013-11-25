@@ -394,7 +394,7 @@ Character.prototype.reduceValue = function(attrName, value) {
 Character.prototype.triggerSkill = function(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var angers = [];
     var anger = 0;
-    if(fightType == consts.characterFightType.ATTACK) {
+    if(fightType == consts.characterFightType.ATTACK) {//攻击者
         var skills = attack.skills;
         for(var i in skills) {
             if(i == consts.skillV2Type.TRIGGER_SKILL) {
@@ -416,7 +416,7 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
         } else {
             attackData.action = consts.attackAction.common;
         }
-    } else if(fightType == consts.characterFightType.DEFENSE) {
+    } else if(fightType == consts.characterFightType.DEFENSE) {//防守者
         var skills = defense.skills;
         for(var i in skills) {
             if(i == consts.skillV2Type.TRIGGER_SKILL) {
@@ -426,6 +426,11 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
                 anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
+        }
+        if(anger >= 100) {
+            defenseData.triggerSkill = 1;
+        } else {
+            defenseData.triggerSkill = 0;
         }
     }
 }
