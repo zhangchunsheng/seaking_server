@@ -264,7 +264,7 @@ Character.prototype.getToolBuffs = function() {
 Character.prototype.getTeamBuffs = function() {
     var buffs = [];
     for(var i = 0, l = this.buffs.length ; i < l ; i++) {
-        if(this.buffs[i].buffKind == consts.buffKind.TEAM)
+        if(this.buffs[i].buffScope == consts.buffScope.TEAM)
             buffs.push(this.buffs[i]);
     }
     return buffs;
@@ -477,6 +477,36 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {
         var skillBuffs = defense.getSkillBuffs();
+        var teamBuffs = defenseFightTeam.getSkillBuffs();
+        var buffs = skillBuffs;
+        for(var i = 0 , l = teamBuffs.length ; i < l ; i++) {
+            buffs.push(teamBuffs[i]);
+        }
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.DEFENSE) {
+                dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                if(dataType == -1) {
+                    dataType = 0;
+                    dataTypes.push(dataType);
+                    break;
+                }
+                dataTypes.push(dataType);
+            }
+        }
+    }
+    return dataType;
+}
+
+Character.prototype.useTeamSkillBuffs = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var dataTypes = [];
+    var dataType = 0;
+    if(fightType == consts.characterFightType.ATTACK) {
+        var skillBuffs = attackFightTeam.getSkillBuffs();
+        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
+
+        }
+    } else if(fightType == consts.characterFightType.DEFENSE) {
+        var skillBuffs = defenseFightTeam.getSkillBuffs();
         for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
             if(skillBuffs[i].buffCategory == consts.buffCategory.DEFENSE) {
                 dataType = skillBuffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);

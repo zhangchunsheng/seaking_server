@@ -21,6 +21,7 @@ function Buff(opts) {
     this.startTime = opts.startTime;
     this.type = opts.type;
     this.buffType = opts.buffType;
+    this.buffScope = opts.buffScope || consts.buffScope.PEASONAL;
     this.buffCategory = opts.buffCategory;//1 - 攻击型 2 - 防守型
     this.buffKind = consts.buffKind.ITEM;// 1 - 道具 2 - 技能
     this.timeType = opts.timeType;

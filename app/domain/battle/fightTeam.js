@@ -12,12 +12,51 @@ var FightTeam = function(opts) {
     this.members = [];
     this.type = opts.type;
     this.buffs = [];
-    this.buffKind = consts.buffKind.TEAM;
 }
 
 FightTeam.prototype.addBuff = function(buff) {
     this.buffs.push(buff);
 }
+
+FightTeam.prototype.getBuffs = function() {
+    var buffs = [];
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        buffs.push(this.buffs[i].baseInfo());
+    }
+    return buffs;
+}
+
+FightTeam.prototype.getSkillBuffs = function() {
+    var buffs = [];
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        if(this.buffs[i].buffKind == consts.buffKind.SKILL)
+            buffs.push(this.buffs[i]);
+    }
+    return buffs;
+}
+
+FightTeam.prototype.getToolBuffs = function() {
+    var buffs = [];
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        if(this.buffs[i].buffKind == consts.buffKind.ITEM)
+            buffs.push(this.buffs[i]);
+    }
+    return buffs;
+}
+
+/**
+ * Remove buff from buffs.
+ *
+ * @param {Buff} buff
+ * @api public
+ */
+FightTeam.prototype.removeBuff = function(buff) {
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        if(this.buffs[i].buffId == buff.buffId) {
+            this.buffs.splice(i, 1);
+        }
+    }
+};
 
 FightTeam.prototype.addMember = function(player) {
     this.members.push(player);

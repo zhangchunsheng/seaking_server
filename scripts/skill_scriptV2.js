@@ -35,6 +35,24 @@ function getSkillBuff(buffType, skill, buffData) {
     return buff;
 }
 
+function getTeamSkillBuff(buffType, skill, buffData) {
+    var effectId = "XG" + skill.skillId;
+    var buff = new BuffV2({
+        buffId: skill.skillId,
+        useEffectId: effectId,
+        type: buffType,
+        skillId: skill.skillId,
+        skillType: skill.type,
+        skillLevel: skill.level,
+        skillData: skill.skillData,
+        buffData: buffData,
+        buffType: buffType,
+        buffScope: constsV2.buffScope.TEAM,
+        buffCategory: getBuffCategory(buffType)
+    });
+    return buff;
+}
+
 var skill_script = {
     /**
      * 有75%的几率生成一个护盾，该护盾将使下次受到的攻击伤害减免20%
@@ -136,8 +154,41 @@ var skill_script = {
     "skill103201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 攻击有50%的几率释放一个护盾，该护盾可以抵消一次己方任何单位受到的指向性攻击
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill104101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= 50) {
+            var buffs = attack.buffs;
+            for(var i = 0, l = buffs.length ; i < l ; i++) {
+                if(buffs[i].buffId == this.skillId) {
+                    return 100;
+                }
+            }
+            var buffData = {
+                value: -1
+            };
+            attackData.skillId = this.skillId;
+            var buff = getTeamSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+            attackFightTeam.addBuff(buff);
+            return 100;
+        } else {
+            return 0;
+        }
     },
     "skill104201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

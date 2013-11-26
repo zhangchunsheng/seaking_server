@@ -309,6 +309,11 @@ module.exports = {
         OPPONENT_TEAM: 3
     },
 
+    buffScope: {
+        PEASONAL: 1,
+        TEAM: 2
+    },
+
     effectName: {
         HP: "hp",//HP
         EXPERIENCE: "experience",//经验
