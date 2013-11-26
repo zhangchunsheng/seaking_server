@@ -101,7 +101,8 @@ var Character = function(opts) {
         fightStatus: consts.characterFightStatus.COMMON,
         reduceDamage: 0,//减免伤害
         reduceDamageValue: 0,
-        reduceDamageOverlay: 0//无限叠加
+        reduceDamageOverlay: 0,//无限叠加
+        reduceDamageCounteract: 0
     };
 
     this.hasUpgrade = false;

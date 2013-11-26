@@ -26,7 +26,8 @@ formula.calDamage = function(attack, defense) {
     if(damage <= 0) {
         damage = 1;
     }
-    if(defense.fight.reduceDamage = -1) {
+    if(defense.fight.reduceDamageCounteract == -1) {
+        defense.fight.reduceDamageCounteract = 0;
         defense.fight.reduceDamageValue = damage;
         damage = 0;
     }
