@@ -102,7 +102,9 @@ var Character = function(opts) {
         reduceDamage: 0,//减免伤害
         reduceDamageValue: 0,
         reduceDamageOverlay: 0,//无限叠加
-        reduceDamageCounteract: 0
+        reduceDamageCounteract: 0,
+        addDefense: 0,//增加护甲
+        addDefenseValue: 0
     };
 
     this.hasUpgrade = false;

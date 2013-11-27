@@ -367,7 +367,7 @@ Fight.prototype.attack = function(battleData, players, index) {
         }
 
         defenseData.hp = defense.fightValue.hp;
-        defenseData.hp = defense.anger;
+        defenseData.anger = defense.anger;
 
         data.targetType = consts.effectTargetType.OPPONENT;
         var target = {

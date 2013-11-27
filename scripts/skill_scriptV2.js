@@ -14,6 +14,8 @@ function getBuffCategory(buffType) {
     var buffCategory = 0;
     if(buffType == constsV2.buffTypeV2.SHIELDS) {
         buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.EXTRAARMOR) {
+        buffCategory = constsV2.buffCategory.DEFENSE;
     }
     return buffCategory;
 }
@@ -193,8 +195,36 @@ var skill_script = {
     "skill104201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 战斗中的每次格挡，都能为自己提供额外20%的护甲，该效果无限叠加
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill105101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = defense.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                buffs[i].buffData.value += 0.2;
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 0.2
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.EXTRAARMOR, this, buffData);
+        defense.addBuff(buff);
+        return 100;
     },
     "skill105201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

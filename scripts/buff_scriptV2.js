@@ -20,14 +20,14 @@ var buff_script = {
      * @param fightData
      */
     "buff101101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        defense.fight.reduceDamage = this.buffData.value;
+        defense.fight.reduceDamage += this.buffData.value;
         defense.removeBuff(this);
     },
     "buff101201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff102101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        defense.fight.reduceDamage = this.buffData.value;
+        defense.fight.reduceDamage += this.buffData.value;
         defense.removeBuff(this);
     },
     "buff102201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -35,6 +35,7 @@ var buff_script = {
     },
     "buff103101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.reduceDamageOverlay = this.buffData.value;
+        defense.fight.reduceDamage += this.buffData.value;
     },
     "buff103201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -47,7 +48,7 @@ var buff_script = {
 
     },
     "buff105101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        defense.addDefense = this.buffData.value;
     },
     "buff105201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

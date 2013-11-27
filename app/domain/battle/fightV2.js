@@ -366,22 +366,10 @@ Fight.prototype.attack = function(battleData, players, index) {
 
         // 守方
         // 增加怒气
-        if(attackData.action == consts.attackAction.common) {// each hit received
-            if(defense.type == EntityType.MONSTER) {
-                defense.anger += defense.restoreAngerSpeed.ehr;
-            } else {
-                defense.anger += defense.restoreAngerSpeed.ehr;
-            }
-        } else if(attackData.action == consts.attackAction.skill) {// each skill hit received
-            if(defense.type == EntityType.MONSTER) {
-                defense.anger += defense.restoreAngerSpeed.eshr;
-            } else {
-                defense.anger += defense.restoreAngerSpeed.eshr;
-            }
-        }
+        fightUtil.addDefenseAnger(attackData, defense);
 
         defenseData.hp = defense.fightValue.hp;
-        defenseData.hp = defense.anger;
+        defenseData.anger = defense.anger;
 
         data.targetType = consts.effectTargetType.OPPONENT;
         var target = {
@@ -451,41 +439,19 @@ Fight.prototype.attack = function(battleData, players, index) {
             defenseData.isCounter = true;
             defenseData.counterValue = damage;//反击伤害
             attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
-            if(attack.fightValue.hp <= 0) {
-                attack.fightValue.hp = 0;
-                attack.died = attackData.died = true;
-                attack.costTime = 10000;
-            }
+            fightUtil.checkDied(attack, attackData);
         }
 
         // 更新数据
         defenseData.fId = monsterIndex;
 
         defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
-        if(defense.fight.reduceDamageValue > 0) {
-            defenseData.reduceDamage = defense.fight.reduceDamageValue;
-        }
-        if(defense.fightValue.hp <= 0) {
-            defense.fightValue.hp = 0;
-            defense.died = defenseData.died = true;
-            defense.costTime = 10000;
-        }
+        fightUtil.updateDefenseData(defense, defenseData);
+        fightUtil.checkDied(defense, defenseData);
 
         // 守方
         // 增加怒气
-        if(attackData.action == consts.attackAction.common) {// each hit received
-            if(defense.type == EntityType.MONSTER) {
-                defense.anger += defense.restoreAngerSpeed.ehr;
-            } else {
-                defense.anger += defense.restoreAngerSpeed.ehr;
-            }
-        } else if(attackData.action == consts.attackAction.skill) {// each skill hit received
-            if(defense.type == EntityType.MONSTER) {
-                defense.anger += defense.restoreAngerSpeed.eshr;
-            } else {
-                defense.anger += defense.restoreAngerSpeed.eshr;
-            }
-        }
+        fightUtil.addDefenseAnger(attackData, defense);
 
         // 更新状态
         defenseData.hp = defense.fightValue.hp;
@@ -515,11 +481,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     // 更新状态
     // 攻方
     // 增加怒气
-    if(attack.type == EntityType.MONSTER) {
-        attack.anger += attack.restoreAngerSpeed.ea;
-    } else {
-        attack.anger += attack.restoreAngerSpeed.ea;
-    }
+    fightUtil.addAttackAnger(attack);
 
     attackData.hp = attack.fightValue.hp;
     attackData.anger = attack.anger;
