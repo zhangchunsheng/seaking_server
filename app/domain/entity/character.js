@@ -108,7 +108,8 @@ var Character = function(opts) {
         addDefense: 0,//增加护甲
         addDefenseValue: 0,
         isBlock: false,
-        isDodge: false
+        isDodge: false,
+        asylumTransfer: null//庇护
     };
 
     this.hasUpgrade = false;

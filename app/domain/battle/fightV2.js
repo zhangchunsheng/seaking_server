@@ -469,7 +469,7 @@ Fight.prototype.attack = function(battleData, players, index) {
         // 更新数据
         defenseData.fId = monsterIndex;
 
-        defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
+        fightUtil.reduceHp(defense, defenseData);
         fightUtil.updateDefenseData(defense, defenseData);
         fightUtil.checkDied(defense, defenseData);
 

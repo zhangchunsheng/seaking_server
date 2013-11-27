@@ -393,7 +393,8 @@ module.exports = {
         SHIELDS: "1",
         EXTRAARMOR: "2",
         BLOCK: "3",
-        DODGE: "4"
+        DODGE: "4",
+        ASYLUM: "5"
     },
 
     buffCategory: {

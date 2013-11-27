@@ -8,17 +8,20 @@
 var Buff = require('../app/domain/buff');
 var BuffV2 = require('../app/domain/buffV2');
 var utils = require('../app/utils/utils');
+var fightUtil = require('../app/utils/fightUtil');
 var constsV2 = require('../app/consts/constsV2');
 
 function getBuffCategory(buffType) {
     var buffCategory = 0;
-    if(buffType == constsV2.buffTypeV2.SHIELDS) {
+    if(buffType == constsV2.buffTypeV2.SHIELDS) {//护盾
         buffCategory = constsV2.buffCategory.DEFENSE;
-    } else if(buffType == constsV2.buffTypeV2.EXTRAARMOR) {
+    } else if(buffType == constsV2.buffTypeV2.EXTRAARMOR) {//额外护甲
         buffCategory = constsV2.buffCategory.DEFENSE;
-    } else if(buffType == constsV2.buffTypeV2.BLOCK) {
+    } else if(buffType == constsV2.buffTypeV2.BLOCK) {//格挡
         buffCategory = constsV2.buffCategory.DEFENSE;
-    } else if(buffType == constsV2.buffTypeV2.DODGE) {
+    } else if(buffType == constsV2.buffTypeV2.DODGE) {//闪避
+        buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.ASYLUM) {//庇护
         buffCategory = constsV2.buffCategory.DEFENSE;
     }
     return buffCategory;
@@ -299,8 +302,37 @@ var skill_script = {
     "skill107201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 主动攻击时，随机给己方一个单位添加庇护状态，该状态可以使此单位下次受到的伤害转移给双星少主
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill108101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var teammate = null;
+        teammate = fightUtil.getRandomTeammate(this, attack, attacks);
+        var buffs = teammate.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            asylumTransfer: attack
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.ASYLUM, this, buffData);
+        teammate.addBuff(buff);
+        return 100;
     },
     "skill108201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

@@ -7,6 +7,7 @@
  */
 var consts = require('../consts/constsV2');
 var EntityType = require('../consts/consts').EntityType;
+var utils = require('./utils');
 
 var fightUtil = module.exports;
 
@@ -20,6 +21,31 @@ fightUtil.calculateHP = function(defense, defenseData) {
 
 fightUtil.getTriggerCondition = function() {
 
+}
+
+/**
+ *
+ * @param defense
+ * @param defenseData
+ */
+fightUtil.reduceHp = function(defense, defenseData) {
+    if(defense.fight.asylumTransfer != null) {
+        defense.fight.asylumTransfer.fightValue.hp = Math.ceil(defense.fight.asylumTransfer.fightValue.hp - defenseData.reduceBlood);
+        if(defense.fight.asylumTransfer.fightValue.hp <= 0) {
+            defense.fight.asylumTransfer.fightValue.hp = 0;
+            defense.fight.asylumTransfer.died = true;
+            defense.fight.asylumTransfer.costTime = 10000;
+        }
+        defenseData.transfer = {
+            playerId: defense.fight.asylumTransfer.id
+        };
+        if(defense.fight.asylumTransfer.died) {
+            defenseData.transfer.died = true;
+        }
+        defense.fight.asylumTransfer = null;
+    } else {
+        defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
+    }
 }
 
 fightUtil.updateDefenseData = function(defense, defenseData) {
@@ -96,6 +122,9 @@ fightUtil.changeTargetState = function(target, defenseData) {
     if(defenseData.addDefense > 0) {
         target.addDefense = defenseData.addDefense;
     }
+    if(defenseData.transfer) {
+        target.transfer = defenseData.transfer;
+    }
 }
 
 /**
@@ -122,4 +151,34 @@ fightUtil.checkDodge = function(defense) {
         return true;
     }
     return false;
+}
+
+/**
+ *
+ * @param player
+ * @param teams
+ * @returns {teammate}
+ */
+fightUtil.getRandomTeammate = function(skill, player, teams) {
+    var teammate = null;
+    if(teams.length == 1) {
+        teammate = player;
+    } else {
+        var array = [];
+        for(var i = 0, l = teams.length ; i < l ; i++) {
+            if(teams[i].id == player.id)
+                continue;
+            if(teams[i].died)
+                continue;
+            array.push(i);
+        }
+        if(array.length > 0) {
+            var random = utils.random(0, array.length - 1);
+            teammate = teams[array[random]];
+        }
+        if(teammate == null) {
+            teammate = player;
+        }
+    }
+    return teammate;
 }
