@@ -357,7 +357,6 @@ Fight.prototype.attack = function(battleData, players, index) {
     } else {
         isCommandAttack = true;
     }
-    isBlock = true;
 
     // 判定是否闪避
     // random = utils.random(1, 10000);
