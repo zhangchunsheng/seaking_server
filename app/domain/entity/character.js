@@ -88,6 +88,7 @@ var Character = function(opts) {
     this.buffs = opts.buffs || buffUtil.getInitBuff();
     this.skillBuffs = [];//技能buff
 
+    this.fightType = 0;
     //上一次使用技能
     this.lastSkillUsedInfo = {
         1: null,
@@ -106,7 +107,8 @@ var Character = function(opts) {
         reduceDamageCounteract: 0,
         addDefense: 0,//增加护甲
         addDefenseValue: 0,
-        isBlock: false
+        isBlock: false,
+        isDodge: false
     };
 
     this.hasUpgrade = false;

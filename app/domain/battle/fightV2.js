@@ -360,6 +360,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     }
 
     isBlock = fightUtil.checkBlock(defense);
+    isDodge = fightUtil.checkDodge(defense);
 
     // 判定是否闪避
     // random = utils.random(1, 10000);
@@ -402,6 +403,11 @@ Fight.prototype.attack = function(battleData, players, index) {
         // 判定是否暴击
         // random = utils.random(1, 10000);
         if(isCriticalHit) {// 暴击
+            triggerCondition = {
+                type: constsV2.skillTriggerConditionType.CRITICALHIT
+            }
+            attack.triggerSkill(consts.characterFightType.ATTACK, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
             attackData.isCritHit = true;
             //attackData.attack += (attackData.attack * attack.fightValue.critDamage / 100);
         }

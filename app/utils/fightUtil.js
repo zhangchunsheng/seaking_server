@@ -98,9 +98,27 @@ fightUtil.changeTargetState = function(target, defenseData) {
     }
 }
 
+/**
+ * checkBlock
+ * @param defense
+ * @returns {boolean}
+ */
 fightUtil.checkBlock = function(defense) {
     if(defense.fight.isBlock) {
         defense.fight.isBlock = false;
+        return true;
+    }
+    return false;
+}
+
+/**
+ * checkDodge
+ * @param defense
+ * @returns {boolean}
+ */
+fightUtil.checkDodge = function(defense) {
+    if(defense.fight.isDodge) {
+        defense.fight.isDodge = false;
         return true;
     }
     return false;

@@ -392,7 +392,8 @@ module.exports = {
     buffTypeV2: {
         SHIELDS: "1",
         EXTRAARMOR: "2",
-        BLOCK: "3"
+        BLOCK: "3",
+        DODGE: "4"
     },
 
     buffCategory: {
