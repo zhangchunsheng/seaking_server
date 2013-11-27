@@ -10,6 +10,7 @@
  */
 var util = require('util');
 var utils = require('../../utils/utils');
+var skillUtil = require('../../utils/skillUtil');
 var buffUtil = require('../../utils/buffUtil');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
@@ -104,7 +105,8 @@ var Character = function(opts) {
         reduceDamageOverlay: 0,//无限叠加
         reduceDamageCounteract: 0,
         addDefense: 0,//增加护甲
-        addDefenseValue: 0
+        addDefenseValue: 0,
+        isBlock: false
     };
 
     this.hasUpgrade = false;
@@ -449,7 +451,7 @@ Character.prototype.useTriggerSkill = function(attackSide, condition, attack_for
         return anger;
     }
     var skill = this.skills[consts.skillV2Type.TRIGGER_SKILL];
-    if(skill.skillData.triggerCondition == condition.type) {
+    if(skillUtil.checkTriggerCondition(skill, condition)) {
         anger = skill.invokeScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
     return anger;
@@ -464,7 +466,7 @@ Character.prototype.useAwakenSkill = function(attackSide, condition, attack_form
         return;
     }
     var skill = this.skills[consts.skillV2Type.TRIGGER_SKILL];
-    if(skill.skillData.triggerCondition == condition.type) {
+    if(skillUtil.checkAwakenCondition(skill, condition)) {
         anger = skill.invokeScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
     return anger;

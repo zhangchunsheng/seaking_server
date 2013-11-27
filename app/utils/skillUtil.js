@@ -66,3 +66,45 @@ skillUtil.getPassiveSkillBuff = function(effect, passiveSkill) {
     });
     return buff;
 }
+
+/**
+ * 触发技能
+ * @param skill
+ * @param condition
+ * @returns {boolean}
+ */
+skillUtil.checkTriggerCondition = function(skill, condition) {
+    var type = condition.type;
+    var triggerCondition = skill.skillData.triggerCondition;
+    if(triggerCondition.indexOf("||") > 0) {
+        var array = triggerCondition.split("||");
+        for(var i = 0 ; i < array.length ; i++) {
+            if(array[i] == type)
+                return true;
+        }
+    } else {
+        return triggerCondition == type;
+    }
+    return false;
+}
+
+/**
+ * 觉醒技能
+ * @param skill
+ * @param condition
+ * @returns {boolean}
+ */
+skillUtil.checkAwakenCondition = function(skill, condition) {
+    var type = condition.type;
+    var triggerCondition = skill.skillData.triggerCondition;
+    if(triggerCondition.indexOf("||") > 0) {
+        var array = triggerCondition.split("||");
+        for(var i = 0 ; i < array.length ; i++) {
+            if(array[i] == type)
+                return true;
+        }
+    } else {
+        return triggerCondition == type;
+    }
+    return false;
+}

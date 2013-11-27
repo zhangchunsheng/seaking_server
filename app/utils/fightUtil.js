@@ -77,6 +77,11 @@ fightUtil.addDefenseAnger = function(attackData, defense) {
     }
 }
 
+/**
+ * changeTargetState
+ * @param target
+ * @param defenseData
+ */
 fightUtil.changeTargetState = function(target, defenseData) {
     if(defenseData.isCounter) {
         target.isCounter = true;
@@ -91,4 +96,12 @@ fightUtil.changeTargetState = function(target, defenseData) {
     if(defenseData.addDefense > 0) {
         target.addDefense = defenseData.addDefense;
     }
+}
+
+fightUtil.checkBlock = function(defense) {
+    if(defense.fight.isBlock) {
+        defense.fight.isBlock = false;
+        return true;
+    }
+    return false;
 }

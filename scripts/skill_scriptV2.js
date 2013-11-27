@@ -16,6 +16,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.EXTRAARMOR) {
         buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.BLOCK) {
+        buffCategory = constsV2.buffCategory.DEFENSE;
     }
     return buffCategory;
 }
@@ -229,8 +231,35 @@ var skill_script = {
     "skill105201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 反击或者闪避之后，下次被攻击必然会格挡
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill106101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = defense.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            isBlock: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.BLOCK, this, buffData);
+        defense.addBuff(buff);
+        return 100;
     },
     "skill106201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

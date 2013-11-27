@@ -215,6 +215,7 @@ Fight.prototype.pk = function(cb) {
     utils.invokeCallback(cb, null, result);
 };
 
+var debug = true;
 /**
  *
  * @param players
@@ -358,9 +359,16 @@ Fight.prototype.attack = function(battleData, players, index) {
         isCommandAttack = true;
     }
 
+    isBlock = fightUtil.checkBlock(defense);
+
     // 判定是否闪避
     // random = utils.random(1, 10000);
     if(isDodge) {// 闪避
+        triggerCondition = {
+            type: constsV2.skillTriggerConditionType.DODGE
+        }
+        defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
         defenseData.action = consts.defenseAction.dodge;//1 - 被击中 2 - 闪避 3 - 被击中反击
         defenseData.reduceBlood = 0;
 
@@ -440,6 +448,11 @@ Fight.prototype.attack = function(battleData, players, index) {
         var counter = defense.fightValue.counter * 100;
         random = utils.random(1, 10000);
         if(random >= 1 && random <= counter) {// 反击
+            triggerCondition = {
+                type: constsV2.skillTriggerConditionType.COUNTER
+            }
+            defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
             var damage = formulaV2.calCounterDamage(defense, attack);
             defenseData.isCounter = true;
             defenseData.counterValue = damage;//反击伤害
