@@ -357,6 +357,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     } else {
         isCommandAttack = true;
     }
+    isBlock = true;
 
     // 判定是否闪避
     // random = utils.random(1, 10000);
@@ -406,6 +407,11 @@ Fight.prototype.attack = function(battleData, players, index) {
             //attackData.attack = attackData.attack / 2;
             defenseData.isBlock = true;
             defenseData.action = consts.defenseAction.block;
+
+            triggerCondition = {
+                type: constsV2.skillTriggerConditionType.BLOCK
+            }
+            defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         }
 
         // attackData.hasBuff = true;// buff，可以有多个buff
