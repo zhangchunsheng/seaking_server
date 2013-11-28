@@ -394,12 +394,15 @@ module.exports = {
         EXTRAARMOR: "2",
         BLOCK: "3",
         DODGE: "4",
-        ASYLUM: "5"
+        ASYLUM: "5",
+        ADDMAXHP: "6"
     },
 
     buffCategory: {
         ATTACK: 1,
-        DEFENSE: 2
+        DEFENSE: 2,
+        AFTER_ATTACK: 3,
+        AFTER_DEFENSE: 4
     },
 
     characterFightStatus: {
@@ -409,7 +412,9 @@ module.exports = {
 
     characterFightType: {
         ATTACK: 1,
-        DEFENSE: 2
+        DEFENSE: 2,
+        AFTER_ATTACK: 3,
+        AFTER_DEFENSE: 4
     },
 
     skillTriggerConditionType: {
@@ -421,7 +426,8 @@ module.exports = {
         CRITICALHIT: 6,
         COUNTER: 7,
         BATTLE: 8,
-        DEATH: 9
+        DEATH: 9,
+        GETDAMAGE: 10
     },
 
     correspondingEffect_attr: {

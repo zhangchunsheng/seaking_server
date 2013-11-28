@@ -12,6 +12,7 @@ var util = require('util');
 var utils = require('../../utils/utils');
 var skillUtil = require('../../utils/skillUtil');
 var buffUtil = require('../../utils/buffUtil');
+var fightUtil = require('../../utils/fightUtil');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
 var consts = require('../../consts/constsV2');
@@ -109,7 +110,8 @@ var Character = function(opts) {
         addDefenseValue: 0,
         isBlock: false,
         isDodge: false,
-        asylumTransfer: null//庇护
+        asylumTransfer: null,//庇护
+        addMaxHp: 0
     };
 
     this.hasUpgrade = false;
@@ -501,6 +503,9 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
                 dataTypes.push(dataType);
             }
         }
+    } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
+        var buffCategory = fightUtil.getBuffCategory(fightType);
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
     return dataType;
 }

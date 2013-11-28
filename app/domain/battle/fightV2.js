@@ -469,9 +469,11 @@ Fight.prototype.attack = function(battleData, players, index) {
         // 更新数据
         defenseData.fId = monsterIndex;
 
-        fightUtil.reduceHp(defense, defenseData);
+        fightUtil.reduceHp(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         fightUtil.updateDefenseData(defense, defenseData);
         fightUtil.checkDied(defense, defenseData);
+
+        defense.useSkillBuffs(consts.characterFightType.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
         // 守方
         // 增加怒气

@@ -28,7 +28,7 @@ fightUtil.getTriggerCondition = function() {
  * @param defense
  * @param defenseData
  */
-fightUtil.reduceHp = function(defense, defenseData) {
+fightUtil.reduceHp = function(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData) {
     if(defense.fight.asylumTransfer != null) {
         defense.fight.asylumTransfer.fightValue.hp = Math.ceil(defense.fight.asylumTransfer.fightValue.hp - defenseData.reduceBlood);
         if(defense.fight.asylumTransfer.fightValue.hp <= 0) {
@@ -44,6 +44,12 @@ fightUtil.reduceHp = function(defense, defenseData) {
         }
         defense.fight.asylumTransfer = null;
     } else {
+        if(defenseData.reduceBlood > 0) {
+            var triggerCondition = {
+                type: consts.skillTriggerConditionType.GETDAMAGE
+            }
+            defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+        }
         defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
     }
 }
@@ -54,6 +60,73 @@ fightUtil.updateDefenseData = function(defense, defenseData) {
     }
     if(defense.fight.addDefenseValue > 0) {
         defenseData.addDefense = defense.fight.addDefenseValue;
+    }
+    if(defense.fight.addMaxHp > 0) {
+
+    }
+}
+
+/**
+ * useSkillBuffs
+ * @param dataTypes
+ * @param dataType
+ * @param buffCategory
+ * @param fightType
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param defense
+ * @param attacks
+ * @param defenses
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ * @param fightData
+ * @param attackData
+ * @param defenseData
+ */
+fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var player;
+    var team;
+    if(fightType == consts.characterFightType.ATTACK || fightType == consts.characterFightType.AFTER_ATTACK) {
+        player = attack;
+        team = attackFightTeam;
+    } else if(fightType == consts.characterFightType.DEFENSE || fightType == consts.characterFightType.AFTER_DEFENSE) {
+        player = defense;
+        team = defenseFightTeam;
+    }
+    var skillBuffs = player.getSkillBuffs();
+    var teamBuffs = team.getSkillBuffs();
+    var buffs = skillBuffs;
+    for(var i = 0 , l = teamBuffs.length ; i < l ; i++) {
+        buffs.push(teamBuffs[i]);
+    }
+    for(var i = 0, l = buffs.length ; i < l ; i++) {
+        if(buffs[i].buffCategory == buffCategory) {
+            dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            if(dataType == -1) {
+                dataType = 0;
+                dataTypes.push(dataType);
+                break;
+            }
+            dataTypes.push(dataType);
+        }
+    }
+}
+
+/**
+ * getBuffCategory
+ * @param fightType
+ * @returns {*}
+ */
+fightUtil.getBuffCategory = function(fightType) {
+    if(fightType == consts.characterFightType.ATTACK) {
+        return consts.buffCategory.ATTACK;
+    } else if(fightType == consts.characterFightType.DEFENSE) {
+        return consts.buffCategory.DEFENSE;
+    } else if(fightType == consts.characterFightType.AFTER_ATTACK) {
+        return consts.buffCategory.AFTER_ATTACK;
+    } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
+        return consts.buffCategory.AFTER_DEFENSE;
     }
 }
 
@@ -170,6 +243,8 @@ fightUtil.getRandomTeammate = function(skill, player, teams) {
                 continue;
             if(teams[i].died)
                 continue;
+            if(fightUtil.checkBuff(skill, player))
+                continue;
             array.push(i);
         }
         if(array.length > 0) {
@@ -181,4 +256,14 @@ fightUtil.getRandomTeammate = function(skill, player, teams) {
         }
     }
     return teammate;
+}
+
+fightUtil.checkBuff = function(skill, player) {
+    var buffs = player.getSkillBuffs();
+    for(var i = 0, l = buffs.length ; i < l ; i++) {
+        if(skill.skillId == buffs[i].buffId) {
+            return true;
+        }
+    }
+    return false;
 }

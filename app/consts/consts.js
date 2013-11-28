@@ -389,7 +389,9 @@ module.exports = {
 
     characterFightType: {
         ATTACK: 1,
-        DEFENSE: 2
+        DEFENSE: 2,
+        AFTER_ATTACK: 3,
+        AFTER_DEFENSE: 4
     },
 
     correspondingEffect_attr: {

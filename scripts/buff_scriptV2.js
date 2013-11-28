@@ -75,7 +75,13 @@ var buff_script = {
 
     },
     "buff109101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(defense.died) {
+            return;
+        }
+        var addMaxHp = defense.maxHp * this.buffData.value;
+        defense.fightValue.maxHp += addMaxHp;
+        defense.fightValue.hp += addMaxHp;
+        defense.fight.addMaxHp = 0;
     },
     "buff109201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
