@@ -73,6 +73,7 @@ var Player = function(opts) {
     this.pushMessage = opts.pushMessage || [];
 
     this.fightValue = {
+        attackType: this.attackType,
         attack: this.attack,
         defense: this.defense,
         speedLevel: this.speedLevel,

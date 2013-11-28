@@ -124,7 +124,13 @@ var buffUpdate_script = {
 
     },
     "buff207101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            if(attack.fightValue.attackType == constsV2.attackType.ALL) {
+                attack.fightValue.attackType = constsV2.attackType.SINGLE;
+                attack.fightValue.attack = Math.ceil(attack.fightValue.attack / this.buffData.value);
+                attack.removeBuff(this);
+            }
+        }
     },
     "buff207201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

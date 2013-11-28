@@ -90,6 +90,7 @@ var Character = function(opts) {
     this.skillBuffs = [];//技能buff
 
     this.fightType = 0;
+    this.attackType = opts.attackType || consts.attackType.SINGLE;
     //上一次使用技能
     this.lastSkillUsedInfo = {
         1: null,
@@ -482,8 +483,18 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
     var dataType = 0;
     if(fightType == consts.characterFightType.ATTACK) {
         var skillBuffs = attack.getSkillBuffs();
-        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
-
+        var buffs = skillBuffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.ATTACK) {
+                dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                dataTypes.push(dataType);
+            }
+        }
+        for(var i = 0 ; i < dataTypes.length ; i++) {
+            if(dataTypes[i] > 0) {
+                dataType = dataTypes[i];
+                break;
+            }
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {
         var skillBuffs = defense.getSkillBuffs();
@@ -495,12 +506,18 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffCategory == consts.buffCategory.DEFENSE) {
                 dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
-                if(dataType == -1) {
+                if(dataType == -1) {//不减血
                     dataType = 0;
                     dataTypes.push(dataType);
                     break;
                 }
                 dataTypes.push(dataType);
+            }
+        }
+        for(var i = 0 ; i < dataTypes.length ; i++) {
+            if(dataTypes[i] > 0) {
+                dataType = dataTypes[i];
+                break;
             }
         }
     } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {

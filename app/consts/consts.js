@@ -394,6 +394,11 @@ module.exports = {
         AFTER_DEFENSE: 4
     },
 
+    attackType: {
+        SINGLE: 1,
+        ALL: 2
+    },
+
     correspondingEffect_attr: {
         1: "hp",
         2: "experience",

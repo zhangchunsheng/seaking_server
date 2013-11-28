@@ -32,6 +32,7 @@ var Enemy = function(opts) {
     this.initSkills();
 
     this.fightValue = {
+        attackType: this.attackType,
         attack: this.attack,
         defense: this.defense,
         speedLevel: this.speedLevel,

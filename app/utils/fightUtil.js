@@ -7,6 +7,7 @@
  */
 var consts = require('../consts/constsV2');
 var EntityType = require('../consts/consts').EntityType;
+var formulaV2 = require('../consts/formulaV2');
 var utils = require('./utils');
 
 var fightUtil = module.exports;
@@ -62,7 +63,7 @@ fightUtil.updateDefenseData = function(defense, defenseData) {
         defenseData.addDefense = defense.fight.addDefenseValue;
     }
     if(defense.fight.addMaxHp > 0) {
-
+        defenseData.addMaxHp = defense.fight.addMaxHp;
     }
 }
 
@@ -109,6 +110,12 @@ fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType,
                 break;
             }
             dataTypes.push(dataType);
+        }
+    }
+    for(var i = 0 ; i < dataTypes.length ; i++) {
+        if(dataTypes[i] > 0) {
+            dataType = dataTypes[i];
+            break;
         }
     }
 }
@@ -198,6 +205,9 @@ fightUtil.changeTargetState = function(target, defenseData) {
     if(defenseData.transfer) {
         target.transfer = defenseData.transfer;
     }
+    if(defenseData.addMaxHp > 0) {
+        target.addMaxHp = defenseData.addMaxHp;
+    }
 }
 
 /**
@@ -266,4 +276,199 @@ fightUtil.checkBuff = function(skill, player) {
         }
     }
     return false;
+}
+
+fightUtil.calculateCBD = function(random, attack, defense, isCriticalHit, damageType, isBlock, isDodge, isCommandAttack) {
+    //暴击
+    var criticalHit = attack.fightValue.criticalHit * 100;
+    //格挡
+    var block = defense.fightValue.block * 100;
+    //闪避
+    var dodge = defense.fightValue.dodge * 100;
+    var num1 = criticalHit + block;
+    var num2 = num1 + dodge;
+    random = utils.random(1, 10000);
+    if(random >= 1 && random <= criticalHit) {
+        isCriticalHit = true;
+        damageType = consts.damageType.criticalHit;
+    } else if(random > criticalHit && random <= num1) {
+        isBlock = true;
+    } else if(random > num1 && random <= num2) {
+        isDodge = true;
+    } else {
+        isCommandAttack = true;
+    }
+    return {
+        isCriticalHit: isCriticalHit,
+        isBlock: isBlock,
+        isDodge: isDodge
+    }
+}
+
+/**
+ * 用于群攻计算
+ * @param attackSide
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param defense
+ * @param attacks
+ * @param defenses
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ * @param fightData
+ * @param attackData
+ * @param defenseData
+ */
+fightUtil.attack = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    if(defense.died)
+        return;
+    var triggerCondition = {};
+    
+    defense.useSkillBuffs(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+    // 计算战斗
+    defenseData.defense = defense.fightValue.defense;
+
+    var random = 0;
+
+    // 判断闪避、暴击、格挡、普通攻击
+    var isCriticalHit = false;
+    var isBlock = false;
+    var isDodge = false;
+    var isCommandAttack = false;
+    var damageType = consts.damageType.common;
+    //暴击
+    var criticalHit = attack.fightValue.criticalHit * 100;
+    //格挡
+    var block = defense.fightValue.block * 100;
+    //闪避
+    var dodge = defense.fightValue.dodge * 100;
+    var num1 = criticalHit + block;
+    var num2 = num1 + dodge;
+    random = utils.random(1, 10000);
+    if(random >= 1 && random <= criticalHit) {
+        isCriticalHit = true;
+        damageType = consts.damageType.criticalHit;
+    } else if(random > criticalHit && random <= num1) {
+        isBlock = true;
+    } else if(random > num1 && random <= num2) {
+        isDodge = true;
+    } else {
+        isCommandAttack = true;
+    }
+
+    isBlock = fightUtil.checkBlock(defense);
+    isDodge = fightUtil.checkDodge(defense);
+
+    // 判定是否闪避
+    // random = utils.random(1, 10000);
+    if(isDodge) {// 闪避
+        triggerCondition = {
+            type: consts.skillTriggerConditionType.DODGE
+        }
+        defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+        defenseData.action = consts.defenseAction.dodge;//1 - 被击中 2 - 闪避 3 - 被击中反击
+        defenseData.reduceBlood = 0;
+
+        // 守方
+        // 增加怒气
+        fightUtil.addDefenseAnger(attackData, defense);
+
+        defenseData.hp = defense.fightValue.hp;
+        defenseData.anger = defense.anger;
+
+        var target = {
+            id: defense.id,
+            fId: defense.formationId,
+            action: defenseData.action,
+            hp: defenseData.hp,
+            anger: defenseData.anger,
+            reduceBlood: defenseData.reduceBlood,
+            buffs: defense.getBuffs()
+        };
+        fightData.target.push(target);
+    } else {
+        // 触发被攻击技能
+        triggerCondition = {
+            type: consts.skillTriggerConditionType.BEATTACKED
+        }
+        defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+        // 判定是否格挡
+        // random = utils.random(1, 10000);
+        if(isBlock) {// 格挡
+            defenseData.isBlock = true;
+            defenseData.action = consts.defenseAction.block;
+
+            triggerCondition = {
+                type: consts.skillTriggerConditionType.BLOCK
+            }
+            defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        }
+
+        if(isCriticalHit) {// 暴击
+            defenseData.reduceBlood = formulaV2.calCritDamage(attack, defense);
+        } else if(isBlock) {
+            defenseData.reduceBlood = formulaV2.calBlockDamage(attack, defense);
+        } else {
+            //defenseData.reduceBlood = formula.calDamage(attack, defense);
+            //伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
+            defenseData.reduceBlood = formulaV2.calDamage(attack, defense);
+        }
+
+        if(defenseData.reduceBlood < 0) {
+            defenseData.reduceBlood = 0;
+        }
+
+        // 更新状态
+        // 守方
+        defenseData.buffs = defense.getBuffs();
+
+        // 判定是否反击
+        var counter = defense.fightValue.counter * 100;
+        random = utils.random(1, 10000);
+        if(random >= 1 && random <= counter) {// 反击
+            triggerCondition = {
+                type: consts.skillTriggerConditionType.COUNTER
+            }
+            defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+            var damage = formulaV2.calCounterDamage(defense, attack);
+            defenseData.isCounter = true;
+            defenseData.counterValue = damage;//反击伤害
+            attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
+            fightUtil.checkDied(attack, attackData);
+        }
+
+        // 更新数据
+        defenseData.fId = defense.formationId;
+
+        fightUtil.reduceHp(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        fightUtil.updateDefenseData(defense, defenseData);
+        fightUtil.checkDied(defense, defenseData);
+
+        defense.useSkillBuffs(consts.characterFightType.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+        // 守方
+        // 增加怒气
+        fightUtil.addDefenseAnger(attackData, defense);
+
+        // 更新状态
+        defenseData.hp = defense.fightValue.hp;
+        defenseData.anger = defense.anger;
+
+        var target = {
+            id: defense.id,
+            fId: defense.formationId,
+            action: defenseData.action,
+            hp: defenseData.hp,
+            anger: defenseData.anger,
+            reduceBlood: defenseData.reduceBlood,
+            buffs: defenseData.buffs
+        };
+        fightUtil.changeTargetState(target, defenseData);
+        fightData.target.push(target);
+    }
 }

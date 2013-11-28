@@ -395,7 +395,9 @@ module.exports = {
         BLOCK: "3",
         DODGE: "4",
         ASYLUM: "5",
-        ADDMAXHP: "6"
+        ADDMAXHP: "6",
+        REDUCE_SCOPE_DAMAGE: "7",
+        CHANGETO_SCOPE_DAMAGE: "8"
     },
 
     buffCategory: {
@@ -415,6 +417,11 @@ module.exports = {
         DEFENSE: 2,
         AFTER_ATTACK: 3,
         AFTER_DEFENSE: 4
+    },
+
+    attackType: {
+        SINGLE: 1,
+        ALL: 2
     },
 
     skillTriggerConditionType: {
