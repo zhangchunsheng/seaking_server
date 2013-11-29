@@ -465,6 +465,7 @@ fightUtil.attack = function(attackSide, attack_formation, defense_formation, att
 
         var target = {
             id: defense.id,
+            damageType: damageType,
             fId: defense.formationId,
             action: defenseData.action,
             hp: defenseData.hp,
