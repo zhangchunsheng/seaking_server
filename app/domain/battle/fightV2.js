@@ -485,6 +485,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             data.targetType = consts.effectTargetType.OPPONENT;
             var target = {
                 id: defense.id,
+                damageType: damageType,
                 fId: defense.formationId,
                 action: defenseData.action,
                 hp: defenseData.hp,

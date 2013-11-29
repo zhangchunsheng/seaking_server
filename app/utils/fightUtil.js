@@ -381,6 +381,7 @@ fightUtil.attack = function(attackSide, attack_formation, defense_formation, att
 
         var target = {
             id: defense.id,
+            damageType: damageType,
             fId: defense.formationId,
             action: defenseData.action,
             hp: defenseData.hp,
@@ -395,6 +396,9 @@ fightUtil.attack = function(attackSide, attack_formation, defense_formation, att
             type: consts.skillTriggerConditionType.BEATTACKED
         }
         defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+
+        defenseData.action = consts .defenseAction.beHitted;
 
         // 判定是否格挡
         // random = utils.random(1, 10000);

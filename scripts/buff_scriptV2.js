@@ -147,7 +147,6 @@ var buff_script = {
 
         attackData.attack = attack.fightValue.attack;
         attackData.buffs = attack.getBuffs();
-        defenseData.action = constsV2.defenseAction.beHitted;
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
         for(var i in defenses) {
