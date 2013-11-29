@@ -25,6 +25,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.ADDMAXHP) {//提升生命上限
         buffCategory = constsV2.buffCategory.AFTER_DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.REDUCE_SCOPE_DAMAGE) {
+        buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE) {
         buffCategory = constsV2.buffCategory.ATTACK;
     }
@@ -376,7 +378,7 @@ var skill_script = {
 
     },
     /**
-     *
+     * 吸收所有的范围伤害，并且每次伤害不能超过生命值的25%
      * @param attackSide
      * @param condition
      * @param attack_formation
@@ -392,7 +394,18 @@ var skill_script = {
      * @param defenseData
      */
     "skill110101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = defense.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.25
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.REDUCE_SCOPE_DAMAGE, this, buffData);
+        defense.addBuff(buff);
+        return 100;
     },
     "skill110201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

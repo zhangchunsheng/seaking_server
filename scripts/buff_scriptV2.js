@@ -100,7 +100,9 @@ var buff_script = {
 
     },
     "buff110101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(attack.fightValue.attackType != constsV2.attackType.ALL) {
+            return;
+        }
     },
     "buff110201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -146,11 +148,26 @@ var buff_script = {
         attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
 
         attackData.attack = attack.fightValue.attack;
+        attackData.attack = attack.fightValue.attack;
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
-        for(var i in defenses) {
-            fightUtil.attack(attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        var player = fightUtil.checkReduceScopeDamage(defenses);
+        if(player != null) {
+            var opts = {
+                type: consts.buffTypeV2.REDUCE_SCOPE_DAMAGE,
+                player: player,
+                damage: 0,
+                damageInfo: []
+            };
+            for(var i in defenses) {
+                fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+            fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+        } else {
+            for(var i in defenses) {
+                fightUtil.attack(attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
         }
 
         return 1;
