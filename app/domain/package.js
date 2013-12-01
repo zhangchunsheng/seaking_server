@@ -105,7 +105,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
     }
     var items = this[type];
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
-        for (var i = 1; i <= this[type].itemCount; i++) {
+        for (var i = 0; i < this[type].itemCount; i++) {
             if (!this[type].items[i]) {
                 this[type].items[i] = {
                     itemId: item.itemId,
@@ -181,6 +181,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 }
             }
         }*/
+        console.log("m:"+JSON.stringify(item) );
         for(var i in items.items) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {
                 _items.itemNum += this[type].items[i].itemNum;
@@ -207,14 +208,14 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
 
         var run = function() {
             if(item.itemNum > 0) {
-                var spaceCount = 0;
-                for(var i = 1,l = items.itemCount ; i <= l ; i++) {
+                var spaceCount = -1;
+                for(var i = 0,l = items.itemCount ; i < l ; i++) {
                     if(!items.items[i]) {
                         spaceCount = i;
                         break;
                     }
                 }
-                if(spaceCount == 0) {
+                if(spaceCount == -1) {
                     index = [];
                     return {index: index};
                 }
@@ -248,13 +249,14 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         }
         run();
     }
+    var task;
+    var r = {index: index};
     if(index.length > 0) {
         this.save();
-        player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+        task = player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+        r.task = task;
     }
-    return {
-        index: index
-    };
+    return r;
 };
 
 /**
@@ -340,17 +342,17 @@ Package.prototype.addItemWithNoType = function(mainPlayer, item) {
  * @api public
  */
 Package.prototype.removeItem = function(type, index,itemNum) {
-    var status = false;
+    var status = -1;
     var item = this[type].items[index];
     if(item) {
         if(!itemNum || itemNum == item.itemNum){
             delete this[type].items[index];
             this.save();
-            status = true;
+            status = 0;
         }else if(item.itemNum >itemNum){
             item.itemNum -= itemNum;
             this.save();
-            status = true;
+            status = item.itemNum;
         }
     }
 
@@ -360,7 +362,6 @@ Package.prototype.removeItem = function(type, index,itemNum) {
 //Check out item by id and type
 Package.prototype.checkItem = function(type, index, itemId) {
     var result = 0, i, item;
-    console.log(this[type]);
     item = this[type].items[index];
     console.log(item);
     console.log(itemId);
@@ -433,3 +434,7 @@ Package.prototype.getInfo = function() {
         items: this.items
     }
 };
+Package.prototype.unlock = function(type , itemCount) {
+    this[type].itemCount = itemCount;
+    this.save();
+}

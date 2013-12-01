@@ -8,8 +8,34 @@
 var formula = module.exports;
 var dataApi = require('../utils/dataApi');
 
-formula.calDamage = function(attacker, target) {
+/**
+ *
+ * @param attackData
+ * @param defenseData
+ * @returns {number}
+ */
+formula.calDamage = function(attackData, defenseData) {
+    return attackData.attack - defenseData.defense;
+}
 
+formula.calCritDamage = function(attackData, defenseData, attack, defense) {
+    var damage = formula.calDamage(attackData, defenseData, attack, defense);
+    damage = damage * attack.critDamage;
+    return damage;
+}
+
+formula.calBlockDamage = function(attackData, defenseData, attack, defense) {
+    var damage = formula.calDamage(attackData, defenseData, attack, defense);
+    damage = damage / 2;
+    return damage;
+}
+
+formula.calCounterDamage = function(attackData, defenseData, attack, defense) {
+    var damage = formula.calDamage(attackData, defenseData, attack, defense);
+    if(damage < 0)
+        damage = 0;
+    damage = damage * 0.25;
+    return damage;
 }
 
 /**

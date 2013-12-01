@@ -6,6 +6,7 @@
  * Description: skillUtil
  */
 var Buff = require('../domain/buff');
+var consts = require('../consts/consts');
 
 var skillUtil = module.exports;
 
@@ -36,8 +37,8 @@ skillUtil.getActiveSkillBuff = function(effect, buffType, activeSkill) {
         useEffectId: effect.id,
         type: effect.attr,
         skillId: activeSkill.skillId,
-        skillType: activeSkill.skillType,
-        skillLevel: activeSkill.skillLevel,
+        skillType: activeSkill.type,
+        skillLevel: activeSkill.level,
         skillData: activeSkill.skillData,
         buffData: effect,
         buffType: buffType,
@@ -64,4 +65,46 @@ skillUtil.getPassiveSkillBuff = function(effect, passiveSkill) {
         buffData: effect
     });
     return buff;
+}
+
+/**
+ * 触发技能
+ * @param skill
+ * @param condition
+ * @returns {boolean}
+ */
+skillUtil.checkTriggerCondition = function(skill, condition) {
+    var type = condition.type;
+    var triggerCondition = skill.skillData.triggerCondition;
+    if(triggerCondition.indexOf("||") > 0) {
+        var array = triggerCondition.split("||");
+        for(var i = 0 ; i < array.length ; i++) {
+            if(array[i] == type)
+                return true;
+        }
+    } else {
+        return triggerCondition == type;
+    }
+    return false;
+}
+
+/**
+ * 觉醒技能
+ * @param skill
+ * @param condition
+ * @returns {boolean}
+ */
+skillUtil.checkAwakenCondition = function(skill, condition) {
+    var type = condition.type;
+    var triggerCondition = skill.skillData.triggerCondition;
+    if(triggerCondition.indexOf("||") > 0) {
+        var array = triggerCondition.split("||");
+        for(var i = 0 ; i < array.length ; i++) {
+            if(array[i] == type)
+                return true;
+        }
+    } else {
+        return triggerCondition == type;
+    }
+    return false;
 }

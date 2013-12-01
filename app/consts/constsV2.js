@@ -2,7 +2,7 @@
  * Copyright(c)2013,Wozlla,www.wozlla.com
  * Version: 1.0
  * Author: Peter Zhang
- * Date: 2013-06-22
+ * Date: 2013-11-22
  * Description: consts
  */
 module.exports = {
@@ -169,11 +169,9 @@ module.exports = {
     },
 
     MailKeyType:{
-        MAILIN:"MI",
-        MAILOUT:"MO",
-        READ:"ERR",
         NOREAD:"ERN",
         HASITEM:"ERW",
+        READ:"ERR",
         SEND:"ESS"
     },
 
@@ -208,6 +206,15 @@ module.exports = {
     skillType: {
         ACTIVE_SKILL: 1,
         PASSIVE_SKILL: 2
+    },
+
+    skillV2Type: {
+        TRIGGER_SKILL: 1,//触发技能
+        AWAKEN_SKILL: 2,//觉醒技能
+        FREE_SKILL: 3,//自由技能
+        MAINATTR_SKILL: 4,//主属性技能
+        SECONDATTR_SKILL: 5,//次属性技能
+        IMPROVE_SKILL: 6//强化技能
     },
 
     skillsType: {
@@ -382,6 +389,24 @@ module.exports = {
         REDUCESPEED: "reducespeed"
     },
 
+    buffTypeV2: {
+        SHIELDS: "1",
+        EXTRAARMOR: "2",
+        BLOCK: "3",
+        DODGE: "4",
+        ASYLUM: "5",
+        ADDMAXHP: "6",
+        REDUCE_SCOPE_DAMAGE: "7",
+        CHANGETO_SCOPE_DAMAGE: "8"
+    },
+
+    buffCategory: {
+        ATTACK: 1,
+        DEFENSE: 2,
+        AFTER_ATTACK: 3,
+        AFTER_DEFENSE: 4
+    },
+
     characterFightStatus: {
         COMMON: 1,//正常
         FREEZEN: 2//冻结
@@ -397,6 +422,19 @@ module.exports = {
     attackType: {
         SINGLE: 1,
         ALL: 2
+    },
+
+    skillTriggerConditionType: {
+        ATTACK: 1,
+        BEATTACKED: 2,
+        HP: 3,
+        BLOCK: 4,
+        DODGE: 5,
+        CRITICALHIT: 6,
+        COUNTER: 7,
+        BATTLE: 8,
+        DEATH: 9,
+        GETDAMAGE: 10
     },
 
     correspondingEffect_attr: {

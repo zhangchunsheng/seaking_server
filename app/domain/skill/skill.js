@@ -5,14 +5,13 @@
  * Date: 2013-06-28
  * Description: fightskill
  */
-
 var util = require('util');
-var dataApi = require('../utils/dataApi');
-var formula = require('../consts/formula');
-var consts = require('../consts/consts');
-var buff = require('./buff');
-var Persistent = require('./persistent');
-var utils = require('../utils/utils');
+var dataApi = require('../../utils/dataApi');
+var formula = require('../../consts/formula');
+var consts = require('../../consts/consts');
+var buff = require('./../buff');
+var Persistent = require('./../persistent');
+var utils = require('../../utils/utils');
 
 /**
  *
@@ -21,7 +20,7 @@ var utils = require('../utils/utils');
  */
 var Skill = function(opts) {
     Persistent.call(this, {
-        id: opts.skillId
+        id: opts.id
     });
     this.skillId = opts.skillId;
     this.additional = {};//额外加成
@@ -30,6 +29,10 @@ var Skill = function(opts) {
     this.type = this.skillData.type;
     this.level = this.skillData.level;
 };
+
+util.inherits(Skill, Persistent);
+
+module.exports = Skill;
 
 Skill.prototype.attack = function() {
 
@@ -61,7 +64,3 @@ Skill.prototype.updateFightValue = function(player) {
 Skill.create = function(opts) {
 
 }
-
-util.inherits(Skill, Persistent);
-
-module.exports = Skill;

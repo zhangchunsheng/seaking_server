@@ -49,9 +49,12 @@ module.exports = function (app) {
     app.get('/arena/add', authRequired, arena.add);
     app.get('/arena/getOpponents', authRequired, arena.getOpponents);
     app.get('/arena/getRank', authRequired, arena.getRank);
+    app.get('/arena/enterArena', authRequired, arena.enterArena);
+    app.get('/arena/getPKData', authRequired, arena.getPKData);
 
     //战斗
     app.get('/battle/battle', authRequired, battle.battle);
+    app.get('/battle/battle2', battle.battle2);
 
     //赌场
     app.get('/casino/getItems', authRequired, casino.getItems);
@@ -75,18 +78,12 @@ module.exports = function (app) {
 
     app.get('/indu/triggerEvent', authRequired, indu.triggerEvent);
 
-    app.get('/mail/systemSendMail', authRequired, mail.systemSendMail);
-    app.get('/mail/sendMail', authRequired, mail.sendMail);
-    app.get('/mail/send',authRequired,mail.sendMail);
-    app.get('/mail/getInbox', authRequired, mail.getInbox);
-    app.get('/mail/getOutbox', authRequired, mail.getOutbox);
-    app.get('/mail/readMail', authRequired, mail.readMail);
-    app.get('/mail/read',authRequired,mail.readMail);
-    app.get('/mail/delMail', authRequired, mail.delMail);
-    app.get('/mail/del',authRequired,mail.delMail);
-    app.get('/mail/hasNewMail', authRequired, mail.hasNewMail);
-    app.get('/mail/newMail',authRequired,mail.hasNewMail);
-    app.get('/mail/collectItem', authRequired, mail.collectItem);
+    app.get("/mail/getIn", authRequired, mail.getIn);
+    app.get("/mail/getOut", authRequired, mail.getOut);
+    app.get("/mail/send", authRequired, mail.send);
+    app.get("/mail/read", authRequired, mail.read);
+    app.get("/mail/collectItem", authRequired, mail.collectItem);
+    app.get("/mail/del", authRequired, mail.del);
 
     app.get('/package/addItem', authRequired, package.addItem);
     app.get('/package/dropItem', authRequired, package.dropItem);
@@ -106,6 +103,7 @@ module.exports = function (app) {
     app.get('/player/learnSkill', authRequired, player.learnSkill);
     app.get('/player/upgradeSkill', authRequired, player.upgradeSkill);
     app.get('/player/useSkill', authRequired, player.useSkill);
+    app.get('/player/forgetSkill', authRequired, player.forgetSkill);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 
@@ -130,4 +128,5 @@ module.exports = function (app) {
     app.get('/message/getBattleReport', authRequired, message.getBattleReport);
     app.get('/message/removeBattleReport', authRequired, message.removeBattleReport);
     app.get('/message/publishMessage', message.publishMessage);
+
 }

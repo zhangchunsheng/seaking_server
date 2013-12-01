@@ -8,7 +8,7 @@
 var dataApi = require('../utils/dataApi');
 var Player = require('../domain/entity/player');
 var Tasks = require('../domain/tasks');
-var Skills = require('../domain/skills');
+var Skills = require('../domain/skill/skills');
 var User = require('../domain/user');
 var consts = require('../consts/consts');
 var equipmentsDao = require('./equipmentsDao');
@@ -21,6 +21,7 @@ var playerDao = require('./playerDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
+var buffUtil = require('../utils/buffUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
 var ucenter = require('../lib/ucenter/ucenter');
@@ -96,6 +97,10 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
 
         });
     });
+}
+
+userDao.updateHP = function(player, serverId, registerType, loginName, cb) {
+
 }
 
 /**
@@ -333,7 +338,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
                         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         photo: '',
-                        buffs: [],
+                        buffs: buffUtil.getInitBuff(),
                         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
                         anger: 0,
@@ -736,6 +741,11 @@ userDao.getPlayerById = function(playerId, cb) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             key = playerId;
             client.get(key, function(err, reply) {
+                if(reply == null) {
+                    redis.release(client);
+                    utils.invokeCallback(cb, {}, null);
+                    return;
+                }
                 key = reply;
                 var array = key.split("_");
                 var serverId = array[0].replace("S", "");
@@ -810,6 +820,8 @@ userDao.getPlayerById = function(playerId, cb) {
                         var partners = results[0];
                         var player = new Opponent(character);
                         player.partners = partners;
+                        var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
+                        player.equipmentsEntity = equipments;
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
                             redis.release(client);
                             utils.invokeCallback(cb, null, player);

@@ -7,10 +7,10 @@
  */
 
 var util = require('util');
-var dataApi = require('../utils/dataApi');
-var formula = require('../consts/formula');
-var consts = require('../consts/consts');
-var buff = require('./buff');
+var dataApi = require('../../utils/dataApi');
+var formula = require('../../consts/formula');
+var consts = require('../../consts/consts');
+var buff = require('./../buff');
 var Skill = require('./skill');
 
 /**
@@ -22,6 +22,10 @@ var PassiveSkill = function(opts) {
     Skill.call(this, opts);
 };
 
+util.inherits(PassiveSkill, Skill);
+
+module.exports = PassiveSkill;
+
 PassiveSkill.prototype.attack = function() {
 
 }
@@ -29,7 +33,3 @@ PassiveSkill.prototype.attack = function() {
 PassiveSkill.create = function(skill) {
 
 }
-
-util.inherits(PassiveSkill, Skill);
-
-module.exports = PassiveSkill;

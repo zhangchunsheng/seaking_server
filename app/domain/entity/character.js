@@ -10,9 +10,12 @@
  */
 var util = require('util');
 var utils = require('../../utils/utils');
+var skillUtil = require('../../utils/skillUtil');
+var buffUtil = require('../../utils/buffUtil');
+var fightUtil = require('../../utils/fightUtil');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
-var consts = require('../../consts/consts');
+var consts = require('../../consts/constsV2');
 var Entity = require('./entity');
 
 var Character = function(opts) {
@@ -29,6 +32,9 @@ var Character = function(opts) {
     this.enemies = {};
 
     this.died = false;
+    this.starLevel = opts.starLevel;
+    this.heroType = opts.heroType;//英雄类型
+    this.sunderArmor = opts.sunderArmor;//破甲
     this.hp = opts.hp;
     this.anger = opts.anger || 0;// 能量值
     this.maxHp = opts.maxHp;
@@ -44,8 +50,11 @@ var Character = function(opts) {
     this.dodge = opts.dodge;//闪避
     this.block = opts.block;//格挡
     this.criticalHit = opts.criticalHit;//暴击
-    this.critDamage = opts.critDamage;//暴击
+    this.critDamage = opts.critDamage || 1.6;//暴击
     this.counter = opts.counter;//反击
+
+    this.addHp = opts.addHp;//生命成长值
+    this.addAttack = opts.addAttack;//攻击成长值
 
     this.baseAttack = opts.attack;
     this.baseDefense = opts.defense;
@@ -77,8 +86,34 @@ var Character = function(opts) {
     this.restoreAngerSpeed = opts.restoreAngerSpeed || {ea:10, ehr: 3, eshr: 6};//能量恢复速度
 
     this.hasBuff = false;
-    this.buffs = opts.buffs || [];
+    this.buffs = opts.buffs || buffUtil.getInitBuff();
     this.skillBuffs = [];//技能buff
+
+    this.fightType = 0;
+    this.attackType = opts.attackType || consts.attackType.SINGLE;
+    //上一次使用技能
+    this.lastSkillUsedInfo = {
+        1: null,
+        2: null,
+        3: null,
+        4: null,
+        5: null,
+        6: null
+    };
+
+    this.fight = {
+        fightStatus: consts.characterFightStatus.COMMON,
+        reduceDamage: 0,//减免伤害
+        reduceDamageValue: 0,
+        reduceDamageOverlay: 0,//无限叠加
+        reduceDamageCounteract: 0,
+        addDefense: 0,//增加护甲
+        addDefenseValue: 0,
+        isBlock: false,
+        isDodge: false,
+        asylumTransfer: null,//庇护
+        addMaxHp: 0
+    };
 
     this.hasUpgrade = false;
 };
@@ -196,13 +231,68 @@ Character.prototype.addBuff = function(buff) {
 };
 
 /**
+ * 技能buff
+ * @param buff
+ */
+Character.prototype.addSkillBuff = function(buff) {
+    this.buffs.push(buff);
+};
+
+/**
+ * 道具buff
+ * @param buff
+ */
+Character.prototype.addToolBuff = function(buff) {
+    this.buffs.push(buff);
+};
+
+Character.prototype.getBuffs = function() {
+    var buffs = [];
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        buffs.push(this.buffs[i].baseInfo());
+    }
+    return buffs;
+}
+
+Character.prototype.getSkillBuffs = function() {
+    var buffs = [];
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        if(this.buffs[i].buffKind == consts.buffKind.SKILL)
+            buffs.push(this.buffs[i]);
+    }
+    return buffs;
+}
+
+Character.prototype.getToolBuffs = function() {
+    var buffs = [];
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        if(this.buffs[i].buffKind == consts.buffKind.ITEM)
+            buffs.push(this.buffs[i]);
+    }
+    return buffs;
+}
+
+Character.prototype.getTeamBuffs = function() {
+    var buffs = [];
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        if(this.buffs[i].buffScope == consts.buffScope.TEAM)
+            buffs.push(this.buffs[i]);
+    }
+    return buffs;
+}
+
+/**
  * Remove buff from buffs.
  *
  * @param {Buff} buff
  * @api public
  */
 Character.prototype.removeBuff = function(buff) {
-
+    for(var i = 0, l = this.buffs.length ; i < l ; i++) {
+        if(this.buffs[i].buffId == buff.buffId) {
+            this.buffs.splice(i, 1);
+        }
+    }
 };
 
 Character.prototype.addAttack = function(value) {
@@ -301,3 +391,189 @@ Character.prototype.reduceValue = function(attrName, value) {
     this[attrName] -= parseInt(value);
 };
 
+/**
+ * 触发技能
+ * 触发条件:
+ * 1 - 主动攻击
+ * 2 - 被攻击
+ * 3 - 生命值
+ * 4 - 格挡
+ * 5 - 闪避
+ * 6 - 暴击
+ * 7 - 反击
+ * 8 - 进入战斗
+ * 9 - 死亡
+ */
+Character.prototype.triggerSkill = function(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var angers = [];
+    var anger = 0;
+    if(fightType == consts.characterFightType.ATTACK) {//攻击者
+        var skills = attack.skills;
+        for(var i in skills) {
+            if(i == consts.skillV2Type.TRIGGER_SKILL) {
+                anger = this.useTriggerSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                angers.push(anger);
+            } else if(i == consts.skillV2Type.AWAKEN_SKILL) {
+                anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                angers.push(anger);
+            }
+        }
+        for(var i = 0 ; i < angers.length ; i++) {
+            if(angers[i] == 100) {
+                anger = 100;
+                break;
+            }
+        }
+        if(anger >= 100) {
+            attackData.action = consts.attackAction.skill;
+        } else {
+            if(attackData.action != consts.attackAction.skill)
+                attackData.action = consts.attackAction.common;
+        }
+    } else if(fightType == consts.characterFightType.DEFENSE) {//防守者
+        var skills = defense.skills;
+        for(var i in skills) {
+            if(i == consts.skillV2Type.TRIGGER_SKILL) {
+                anger = this.useTriggerSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                angers.push(anger);
+            } else if(i == consts.skillV2Type.AWAKEN_SKILL) {
+                anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                angers.push(anger);
+            }
+        }
+        for(var i = 0 ; i < angers.length ; i++) {
+            if(angers[i] == 100) {
+                anger = 100;
+                break;
+            }
+        }
+        if(anger >= 100) {
+            defenseData.triggerSkill = 1;
+        } else {
+            if(defenseData.triggerSkill != 1)
+                defenseData.triggerSkill = 0;
+        }
+    }
+}
+
+/**
+ * 使用触发技能
+ */
+Character.prototype.useTriggerSkill = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=1为触发技能
+    var anger = 0;
+    if(utils.empty(this.skills[consts.skillV2Type.TRIGGER_SKILL])) {
+        return anger;
+    }
+    var skill = this.skills[consts.skillV2Type.TRIGGER_SKILL];
+    if(skillUtil.checkTriggerCondition(skill, condition)) {
+        anger = skill.invokeScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    }
+    return anger;
+}
+
+/**
+ * 使用觉醒技能
+ */
+Character.prototype.useAwakenSkill = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {//type=2为觉醒技能
+    var anger = 0;
+    if(utils.empty(this.skills[consts.skillV2Type.AWAKEN_SKILL])) {
+        return;
+    }
+    var skill = this.skills[consts.skillV2Type.TRIGGER_SKILL];
+    if(skillUtil.checkAwakenCondition(skill, condition)) {
+        anger = skill.invokeScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    }
+    return anger;
+}
+
+Character.prototype.useSkillBuffs = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var dataTypes = [];
+    var dataType = 0;
+    if(fightType == consts.characterFightType.ATTACK) {
+        var skillBuffs = attack.getSkillBuffs();
+        var buffs = skillBuffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.ATTACK) {
+                dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                dataTypes.push(dataType);
+            }
+        }
+        for(var i = 0 ; i < dataTypes.length ; i++) {
+            if(dataTypes[i] > 0) {
+                dataType = dataTypes[i];
+                break;
+            }
+        }
+    } else if(fightType == consts.characterFightType.DEFENSE) {
+        var skillBuffs = defense.getSkillBuffs();
+        var teamBuffs = defenseFightTeam.getSkillBuffs();
+        var buffs = skillBuffs;
+        for(var i = 0 , l = teamBuffs.length ; i < l ; i++) {
+            buffs.push(teamBuffs[i]);
+        }
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.DEFENSE) {
+                dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                if(dataType == -1) {//不减血
+                    dataType = 0;
+                    dataTypes.push(dataType);
+                    break;
+                }
+                dataTypes.push(dataType);
+            }
+        }
+        for(var i = 0 ; i < dataTypes.length ; i++) {
+            if(dataTypes[i] > 0) {
+                dataType = dataTypes[i];
+                break;
+            }
+        }
+    } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
+        var buffCategory = fightUtil.getBuffCategory(fightType);
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    }
+    return dataType;
+}
+
+Character.prototype.useTeamSkillBuffs = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var dataTypes = [];
+    var dataType = 0;
+    if(fightType == consts.characterFightType.ATTACK) {
+        var skillBuffs = attackFightTeam.getSkillBuffs();
+        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
+
+        }
+    } else if(fightType == consts.characterFightType.DEFENSE) {
+        var skillBuffs = defenseFightTeam.getSkillBuffs();
+        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
+            if(skillBuffs[i].buffCategory == consts.buffCategory.DEFENSE) {
+                dataType = skillBuffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                dataTypes.push(dataType);
+            }
+        }
+    }
+    return dataType;
+}
+
+Character.prototype.useTriggerBuff = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+
+}
+
+Character.prototype.useAwakenBuff = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+
+}
+
+Character.prototype.updateBuff = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var dataType = 0;
+    if(fightType == consts.characterFightType.ATTACK) {
+        var skillBuffs = attack.getSkillBuffs();
+        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
+            skillBuffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        }
+    } else if(fightType == consts.characterFightType.DEFENSE) {
+        var skillBuffs = defense.getSkillBuffs();
+        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
+            skillBuffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        }
+    }
+}

@@ -49,17 +49,9 @@ battleDao.savePlayerBattleData = function(player, owners, monsters, battleData, 
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
             battleDao.getBattleId(client, function(err, battleId) {
                 var key = "S" + player.sid + "_Battle";
-                var _owners = [];
-                var _monsters = [];
-                for(var i = 0 ; i < owners.length ; i++) {
-                    _owners.push(owners[i].strip());
-                }
-                for(var i = 0 ; i < monsters.length ; i++) {
-                    _monsters.push(monsters[i].strip());
-                }
                 var data = {
-                    owners: _owners,
-                    monsters: _monsters,
+                    owners: owners,
+                    monsters: monsters,
                     battleData: battleData
                 };
 
@@ -73,13 +65,39 @@ battleDao.savePlayerBattleData = function(player, owners, monsters, battleData, 
     });
 }
 
-battleDao.saveLogData = function(redis, client, player, battleId, data) {
+/**
+ * 保存玩家战斗数据
+ */
+battleDao.savePlayerPKData = function(player, owners, monsters, battleData, cb) {
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+            battleDao.getBattleId(client, function(err, battleId) {
+                var key = "S" + player.sid + "_Battle";
+                var data = {
+                    owners: owners,
+                    monsters: monsters,
+                    battleData: battleData
+                };
+
+                battleDao.saveLogData(redis, client, player, battleId, data, cb);
+                var logData = battleDao.getLogData(player, battleId, data);
+                ucenter.saveBattleLog(logData);
+            });
+        }).exec(function (err, replies) {
+
+            });
+    });
+}
+
+battleDao.saveLogData = function(redis, client, player, battleId, data, cb) {
     var array = [];
+    var key = dbUtil.getBattleLogKey(player.sid);
     array.push(["hset", key, battleId, JSON.stringify(data)]);
     var characterId = utils.getRealCharacterId(player.id);
-    var key = dbUtil.getBattleKey(player.sid, player.registerType, player.loginName, characterId)
+    key = dbUtil.getBattleKey(player.sid, player.registerType, player.loginName, characterId);
     array.push(["lpush", key, battleId]);
     client.multi(array).exec(function(err, replies) {
+        utils.invokeCallback(cb, null, battleId);
         redis.release(client);
     });
 }
@@ -98,4 +116,18 @@ battleDao.getLogData = function(player, battleId, battleData) {
         date: date.getTime()
     }
     return logData;
+}
+
+battleDao.getBattleData = function(serverId, battleId, cb) {
+    var key = dbUtil.getBattleLogKey(serverId);
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+            client.hget(key, battleId, function(err, reply) {
+                utils.invokeCallback(cb, null, reply);
+                redis.release(client);
+            })
+        }).exec(function(err, replies) {
+
+            });
+    });
 }

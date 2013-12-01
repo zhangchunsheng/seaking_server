@@ -52,3 +52,7 @@ messageService.removeBattleReport = function(serverId, registerType, loginName, 
 messageService.publishMessage = function(message, cb) {
     messageDao.publishMessage(message, cb);
 }
+
+messageService.addBothBattleReport = function(character, opponent, owner_battleReport, opponent_battleReport, cb) {
+    messageDao.addBothBattleReport(character, opponent, owner_battleReport, opponent_battleReport, cb);
+}
