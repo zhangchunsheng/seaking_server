@@ -499,8 +499,41 @@ var skill_script = {
     "skill204201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 主动攻击有90%的几率是幸运翻倍，作用一次
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill205101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= 90) {
+            var buffs = attack.buffs;
+            for(var i = 0, l = buffs.length ; i < l ; i++) {
+                if(buffs[i].buffId == this.skillId) {
+                    return 100;
+                }
+            }
+            var buffData = {
+                value: 2
+            };
+            attackData.skillId = this.skillId;
+            var buff = getSkillBuff(constsV2.buffTypeV2.ADDSUNDERARMOR, this, buffData);
+            attack.addBuff(buff);
+            return 100;
+        } else {
+            return 0;
+        }
     },
     "skill205201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
