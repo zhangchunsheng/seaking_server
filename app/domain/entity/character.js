@@ -114,7 +114,9 @@ var Character = function(opts) {
         asylumTransfer: null,//庇护
         addMaxHp: 0,
         addAttack: 0,
-        addAttackValue: 0
+        addAttackValue: 0,
+        addSunderArmor: 0,
+        addSunderArmorValue: 0
     };
 
     this.hasUpgrade = false;

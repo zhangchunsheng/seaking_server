@@ -128,7 +128,8 @@ var buff_script = {
 
     },
     "buff204101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addSunderArmor += this.buffData.value;
+        return 0;
     },
     "buff204201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

@@ -59,6 +59,9 @@ fightUtil.updateAttackData = function(attack, attackData) {
     if(attack.fight.addAttackValue > 0) {
         attackData.addAttack = attack.fight.addAttackValue;
     }
+    if(attack.fight.addSunderArmorValue > 0) {
+        attackData.addSunderArmor = attack.fight.addSunderArmorValue;
+    }
 }
 
 fightUtil.updateDefenseData = function(defense, defenseData) {
@@ -219,6 +222,9 @@ fightUtil.changeTargetState = function(target, defenseData) {
 fightUtil.changeFightData = function(fightData, attackData) {
     if(attackData.addAttack) {
         fightData.addAttack = attackData.addAttack;
+    }
+    if(attackData.addSunderArmor) {
+        fightData.addSunderArmor = attackData.addSunderArmor;
     }
 }
 
