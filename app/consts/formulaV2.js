@@ -22,8 +22,8 @@ formula.calDamage = function(attack, defense) {
         defenseValue += defense.fight.addDefenseValue;
     }
     if(attack.fight.addSunderArmor > 0) {
-        attack.fightValue.addSunderArmorValue = attack.sunderArmor * attack.fight.addSunderArmor;
-        sunderArmor += attack.fightValue.addSunderArmorValue;
+        attack.fight.addSunderArmorValue = attack.sunderArmor * attack.fight.addSunderArmor;
+        sunderArmor += attack.fight.addSunderArmorValue;
     }
     if(attack.fight.addAttack > 0) {
         attack.fight.addAttackValue = attack.attack * attack.fight.addAttack;
