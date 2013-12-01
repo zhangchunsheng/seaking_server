@@ -14,12 +14,17 @@ var dataApi = require('../utils/dataApi');
  * @param defenseData
  */
 formula.calDamage = function(attack, defense) {
+    var attackValue = attack.fightValue.attack;
     var defenseValue = defense.fightValue.defense;
     if(defense.fight.addDefense > 0) {// 增加护甲
         defense.fight.addDefenseValue = defense.defense * defense.fight.addDefense;
         defenseValue += defense.fight.addDefenseValue;
     }
-    var damage = (100 + attack.fightValue.sunderArmor) * attack.fightValue.attack / (100 + defenseValue);
+    if(attack.fight.addAttack > 0) {
+        attack.fight.addAttackValue = attack.attack * attack.fight.addAttack;
+        attackValue += + attack.fight.addAttackValue;
+    }
+    var damage = (100 + attack.fightValue.sunderArmor) * attackValue / (100 + defenseValue);
     if(defense.fight.reduceDamage > 0) {// 减免伤害
         defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
         damage = damage - defense.fight.reduceDamageValue;

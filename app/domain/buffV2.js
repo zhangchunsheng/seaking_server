@@ -103,7 +103,7 @@ Buff.prototype.invokeScript = function(attackSide, attack_formation, defense_for
     array.push(fightData);
     array.push(attackData);
     array.push(defenseData);
-    buff_script["buff" + this.buffId].apply(this, array);
+    return buff_script["buff" + this.buffId].apply(this, array);
 }
 
 Buff.prototype.invokeUpdateScript = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {

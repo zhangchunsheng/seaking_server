@@ -88,7 +88,8 @@ var buffUpdate_script = {
 
     },
     "buff201101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addAttack = 0;
+        attack.fight.addAttackValue = 0;
     },
     "buff201201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

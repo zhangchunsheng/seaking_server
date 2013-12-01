@@ -112,7 +112,9 @@ var Character = function(opts) {
         isBlock: false,
         isDodge: false,
         asylumTransfer: null,//庇护
-        addMaxHp: 0
+        addMaxHp: 0,
+        addAttack: 0,
+        addAttackValue: 0
     };
 
     this.hasUpgrade = false;

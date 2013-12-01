@@ -397,7 +397,8 @@ module.exports = {
         ASYLUM: "5",
         ADDMAXHP: "6",
         REDUCE_SCOPE_DAMAGE: "7",
-        CHANGETO_SCOPE_DAMAGE: "8"
+        CHANGETO_SCOPE_DAMAGE: "8",
+        ADDATTACK: "9"
     },
 
     buffCategory: {

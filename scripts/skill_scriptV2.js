@@ -29,6 +29,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE) {
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.ADDATTACK) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -410,8 +412,41 @@ var skill_script = {
     "skill110201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 主动攻击时，有25%的几率使下次攻击伤害提升25%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill201101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= 25) {
+            var buffs = attack.buffs;
+            for(var i = 0, l = buffs.length ; i < l ; i++) {
+                if(buffs[i].buffId == this.skillId) {
+                    return 100;
+                }
+            }
+            var buffData = {
+                value: 0.25
+            };
+            attackData.skillId = this.skillId;
+            var buff = getSkillBuff(constsV2.buffTypeV2.ADDATTACK, this, buffData);
+            attack.addBuff(buff);
+            return 100;
+        } else {
+            return 0;
+        }
     },
     "skill201201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

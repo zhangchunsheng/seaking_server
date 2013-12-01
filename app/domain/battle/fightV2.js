@@ -513,6 +513,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     attackData.hp = attack.fightValue.hp;
     attackData.anger = attack.anger;
     attackData.damageType = damageType;
+    fightUtil.updateAttackData(attack, attackData);
 
     data.sequence = this.sequence;
     // 写入数据
@@ -530,6 +531,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     data.attackAnger = attackData.anger;
     data.hp = attackData.hp;
     data.buffs = attackData.buffs;
+    fightUtil.changeFightData(data, attackData);
     // 守方
     //data.defenseData = defenseData;
 

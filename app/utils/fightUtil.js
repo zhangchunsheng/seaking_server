@@ -55,6 +55,12 @@ fightUtil.reduceHp = function(attack_formation, defense_formation, attack, defen
     }
 }
 
+fightUtil.updateAttackData = function(attack, attackData) {
+    if(attack.fight.addAttackValue > 0) {
+        attackData.addAttack = attack.fight.addAttackValue;
+    }
+}
+
 fightUtil.updateDefenseData = function(defense, defenseData) {
     if(defense.fight.reduceDamageValue > 0) {
         defenseData.reduceDamage = defense.fight.reduceDamageValue;
@@ -207,6 +213,12 @@ fightUtil.changeTargetState = function(target, defenseData) {
     }
     if(defenseData.addMaxHp > 0) {
         target.addMaxHp = defenseData.addMaxHp;
+    }
+}
+
+fightUtil.changeFightData = function(fightData, attackData) {
+    if(attackData.addAttack) {
+        fightData.addAttack = attackData.addAttack;
     }
 }
 
