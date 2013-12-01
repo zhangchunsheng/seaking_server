@@ -427,7 +427,8 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
         if(anger >= 100) {
             attackData.action = consts.attackAction.skill;
         } else {
-            attackData.action = consts.attackAction.common;
+            if(attackData.action != consts.attackAction.skill)
+                attackData.action = consts.attackAction.common;
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {//防守者
         var skills = defense.skills;
@@ -440,10 +441,17 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
                 angers.push(anger);
             }
         }
+        for(var i = 0 ; i < angers.length ; i++) {
+            if(angers[i] == 100) {
+                anger = 100;
+                break;
+            }
+        }
         if(anger >= 100) {
             defenseData.triggerSkill = 1;
         } else {
-            defenseData.triggerSkill = 0;
+            if(defenseData.triggerSkill != 1)
+                defenseData.triggerSkill = 0;
         }
     }
 }

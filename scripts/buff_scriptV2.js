@@ -155,7 +155,7 @@ var buff_script = {
         var player = fightUtil.checkReduceScopeDamage(defenses);
         if(player != null) {
             var opts = {
-                type: consts.buffTypeV2.REDUCE_SCOPE_DAMAGE,
+                type: constsV2.buffTypeV2.REDUCE_SCOPE_DAMAGE,
                 player: player,
                 damage: 0,
                 damageInfo: []

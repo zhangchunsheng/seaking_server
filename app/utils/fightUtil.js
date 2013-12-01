@@ -677,6 +677,7 @@ fightUtil.calculateDamage = function(opts, attackSide, attack_formation, defense
             playerId: defense.id,
             damage: defenseData.reduceBlood
         });
+        target.reduceBlood = 0;
         fightUtil.changeTargetState(target, defenseData);
         fightData.target.push(target);
     }
@@ -722,10 +723,10 @@ fightUtil.calculateScopeDamage = function(opts, buff, defense, defenseData, figh
             }
             target[i].assimilate = [];
             for(var j = 0 ; j < opts.damageInfo.length ; j++) {
-                target[i].assimilate = [{
+                target[i].assimilate.push({
                     playerId: opts.damageInfo[j].playerId,
                     damage: opts.damageInfo[j].damage
-                }];
+                });
             }
             target[i].hp = defense.fightValue.hp;
             target[i].reduceBlood = damage;
