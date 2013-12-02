@@ -509,7 +509,8 @@ module.exports = {
 
     attackAction: {
         common: 1,//普通攻击
-        skill: 2//技能攻击
+        skill: 2,//技能攻击
+        addHp: 3
     },
 
     damageType: {
@@ -526,7 +527,8 @@ module.exports = {
         beHitted: 1,
         dodge: 2,
         counter: 3,
-        block: 4
+        block: 4,
+        addHp: 5
     },
 
     requirementType: {

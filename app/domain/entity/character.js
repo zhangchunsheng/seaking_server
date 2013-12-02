@@ -458,6 +458,7 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
                 defenseData.triggerSkill = 0;
         }
     }
+    return anger;
 }
 
 /**
@@ -580,4 +581,5 @@ Character.prototype.updateBuff = function(fightType, attack_formation, defense_f
             skillBuffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         }
     }
+    return dataType;
 }
