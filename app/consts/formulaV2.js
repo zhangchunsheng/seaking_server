@@ -41,10 +41,19 @@ formula.calDamage = function(attack, defense) {
     if(damage <= 0) {
         damage = 1;
     }
+
     if(defense.fight.reduceDamageCounteract == -1) {
         defense.fight.reduceDamageCounteract = 0;
         defense.fight.reduceDamageValue = damage;
         damage = 0;
+    }
+    if(attack.fight.addHp > 0) {
+        attack.fight.addHpValue = damage * attack.fight.addHp;
+        attack.fightValue.hp += attack.fight.addHpValue;
+        if(attack.fightValue.hp > attack.fightValue.maxHp) {
+            attack.fightValue.hp = attack.fightValue.maxHp;
+        }
+        attack.hp = attack.fightValue.hp;
     }
     return Math.ceil(damage);
 }

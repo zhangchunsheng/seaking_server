@@ -400,7 +400,8 @@ module.exports = {
         CHANGETO_SCOPE_DAMAGE: "8",
         ADDATTACK: "9",
         ADDSUNDERARMOR: "10",
-        POISON: "11"
+        POISON: "11",
+        ADDHP: "12"
     },
 
     buffCategory: {

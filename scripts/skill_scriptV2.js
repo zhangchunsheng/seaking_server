@@ -495,8 +495,47 @@ var skill_script = {
     "skill202201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 主动攻击同一目标时，每次攻击提升5%的攻击吸血
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill203101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = defense.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffData.playerId == defense.id) {
+                    buffs[i].buffData.value += 0.05;
+                } else {
+                    buffs[i].buffData = {
+                        playerId: defense.id,
+                        formationId: defense.formationId,
+                        value: 0.05
+                    }
+                }
+                return 100;
+            }
+        }
+        var buffData = {
+            playerId: defense.id,
+            formationId: defense.formationId,
+            value: 0.05
+        };
+        attackData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDHP, this, buffData);
+        defense.addBuff(buff);
+        return 100;
     },
     "skill203201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

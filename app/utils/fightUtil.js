@@ -65,6 +65,9 @@ fightUtil.updateAttackData = function(attack, attackData) {
     if(attack.fight.poison) {
         attackData.poison = attack.fight.poison;
     }
+    if(attack.fight.addHpValue > 0) {
+        attackData.addHp = attack.fight.addHpValue;
+    }
 }
 
 fightUtil.updateDefenseData = function(defense, defenseData) {
@@ -237,6 +240,9 @@ fightUtil.changeFightData = function(fightData, attackData) {
     }
     if(attackData.poison) {
         fightData.poison = attackData.poison;
+    }
+    if(attackData.addHp) {
+        fightData.addHp = attackData.addHp;
     }
 }
 

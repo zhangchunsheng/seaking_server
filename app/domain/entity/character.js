@@ -116,7 +116,9 @@ var Character = function(opts) {
         addAttack: 0,
         addAttackValue: 0,
         addSunderArmor: 0,
-        addSunderArmorValue: 0
+        addSunderArmorValue: 0,
+        addHp: 0,
+        addHpValue: 0
     };
 
     this.hasUpgrade = false;
