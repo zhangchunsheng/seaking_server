@@ -35,6 +35,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.POISON) {
         buffCategory = constsV2.buffCategory.ROUND;
+    } else if(buffType == constsV2.buffTypeV2.ADDHP) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
