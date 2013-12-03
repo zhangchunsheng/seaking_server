@@ -28,6 +28,9 @@ Package.prototype.syncData = function() {
 
 Package.prototype.checkItem = function(index, itemId) {
     var item = this.items[index];
+    if(item == null) {
+        return null;
+    }
     if(!itemId) {
         return item.itemNum;
     }
