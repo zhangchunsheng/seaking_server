@@ -570,16 +570,25 @@ Character.prototype.useAwakenBuff = function(attackSide, attack_formation, defen
 
 Character.prototype.updateBuff = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var dataType = 0;
+    var buffs = [];
     if(fightType == consts.characterFightType.ATTACK) {
         var skillBuffs = attack.getSkillBuffs();
-        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
-            skillBuffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        buffs = skillBuffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.ATTACK) {
+                buffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
         }
+        fightUtil.updateRoundBuff(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     } else if(fightType == consts.characterFightType.DEFENSE) {
         var skillBuffs = defense.getSkillBuffs();
-        for(var i = 0, l = skillBuffs.length ; i < l ; i++) {
-            skillBuffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        buffs = skillBuffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.DEFENSE) {
+                buffs[i].invokeUpdateScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
         }
+        fightUtil.updateRoundBuff(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
     return dataType;
 }

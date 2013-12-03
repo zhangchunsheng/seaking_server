@@ -399,14 +399,16 @@ module.exports = {
         REDUCE_SCOPE_DAMAGE: "7",
         CHANGETO_SCOPE_DAMAGE: "8",
         ADDATTACK: "9",
-        ADDSUNDERARMOR: "10"
+        ADDSUNDERARMOR: "10",
+        POISON: "11"
     },
 
     buffCategory: {
         ATTACK: 1,
         DEFENSE: 2,
         AFTER_ATTACK: 3,
-        AFTER_DEFENSE: 4
+        AFTER_DEFENSE: 4,
+        ROUND: 5
     },
 
     characterFightStatus: {

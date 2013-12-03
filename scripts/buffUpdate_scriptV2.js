@@ -95,7 +95,26 @@ var buffUpdate_script = {
 
     },
     "buff202101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(this.buffData.value <= 0) {
+            var player;
+            var key;
+            if(attackSide == constsV2.characterFightType.ATTACK) {
+                player = attack;
+                key = "attackTeam";
+            } else {
+                player = defense;
+                key = "defenseTeam";
+            }
+            player.removeBuff(this);
+            player.fight.poison = false;
+            fightData[key].push({
+                id: player.id,
+                fId: player.formationId,
+                poison: false,
+                buffs: player.buffs
+            });
+        }
+        this.buffData.value--;
     },
     "buff202201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

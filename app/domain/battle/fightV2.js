@@ -282,6 +282,8 @@ Fight.prototype.attack = function(battleData, players, index) {
 
     // 作用目标 攻击或技能效果
     data.target = [];
+    data.attackTeam = [];
+    data.defenseTeam = [];
 
     // 攻方
     data.attackSide = attackSide;
@@ -313,6 +315,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     //attack.maxAnger = 10000;
 
     attack.updateBuff(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+    defense.updateBuff(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
     // 使用技能
     dataType = attack.useSkillBuffs(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);

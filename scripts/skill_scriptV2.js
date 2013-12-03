@@ -33,6 +33,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.ADDSUNDERARMOR) {//加破甲
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.POISON) {
+        buffCategory = constsV2.buffCategory.ROUND;
     }
     return buffCategory;
 }
@@ -453,8 +455,42 @@ var skill_script = {
     "skill201201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 主动攻击有75%的几率给敌方一个单位附加毒状态，持续2回合。毒：治疗量减半
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill202101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= 75) {
+            var buffs = defense.buffs;
+            for(var i = 0, l = buffs.length ; i < l ; i++) {
+                if(buffs[i].buffId == this.skillId) {
+                    return 100;
+                }
+            }
+            var buffData = {
+                value: 2
+            };
+            attackData.skillId = this.skillId;
+            var buff = getSkillBuff(constsV2.buffTypeV2.POISON, this, buffData);
+            defense.fight.poison = true;
+            defense.addBuff(buff);
+            return 100;
+        } else {
+            return 0;
+        }
     },
     "skill202201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
