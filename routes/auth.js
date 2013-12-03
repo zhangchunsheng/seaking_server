@@ -48,6 +48,7 @@ exports.auth = function(req, res) {
 
     userInfo.serverId = region.serverId;
 
+    utils.addOrigin(res, req);
     userService.getCharactersByLoginName(userInfo.serverId, userInfo.registerType, userInfo.loginName, function(err, results) {
         console.log(results);
         if(err || !results) {
@@ -70,11 +71,13 @@ exports.auth = function(req, res) {
         } else {
             data = {
                 code: consts.MESSAGE.RES,
-                player: results[0].strip()
+                player: results[0].strip(),
+                connectSid: req.headers["cookie"]
             };
             userInfo.playerId = results[0].id;
             utils.send(msg, res, data);
         }
+        console.log(res);
         session.setSession(req, res, userInfo);
     });
 }

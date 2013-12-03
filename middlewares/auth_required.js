@@ -11,6 +11,8 @@ var Code = require('../shared/code');
 module.exports = function (req, res, next) {
     var msg = req.query;
 
+    utils.addOrigin(res, req);
+
     if (req.session.uid) {
         return next();
     }

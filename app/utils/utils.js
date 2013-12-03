@@ -323,3 +323,10 @@ utils.getDaytime = function(date) {
 utils.empty = function(obj) {
     return typeof obj == "undefined" || obj == null || obj == "";
 }
+
+utils.addOrigin = function(res, req) {
+    if(req.headers.origin) {
+        res.header('Access-Control-Allow-Origin', req.headers.origin);
+        res.header('Access-Control-Allow-Credentials', true);
+    }
+}
