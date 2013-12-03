@@ -395,14 +395,20 @@ module.exports = {
         BLOCK: "3",
         DODGE: "4",
         ASYLUM: "5",
-        ADDMAXHP: "6"
+        ADDMAXHP: "6",
+        REDUCE_SCOPE_DAMAGE: "7",
+        CHANGETO_SCOPE_DAMAGE: "8",
+        ADDATTACK: "9",
+        ADDSUNDERARMOR: "10",
+        POISON: "11"
     },
 
     buffCategory: {
         ATTACK: 1,
         DEFENSE: 2,
         AFTER_ATTACK: 3,
-        AFTER_DEFENSE: 4
+        AFTER_DEFENSE: 4,
+        ROUND: 5
     },
 
     characterFightStatus: {
@@ -415,6 +421,11 @@ module.exports = {
         DEFENSE: 2,
         AFTER_ATTACK: 3,
         AFTER_DEFENSE: 4
+    },
+
+    attackType: {
+        SINGLE: 1,
+        ALL: 2
     },
 
     skillTriggerConditionType: {
@@ -500,7 +511,8 @@ module.exports = {
 
     attackAction: {
         common: 1,//普通攻击
-        skill: 2//技能攻击
+        skill: 2,//技能攻击
+        addHp: 3
     },
 
     damageType: {
@@ -517,7 +529,8 @@ module.exports = {
         beHitted: 1,
         dodge: 2,
         counter: 3,
-        block: 4
+        block: 4,
+        addHp: 5
     },
 
     requirementType: {

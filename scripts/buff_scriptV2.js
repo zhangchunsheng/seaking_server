@@ -6,6 +6,7 @@
  * Description: buff_scriptV2
  */
 var utils = require('../app/utils/utils');
+var fightUtil = require('../app/utils/fightUtil');
 var constsV2 = require('../app/consts/constsV2');
 
 var buff_script = {
@@ -22,6 +23,7 @@ var buff_script = {
     "buff101101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.reduceDamage += this.buffData.value;
         defense.removeBuff(this);
+        return 0;
     },
     "buff101201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -29,6 +31,7 @@ var buff_script = {
     "buff102101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.reduceDamage += this.buffData.value;
         defense.removeBuff(this);
+        return 0;
     },
     "buff102201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -36,19 +39,25 @@ var buff_script = {
     "buff103101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.reduceDamageOverlay = this.buffData.value;
         defense.fight.reduceDamage += this.buffData.value;
+        return 0;
     },
     "buff103201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 抵消伤害
+     */
     "buff104101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.reduceDamageCounteract = this.buffData.value;
         defenseFightTeam.removeBuff(this);
+        return -1;
     },
     "buff104201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff105101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.addDefense = this.buffData.value;
+        return 0;
     },
     "buff105201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -56,6 +65,7 @@ var buff_script = {
     "buff106101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.isBlock = true;
         defense.removeBuff(this);
+        return 0;
     },
     "buff106201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -63,6 +73,7 @@ var buff_script = {
     "buff107101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.isDodge = true;
         defense.removeBuff(this);
+        return 0;
     },
     "buff107201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -70,30 +81,36 @@ var buff_script = {
     "buff108101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.asylumTransfer = this.buffData.asylumTransfer;
         defense.removeBuff(this);
+        return 0;
     },
     "buff108201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff109101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         if(defense.died) {
-            return;
+            return 0;
         }
         var addMaxHp = defense.maxHp * this.buffData.value;
         defense.fightValue.maxHp += addMaxHp;
         defense.fightValue.hp += addMaxHp;
         defense.fight.addMaxHp = 0;
+        return 0;
     },
     "buff109201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff110101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(attack.fightValue.attackType != constsV2.attackType.ALL) {
+            return 0;
+        }
     },
     "buff110201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff201101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addAttack = this.buffData.value;
+        attack.removeBuff(this);
+        return 0;
     },
     "buff201201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -111,13 +128,16 @@ var buff_script = {
 
     },
     "buff204101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addSunderArmor += this.buffData.value;
+        return 0;
     },
     "buff204201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff205101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addSunderArmor += this.buffData.value;
+        attack.removeBuff(this);
+        return 0;
     },
     "buff205201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -129,7 +149,33 @@ var buff_script = {
 
     },
     "buff207101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        attack.fightValue.attackType = constsV2.attackType.ALL;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
 
+        attackData.attack = attack.fightValue.attack;
+        attackData.attack = attack.fightValue.attack;
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OPPONENT;
+
+        var player = fightUtil.checkReduceScopeDamage(defenses);
+        if(player != null) {
+            var opts = {
+                type: constsV2.buffTypeV2.REDUCE_SCOPE_DAMAGE,
+                player: player,
+                damage: 0,
+                damageInfo: []
+            };
+            for(var i in defenses) {
+                fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+            fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+        } else {
+            for(var i in defenses) {
+                fightUtil.attack(attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+        }
+
+        return 1;
     },
     "buff207201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
