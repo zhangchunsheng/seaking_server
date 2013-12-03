@@ -74,8 +74,10 @@ exports.wearWeapon = function(req, res) {
             return;
         }
 
-        if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
-            var item = player.packageEntity[pkgType].items[index];
+        //if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
+            //var item = player.packageEntity[pkgType].items[index];
+        if(player.packageEntity.checkItem(index, weaponId) > 0) {
+            var item = player.packageEntity.items[index];
             // var eq = dataApi.equipment.findById(item.itemId);
             var eq = dataApi.equipmentLevelup.findById(item.itemId);
             // if(!eq || player.level < eq.useLevel) {
@@ -204,6 +206,11 @@ exports.unWearWeapon = function(req, res) {
         epid = character.equipmentsEntity.get(type).epid;
         level = character.equipmentsEntity.get(type).level;
 
+        /*result = player.packageEntity.addItem(player, PackageType.WEAPONS, {
+            itemId: epid,
+            itemNum: 1,
+            level: level
+        });*/
         result = player.packageEntity.addItem(player, PackageType.WEAPONS, {
             itemId: epid,
             itemNum: 1,
@@ -275,7 +282,8 @@ exports.equip = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
-        var item = player.packageEntity[pkgType].items[index];
+        //var item = player.packageEntity[pkgType].items[index];
+        var item = player.packageEntity.items[index];
         var data = {};
 
         var character = player;

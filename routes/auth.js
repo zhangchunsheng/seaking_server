@@ -59,10 +59,18 @@ exports.auth = function(req, res) {
             return;
         }
 
+        var connectSid = req.headers["cookie"];
+        var connectSidArray = connectSid.split("; ");
+        for(var i = 0 ; i < connectSidArray.length ; i++) {
+            if(connectSidArray[i].indexOf("connect.sid") >= 0) {
+                connectSid = connectSidArray[i];
+            }
+        }
         if(results[0] == null || results[0] == {}) {
             data = {
                 code: Code.OK,
-                player: null
+                player: null,
+                connectSid: connectSid
             };
             roleService.getNickname(userInfo.serverId, function(err, reply) {
                 data.nicknames = reply;
@@ -72,12 +80,11 @@ exports.auth = function(req, res) {
             data = {
                 code: consts.MESSAGE.RES,
                 player: results[0].strip(),
-                connectSid: req.headers["cookie"]
+                connectSid: connectSid
             };
             userInfo.playerId = results[0].id;
             utils.send(msg, res, data);
         }
-        console.log(res);
         session.setSession(req, res, userInfo);
     });
 }

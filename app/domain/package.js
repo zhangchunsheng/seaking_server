@@ -14,7 +14,7 @@ var Package = function(opts){
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
     this.items = opts.items;
-    this.itemCount = opts.itemCount;
+    this.itemCount = opts.itemCount || 12;
 }
 util.inherits(Package, Persistent);
 module.exports = Package;
@@ -184,7 +184,7 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
     }
     var items = this;
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
-        for (var i = packageStart; i < this.itemCount+packageStart; i++) {
+        for (var i = packageStart; i < this.itemCount + packageStart; i++) {
             if (!this.items[i]) {
                 this.items[i] = {
                     itemId: item.itemId,
@@ -193,7 +193,7 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
                 };
                 changes = [{
                     index: i,
-                    item: this[type].items[i]
+                    item: this.items[i]
                 }];
                 break;
             }
