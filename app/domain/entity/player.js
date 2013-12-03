@@ -854,7 +854,6 @@ Player.prototype.passiveSkillAdditional = function() {
  */
 Player.prototype.equip = function(pkgType, item, pIndex, player) {
     var index = 0;
-
     var epType = utils.getEqType(item.itemId);
 
     var curEquipment = this.equipmentsEntity.get(epType);
@@ -863,8 +862,6 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
         level: item.level
     });
 
-    console.log(this.equipmentsEntity);
-    console.log(epType);
     if (curEquipment.epid != 0) {
         index = player.packageEntity.addItem(this, pkgType, {
             itemId: curEquipment.epid,
@@ -872,7 +869,8 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
             level: curEquipment.level
         }, pIndex).index;
     } else {
-        player.packageEntity.removeItem(pkgType, pIndex);
+        //player.packageEntity.removeItem(pkgType, pIndex);
+        player.packageEntity.removeItem(pIndex, 1);
     }
     //this.updateAttribute();
 
