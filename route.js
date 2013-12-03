@@ -27,6 +27,7 @@ var routes = require('./routes')
     , gm = require('./routes/gm')
     , message = require('./routes/message')
     , authRequired = require('./middlewares/auth_required');
+    
 
 module.exports = function (app) {
     app.get('/', authRequired, routes.index);
@@ -84,12 +85,20 @@ module.exports = function (app) {
     app.get("/mail/read", authRequired, mail.read);
     app.get("/mail/collectItem", authRequired, mail.collectItem);
     app.get("/mail/del", authRequired, mail.del);
+    app.get("/mail/collectMail", authRequired, mail.collectMail);
+    app.get("/mail/_Add", authRequired, mail._Add);
+    app.get("/mail/_Set", authRequired, mail._Set);
 
-    app.get('/package/addItem', authRequired, package.addItem);
-    app.get('/package/dropItem', authRequired, package.dropItem);
+    
+
+    app.get("/package/_Set", authRequired, package._Set);
+    app.get('/package/_AddItem', authRequired, package.addItem);
+    app.get("/package/arrange", authRequired, package.arrange );
+    app.get('/package/moveItem', authRequired, package.resetItem);
+    app.get('/package/throwItem', authRequired, package.discardItem);
+
     app.get('/package/sellItem', authRequired, package.sellItem);
-    app.get('/package/discardItem', authRequired, package.discardItem);
-    app.get('/package/resetItem', authRequired, package.resetItem);
+    
     app.get('/package/userItem', authRequired, package.userItem);
 
     app.get('/player/enterScene', authRequired, player.enterScene);

@@ -1,195 +1,212 @@
-/**
- * Copyright(c)2013,Wozlla,www.wozlla.com
- * Version: 1.0
- * Author: Peter Zhang
- * Date: 2013-06-28
- * Description: package
- */
 var util = require('util');
 var Entity = require('./entity/entity');
 var EntityType = require('../consts/consts').EntityType;
 var Persistent = require('./persistent');
 var PackageType = require('../consts/consts').PackageType;
 var consts = require('../consts/consts');
+var utils = require("../utils/utils");
 
-/**
- * Initialize a new 'Package' with the given 'opts'
- * Package inherits Persistent
- *
- * @param {Object} opts
- * @api public
- */
-var Package = function(opts) {
-    Persistent.call(this, opts);
-    this.playerId = opts.characterId;
+var packageStart = 1;
+var Package = function(opts){
+	Persistent.call(this, opts);
+  	this.playerId = opts.characterId;
     this.serverId = opts.serverId;
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
-    this.weapons = {
-        itemCount: opts.weapons.itemCount,
-        items: opts.weapons.items
-    };
-    this.equipments = {
-        itemCount: opts.equipments.itemCount,
-        items: opts.equipments.items
-    };
-    this.items = {
-        itemCount: opts.items.itemCount,
-        items: opts.items.items
-    };
-};
-
-var dict = [
-    "weapons",
-    "equipments",
-    "items"
-];
-
+    this.items = opts.items;
+    this.itemCount = opts.itemCount;
+}
 util.inherits(Package, Persistent);
-
 module.exports = Package;
-
 Package.prototype.get = function(type, index) {
-    return this[type].items[index];
-};
+	return this.items[index];
+}
 
 Package.prototype.syncData = function() {
 
 }
 
-Package.prototype.getData = function(type) {
-    var data = {};
-
-    data.itemCount = this[type].itemCount;
-
-    data.items = [];
-    for(var key in this[type].items) {
-        var item = {
-            key : Number(key),
-            itemId : this[type].items[key].itemId,
-            itemNum: this[type].items[key].itemNum
-        };
-        data.items.push(item);
+Package.prototype.checkItem = function(index, itemId) {
+    var item = this.items[index];
+    if(!itemId) {
+        return item.itemNum;
     }
+    if(item.itemId == itemId) {
+        return item.itemNum;
+    }
+    return null;
+}
 
-    return data;
-};
+Package.prototype.removeItem = function(index, itemNum) {
+    var item =  this.items[index];
+    item.itemNum = item.itemNum - itemNum;
+    this.save();
+    return item.itemNum;
+}
 
-/**
- * add item
- *
- * @param player
- * @param type
- * @param item {itemId: "W0101", itemNum: 3}
- * @param rIndex
- * @returns {*}
- */
-Package.prototype.addItem = function(player, type, item, rIndex) {
-    var index = [];
+Package.prototype.hasItem = function(_item) {
+	var flag = [];
+	var num = _item.itemNum;
+	for(var i = packageStart, l= this.itemCount+packageStart; i < l; i++ ) {
+		if( this.items[i] && this.itesm[i].itemId == _item.itemId){
+			var item = this.items[i];
+			if(num > item.itemNum){
+				num = num - item.itemNum;
+				flag.push(item);
+			}else{
+				flag.push({
+					itemId: item.itemId,
+					itemNum: num,
+					level: item.level
+				});
+				num = 0;
+			}			
+			if(num == 0) {
+				return flag;
+			}
+		}
+	}
+	return null;
+}
 
-    var _items = {};
-    for(var o in item) {
-        _items[o] = item[o];
+Package.prototype.addItemWithNoType = function(player, item) {
+	var type = "";
+    if(item.itemId.indexOf("W") >= 0) {
+        type = PackageType.WEAPONS;
+    } else if(item.itemId.indexOf("E") >= 0) {
+        type = PackageType.EQUIPMENTS;
+    } else {
+        type = PackageType.ITEMS;
+    }
+    return this.addItem(player, type, item);
+}
+
+
+Package.prototype.arrange = function(callback) {
+    var items = this.items;
+    var Cs = []
+        , Es = []
+        , Ws = []
+        , Ds = []
+        , Ts = [];
+    for(var i = packageStart,l=this.itemCount + packageStart; i < l ;i++) {
+        if(items[i]){
+            var item = items[i];
+            var type = item.itemId.substring(0,1);
+            switch(type) {
+                case "C":
+                    Cs.push(item);
+                break;
+                case "E":
+                    Es.push(item);
+                break;
+                case "W":
+                    Ws.push(item);
+                break;
+                case "D":
+                    Ds.push(item);
+                break;
+                case "T":
+                    Ts.push(item);
+                break;
+            }
+        }
+    }
+    var sortFun = function(a, b) {
+        if(a.itemId > b.itemId) {
+            return 1;
+        } else if(a.itemId < b.itemId ){
+            return -1;
+        } else {
+            if(a.level == b.level) {
+                if( (a.substring(0,1) == "C" || a.substring(0,1) == "D" ) ){
+                var all =  a.itemNum+b.itemNum;
+                if(all>99){
+                    a.itemNum = 99;
+                    b.itemNum = all-99;
+                }else{
+                    a.itemNum = all;
+                    b.itemNum = 0;
+                }
+                return 0;
+                }else{  
+                    return 0;
+                }
+            }else{
+                if(a.level > b.level){
+                    return 1;
+                }else{
+                    return -1;
+                }
+            }
+            
+        }
+    };
+    Cs.sort(sortFun);Es.sort(sortFun);Ws.sort(sortFun); Ds.sort(sortFun);Ts.sort(sortFun);
+    var all = [];
+    all = all.concat(Cs, Es, Ws, Ds, Ts);
+
+    var json = arrayToJson(all);
+    console.log(json);
+    this.items = json;
+    this.save();
+    callback(null, {itemCount:this.itemCount, items: json});
+}
+
+var arrayToJson = function(array) {
+    var json = {};
+    var n = packageStart;
+    for(var i=0,l = array.length;i < l;i++){
+        if(array[i] && array[i].itemNum != 0){
+            json[n] = array[i];
+            n++;
+        }       
+    }
+    return json;
+} 
+
+
+Package.prototype.addItem = function(player , type, item, rIndex) {
+    var changes = [];
+    var _items = utils.clone(item);
+    if(!item){
+        item = type;
+        type = null;
     }
     if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
         //返回{}并没有返回null 容易判断
-        return {
-            index: index
-        };
+        return null;
     }
-
     if(rIndex) {
-        if(this[type].items[rIndex]) {
-            delete this[type].items[rIndex];
+        if(this.items[rIndex]) {
+            delete this.items[rIndex];
         }
     }
-    var items = this[type];
+    var items = this;
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
-        for (var i = 0; i < this[type].itemCount; i++) {
-            if (!this[type].items[i]) {
-                this[type].items[i] = {
+        for (var i = packageStart; i < this.itemCount+packageStart; i++) {
+            if (!this.items[i]) {
+                this.items[i] = {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
                     level: item.level
                 };
-                index = [{
+                changes = [{
                     index: i,
                     item: this[type].items[i]
                 }];
                 break;
             }
         }
-    } else {
-        /* var flag = false;
-        for(var i  in  this[type].items) {
-            if(this[type].items[i].itemId == item.itemId) {
-                _items.itemNum += this[type].items[i].itemNum;
-                if(parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum) > 99 && this[type].items[i].itemNum < 99) {
-                      var spaceCount = 0;
-                      //数格子,如果是数组的话可以用this[type].items.length，可抽出方法来
-                      for(var n in this[type].items) {
-                          spaceCount++;
-                      }
-                      //限定了最多99个 所以只要简单的判断是否有个空格子就可以了
-                      if(spaceCount + 1 > this[type].itemCount) {
-                          return {
-                              index: index
-                          };
-                      }
-                      item.itemNum = parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum) - 99;
-                      this[type].items[i].itemNum = 99;
-                      index.push({
-                          index: i,
-                          itemNum: 99
-                      });
-                } else if(this[type].items[i].itemNum < 99) {
-                     this[type].items[i].itemNum = parseInt(this[type].items[i].itemNum) + parseInt(item.itemNum);
-
-                     index.push({
-                         index: i,
-                         itemNum: this[type].items[i].itemNum
-                     });
-                     flag = true;
-                     break;
-                }
-
-            }
-        }
-        if(!flag) {
-            var spaceCount = 0;
-            for(var n in this[type].items) {
-                spaceCount++;
-            }
-            if(spaceCount + 1 > this[type].itemCount) {
-                return {
-                    index: index
-                };
-            }
-            for(var i = 1 ; i <= this[type].itemCount ; i++) {
-                if(!this[type].items[i]) {
-                    // 一定小于99个所以直接添加就好了，传入数值最大99
-                    this[type].items[i] = {
-                        itemId: item.itemId,
-                        itemNum: item.itemNum,
-                        level: item.level
-                    };
-                    index.push({
-                        index: i,
-                        itemNum: item.itemNum
-                    });
-                    break;
-                }
-            }
-        }*/
-        console.log("m:"+JSON.stringify(item) );
-        for(var i in items.items) {
+    }else{
+         for(var i in items.items) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {
-                _items.itemNum += this[type].items[i].itemNum;
+                _items.itemNum += this.items[i].itemNum;
                 var mitem = items.items[i];
                 if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 ) {
                     item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - 99;
                     mitem.itemNum = 99;
-                    index.push({
+                    changes.push({
                         index: i,
                         item: mitem
                     });
@@ -197,7 +214,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) <= 99) {
                     mitem.itemNum = parseInt(mitem.itemNum) + parseInt(item.itemNum);
                     item.itemNum = 0 ;
-                    index.push({
+                    changes.push({
                         index: i,
                         item: mitem
                     });
@@ -209,15 +226,14 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         var run = function() {
             if(item.itemNum > 0) {
                 var spaceCount = -1;
-                for(var i = 0,l = items.itemCount ; i < l ; i++) {
+                for(var i = packageStart,l = items.itemCount+packageStart ; i < l ; i++) {
                     if(!items.items[i]) {
                         spaceCount = i;
                         break;
                     }
                 }
                 if(spaceCount == -1) {
-                    index = [];
-                    return {index: index};
+                    return null;
                 }
                 if(item.itemNum > 99) {
                     // 一定小于99个所以直接添加就好了，传入数值最大99
@@ -226,7 +242,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                         itemNum: 99,
                         level: item.level
                     };
-                    index.push({
+                    changes.push({
                         index: spaceCount,
                         item: items.items[spaceCount]
                     });
@@ -240,175 +256,27 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     itemNum: item.itemNum,
                     level: item.level
                 };
-                index.push({
+                changes.push({
                     index: spaceCount,
                     item: items.items[spaceCount]
                 });
-                return {index: index};
+                return {index: changes};
             }
         }
-        run();
-    }
-    var task;
-    var r = {index: index};
-    if(index.length > 0) {
-        this.save();
-        task = player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
-        r.task = task;
-    }
-    return r;
-};
-
-/**
- * 判断包裹内是否有符合条件的items(id和数量)
- * @param items
- */
-Package.prototype.hasItems = function(items) {
-    var flag = false;
-    for(var i = 0 ; i < dict.length ; i++) {
-        for (var j = 1; j <= this[dict[i]].itemCount; j++) {
-            if (!!this[dict[i]].items[j]) {
-                if(this[dict[i]].items[j].itemId == items.itemId) {
-                    if(this[dict[i]].items[j].itemNum >= items.itemNum) {
-                        flag = true;
-                        break;
-                    }
-                }
+            if(!run()){
+            	return null;
             }
         }
-    }
-    return flag;
-}
-
-/**
- * addEquipment
- */
-Package.prototype.addEquipment = function(type, item) {
-    var index = -1;
-    for (var i = 1; i <= this[type].itemCount; i++) {
-        if (!this[type].items[i]) {
-            this[type].items[i] = {
-                itemId: item.itemId,
-                itemNum: item.itemNum,
-                level: item.level
-            };
-            index = i;
-            break;
-        }
-    }
-    return index;
-}
-
-/**
- * 添加除武器装备外物品
- */
-Package.prototype.addItems = function(type, item) {
-    var index = -1;
-    var flag = false;
-    for (var i = 1; i <= this[type].itemCount; i++) {
-        if(this[type].items[i].itemId == item.itemId) {
-            flag = true;
-            this[type].items[i].itemNum += item.itemNum;
-            if(this[type].items[i].itemNum > 99) {
-                this[type].items[i].itemNum = 99;
-            }
-            index = i;
-            break;
-        }
-    }
-    if(!flag) {
-        index = this.addEquipment(type, item);
-    }
-    return index;
-}
-
-Package.prototype.addItemWithNoType = function(mainPlayer, item) {
-    var type = "";
-    if(item.itemId.indexOf("W") >= 0) {
-        type = PackageType.WEAPONS;
-    } else if(item.itemId.indexOf("E") >= 0) {
-        type = PackageType.EQUIPMENTS;
-    } else {
-        type = PackageType.ITEMS;
-    }
-    return this.addItem(mainPlayer, type, item);
-}
-
-/**
- * remove item
- *
- * @param {number} index
- * @return {Boolean}
- * @api public
- */
-Package.prototype.removeItem = function(type, index,itemNum) {
-    var status = -1;
-    var item = this[type].items[index];
-    if(item) {
-        if(!itemNum || itemNum == item.itemNum){
-            delete this[type].items[index];
+        var task;
+        var r = {index: changes};
+        if(changes.length > 0) {
             this.save();
-            status = 0;
-        }else if(item.itemNum >itemNum){
-            item.itemNum -= itemNum;
-            this.save();
-            status = item.itemNum;
+            task = player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+            r.task = task;
         }
-    }
-
-    return status;
-};
-
-//Check out item by id and type
-Package.prototype.checkItem = function(type, index, itemId) {
-    var result = 0, i, item;
-    item = this[type].items[index];
-    console.log(item);
-    console.log(itemId);
-    if(!item){
-        return result;
-    } else if (item.itemId == itemId) {
-        result = item.itemNum;
-    }
-
-    return result;
-};
-
-Package.prototype.hasItem = function(type, itemId) {
-    var result = 0, i, item;
-
-    for(i in this[type].items) {
-        item = this[type].items[i];
-        if (item.itemId == itemId) {
-            result = i;
-            break;
-        }
-    }
-
-    return result;
+        return r;
 }
 
-//Get all the items
-Package.prototype.all = function() {
-    return {
-        weapons: this.weapons,
-        equipments: this.equipments,
-        items: this.items
-    };
-};
-
-Package.prototype.updateId = function() {
-    for(var i in this.weapons.items) {
-        this.weapons.items[i].itemId = this.weapons.items[i].itemId + this.weapons.items[i].level;
-    }
-    for(var i in this.equipments.items) {
-        this.equipments.items[i].itemId = this.equipments.items[i].itemId + this.equipments.items[i].level;
-    }
-}
-
-/**
- * strip
- */
 Package.prototype.strip = function() {
     var characterId = this.playerId.substr(this.playerId.indexOf("C") + 1);
     //this.updateId();
@@ -417,24 +285,14 @@ Package.prototype.strip = function() {
         serverId: this.serverId,
         registerType: this.registerType,
         loginName: this.loginName,
-        weapons: this.weapons,
-        equipments: this.equipments,
-        items: this.items
+        itemCount:this.itemCount,
+        items:this.items
     }
 };
 
-/**
- * getInfo
- */
 Package.prototype.getInfo = function() {
-    //this.updateId();
-    return {
-        weapons: this.weapons,
-        equipments: this.equipments,
-        items: this.items
-    }
-};
-Package.prototype.unlock = function(type , itemCount) {
-    this[type].itemCount = itemCount;
-    this.save();
+	return {
+		itemCount:this.itemCount,
+		items: this.items
+	};
 }

@@ -1,18 +1,8 @@
 {
     "player": {
         "package": {
-            "weapons": {
-                "itemCount": 12,
-                "items": {}
-            },
-            "equipments": {
-                "itemCount": 12,
-                "items": {}
-            },
-            "items": {
-                "itemCount": 12,
-                "items": {"1":{"itemId":"D10010101","itemNum":1}}
-            }
+            "itemCount":12,
+            "items":{}
         }
     }
 }

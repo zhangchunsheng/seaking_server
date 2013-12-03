@@ -49,9 +49,8 @@ packageDao.getPackageByCharacterId = function(characterId, cb) {
 packageDao.update = function(val, cb) {
     var key = dbUtil.getPlayerKey(val.serverId, val.registerType, val.loginName, val.characterId);
     var value = {
-        weapons: val.weapons,
-        equipments: val.equipments,
-        items: val.items
+        itemCount: val.itemCount,
+        items:val.items
     };
     redis.command(function(client) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
