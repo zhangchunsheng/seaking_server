@@ -514,7 +514,7 @@ var skill_script = {
      * @param defenseData
      */
     "skill203101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        var buffs = defense.buffs;
+        var buffs = attack.buffs;
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == this.skillId) {
                 if(buffs[i].buffData.playerId == defense.id) {
@@ -536,7 +536,7 @@ var skill_script = {
         };
         attackData.skillId = this.skillId;
         var buff = getSkillBuff(constsV2.buffTypeV2.ADDHP, this, buffData);
-        defense.addBuff(buff);
+        attack.addBuff(buff);
         return 100;
     },
     "skill203201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
