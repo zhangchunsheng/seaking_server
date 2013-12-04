@@ -31,7 +31,7 @@ formula.calDamage = function(attack, defense) {
     }
     if(attack.fight.reduceAttack > 0) {
         attack.fight.reduceAttackValue = attack.attack * attack.fight.reduceAttack;
-        attackValue -= attack.fight.addAttackValue;
+        attackValue -= attack.fight.reduceAttackValue;
     }
     var damage = (100 + sunderArmor) * attackValue / (100 + defenseValue);
     if(defense.fight.reduceDamage > 0) {// 减免伤害
