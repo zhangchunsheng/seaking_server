@@ -403,7 +403,8 @@ module.exports = {
         POISON: "11",
         ADDHP: "12",
         REDUCEATTACK_ADDSUNDERARMOR: "13",
-        EXTRATARGET: "14"
+        EXTRATARGET: "14",
+        CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15"
     },
 
     buffCategory: {

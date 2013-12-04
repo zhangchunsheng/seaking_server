@@ -391,7 +391,7 @@ fightUtil.calculateCBD = function(random, attack, defense, isCriticalHit, damage
  * @param attackData
  * @param defenseData
  */
-fightUtil.attack = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+fightUtil.attack = function(opts, attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(attack.died)
         return;
     if(defense.died)
@@ -462,6 +462,11 @@ fightUtil.attack = function(attackSide, attack_formation, defense_formation, att
             reduceBlood: defenseData.reduceBlood,
             buffs: defense.getBuffs()
         };
+        opts.damage += defenseData.reduceBlood;
+        opts.damageInfo.push({
+            playerId: defense.id,
+            damage: defenseData.reduceBlood
+        });
         fightData.target.push(target);
     } else {
         // 触发被攻击技能
@@ -546,6 +551,11 @@ fightUtil.attack = function(attackSide, attack_formation, defense_formation, att
             reduceBlood: defenseData.reduceBlood,
             buffs: defenseData.buffs
         };
+        opts.damage += defenseData.reduceBlood;
+        opts.damageInfo.push({
+            playerId: defense.id,
+            damage: defenseData.reduceBlood
+        });
         fightUtil.changeTargetState(target, defenseData);
         fightData.target.push(target);
     }

@@ -162,7 +162,15 @@ var buffUpdate_script = {
 
     },
     "buff209101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            if(attack.fightValue.attackType == constsV2.attackType.ALL) {
+                attack.fightValue.attackType = constsV2.attackType.SINGLE;
+                attack.fightValue.attack = Math.ceil(attack.fightValue.attack / this.buffData.value);
+                attack.fight.addHp = 0;
+                attack.fight.addHpValue = 0;
+                attack.removeBuff(this);
+            }
+        }
     },
     "buff209201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

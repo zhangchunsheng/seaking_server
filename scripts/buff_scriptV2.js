@@ -156,7 +156,6 @@ var buff_script = {
         attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
 
         attackData.attack = attack.fightValue.attack;
-        attackData.attack = attack.fightValue.attack;
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
@@ -211,7 +210,46 @@ var buff_script = {
 
     },
     "buff209101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        attack.fightValue.attackType = constsV2.attackType.ALL;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
+        if(this.buffData.addHp) {
+            attack.fight.addHp = this.buffData.addHp;
+        }
 
+        attackData.attack = attack.fightValue.attack;
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OPPONENT;
+
+        var player = fightUtil.checkReduceScopeDamage(defenses);
+        var opts = {};
+        if(player != null) {
+            opts = {
+                type: constsV2.buffTypeV2.REDUCE_SCOPE_DAMAGE,
+                player: player,
+                damage: 0,
+                damageInfo: []
+            };
+            for(var i in defenses) {
+                fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+            fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+        } else {
+            opts = {
+                damage: 0,
+                damageInfo: []
+            };
+            for(var i in defenses) {
+                fightUtil.attack(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+        }
+
+        if(attack.fight.addHp) {
+            attack.fight.addHpValue = opts.damage * attack.fight.addHp;
+        }
+
+        fightData.addHp = attack.fight.addHpValue;
+
+        return 1;
     },
     "buff209201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
