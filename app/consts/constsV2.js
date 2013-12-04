@@ -401,7 +401,8 @@ module.exports = {
         ADDATTACK: "9",
         ADDSUNDERARMOR: "10",
         POISON: "11",
-        ADDHP: "12"
+        ADDHP: "12",
+        REDUCEATTACK_ADDSUNDERARMOR: "13"
     },
 
     buffCategory: {

@@ -37,6 +37,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ROUND;
     } else if(buffType == constsV2.buffTypeV2.ADDHP) {
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.REDUCEATTACK_ADDSUNDERARMOR) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -615,8 +617,37 @@ var skill_script = {
     "skill205201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 每次攻击攻击力降低10%，幸运提高10%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill206101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = attack.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            reduceAttack: 0.1,
+            addSunderArmor: 0.2
+        };
+        attackData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.REDUCEATTACK_ADDSUNDERARMOR, this, buffData);
+        attack.addBuff(buff);
+        return 100;
     },
     "skill206201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

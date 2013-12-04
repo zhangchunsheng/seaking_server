@@ -68,6 +68,9 @@ fightUtil.updateAttackData = function(attack, attackData) {
     if(attack.fight.addHpValue > 0) {
         attackData.addHp = attack.fight.addHpValue;
     }
+    if(attack.fight.reduceAttackValue > 0) {
+        attackData.reduceAttack = attack.fight.reduceAttackValue;
+    }
 }
 
 fightUtil.updateDefenseData = function(defense, defenseData) {
@@ -243,6 +246,9 @@ fightUtil.changeFightData = function(fightData, attackData) {
     }
     if(attackData.addHp) {
         fightData.addHp = attackData.addHp;
+    }
+    if(attackData.reduceAttack) {
+        fightData.reduceAttack = attackData.reduceAttack;
     }
 }
 
