@@ -39,6 +39,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.REDUCEATTACK_ADDSUNDERARMOR) {
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.EXTRATARGET) {
+        buffCategory = constsV2.buffCategory.ATTACKING;
     }
     return buffCategory;
 }
@@ -685,8 +687,35 @@ var skill_script = {
     "skill207201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 每次主动攻击都会附带一个额外的随机目标，额外目标受到40%的伤害
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill208101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = attack.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 0.4
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.EXTRATARGET, this, buffData);
+        attack.addBuff(buff);
+        return 100;
     },
     "skill208201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

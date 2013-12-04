@@ -109,7 +109,7 @@ fightUtil.updateDefenseData = function(defense, defenseData) {
 fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var player;
     var team;
-    if(fightType == consts.characterFightType.ATTACK || fightType == consts.characterFightType.AFTER_ATTACK) {
+    if(fightType == consts.characterFightType.ATTACK || fightType == consts.characterFightType.AFTER_ATTACK || fightType == consts.characterFightType.ATTACKING) {
         player = attack;
         team = attackFightTeam;
     } else if(fightType == consts.characterFightType.DEFENSE || fightType == consts.characterFightType.AFTER_DEFENSE) {
@@ -155,6 +155,10 @@ fightUtil.getBuffCategory = function(fightType) {
         return consts.buffCategory.AFTER_ATTACK;
     } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
         return consts.buffCategory.AFTER_DEFENSE;
+    } else if(fightType == consts.characterFightType.ROUND) {
+        return consts.buffCategory.ROUND;
+    } else if(fightType == consts.characterFightType.ATTACKING) {
+        return consts.buffCategory.ATTACKING;
     }
 }
 
@@ -308,6 +312,31 @@ fightUtil.getRandomTeammate = function(skill, player, teams) {
         }
     }
     return teammate;
+}
+
+fightUtil.getRandomOpponet = function(defense, defenses) {
+    fightUtil.getRandomPlayer(defense, defenses);
+}
+
+fightUtil.getRandomPlayer = function(player, players) {
+    var playermate = null;
+    if(players.length == 1) {
+        playermate = null;
+    } else {
+        var array = [];
+        for(var i in players) {
+            if(players[i].id == player.id)
+                continue;
+            if(players[i].died)
+                continue;
+            array.push(i);
+        }
+        if(array.length > 0) {
+            var random = utils.random(0, array.length - 1);
+            playermate = players[array[random]];
+        }
+    }
+    return playermate;
 }
 
 fightUtil.checkBuff = function(skill, player) {
@@ -890,4 +919,11 @@ fightUtil.updateRoundBuff = function(fightType, attack_formation, defense_format
             }
         }
     }
+}
+
+fightUtil.calculateHp = function(player, damage) {
+    player.fightValue.hp = Math.ceil(player.fightValue.hp - damage);
+    if(player.fightValue.hp < 0)
+        player.fightValue.hp = 0;
+    player.hp = player.fightValue.hp;
 }

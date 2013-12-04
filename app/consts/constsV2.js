@@ -402,7 +402,8 @@ module.exports = {
         ADDSUNDERARMOR: "10",
         POISON: "11",
         ADDHP: "12",
-        REDUCEATTACK_ADDSUNDERARMOR: "13"
+        REDUCEATTACK_ADDSUNDERARMOR: "13",
+        EXTRATARGET: "14"
     },
 
     buffCategory: {
@@ -410,7 +411,8 @@ module.exports = {
         DEFENSE: 2,
         AFTER_ATTACK: 3,
         AFTER_DEFENSE: 4,
-        ROUND: 5
+        ROUND: 5,
+        ATTACKING: 6
     },
 
     characterFightStatus: {
@@ -422,7 +424,9 @@ module.exports = {
         ATTACK: 1,
         DEFENSE: 2,
         AFTER_ATTACK: 3,
-        AFTER_DEFENSE: 4
+        AFTER_DEFENSE: 4,
+        ROUND: 5,
+        ATTACKING: 6
     },
 
     attackType: {
@@ -519,7 +523,9 @@ module.exports = {
 
     damageType: {
         common: 1,
-        criticalHit: 2
+        criticalHit: 2,
+        extraDamage: 3,
+        parallelDamage: 4
     },
 
     effectTargetType: {

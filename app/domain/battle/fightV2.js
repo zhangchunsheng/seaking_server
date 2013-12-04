@@ -500,6 +500,7 @@ Fight.prototype.attack = function(battleData, players, index) {
                 };
                 fightUtil.changeTargetState(target, defenseData);
                 data.target.push(target);
+                attack.useSkillBuffs(consts.characterFightType.ATTACKING, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
             }
         }
     }

@@ -540,6 +540,9 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
     } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
         var buffCategory = fightUtil.getBuffCategory(fightType);
         fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    } else if(fightType == consts.characterFightType.ATTACKING) {
+        var buffCategory = fightUtil.getBuffCategory(fightType);
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
     return dataType;
 }

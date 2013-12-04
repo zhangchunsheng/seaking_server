@@ -184,7 +184,28 @@ var buff_script = {
 
     },
     "buff208101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var theTarget = fightData.target;
+        if(theTarget.length == 0)
+            return;
+        theTarget = theTarget[0];
 
+        var player = fightUtil.getRandomPlayer(defense, defenses);
+        if(player == null)
+            return;
+        var damage = defenseData.reduceBlood * this.buffData.value;
+        if(damage < 0)
+            damage = 0;
+        fightUtil.calculateHp(player, damage);
+        var target = {
+            id: player.id,
+            damageType: constsV2.damageType.extraDamage,
+            fId: player.formationId,
+            action: constsV2.defenseAction.beHitted,
+            hp: player.hp,
+            reduceBlood: damage,
+            buffs: player.buffs
+        };
+        fightData.target.push(target);
     },
     "buff208201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
