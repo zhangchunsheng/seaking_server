@@ -736,6 +736,9 @@ Player.prototype.calculateBuff = function() {
 
     this.fight.reduceDamage = 0;//减免伤害
     this.fight.reduceDamageValue = 0;
+    this.fight.addDefense = 0;
+    this.fight.addHp = 0;
+    this.fight.addHpValue = 0;
 }
 
 /**

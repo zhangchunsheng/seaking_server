@@ -466,6 +466,7 @@ Fight.prototype.attack = function(battleData, players, index) {
                     defenseData.isCounter = true;
                     defenseData.counterValue = damage;//反击伤害
                     attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
+                    attack.hp = attack.fightValue.hp;
                     fightUtil.checkDied(attack, attackData);
                 }
 
