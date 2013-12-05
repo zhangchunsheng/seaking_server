@@ -937,3 +937,15 @@ fightUtil.calculateHp = function(player, damage) {
         player.fightValue.hp = 0;
     player.hp = player.fightValue.hp;
 }
+
+fightUtil.getOtherPlayers = function(player, players) {
+    var results = [];
+    for(var i in players) {
+        if(players[i].died)
+            continue;
+        if(player.id == players[i].id)
+            continue;
+        results.push(players[i]);
+    }
+    return results;
+}

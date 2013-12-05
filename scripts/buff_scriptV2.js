@@ -255,7 +255,31 @@ var buff_script = {
 
     },
     "buff210101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var theTarget = fightData.target;
+        if(theTarget.length == 0)
+            return;
+        theTarget = theTarget[0];
 
+        var damage = defenseData.reduceBlood * this.buffData.value;
+        if(damage < 0)
+            damage = 0;
+        var players = fightUtil.getOtherPlayers(defense, defenses);
+        var player;
+        var target = {};
+        for(var i = 0 ; i < players.length ; i++) {
+            player = players[i];
+            fightUtil.calculateHp(player, damage);
+            target = {
+                id: player.id,
+                damageType: constsV2.damageType.parallelDamage,
+                fId: player.formationId,
+                action: constsV2.defenseAction.beHitted,
+                hp: player.hp,
+                reduceBlood: damage,
+                buffs: player.buffs
+            };
+            fightData.target.push(target);
+        }
     },
     "buff210201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
