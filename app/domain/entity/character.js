@@ -120,7 +120,9 @@ var Character = function(opts) {
         addHp: 0,
         addHpValue: 0,
         reduceAttack: 0,
-        reduceAttackValue: 0
+        reduceAttackValue: 0,
+        recoveryHp: 0,
+        recoveryHpValue: 0
     };
 
     this.hasUpgrade = false;

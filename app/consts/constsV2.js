@@ -405,7 +405,8 @@ module.exports = {
         REDUCEATTACK_ADDSUNDERARMOR: "13",
         EXTRATARGET: "14",
         CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15",
-        PARALLELDAMAGE: "16"
+        PARALLELDAMAGE: "16",
+        RECOVERYHP: "17"
     },
 
     buffCategory: {

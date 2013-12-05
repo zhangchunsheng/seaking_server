@@ -160,8 +160,9 @@ var buff_script = {
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
         var player = fightUtil.checkReduceScopeDamage(defenses);
+        var opts;
         if(player != null) {
-            var opts = {
+            opts = {
                 type: constsV2.buffTypeV2.REDUCE_SCOPE_DAMAGE,
                 player: player,
                 damage: 0,
@@ -172,8 +173,12 @@ var buff_script = {
             }
             fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
         } else {
+            opts = {
+                damage: 0,
+                damageInfo: []
+            };
             for(var i in defenses) {
-                fightUtil.attack(attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                fightUtil.attack(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             }
         }
 
@@ -292,7 +297,21 @@ var buff_script = {
 
     },
     "buff301101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var key = "attackTeam";
+        var player;
+        player = fightUtil.getRandomPlayer(null, attacks);
+        if(player == null)
+            return;
+        var addHp = defenseData.reduceBlood * this.buffData.value;
+        fightUtil.addHp(player, addHp);
+        fightData[key].push({
+            id: player.id,
+            fId: player.formationId,
+            addHp: addHp,
+            buffs: player.buffs
+        });
+        attack.removeBuff(this);
+        return 0;
     },
     "buff301201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

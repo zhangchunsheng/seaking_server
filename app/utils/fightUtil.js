@@ -321,12 +321,17 @@ fightUtil.getRandomOpponet = function(defense, defenses) {
 fightUtil.getRandomPlayer = function(player, players) {
     var playermate = null;
     if(players.length == 1) {
-        playermate = null;
+        if(player != null) {
+            playermate = null;
+        } else {
+            playermate = player;
+        }
     } else {
         var array = [];
         for(var i in players) {
-            if(players[i].id == player.id)
+            if(player != null && players[i].id == player.id) {
                 continue;
+            }
             if(players[i].died)
                 continue;
             array.push(i);
@@ -935,6 +940,18 @@ fightUtil.calculateHp = function(player, damage) {
     player.fightValue.hp = Math.ceil(player.fightValue.hp - damage);
     if(player.fightValue.hp < 0)
         player.fightValue.hp = 0;
+    player.hp = player.fightValue.hp;
+}
+
+/**
+ *
+ * @param player
+ * @param addHp
+ */
+fightUtil.addHp = function(player, addHp) {
+    player.fightValue.hp = Math.ceil(player.fightValue.hp + addHp);
+    if(player.fightValue.hp > player.fightValue.maxHp)
+        player.fightValue.hp = player.fightValue.maxHp;
     player.hp = player.fightValue.hp;
 }
 

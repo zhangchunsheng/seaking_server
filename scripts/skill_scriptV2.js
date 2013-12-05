@@ -45,6 +45,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.PARALLELDAMAGE) {
         buffCategory = constsV2.buffCategory.ATTACKING;
+    } else if(buffType == constsV2.buffTypeV2.RECOVERYHP) {
+        buffCategory = constsV2.buffCategory.ATTACKING;
     }
     return buffCategory;
 }
@@ -825,8 +827,35 @@ var skill_script = {
     "skill211201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 每次攻击，用伤害的20%给己方随机目标回复生命
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill301101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = attack.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 0.2
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.RECOVERYHP, this, buffData);
+        attack.addBuff(buff);
+        return 100;
     },
     "skill301201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
