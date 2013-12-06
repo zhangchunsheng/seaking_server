@@ -748,6 +748,8 @@ Player.prototype.calculateBuff = function() {
     this.fight.promoteHpValue = 0;
     this.fight.addDodge = 0;
     this.fight.addDodgeValue = 0;
+    this.fight.ice = false;
+    this.fight.silence = false;
 }
 
 /**

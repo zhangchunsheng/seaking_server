@@ -71,6 +71,12 @@ fightUtil.updateAttackData = function(attack, attackData) {
     if(attack.fight.reduceAttackValue > 0) {
         attackData.reduceAttack = attack.fight.reduceAttackValue;
     }
+    if(attack.fight.ice) {
+        attackData.ice = attack.fight.ice;
+    }
+    if(attack.fight.silence) {
+        attackData.silence = attack.fight.silence;
+    }
 }
 
 fightUtil.updateDefenseData = function(defense, defenseData) {
@@ -259,6 +265,12 @@ fightUtil.changeFightData = function(fightData, attackData) {
     }
     if(attackData.reduceAttack) {
         fightData.reduceAttack = attackData.reduceAttack;
+    }
+    if(attackData.ice) {
+        fightData.ice = attackData.ice;
+    }
+    if(attackData.silence) {
+        fightData.silence = attackData.silence;
     }
 }
 

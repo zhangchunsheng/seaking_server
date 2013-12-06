@@ -1066,19 +1066,24 @@ var skill_script = {
      * @param defenseData
      */
     "skill307101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        var buffs = attack.buffs;
-        for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
-                return 100;
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= 30) {
+            var buffs = defense.buffs;
+            for(var i = 0, l = buffs.length ; i < l ; i++) {
+                if(buffs[i].buffId == this.skillId) {
+                    return 100;
+                }
             }
+            var buffData = {
+                value: true
+            };
+            attackData.skillId = this.skillId;
+            var buff = getSkillBuff(constsV2.buffTypeV2.ICE, this, buffData);
+            defense.addBuff(buff);
+            return 100;
+        } else {
+            return 0;
         }
-        var buffData = {
-            value: 0.01
-        };
-        attackData.skillId = this.skillId;
-        var buff = getSkillBuff(constsV2.buffTypeV2.ICE, this, buffData);
-        attack.addBuff(buff);
-        return 100;
     },
     "skill307201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -1100,19 +1105,24 @@ var skill_script = {
      * @param defenseData
      */
     "skill308101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        var buffs = attack.buffs;
-        for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
-                return 100;
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= 30) {
+            var buffs = defense.buffs;
+            for(var i = 0, l = buffs.length ; i < l ; i++) {
+                if(buffs[i].buffId == this.skillId) {
+                    return 100;
+                }
             }
+            var buffData = {
+                value: true
+            };
+            attackData.skillId = this.skillId;
+            var buff = getSkillBuff(constsV2.buffTypeV2.SILENCE, this, buffData);
+            defense.addBuff(buff);
+            return 100;
+        } else {
+            return 0;
         }
-        var buffData = {
-            value: 0.01
-        };
-        attackData.skillId = this.skillId;
-        var buff = getSkillBuff(constsV2.buffTypeV2.SILENCE, this, buffData);
-        attack.addBuff(buff);
-        return 100;
     },
     "skill308201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
