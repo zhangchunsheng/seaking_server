@@ -938,8 +938,38 @@ var skill_script = {
     "skill303201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 每次主动攻击，都给己方全体增加1%的攻击力，最多叠加十次
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill304101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = attack.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                fightUtil.updatePlayermateBuff(attacks, buffs[i].buffId, 0.01);
+                return 100;
+            }
+        }
+        var buffData = {
+            player: attack,
+            value: 0.01
+        };
+        attackData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDATTACK, this, buffData);
+        fightUtil.addPlayermateBuff(buff);
+        return 100;
     },
     "skill304201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

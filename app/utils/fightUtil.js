@@ -968,3 +968,28 @@ fightUtil.getOtherPlayers = function(player, players) {
     }
     return results;
 }
+
+fightUtil.addPlayermateBuff = function(attacks, buff) {
+    for(var i in attacks) {
+        if(attacks[i].died) {
+            continue;
+        }
+        attacks[i].addBuff(buff);
+    }
+}
+
+fightUtil.updatePlayermateBuff = function(attacks, buffId, value) {
+    var buffs;
+    for(var i in attacks) {
+        if(attacks[i].died) {
+            continue;
+        }
+        buffs = attacks.buffs;
+        for(var j = 0 ; j < buffs.length ; j++) {
+            if(buffs[j].buffId == buffId) {
+                buffs[j].buffData.value += value;
+                break;
+            }
+        }
+    }
+}
