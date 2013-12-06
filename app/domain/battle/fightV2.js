@@ -347,6 +347,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             var block = defense.fightValue.block * 100;
             //闪避
             var dodge = defense.fightValue.dodge * 100;
+            fightUtil.updateDodge(defense, dodge);
             var num1 = criticalHit + block;
             var num2 = num1 + dodge;
             random = utils.random(1, 10000);

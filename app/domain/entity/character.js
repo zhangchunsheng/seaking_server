@@ -124,7 +124,11 @@ var Character = function(opts) {
         recoveryHp: 0,
         recoveryHpValue: 0,
         promoteHp: 0,
-        promoteHpValue: 0
+        promoteHpValue: 0,
+        addDodge: 0,
+        addDodgeValue: 0,
+        ice: false,
+        silence: false
     };
 
     this.hasUpgrade = false;

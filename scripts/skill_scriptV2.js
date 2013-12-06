@@ -49,6 +49,12 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACKING;
     } else if(buffType == constsV2.buffTypeV2.PROMOTEHP) {
         buffCategory = constsV2.buffCategory.ATTACKING;
+    } else if(buffType == constsV2.buffTypeV2.ADDDODGE) {
+        buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.ICE) {
+        buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.SILENCE) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -1007,20 +1013,106 @@ var skill_script = {
     "skill305201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 被攻击时，随机给己方目标添加一个闪避提升10%的状态，持续一回合
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill306101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffData = {
+            value: 0.1
+        };
+        defenseData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDDODGE, this, buffData);
+        var player;
+        player = fightUtil.getRandomPlayer(null, defenses);
+        var buffs = player.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        player.addBuff(buff);
+        return 100;
     },
     "skill306201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 主动攻击时，有30%的几率放弃伤害转而冰冻对方，持续一次
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill307101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = attack.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 0.01
+        };
+        attackData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.ICE, this, buffData);
+        attack.addBuff(buff);
+        return 100;
     },
     "skill307201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 主动攻击时，有30%的几率沉默目标，持续一次
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill308101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = attack.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 0.01
+        };
+        attackData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.SILENCE, this, buffData);
+        attack.addBuff(buff);
+        return 100;
     },
     "skill308201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

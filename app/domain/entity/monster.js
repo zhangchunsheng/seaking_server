@@ -213,6 +213,8 @@ Enemy.prototype.calculateBuff = function() {
     this.fight.addHpValue = 0;
     this.fight.promoteHp = 0;
     this.fight.promoteHpValue = 0;
+    this.fight.addDodge = 0;
+    this.fight.addDodgeValue = 0;
 }
 
 //Convert player' state to json and return

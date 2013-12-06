@@ -407,7 +407,10 @@ module.exports = {
         CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15",
         PARALLELDAMAGE: "16",
         RECOVERYHP: "17",
-        PROMOTEHP: "18"
+        PROMOTEHP: "18",
+        ADDDODGE: "19",
+        ICE: "20",
+        SILENCE: "21"
     },
 
     buffCategory: {

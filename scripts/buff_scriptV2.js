@@ -349,7 +349,9 @@ var buff_script = {
 
     },
     "buff306101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        defense.fight.addDodge += this.buffData.value;
+        defense.removeBuff(this);
+        return 0;
     },
     "buff306201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

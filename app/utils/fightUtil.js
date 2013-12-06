@@ -86,6 +86,9 @@ fightUtil.updateDefenseData = function(defense, defenseData) {
     if(defense.fight.poison) {
         defenseData.poison = defense.fight.poison;
     }
+    if(defense.fight.addDodgeValue > 0) {
+        defenseData.addDodge = defense.fight.addDodgeValue;
+    }
 }
 
 /**
@@ -236,6 +239,9 @@ fightUtil.changeTargetState = function(target, defenseData) {
     if(defenseData.poison) {
         target.poison = defenseData.poison;
     }
+    if(defenseData.addDodge) {
+        target.addDodge = defenseData.addDodge;
+    }
 }
 
 fightUtil.changeFightData = function(fightData, attackData) {
@@ -324,7 +330,7 @@ fightUtil.getRandomPlayer = function(player, players) {
         if(player != null) {
             playermate = null;
         } else {
-            playermate = player;
+            playermate = players[0];
         }
     } else {
         var array = [];
@@ -992,4 +998,12 @@ fightUtil.updatePlayermateBuff = function(attacks, buffId, value) {
             }
         }
     }
+}
+
+fightUtil.updateDodge = function(defense, dodge) {
+    if(defense.fight.addDodge > 0) {
+        defense.fight.addDodgeValue = defense.fight.addDodge * 100;
+        dodge = dodge + defense.fight.addDodgeValue;
+    }
+    return dodge;
 }
