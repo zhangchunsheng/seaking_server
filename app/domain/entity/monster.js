@@ -204,8 +204,15 @@ Enemy.prototype.calculateBuff = function() {
     this.fight.reduceDamage = 0;//减免伤害
     this.fight.reduceDamageValue = 0;
     this.fight.addDefense = 0;
+    this.fight.addDefenseValue = 0;
+    this.fight.addAttack = 0;
+    this.fight.addAttackValue = 0;
+    this.fight.addSunderArmor = 0;
+    this.fight.addSunderArmorValue = 0;
     this.fight.addHp = 0;
     this.fight.addHpValue = 0;
+    this.fight.promoteHp = 0;
+    this.fight.promoteHpValue = 0;
 }
 
 //Convert player' state to json and return

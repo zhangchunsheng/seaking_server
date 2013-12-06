@@ -47,6 +47,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACKING;
     } else if(buffType == constsV2.buffTypeV2.RECOVERYHP) {
         buffCategory = constsV2.buffCategory.ATTACKING;
+    } else if(buffType == constsV2.buffTypeV2.PROMOTEHP) {
+        buffCategory = constsV2.buffCategory.ATTACKING;
     }
     return buffCategory;
 }
@@ -572,6 +574,7 @@ var skill_script = {
         var buffs = attack.buffs;
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == this.skillId) {
+                buffs[i].buffData.value += 0.04;
                 return 100;
             }
         }
@@ -813,6 +816,7 @@ var skill_script = {
         var buffs = attack.buffs;
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == this.skillId) {
+                buffs[i].buffData.value += 0.05;
                 return 100;
             }
         }
@@ -899,8 +903,37 @@ var skill_script = {
     "skill302201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 每次主动攻击，觉醒技触发时的生命值提升1%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "skill303101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var buffs = attack.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 0.01
+        };
+        attackData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.PROMOTEHP, this, buffData);
+        attack.addBuff(buff);
+        return 100;
     },
     "skill303201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

@@ -56,7 +56,7 @@ var buff_script = {
 
     },
     "buff105101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        defense.fight.addDefense = this.buffData.value;
+        defense.fight.addDefense += this.buffData.value;
         return 0;
     },
     "buff105201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -108,7 +108,7 @@ var buff_script = {
 
     },
     "buff201101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        attack.fight.addAttack = this.buffData.value;
+        attack.fight.addAttack += this.buffData.value;
         attack.removeBuff(this);
         return 0;
     },
@@ -122,7 +122,7 @@ var buff_script = {
 
     },
     "buff203101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        attack.fight.addHp = this.buffData.value;
+        attack.fight.addHp += this.buffData.value;
         return 0;
     },
     "buff203201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -317,7 +317,7 @@ var buff_script = {
 
     },
     "buff302101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        attack.fight.addHp = this.buffData.value;
+        attack.fight.addHp += this.buffData.value;
         attack.removeBuff(this);
         return 0;
     },
@@ -325,7 +325,12 @@ var buff_script = {
 
     },
     "buff303101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.promoteHp += this.buffData.value;
+        attack.fight.promoteHpValue += attack.maxHp * attack.fight.promoteHp;
+        fightUtil.addHp(attack, attack.fight.promoteHpValue);
+        fightData.promoteHp = attack.fight.promoteHpValue;
+        attack.removeBuff(this);
+        return 0;
     },
     "buff303201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

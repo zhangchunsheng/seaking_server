@@ -8,6 +8,9 @@
 var utils = require('../app/utils/utils');
 var constsV2 = require('../app/consts/constsV2');
 
+/**
+ * note removed buff
+ */
 var buffUpdate_script = {
     "buff101101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

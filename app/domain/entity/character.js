@@ -117,12 +117,14 @@ var Character = function(opts) {
         addAttackValue: 0,
         addSunderArmor: 0,
         addSunderArmorValue: 0,
-        addHp: 0,
+        addHp: 0,//攻击吸血
         addHpValue: 0,
         reduceAttack: 0,
         reduceAttackValue: 0,
         recoveryHp: 0,
-        recoveryHpValue: 0
+        recoveryHpValue: 0,
+        promoteHp: 0,
+        promoteHpValue: 0
     };
 
     this.hasUpgrade = false;
