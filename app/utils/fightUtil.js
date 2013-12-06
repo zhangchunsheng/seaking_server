@@ -984,10 +984,10 @@ fightUtil.updatePlayermateBuff = function(attacks, buffId, value) {
         if(attacks[i].died) {
             continue;
         }
-        buffs = attacks.buffs;
+        buffs = attacks[i].buffs;
         for(var j = 0 ; j < buffs.length ; j++) {
             if(buffs[j].buffId == buffId) {
-                buffs[j].buffData.value += value;
+                buffs[j].buffData.value = value;
                 break;
             }
         }

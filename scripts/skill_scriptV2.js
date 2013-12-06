@@ -956,19 +956,28 @@ var skill_script = {
      */
     "skill304101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var value;
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == this.skillId) {
-                fightUtil.updatePlayermateBuff(attacks, buffs[i].buffId, 0.01);
+                if(buffs[i].count >= 10) {
+                    value = 0.01;
+                    fightUtil.updatePlayermateBuff(attacks, buffs[i].buffId, value);
+                } else {
+                    value = buffs[i].buffData.value + 0.01;
+                    fightUtil.updatePlayermateBuff(attacks, buffs[i].buffId, value);
+                }
+
                 return 100;
             }
         }
         var buffData = {
             player: attack,
-            value: 0.01
+            value: 0.01,
+            count: 1
         };
         attackData.skillId = this.skillId;
         var buff = getSkillBuff(constsV2.buffTypeV2.ADDATTACK, this, buffData);
-        fightUtil.addPlayermateBuff(buff);
+        fightUtil.addPlayermateBuff(attacks, buff);
         return 100;
     },
     "skill304201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
