@@ -58,3 +58,12 @@ exports.change = function(req, res) {
         });
     });
 }
+
+/**
+ * 默认阵型
+ * @param req
+ * @param res
+ */
+exports.setDefault = function(req, res) {
+
+}

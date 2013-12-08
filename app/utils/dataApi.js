@@ -10,6 +10,7 @@ var character = require('../../config/data/character');
 var experience = require('../../config/data/experience');
 var skillList = require('../../config/data/skillList');
 var skillsV2 = require('../../config/data/skillsV2');
+var tacticals = require('../../config/data/tacticals');
 var item = require('../../config/data/item');
 var npc = require('../../config/data/npc');
 var task = require('../../config/data/task');
@@ -137,6 +138,7 @@ module.exports = {
     item: new Data(item),
     skillList: new Data(skillList),
     skillsV2: new Data(skillsV2),
+    tacticals: new Data(tacticals),
     task: new Data(task),
     heros: new Data(heros),
     herosV2: new Data(herosV2),
