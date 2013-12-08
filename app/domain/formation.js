@@ -23,6 +23,9 @@ var Formation = function(opts) {
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
 
+    this.tacticalId = opts.tacticalId;
+    this.formation = opts.formation;
+    this.lastFormation = opts.lastFormation;
 };
 util.inherits(Formation, Persistent);
 
