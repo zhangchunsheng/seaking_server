@@ -235,7 +235,7 @@ var skill_script = {
 
     },
     /**
-     * 战斗中的每次格挡，都能为自己提供额外20%的护甲，该效果无限叠加
+     * 战斗中的每次被攻击，都能为自己提供额外2%的护甲，该效果无限叠加
      * @param attackSide
      * @param condition
      * @param attack_formation
@@ -259,7 +259,7 @@ var skill_script = {
             }
         }
         var buffData = {
-            value: 0.2
+            value: 0.02
         };
         var buff = getSkillBuff(constsV2.buffTypeV2.EXTRAARMOR, this, buffData);
         defense.addBuff(buff);
@@ -302,7 +302,7 @@ var skill_script = {
 
     },
     /**
-     * 暴击之后，下次被攻击必然闪避
+     * 一次性受到的攻击超过生命值的20%，则可以格挡下次攻击
      * @param attackSide
      * @param condition
      * @param attack_formation
@@ -318,17 +318,20 @@ var skill_script = {
      * @param defenseData
      */
     "skill107101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        var buffs = attack.buffs;
+        var buffs = defense.buffs;
+        if(defenseData.reduceBlood < defense.maxHp * 0.2) {
+            return;
+        }
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == this.skillId) {
                 return 100;
             }
         }
         var buffData = {
-            isDodge: 1
+            isBlock: 1
         };
-        var buff = getSkillBuff(constsV2.buffTypeV2.DODGE, this, buffData);
-        attack.addBuff(buff);
+        var buff = getSkillBuff(constsV2.buffTypeV2.BLOCK, this, buffData);
+        defense.addBuff(buff);
         return 100;
     },
     "skill107201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
