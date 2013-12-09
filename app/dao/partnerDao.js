@@ -16,6 +16,7 @@ var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
 var buffUtil = require('../utils/buffUtil');
+var partnerUtil = require('../utils/partnerUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
 var Skills = require('../domain/skill/skills');
@@ -157,83 +158,21 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
             }
             if(!flag) {
                 partnerDao.getPartnerId(client, function(err, partnerId) {
-                    var hero = dataApi.heros.findById(cId);
                     var partner = dataApi.partners.findById(cId);
                     var level = partner.level;
                     var skills = new Skills();
                     skills.initSkills(cId);
-                    var character = {
-                        id: "S" + serverId + "C" + characterId + "P" + partnerId,
-                        kindId: cId,
+                    var character = partnerUtil.initPartner({
                         cId: cId,
+                        serverId: serverId,
+                        characterId: characterId,
+                        partnerId: partnerId,
                         userId: userId,
                         registerType: registerType,
                         loginName: loginName,
-                        nickname: hero.name,
-                        buffs: buffUtil.getInitBuff(),
-                        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         level: level,
-                        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
-                        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
-                        photo: '',
-                        hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
-                        maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
-                        anger: 0,
-                        attack: formula.calculateAttack(parseInt(hero.attack), parseInt(hero.attLevelUpRate), level),
-                        defense: formula.calculateDefense(parseInt(hero.defense), parseInt(hero.defLevelUpRate), level),
-                        focus: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), level),
-                        speedLevel: formula.calculateSpeedLevel(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
-                        speed: formula.calculateSpeed(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
-                        dodge: formula.calculateDodge(parseInt(hero.dodge), parseInt(hero.dodgeMaxIncrement), level),
-                        criticalHit: formula.calculateCriticalHit(parseInt(hero.criticalHit), parseInt(hero.critHitMaxIncrement), level),
-                        critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), level),
-                        block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), level),
-                        counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), level),
-                        equipments: {
-                            weapon: {
-                                epid: 0,
-                                level: 0
-                            },//武器
-
-                            necklace: {
-                                epid: 0,
-                                level: 0
-                            },//项链
-                            helmet: {
-                                epid: 0,
-                                level: 0
-                            },//头盔
-                            armor: {
-                                epid: 0,
-                                level: 0
-                            },//护甲
-                            belt: {
-                                epid: 0,
-                                level: 0
-                            },//腰带
-                            legguard: {
-                                epid: 0,
-                                level: 0
-                            },//护腿
-                            amulet: {
-                                epid: 0,
-                                level: 0
-                            },//护符
-                            shoes: {
-                                epid: 0,
-                                level: 0
-                            },//鞋
-                            ring: {
-                                epid: 0,
-                                level: 0
-                            }//戒指
-                        },
-                        skills: {
-                            currentSkill: skills.currentSkill,
-                            activeSkills: skills.activeSkills,
-                            passiveSkills: skills.passiveSkills
-                        }
-                    };
+                        skills: skills
+                    });
 
                     partners.push({
                         playerId: character.id,

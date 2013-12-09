@@ -533,6 +533,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                     ],
                     function(err, results) {
                         var partners = results[0];
+                        character.partners = partners;
                         var player = playerUtil.getPlayer(character);
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
                             redis.release(client);

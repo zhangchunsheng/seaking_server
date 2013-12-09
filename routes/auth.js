@@ -68,7 +68,7 @@ exports.auth = function(req, res) {
                 }
             }
         } else {
-            connectSid = req.sessionID;
+            connectSid = "connect.sid=" + req.sessionID;
         }
         if(results[0] == null || results[0] == {}) {
             data = {
