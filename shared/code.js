@@ -83,6 +83,10 @@ module.exports = {
         EXISTS_NICKNAME: 1801
     },
 
+    PARTNER: {
+        EXISTS_CID: 1810
+    },
+
     SKILL: {
         HAVED_SKILL: 1820,
         NO_HAVE_SKILL: 1821,

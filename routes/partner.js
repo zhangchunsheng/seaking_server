@@ -11,6 +11,7 @@ var partnerService = require('../app/services/partnerService');
 var packageService = require('../app/services/packageService');
 var equipmentsService = require('../app/services/equipmentsService');
 var taskService = require('../app/services/taskService');
+var redisService = require('../app/services/redisService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -42,6 +43,8 @@ exports.getPartner = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var partners = player.partners;
         var flag = false;
+        if(player.cId == cId)
+            flag = true;
         for(var i = 0 ; i < partners.length ; i++) {
             if(partners[i].cId == cId) {
                 flag = true;
@@ -50,7 +53,7 @@ exports.getPartner = function(req, res) {
         }
         if(flag) {
             data = {
-                code: 102
+                code: Code.PARTNER.EXISTS_CID
             };
             utils.send(msg, res, data);
             return;
@@ -92,36 +95,22 @@ exports.gotoStage = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
+    if(utils.empty(cId)) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var partners = player.partners;
-        var flag = false;
-        for(var i = 0 ; i < partners.length ; i++) {
-            if(partners[i].cId == cId) {
-                flag = true;
-                break;
-            }
-        }
-        if(flag) {
-            data = {
-                code: 102
-            };
-            utils.send(msg, res, data);
-            return;
-        }
-        partnerService.createPartner(serverId, uid, registerType, loginName, characterId, cId, function(err, partner) {
-            if(err) {
-                data = {
-                    code: consts.MESSAGE.ERR
-                };
-                utils.send(msg, res, data);
-                return;
-            }
+        var array = [];
+        var showCIds = player.showCIds;
+        showCIds.stage = cId;
 
-            player.partners.push(partner);
-
+        partnerService.gotoStage(array, player, showCIds, function(err, reply) {
             data = {
-                code: consts.MESSAGE.RES,
-                partner: partner
+                code: Code.OK,
+                cId: 1
             };
             utils.send(msg, res, data);
         });
@@ -146,37 +135,6 @@ exports.leaveTeam = function(req, res) {
 
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var partners = player.partners;
-        var flag = false;
-        for(var i = 0 ; i < partners.length ; i++) {
-            if(partners[i].cId == cId) {
-                flag = true;
-                break;
-            }
-        }
-        if(flag) {
-            data = {
-                code: 102
-            };
-            utils.send(msg, res, data);
-            return;
-        }
-        partnerService.createPartner(serverId, uid, registerType, loginName, characterId, cId, function(err, partner) {
-            if(err) {
-                data = {
-                    code: consts.MESSAGE.ERR
-                };
-                utils.send(msg, res, data);
-                return;
-            }
 
-            player.partners.push(partner);
-
-            data = {
-                code: consts.MESSAGE.RES,
-                partner: partner
-            };
-            utils.send(msg, res, data);
-        });
     });
 }

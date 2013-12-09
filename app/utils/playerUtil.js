@@ -200,6 +200,7 @@ playerUtil.getCharacter = function(opts) {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
         cId: opts.cId,
+        showCIds: JSON.parse(opts.showCIds || '{"stage":"' + opts.cId + '"}'),
         userId: opts.replies.userId,
         serverId: opts.serverId,
         registerType: opts.registerType,
