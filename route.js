@@ -114,7 +114,7 @@ module.exports = function (app) {
 
     app.get('/partner/getPartner', authRequired, partner.getPartner);
     app.get('/partner/gotoStage', authRequired, partner.gotoStage);
-    app.get('/partner/gotoStage', authRequired, partner.leaveTeam);
+    app.get('/partner/leaveTeam', authRequired, partner.leaveTeam);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 
@@ -139,5 +139,4 @@ module.exports = function (app) {
     app.get('/message/getBattleReport', authRequired, message.getBattleReport);
     app.get('/message/removeBattleReport', authRequired, message.removeBattleReport);
     app.get('/message/publishMessage', message.publishMessage);
-
 }
