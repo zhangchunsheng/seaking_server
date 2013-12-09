@@ -47,6 +47,7 @@ var Player = function(opts) {
     this.package = opts.package;
     this.formation = opts.formation;
     this.partners = opts.partners;
+    this.allPartners = opts.allPartners;
     this.gift = opts.gift;
 
     var heros = dataApi.heros.data;

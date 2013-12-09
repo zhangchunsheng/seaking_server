@@ -135,6 +135,29 @@ exports.leaveTeam = function(req, res) {
 
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var array = [];
 
+        var partners = player.partners;
+        var flag = false;
+        for(var i = 0 ; i < partners.length ; i++) {
+            if(partners[i].cId == cId) {
+                flag = true;
+                break;
+            }
+        }
+        if(!flag) {
+            data = {
+                code: Code.PARTNER.NOT_EXISTS_CID
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        partnerService.leaveTeam(array, player, cId, function(err, reply) {
+            data = {
+                code: Code.OK
+            };
+            utils.send(msg, res, data);
+        });
     });
 }

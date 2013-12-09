@@ -149,6 +149,7 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
 
         }).hget(key, "partners", function(err, reply) {
             var partners = JSON.parse(reply).partners;
+            var allPartners = JSON.parse(reply).allPartners || [];
             var flag = false;
             for(var i = 0 ; i < partners.length ; i++) {
                 if(partners[i].cId == cId) {
@@ -157,43 +158,72 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                 }
             }
             if(!flag) {
-                partnerDao.getPartnerId(client, function(err, partnerId) {
-                    var partner = dataApi.partners.findById(cId);
-                    var level = partner.level;
-                    var skills = new Skills();
-                    skills.initSkills(cId);
-                    var character = partnerUtil.initPartner({
-                        cId: cId,
-                        serverId: serverId,
-                        characterId: characterId,
-                        partnerId: partnerId,
-                        userId: userId,
-                        registerType: registerType,
-                        loginName: loginName,
-                        level: level,
-                        skills: skills
-                    });
-
-                    partners.push({
-                        playerId: character.id,
-                        cId: character.cId
-                    });
+                var partnerInfo = null;
+                for(var i = 0 ; i < allPartners.length ; i++) {
+                    if(allPartners[i].cId == cId) {
+                        partnerInfo = allPartners[i];
+                        break;
+                    }
+                }
+                if(partnerInfo != null) {
+                    partners.push(partnerInfo);
                     var obj = {
-                        partners: partners
+                        partners: partners,
+                        allPartners: allPartners
                     };
-                    client.hset(key, "partners", JSON.stringify(obj));
-
-                    key = dbUtil.getPartnerKey(serverId, registerType, loginName, characterId, partnerId);
-
-                    var array = dbUtil.getMultiCommand(key, character);
-                    client.multi(array).exec(function(err, replies) {
-                        character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
-                        var Partner = require('../domain/entity/partner');
-                        var partner = new Partner(character);
-                        redis.release(client);
-                        utils.invokeCallback(cb, null, partner);
+                    client.hset(key, "partners", JSON.stringify(obj), function(err, reply) {
+                        var partnerId = partnerDao.getRealPartnerId(partnerInfo.playerId);
+                        _getPartner(client, serverId, registerType, loginName, characterId, partnerId, function(err, partner) {
+                            redis.release(client);
+                            utils.invokeCallback(cb, null, partner);
+                        });
                     });
-                });
+                } else {
+                    partnerDao.getPartnerId(client, function(err, partnerId) {
+                        var partner = dataApi.partners.findById(cId);
+                        var level = partner.level;
+                        var skills = new Skills();
+                        skills.initSkills(cId);
+                        var character = partnerUtil.initPartner({
+                            cId: cId,
+                            serverId: serverId,
+                            characterId: characterId,
+                            partnerId: partnerId,
+                            userId: userId,
+                            registerType: registerType,
+                            loginName: loginName,
+                            level: level,
+                            skills: skills
+                        });
+
+                        partners.push({
+                            playerId: character.id,
+                            cId: character.cId
+                        });
+                        allPartners.push({
+                            playerId: character.id,
+                            cId: character.cId
+                        });
+                        var obj = {
+                            partners: partners,
+                            allPartners: allPartners
+                        };
+                        //client.hset(key, "partners", JSON.stringify(obj));
+                        var array = [];
+                        array.push(["hset", key, "partners", JSON.stringify(obj)]);
+
+                        key = dbUtil.getPartnerKey(serverId, registerType, loginName, characterId, partnerId);
+
+                        dbUtil.getMultiCommand(array, key, character);
+                        client.multi(array).exec(function(err, replies) {
+                            character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
+                            var Partner = require('../domain/entity/partner');
+                            var partner = new Partner(character);
+                            redis.release(client);
+                            utils.invokeCallback(cb, null, partner);
+                        });
+                    });
+                }
             } else {
                 redis.release(client);
                 utils.invokeCallback(cb, {

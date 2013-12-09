@@ -353,7 +353,8 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                     }
                     ucenter.addPlayer(data);
 
-                    var array = dbUtil.getMultiCommand(key, character);
+                    var array = [];
+                    dbUtil.getMultiCommand(array, key, character);
                     dbUtil.saveCharacters(array, serverId, registerType, loginName, characterId)
                     dbUtil.saveNickname(array, serverId, nickname);
                     dbUtil.savePlayerIdToCharacter(array, character.id, key);

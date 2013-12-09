@@ -84,7 +84,8 @@ module.exports = {
     },
 
     PARTNER: {
-        EXISTS_CID: 1810
+        EXISTS_CID: 1810,
+        NOT_EXISTS_CID: 1811
     },
 
     SKILL: {

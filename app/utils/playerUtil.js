@@ -240,6 +240,7 @@ playerUtil.getCharacter = function(opts) {
         },
         formation: JSON.parse(opts.replies.formation).formation,
         partners: JSON.parse(opts.replies.partners).partners,
+        allPartners: JSON.parse(opts.replies.partners).allPartners || [],
         gift: JSON.parse(opts.replies.gift).gift,
         curTasks: {
             currentMainTask: JSON.parse(opts.replies.currentMainTask),
@@ -291,6 +292,7 @@ playerUtil.getPlayer = function(character) {
         skills: character.skills,
         formation: character.formation,
         partners: character.partners,
+        allPartners: character.allPartners,
         gift: character.gift,
         currentIndu: character.currentIndu
     });
@@ -336,6 +338,7 @@ playerUtil.getPlayerV2 = function(character) {
         skills: character.skills,
         formation: character.formation,
         partners: character.partners,
+        allPartners: character.allPartners,
         gift: character.gift,
         currentIndu: character.currentIndu
     });
