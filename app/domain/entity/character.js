@@ -89,6 +89,9 @@ var Character = function(opts) {
     this.buffs = opts.buffs || buffUtil.getInitBuff();
     this.skillBuffs = [];//技能buff
 
+    this.ghost = opts.ghost;
+    this.aptitude = opts.aptitude;
+
     this.fightType = 0;
     this.attackType = opts.attackType || consts.attackType.SINGLE;
     //上一次使用技能

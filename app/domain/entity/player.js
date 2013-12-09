@@ -1361,7 +1361,9 @@ Player.prototype.strip = function() {
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -1529,7 +1531,9 @@ Player.prototype.toJSON = function() {
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -1568,6 +1572,8 @@ Player.prototype.getBaseInfo = function() {
         skills: this.skills,
         buffs: this.buffs,
         formation: this.formation,
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };

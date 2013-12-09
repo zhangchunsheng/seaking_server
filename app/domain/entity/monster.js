@@ -250,7 +250,9 @@ Enemy.prototype.strip = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -305,7 +307,9 @@ Enemy.prototype.toJSON = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -339,6 +343,8 @@ Enemy.prototype.getBaseInfo = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };

@@ -21,6 +21,8 @@ var routes = require('./routes')
     , package = require('./routes/package')
     , player = require('./routes/player')
     , partner = require('./routes/partner')
+    , aptitude = require('./routes/character/aptitude')
+    , ghost = require('./routes/character/ghost')
     , resource = require('./routes/resource')
     , shop = require('./routes/shop')
     , skill = require('./routes/skill')
@@ -115,6 +117,9 @@ module.exports = function (app) {
     app.get('/partner/getPartner', authRequired, partner.getPartner);
     app.get('/partner/gotoStage', authRequired, partner.gotoStage);
     app.get('/partner/leaveTeam', authRequired, partner.leaveTeam);
+
+    app.get('/aptitude/upgrade', authRequired, aptitude.upgrade);
+    app.get('/ghost/upgrade', authRequired, ghost.upgrade);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 

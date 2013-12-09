@@ -59,7 +59,9 @@ Partner.prototype.strip = function() {
         counter: this.counter,//反击
         equipments: this.equipmentsEntity.getInfo(),
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -89,6 +91,8 @@ Partner.prototype.toJSON = function() {
         counter: this.counter,//反击
         equipments: this.equipmentsEntity.getInfo(),
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };

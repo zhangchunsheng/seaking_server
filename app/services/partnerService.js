@@ -50,7 +50,7 @@ partnerService.gotoStage = function(array, player, showCIds, cb) {
     var field = "showCIds";
     var value = JSON.stringify(showCIds);
     array.push(["hset", key, field, value]);
-    redisService.setData(array, cb)
+    redisService.setData(array, cb);
 }
 
 partnerService.leaveTeam = function(array, player, cId, cb) {
@@ -71,5 +71,5 @@ partnerService.leaveTeam = function(array, player, cId, cb) {
     };
     var value = JSON.stringify(obj);
     array.push(["hset", key, field, value]);
-    redisService.setData(array, cb)
+    redisService.setData(array, cb);
 }

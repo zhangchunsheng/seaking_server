@@ -98,6 +98,8 @@ playerUtil.initCharacter = function(opts) {
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
         gift: [],
+        ghost: {"level":0},
+        aptitude: {"1":{"level":0},"2":{"level":0},"3":{"level":0},"4":{"level":0},"5":{"level":0}},
         curTasks: opts.curTasks,
         currentIndu: {"induId":0}
     };
@@ -189,6 +191,8 @@ playerUtil.initCharacterV2 = function(opts) {
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
         gift: [],
+        ghost: {"level":0},
+        aptitude: {"1":{"level":0},"2":{"level":0},"3":{"level":0},"4":{"level":0},"5":{"level":0}},
         curTasks: opts.curTasks,
         currentIndu: {"induId":0}
     };
@@ -248,6 +252,8 @@ playerUtil.getCharacter = function(opts) {
             currentDayTask: JSON.parse(opts.replies.currentDayTask),
             currentExerciseTask: JSON.parse(opts.replies.currentExerciseTask)
         },
+        ghost: JSON.parse(opts.replies.ghost || '{"level":0}'),
+        aptitude: JSON.parse(opts.replies.aptitude || '{"1":{"level":0},"2":{"level":0},"3":{"level":0},"4":{"level":0},"5":{"level":0}}'),
         currentIndu: JSON.parse(opts.replies.currentIndu)
     };
     return character;
@@ -294,6 +300,8 @@ playerUtil.getPlayer = function(character) {
         partners: character.partners,
         allPartners: character.allPartners,
         gift: character.gift,
+        ghost: character.ghost,
+        aptitude: character.aptitude,
         currentIndu: character.currentIndu
     });
     return player;
@@ -340,6 +348,8 @@ playerUtil.getPlayerV2 = function(character) {
         partners: character.partners,
         allPartners: character.allPartners,
         gift: character.gift,
+        ghost: character.ghost,
+        aptitude: character.aptitude,
         currentIndu: character.currentIndu
     });
     return player;
