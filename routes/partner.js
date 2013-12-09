@@ -110,7 +110,7 @@ exports.gotoStage = function(req, res) {
         partnerService.gotoStage(array, player, showCIds, function(err, reply) {
             data = {
                 code: Code.OK,
-                cId: 1
+                cId: cId
             };
             utils.send(msg, res, data);
         });
