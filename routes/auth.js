@@ -60,10 +60,14 @@ exports.auth = function(req, res) {
         }
 
         var connectSid = req.headers["cookie"];
-        var connectSidArray = connectSid.split("; ");
-        for(var i = 0 ; i < connectSidArray.length ; i++) {
-            if(connectSidArray[i].indexOf("connect.sid") >= 0) {
-                connectSid = connectSidArray[i];
+        if(req.sessionID) {
+            connectSid = req.sessionID
+        } else {
+            var connectSidArray = connectSid.split("; ");
+            for(var i = 0 ; i < connectSidArray.length ; i++) {
+                if(connectSidArray[i].indexOf("connect.sid") >= 0) {
+                    connectSid = connectSidArray[i];
+                }
             }
         }
         if(results[0] == null || results[0] == {}) {
