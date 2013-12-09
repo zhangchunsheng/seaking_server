@@ -70,6 +70,8 @@ var Player = function(opts) {
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
 
+    this.showCIds = opts.showCIds || {"stage":opts.cId};
+
     this.pushMessage = opts.pushMessage || [];
 
     this.fightValue = {
@@ -1325,6 +1327,7 @@ Player.prototype.strip = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),
@@ -1492,6 +1495,7 @@ Player.prototype.toJSON = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),
@@ -1534,6 +1538,7 @@ Player.prototype.getBaseInfo = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),

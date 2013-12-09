@@ -234,61 +234,6 @@ exports.leaveIndu = function(req, res) {
 }
 
 /**
- * 获得伙伴信息
- * @param req
- * @param res
- */
-exports.getPartner = function(req, res) {
-    var msg = req.query;
-    var session = req.session;
-
-    var uid = session.uid
-        , serverId = session.serverId
-        , registerType = session.registerType
-        , loginName = session.loginName
-        , cId = msg.cId;
-
-    var playerId = session.playerId;
-    var characterId = utils.getRealCharacterId(playerId);
-
-    var data = {};
-    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var partners = player.partners;
-        var flag = false;
-        for(var i = 0 ; i < partners.length ; i++) {
-            if(partners[i].cId == cId) {
-                flag = true;
-                break;
-            }
-        }
-        if(flag) {
-            data = {
-                code: 102
-            };
-            utils.send(msg, res, data);
-            return;
-        }
-        partnerService.createPartner(serverId, uid, registerType, loginName, characterId, cId, function(err, partner) {
-            if(err) {
-                data = {
-                    code: consts.MESSAGE.ERR
-                };
-                utils.send(msg, res, data);
-                return;
-            }
-
-            player.partners.push(partner);
-
-            data = {
-                code: consts.MESSAGE.RES,
-                partner: partner
-            };
-            utils.send(msg, res, data);
-        });
-    });
-}
-
-/**
  * changeView
  * @param req
  * @param res

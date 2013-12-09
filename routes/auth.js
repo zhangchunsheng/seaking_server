@@ -60,15 +60,15 @@ exports.auth = function(req, res) {
         }
 
         var connectSid = req.headers["cookie"];
-        if(req.sessionID) {
-            connectSid = req.sessionID
-        } else {
+        if(connectSid.indexOf("connect.sid") >= 0) {
             var connectSidArray = connectSid.split("; ");
             for(var i = 0 ; i < connectSidArray.length ; i++) {
                 if(connectSidArray[i].indexOf("connect.sid") >= 0) {
                     connectSid = connectSidArray[i];
                 }
             }
+        } else {
+            connectSid = req.sessionID;
         }
         if(results[0] == null || results[0] == {}) {
             data = {
