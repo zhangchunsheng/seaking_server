@@ -41,6 +41,23 @@ exports.upgrade = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var array = [];
 
+        var ghost = player.ghost;
+        ghost.level = parseInt(ghost.level) + 1;
+        var ghostData = dataApi.ghosts.findById(ghost.level);
+        if(utils.empty(ghostData)) {
+            data = {
+                code: Code.ARGUMENT_EXCEPTION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(ghost.number < ghostData.costGhostNum) {
+            data = {
+                code: Code.CHARACTER.NOMORE_GHOSTNUM
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         ghostService.upgrade(array, player, function(err, reply) {
             data = {
                 code: Code.OK,

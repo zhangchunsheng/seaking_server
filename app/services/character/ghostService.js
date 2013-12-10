@@ -7,6 +7,7 @@
  */
 var utils = require('../../utils/utils');
 var dbUtil = require('../../utils/dbUtil');
+var dataApi = require('../../utils/dataApi');
 var redisService = require('../redisService');
 var ghostDao = require('../../dao/character/ghostDao');
 
@@ -17,7 +18,6 @@ ghostService.upgrade = function(array, player, cb) {
     var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
     var field = "ghost";
     var ghost = player.ghost;
-    ghost.level = parseInt(ghost.level) + 1;
     var value = JSON.stringify(ghost);
     array.push(["hset", key, field, value]);
     redisService.setData(array, function(err, reply) {
