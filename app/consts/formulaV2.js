@@ -7,6 +7,7 @@
  */
 var formula = module.exports;
 var dataApi = require('../utils/dataApi');
+var utils = require('../utils/utils');
 
 /**
  * 伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
@@ -33,7 +34,9 @@ formula.calDamage = function(attack, defense) {
         attack.fight.reduceAttackValue = attack.attack * attack.fight.reduceAttack;
         attackValue -= attack.fight.reduceAttackValue;
     }
-    var damage = (100 + sunderArmor) * attackValue / (100 + defenseValue);
+    //var damage = (100 + sunderArmor) * attackValue / (100 + defenseValue);
+    var sunderArmorValue = utils.random(0, sunderArmor);
+    var damage = (attackValue + sunderArmorValue) * defense.fightValue.maxHp / (defenseValue + defense.fightValue.maxHp);
     if(defense.fight.reduceDamage > 0) {// 减免伤害
         defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
         damage = damage - defense.fight.reduceDamageValue;
