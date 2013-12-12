@@ -80,7 +80,13 @@ module.exports = {
     },
 
     CHARACTER: {
-        EXISTS_NICKNAME: 1801
+        EXISTS_NICKNAME: 1801,
+        NOMORE_GHOSTNUM: 1802
+    },
+
+    PARTNER: {
+        EXISTS_CID: 1810,
+        NOT_EXISTS_CID: 1811
     },
 
     SKILL: {

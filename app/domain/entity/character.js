@@ -89,6 +89,9 @@ var Character = function(opts) {
     this.buffs = opts.buffs || buffUtil.getInitBuff();
     this.skillBuffs = [];//技能buff
 
+    this.ghost = opts.ghost;
+    this.aptitude = opts.aptitude;
+
     this.fightType = 0;
     this.attackType = opts.attackType || consts.attackType.SINGLE;
     //上一次使用技能
@@ -116,7 +119,19 @@ var Character = function(opts) {
         addAttack: 0,
         addAttackValue: 0,
         addSunderArmor: 0,
-        addSunderArmorValue: 0
+        addSunderArmorValue: 0,
+        addHp: 0,//攻击吸血
+        addHpValue: 0,
+        reduceAttack: 0,
+        reduceAttackValue: 0,
+        recoveryHp: 0,
+        recoveryHpValue: 0,
+        promoteHp: 0,
+        promoteHpValue: 0,
+        addDodge: 0,
+        addDodgeValue: 0,
+        ice: false,
+        silence: false
     };
 
     this.hasUpgrade = false;
@@ -534,6 +549,9 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
             }
         }
     } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
+        var buffCategory = fightUtil.getBuffCategory(fightType);
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    } else if(fightType == consts.characterFightType.ATTACKING) {
         var buffCategory = fightUtil.getBuffCategory(fightType);
         fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }

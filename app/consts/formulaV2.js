@@ -7,6 +7,7 @@
  */
 var formula = module.exports;
 var dataApi = require('../utils/dataApi');
+var utils = require('../utils/utils');
 
 /**
  * 伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
@@ -27,9 +28,15 @@ formula.calDamage = function(attack, defense) {
     }
     if(attack.fight.addAttack > 0) {
         attack.fight.addAttackValue = attack.attack * attack.fight.addAttack;
-        attackValue += + attack.fight.addAttackValue;
+        attackValue += attack.fight.addAttackValue;
     }
-    var damage = (100 + sunderArmor) * attackValue / (100 + defenseValue);
+    if(attack.fight.reduceAttack > 0) {
+        attack.fight.reduceAttackValue = attack.attack * attack.fight.reduceAttack;
+        attackValue -= attack.fight.reduceAttackValue;
+    }
+    //var damage = (100 + sunderArmor) * attackValue / (100 + defenseValue);
+    var sunderArmorValue = utils.random(0, sunderArmor);
+    var damage = (attackValue + sunderArmorValue) * defense.fightValue.maxHp / (defenseValue + defense.fightValue.maxHp);
     if(defense.fight.reduceDamage > 0) {// 减免伤害
         defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
         damage = damage - defense.fight.reduceDamageValue;
@@ -41,10 +48,19 @@ formula.calDamage = function(attack, defense) {
     if(damage <= 0) {
         damage = 1;
     }
+
     if(defense.fight.reduceDamageCounteract == -1) {
         defense.fight.reduceDamageCounteract = 0;
         defense.fight.reduceDamageValue = damage;
         damage = 0;
+    }
+    if(attack.fight.addHp > 0) {
+        attack.fight.addHpValue = damage * attack.fight.addHp;
+        attack.fightValue.hp += attack.fight.addHpValue;
+        if(attack.fightValue.hp > attack.fightValue.maxHp) {
+            attack.fightValue.hp = attack.fightValue.maxHp;
+        }
+        attack.hp = attack.fightValue.hp;
     }
     return Math.ceil(damage);
 }

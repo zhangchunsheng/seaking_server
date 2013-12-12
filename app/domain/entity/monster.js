@@ -204,6 +204,19 @@ Enemy.prototype.calculateBuff = function() {
     this.fight.reduceDamage = 0;//减免伤害
     this.fight.reduceDamageValue = 0;
     this.fight.addDefense = 0;
+    this.fight.addDefenseValue = 0;
+    this.fight.addAttack = 0;
+    this.fight.addAttackValue = 0;
+    this.fight.addSunderArmor = 0;
+    this.fight.addSunderArmorValue = 0;
+    this.fight.addHp = 0;
+    this.fight.addHpValue = 0;
+    this.fight.promoteHp = 0;
+    this.fight.promoteHpValue = 0;
+    this.fight.addDodge = 0;
+    this.fight.addDodgeValue = 0;
+    this.fight.ice = false;
+    this.fight.silence = false;
 }
 
 //Convert player' state to json and return
@@ -237,7 +250,9 @@ Enemy.prototype.strip = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -292,7 +307,9 @@ Enemy.prototype.toJSON = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -326,6 +343,8 @@ Enemy.prototype.getBaseInfo = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };

@@ -47,6 +47,7 @@ var Player = function(opts) {
     this.package = opts.package;
     this.formation = opts.formation;
     this.partners = opts.partners;
+    this.allPartners = opts.allPartners;
     this.gift = opts.gift;
 
     var heros = dataApi.heros.data;
@@ -69,6 +70,8 @@ var Player = function(opts) {
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
+
+    this.showCIds = opts.showCIds || {"stage":opts.cId};
 
     this.pushMessage = opts.pushMessage || [];
 
@@ -736,6 +739,20 @@ Player.prototype.calculateBuff = function() {
 
     this.fight.reduceDamage = 0;//减免伤害
     this.fight.reduceDamageValue = 0;
+    this.fight.addDefense = 0;
+    this.fight.addDefenseValue = 0;
+    this.fight.addAttack = 0;
+    this.fight.addAttackValue = 0;
+    this.fight.addSunderArmor = 0;
+    this.fight.addSunderArmorValue = 0;
+    this.fight.addHp = 0;
+    this.fight.addHpValue = 0;
+    this.fight.promoteHp = 0;
+    this.fight.promoteHpValue = 0;
+    this.fight.addDodge = 0;
+    this.fight.addDodgeValue = 0;
+    this.fight.ice = false;
+    this.fight.silence = false;
 }
 
 /**
@@ -854,7 +871,6 @@ Player.prototype.passiveSkillAdditional = function() {
  */
 Player.prototype.equip = function(pkgType, item, pIndex, player) {
     var index = 0;
-
     var epType = utils.getEqType(item.itemId);
 
     var curEquipment = this.equipmentsEntity.get(epType);
@@ -863,8 +879,6 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
         level: item.level
     });
 
-    console.log(this.equipmentsEntity);
-    console.log(epType);
     if (curEquipment.epid != 0) {
         index = player.packageEntity.addItem(this, pkgType, {
             itemId: curEquipment.epid,
@@ -872,7 +886,8 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
             level: curEquipment.level
         }, pIndex).index;
     } else {
-        player.packageEntity.removeItem(pkgType, pIndex);
+        //player.packageEntity.removeItem(pkgType, pIndex);
+        player.packageEntity.removeItem(pIndex, 1);
     }
     //this.updateAttribute();
 
@@ -1318,6 +1333,7 @@ Player.prototype.strip = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),
@@ -1333,6 +1349,7 @@ Player.prototype.strip = function() {
         currentScene: this.currentScene,
         currentIndu: this.currentIndu,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
@@ -1349,7 +1366,9 @@ Player.prototype.strip = function() {
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -1484,6 +1503,7 @@ Player.prototype.toJSON = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),
@@ -1499,6 +1519,7 @@ Player.prototype.toJSON = function() {
         currentScene: this.currentScene,
         currentIndu: this.currentIndu,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
@@ -1515,7 +1536,9 @@ Player.prototype.toJSON = function() {
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -1525,6 +1548,7 @@ Player.prototype.getBaseInfo = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),
@@ -1540,6 +1564,7 @@ Player.prototype.getBaseInfo = function() {
         currentScene: this.currentScene,
         currentIndu: this.currentIndu,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
@@ -1552,6 +1577,8 @@ Player.prototype.getBaseInfo = function() {
         skills: this.skills,
         buffs: this.buffs,
         formation: this.formation,
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };

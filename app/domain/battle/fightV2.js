@@ -347,6 +347,7 @@ Fight.prototype.attack = function(battleData, players, index) {
             var block = defense.fightValue.block * 100;
             //闪避
             var dodge = defense.fightValue.dodge * 100;
+            fightUtil.updateDodge(defense, dodge);
             var num1 = criticalHit + block;
             var num2 = num1 + dodge;
             random = utils.random(1, 10000);
@@ -466,6 +467,7 @@ Fight.prototype.attack = function(battleData, players, index) {
                     defenseData.isCounter = true;
                     defenseData.counterValue = damage;//反击伤害
                     attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
+                    attack.hp = attack.fightValue.hp;
                     fightUtil.checkDied(attack, attackData);
                 }
 
@@ -500,6 +502,7 @@ Fight.prototype.attack = function(battleData, players, index) {
                 };
                 fightUtil.changeTargetState(target, defenseData);
                 data.target.push(target);
+                attack.useSkillBuffs(consts.characterFightType.ATTACKING, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
             }
         }
     }

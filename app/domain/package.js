@@ -14,7 +14,7 @@ var Package = function(opts){
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
     this.items = opts.items;
-    this.itemCount = opts.itemCount;
+    this.itemCount = opts.itemCount || 12;
 }
 util.inherits(Package, Persistent);
 module.exports = Package;
@@ -52,6 +52,9 @@ Package.prototype.syncData = function() {
 
 Package.prototype.checkItem = function(index, itemId) {
     var item = this.items[index];
+    if(item == null) {
+        return null;
+    }
     if(!itemId) {
         return item.itemNum;
     }
@@ -63,9 +66,8 @@ Package.prototype.checkItem = function(index, itemId) {
 
 Package.prototype.removeItem = function(index, itemNum) {
     var item =  this.items[index];
-    console.log(itemNum)
-    item.itemNum = (item.itemNum- 0) - itemNum;
-    if(item.itemNum == 0) {
+    item.itemNum = item.itemNum - itemNum;
+    if(item.itemNum <= 0) {
         delete this.items[index];
     }
     this.save();

@@ -30,8 +30,7 @@ dbUtil.closeDb = function() {
     redis.shutdown();
 }
 
-dbUtil.getMultiCommand = function(key, object) {
-    var array = [];
+dbUtil.getMultiCommand = function(array, key, object) {
     var obj = {};
     for(var o in object) {
         obj = {};

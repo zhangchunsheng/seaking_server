@@ -48,7 +48,9 @@ exports.auth = function(req, res) {
 
     userInfo.serverId = region.serverId;
 
+    utils.addOrigin(res, req);
     userService.getCharactersByLoginName(userInfo.serverId, userInfo.registerType, userInfo.loginName, function(err, results) {
+        console.log(results);
         if(err || !results) {
             data = {
                 code: Code.FAIL
@@ -57,10 +59,22 @@ exports.auth = function(req, res) {
             return;
         }
 
+        var connectSid = req.headers["cookie"];
+        if(connectSid.indexOf("connect.sid") >= 0) {
+            var connectSidArray = connectSid.split("; ");
+            for(var i = 0 ; i < connectSidArray.length ; i++) {
+                if(connectSidArray[i].indexOf("connect.sid") >= 0) {
+                    connectSid = connectSidArray[i];
+                }
+            }
+        } else {
+            connectSid = "connect.sid=" + req.sessionID;
+        }
         if(results[0] == null || results[0] == {}) {
             data = {
                 code: Code.OK,
-                player: null
+                player: null,
+                connectSid: connectSid
             };
             roleService.getNickname(userInfo.serverId, function(err, reply) {
                 data.nicknames = reply;
@@ -70,7 +84,7 @@ exports.auth = function(req, res) {
             data = {
                 code: consts.MESSAGE.RES,
                 player: results[0].strip(),
-                sessionId: req.sessionID
+                connectSid: connectSid
             };
             userInfo.playerId = results[0].id;
             utils.send(msg, res, data);

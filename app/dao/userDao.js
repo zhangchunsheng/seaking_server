@@ -22,6 +22,7 @@ var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
 var buffUtil = require('../utils/buffUtil');
+var playerUtil = require('../utils/playerUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
 var ucenter = require('../lib/ucenter/ucenter');
@@ -309,7 +310,6 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
             if(reply == 0) {
                 userDao.getCharacterId(client, function(err, characterId) {
                     var level = 1;
-                    var hero = dataApi.heros.findById(cId);
                     var date = new Date();
                     var curTasks = {
                         currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
@@ -320,91 +320,20 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                     var skills = new Skills();
                     skills.initSkills(cId);
                     var package = packageUtil.initPackage(cId);
-                    var character = {
-                        id: "S" + serverId + "C" + characterId,
-                        characterId: "S" + serverId + "C" + characterId,
+                    var character = playerUtil.initCharacter({
                         cId: cId,
-                        userId: userId,
                         serverId: serverId,
+                        characterId: characterId,
+                        userId: userId,
                         registerType: registerType,
                         loginName: loginName,
                         nickname: nickname,
                         isRandom: isRandom,
-                        currentScene: "city01",
-                        x: 1000,
-                        y: 100,
-                        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
                         level: level,
-                        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
-                        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
-                        photo: '',
-                        buffs: buffUtil.getInitBuff(),
-                        hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
-                        maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
-                        anger: 0,
-                        attack: formula.calculateAttack(parseInt(hero.attack), parseInt(hero.attLevelUpRate), level),
-                        defense: formula.calculateDefense(parseInt(hero.defense), parseInt(hero.defLevelUpRate), level),
-                        focus: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), level),
-                        speedLevel: formula.calculateSpeedLevel(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
-                        speed: formula.calculateSpeed(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
-                        dodge: formula.calculateDodge(parseInt(hero.dodge), parseInt(hero.dodgeMaxIncrement), level),
-                        criticalHit: formula.calculateCriticalHit(parseInt(hero.criticalHit), parseInt(hero.critHitMaxIncrement), level),
-                        critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), level),
-                        block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), level),
-                        counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), level),
-                        gameCurrency: 100,
-                        money: 1000000,
-                        equipments: {
-                            weapon: {
-                                epid: 0,
-                                level: 0
-                            },//武器
-
-                            necklace: {
-                                epid: 0,
-                                level: 0
-                            },//项链
-                            helmet: {
-                                epid: 0,
-                                level: 0
-                            },//头盔
-                            armor: {
-                                epid: 0,
-                                level: 0
-                            },//护甲
-                            belt: {
-                                epid: 0,
-                                level: 0
-                            },//腰带
-                            legguard: {
-                                epid: 0,
-                                level: 0
-                            },//护腿
-                            amulet: {
-                                epid: 0,
-                                level: 0
-                            },//护符
-                            shoes: {
-                                epid: 0,
-                                level: 0
-                            },//鞋
-                            ring: {
-                                epid: 0,
-                                level: 0
-                            }//戒指
-                        },
                         package: package,
-                        skills: {
-                            currentSkill: skills.currentSkill,
-                            activeSkills: skills.activeSkills,
-                            passiveSkills: skills.passiveSkills
-                        },
-                        formation: [{playerId:"S" + serverId + "C" + characterId},null,null,null,null,null,null],
-                        partners: [],
-                        gift: [],
-                        curTasks: curTasks,
-                        currentIndu: {"induId":0}
-                    };
+                        skills: skills,
+                        curTasks: curTasks
+                    });
 
                     //client.hset(key, "characters", characterId);
                     userDao.initUserInfo(userId, serverId, registerType, loginName, function(err, reply) {
@@ -424,7 +353,8 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                     }
                     ucenter.addPlayer(data);
 
-                    var array = dbUtil.getMultiCommand(key, character);
+                    var array = [];
+                    dbUtil.getMultiCommand(array, key, character);
                     dbUtil.saveCharacters(array, serverId, registerType, loginName, characterId)
                     dbUtil.saveNickname(array, serverId, nickname);
                     dbUtil.savePlayerIdToCharacter(array, character.id, key);
@@ -448,45 +378,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                             }
                         }
 
-                        var player = new Player({
-                            userId: character.userId,
-                            serverId: character.serverId,
-                            registerType: character.registerType,
-                            loginName: character.loginName,
-                            id: character.characterId,
-                            cId: character.cId,
-                            kindId: character.cId,
-                            currentScene: character.currentScene,
-                            x: character.x,
-                            y: character.y,
-                            nickname: character.nickname,
-                            level: character.level,
-                            experience: character.experience,
-                            buffs: character.buffs,
-                            hp: character.hp,
-                            maxHp: character.maxHp,
-                            anger: character.anger,
-                            attack: character.attack,
-                            defense: character.defense,
-                            focus: character.focus,
-                            speedLevel: character.speedLevel,
-                            speed: character.speed,
-                            dodge: character.dodge,
-                            criticalHit: character.criticalHit,//暴击
-                            critDamage: character.critDamage,//暴击
-                            block: character.block,
-                            counter: character.counter,
-                            gameCurrency: character.gameCurrency,
-                            money: character.money,
-                            equipments: character.equipments,
-                            curTasks: character.curTasks,
-                            package: character.package,
-                            skills: character.skills,
-                            formation: character.formation,
-                            partners: character.partners,
-                            gift: character.gift,
-                            currentIndu: character.currentIndu
-                        });
+                        var player = playerUtil.getPlayer(character);
                         createEPTInfo(player, serverId, registerType, loginName, character.characterId);
                         redis.release(client);
                         utils.invokeCallback(cb, null, player);
@@ -606,58 +498,15 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                     }
                     var cId = replies.cId;
                     var level = replies.level;
-                    var hero = dataApi.heros.findById(cId);
-                    var character = {
-                        id: "S" + serverId + "C" + characterId,
-                        characterId: "S" + serverId + "C" + characterId,
-                        cId: cId,
-                        userId: replies.userId,
+                    var character = playerUtil.getCharacter({
                         serverId: serverId,
+                        characterId: characterId,
+                        cId: cId,
                         registerType: registerType,
                         loginName: loginName,
-                        nickname: replies.nickname,
-                        currentScene: replies.currentScene,
-                        x: parseInt(replies.x),
-                        y: parseInt(replies.y),
-                        experience: parseInt(replies.experience),
-                        buffs: JSON.parse(replies.buffs).buffs,
-                        level: parseInt(level),
-                        needExp: parseInt(replies.needExp),
-                        accumulated_xp: parseInt(replies.accumulated_xp),
-                        photo: replies.photo,
-                        hp: parseInt(replies.hp),
-                        maxHp: parseInt(replies.maxHp),
-                        anger: parseInt(replies.anger),
-                        attack: parseInt(replies.attack),
-                        defense: parseInt(replies.defense),
-                        focus: parseFloat(replies.focus),
-                        speedLevel: parseInt(replies.speedLevel),
-                        speed: parseFloat(replies.speed),
-                        dodge: parseFloat(replies.dodge),
-                        criticalHit: parseFloat(replies.criticalHit),
-                        critDamage: parseFloat(replies.critDamage),
-                        block: parseFloat(replies.block),
-                        counter: parseFloat(replies.counter),
-                        gameCurrency: parseInt(replies.gameCurrency),
-                        money: parseInt(replies.money),
-                        equipments: JSON.parse(replies.equipments),
-                        package: JSON.parse(replies.package),
-                        skills: {
-                            currentSkill: JSON.parse(replies.currentSkill),
-                            activeSkills: JSON.parse(replies.activeSkills),
-                            passiveSkills: JSON.parse(replies.passiveSkills)
-                        },
-                        formation: JSON.parse(replies.formation).formation,
-                        partners: JSON.parse(replies.partners).partners,
-                        gift: JSON.parse(replies.gift).gift,
-                        curTasks: {
-                            currentMainTask: JSON.parse(replies.currentMainTask),
-                            currentBranchTask: JSON.parse(replies.currentBranchTask),
-                            currentDayTask: JSON.parse(replies.currentDayTask),
-                            currentExerciseTask: JSON.parse(replies.currentExerciseTask)
-                        },
-                        currentIndu: JSON.parse(replies.currentIndu)
-                    };
+                        level: level,
+                        replies: replies
+                    });
                     var taskInfo = {};
                     for(var o in character.curTasks) {
                         if(o == "currentDayTask") {
@@ -685,45 +534,8 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                     ],
                     function(err, results) {
                         var partners = results[0];
-                        var player = new Player({
-                            userId: character.userId,
-                            serverId: character.serverId,
-                            registerType: character.registerType,
-                            loginName: character.loginName,
-                            id: character.characterId,
-                            cId: character.cId,
-                            kindId: character.cId,
-                            currentScene: character.currentScene,
-                            x: character.x,
-                            y: character.y,
-                            nickname: character.nickname,
-                            level: character.level,
-                            experience: character.experience,
-                            buffs: character.buffs,
-                            hp: character.hp,
-                            maxHp: character.maxHp,
-                            anger: character.anger,
-                            attack: character.attack,
-                            defense: character.defense,
-                            focus: character.focus,
-                            speedLevel: character.speedLevel,
-                            speed: character.speed,
-                            dodge: character.dodge,
-                            criticalHit: character.criticalHit,//暴击
-                            critDamage: character.critDamage,//暴击
-                            block: character.block,
-                            counter: character.counter,
-                            gameCurrency: character.gameCurrency,
-                            money: character.money,
-                            equipments: character.equipments,
-                            curTasks: character.curTasks,
-                            package: character.package,
-                            skills: character.skills,
-                            formation: character.formation,
-                            partners: partners,
-                            gift: character.gift,
-                            currentIndu: character.currentIndu
-                        });
+                        character.partners = partners;
+                        var player = playerUtil.getPlayer(character);
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
                             redis.release(client);
                             utils.invokeCallback(cb, null, player);
@@ -786,6 +598,7 @@ userDao.getPlayerById = function(playerId, cb) {
                         attack: parseInt(replies.attack),
                         defense: parseInt(replies.defense),
                         focus: parseFloat(replies.focus),
+                        sunderArmor: parseFloat(replies.sunderArmor),
                         speedLevel: parseInt(replies.speedLevel),
                         speed: parseFloat(replies.speed),
                         dodge: parseFloat(replies.dodge),

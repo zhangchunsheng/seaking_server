@@ -3,7 +3,7 @@
  * Version: 1.0
  * Author: Peter Zhang
  * Date: 2013-06-27
- * Description: equipment taskReward
+ * Description: equipment
  */
 /**
  * Module dependencies
