@@ -15,6 +15,7 @@ var utils = require('../app/utils/utils');
 var session = require('../app/http/session');
 var region = require('../config/region');
 var consts = require('../app/consts/consts');
+var signature = require('cookie-signature');
 
 var DEFAULT_SECRET = 'wozlla_session_secret';
 var DEFAULT_EXPIRE = 6 * 60 * 60 * 1000;	// default session expire time: 6 hours
@@ -60,7 +61,7 @@ exports.auth = function(req, res) {
         }
 
         var connectSid = req.headers["cookie"];
-        if(connectSid.indexOf("connect.sid") >= 0) {
+        if(connectSid && connectSid.indexOf("connect.sid") >= 0) {
             var connectSidArray = connectSid.split("; ");
             for(var i = 0 ; i < connectSidArray.length ; i++) {
                 if(connectSidArray[i].indexOf("connect.sid") >= 0) {
@@ -68,7 +69,11 @@ exports.auth = function(req, res) {
                 }
             }
         } else {
-            connectSid = "connect.sid=" + req.sessionID;
+            var val = 's:' + signature.sign(req.sessionID, "html5");
+            var cookie = req.session.cookie;
+            var key = "connect.sid";
+            val = cookie.serialize(key, val);
+            connectSid = val;
         }
         if(results[0] == null || results[0] == {}) {
             data = {
