@@ -7,6 +7,7 @@
  */
 var message = require('../i18n/zh_CN.json');
 var consts = require('../consts/consts');
+var dataApi = require('./dataApi');
 var Token = require('../../shared/token')
     , secret = require('../../config/session').secret;
 
@@ -273,7 +274,7 @@ utils.getUserInfo = function(msg, req, res) {
  * @param data
  */
 utils.send = function(msg, res, data) {
-    res.setHeader("Access-Control-Allow-Origin","*");
+    res.setHeader("Access-Control-Allow-Origin", "*");
     if(typeof msg.jsoncallback == "undefined") {
         res.send(data);
     } else {
@@ -330,4 +331,11 @@ utils.addOrigin = function(res, req) {
         res.header('Access-Control-Allow-Origin', req.headers.origin);
         res.header('Access-Control-Allow-Credentials', true);
     }
+}
+
+utils.getCategoryHeroId = function(cId) {
+    var heroId;
+    heroId = dataApi.herosV2.findById(cId).heroId
+    heroId = heroId.substr(0, 2) + 0 + heroId.substr(3);
+    return heroId;
 }

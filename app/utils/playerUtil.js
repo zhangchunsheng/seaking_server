@@ -7,6 +7,7 @@
  */
 var dataApi = require('./dataApi');
 var Player = require('../domain/entity/player');
+var utils = require("./utils");
 var buffUtil = require("./buffUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
@@ -98,12 +99,44 @@ playerUtil.initCharacter = function(opts) {
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
         gift: [],
-        ghost: {"level":0},
-        aptitude: {"1":{"level":0},"2":{"level":0},"3":{"level":0},"4":{"level":0},"5":{"level":0}},
+        ghost: playerUtil.initGhost(),
+        aptitude: playerUtil.initAptitude(opts.cId),
         curTasks: opts.curTasks,
         currentIndu: {"induId":0}
     };
     return character;
+}
+
+playerUtil.initGhost = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var data = {"level":0};
+
+    if(dataType = "string") {
+        data = JSON.stringify(data);
+    }
+    return data;
+}
+
+playerUtil.initAptitude = function(cId, dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+    else
+        dataType = "string";
+
+    var heroId = utils.getCategoryHeroId(cId);
+    var aptitudes = dataApi.aptitudes.findById(heroId).aptitudes;
+
+    var data = {};
+    for(var i in aptitudes) {
+        data[aptitudes[i]] = {"level":0};
+    }
+
+    if(dataType == "string") {
+        data = JSON.stringify(data);
+    }
+    return data;
 }
 
 playerUtil.initCharacterV2 = function(opts) {
@@ -191,8 +224,8 @@ playerUtil.initCharacterV2 = function(opts) {
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
         gift: [],
-        ghost: {"level":0},
-        aptitude: {"1":{"level":0},"2":{"level":0},"3":{"level":0},"4":{"level":0},"5":{"level":0}},
+        ghost: playerUtil.initGhost(),
+        aptitude: playerUtil.initAptitude(opts.cId),
         curTasks: opts.curTasks,
         currentIndu: {"induId":0}
     };
@@ -252,8 +285,8 @@ playerUtil.getCharacter = function(opts) {
             currentDayTask: JSON.parse(opts.replies.currentDayTask),
             currentExerciseTask: JSON.parse(opts.replies.currentExerciseTask)
         },
-        ghost: JSON.parse(opts.replies.ghost || '{"level":0}'),
-        aptitude: JSON.parse(opts.replies.aptitude || '{"1":{"level":0},"2":{"level":0},"3":{"level":0},"4":{"level":0},"5":{"level":0}}'),
+        ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
+        aptitude: JSON.parse(opts.replies.aptitude || playerUtil.initAptitude(opts.cId, "string")),
         currentIndu: JSON.parse(opts.replies.currentIndu)
     };
     return character;

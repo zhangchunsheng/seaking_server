@@ -188,4 +188,5 @@ function picecBoxName(session) {
 
     var characterId = utils.getRealCharacterId(playerId);
     return 'S'+serverId+'_T'+ registerType+'_'+ loginName+'_C'+ characterId;
+
 }
