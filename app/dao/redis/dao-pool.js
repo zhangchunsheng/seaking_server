@@ -22,9 +22,9 @@ var createRedisPool = function() {
             callback(null, client);
         },
         destroy: function(client) {
-            if(client && client.quit){
+            if(client && client.quit) {
                 client.quit();
-            }else{
+            } else {
                 console.log(client);
             }            
         },
