@@ -17,6 +17,7 @@ var utils = require('../../app/utils/utils');
 var consts = require('../../app/consts/consts');
 var EntityType = require('../../app/consts/consts').EntityType;
 var dataApi = require('../../app/utils/dataApi');
+var ghosts = require('../../config/data/ghosts');
 var area = require('../../app/domain/area/area');
 var world = require('../../app/domain/world');
 var async = require('async');
@@ -43,7 +44,8 @@ exports.upgrade = function(req, res) {
 
         var ghost = player.ghost;
         ghost.level = parseInt(ghost.level) + 1;
-        var ghostData = dataApi.ghosts.findById(ghost.level);
+        var heroId = utils.getCategoryHeroId(player.cId);
+        var ghostData = ghosts[heroId][ghost.level - 1];
         if(utils.empty(ghostData)) {
             data = {
                 code: Code.ARGUMENT_EXCEPTION

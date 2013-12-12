@@ -7,6 +7,7 @@
  */
 var dataApi = require('./dataApi');
 var Player = require('../domain/entity/player');
+var utils = require("./utils");
 var buffUtil = require("./buffUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
@@ -121,10 +122,18 @@ playerUtil.initGhost = function(dataType) {
 playerUtil.initAptitude = function(cId, dataType) {
     if(typeof dataType == "undefined")
         dataType = "json";
+    else
+        dataType = "string";
+
+    var heroId = utils.getCategoryHeroId(cId);
+    var aptitudes = dataApi.aptitudes.findById(heroId).aptitudes;
 
     var data = {};
+    for(var i in aptitudes) {
+        data[aptitudes[i]] = {"level":0};
+    }
 
-    if(dataType = "string") {
+    if(dataType == "string") {
         data = JSON.stringify(data);
     }
     return data;
