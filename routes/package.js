@@ -178,14 +178,15 @@ exports.sellItem = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
 
-    var type = msg.type,
-        itemId = msg.itemId,
-        itemNum = msg.itemNum;
-
+    var index = msg.index,
+        itemNum = msg.num;
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var itemInfo = {};
-        if("items" == type) {
+        var item = player.packageEntity.get(index);
+        var type = player.packageEntity.getItemType(item);
+        var itemId = item.itemId;
+        if(PackageType.ITEMS == type) {
             itemInfo = dataApi.item.findById(itemId);
         } else {
             itemInfo = dataApi.equipmentLevelup.findById(itemId);
@@ -204,12 +205,15 @@ exports.sellItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        var price = itemInfo.price;
+        var price = itemInfo.price / 2;
         var incomeMoney = price * itemNum;
         var result = removeItem(req, res, msg, player);
+        console.log(result);
         if(!!result) {
             player.money += incomeMoney;
-            //player.save();
+
+            player.save();
+
             data = {
                 code: consts.MESSAGE.RES,
                 money: player.money,
@@ -235,15 +239,18 @@ exports.sellItem = function(req, res) {
                     code: Code.FAIL,
                     err: err
                 });return;}*/
+            console.log(err);
                 utils.send(msg, res, data);
             });
+        }else{
+            utils.send(msg, res, {code: code.FAIL});
         }
     });
 }
 
 function removeItem(req, res, msg, player) {
     var index = msg.index
-        ,itemNum = msg.itemNum;
+        ,itemNum = msg.num;
     var itemInfo = {};
     var data = {};
 

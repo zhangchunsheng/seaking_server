@@ -31,9 +31,12 @@ exports.buyItem = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var wid = msg.wid
+    var itemId = msg.itemId
         , num = msg.num;
-
+    var npcId = msg.npcId;
+    if(!itemId || !num || !npcId){
+        return utils.send(msg, res, {code: code.FAIL});
+    }
     var uid = session.uid
         , serverId = session.serverId
         , registerType = session.registerType
@@ -41,22 +44,23 @@ exports.buyItem = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-    var currentScene = msg.currentScene;
+  //  var currentScene = msg.currentScene;
+    
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var result = false;
 
-        if(currentScene != player.currentScene) {
+        /*if(currentScene != player.currentScene) {
             data = {
                 code: Code.AREA.WRONG_CURRENTSCENE
             };
             utils.send(msg, res, data);
             return;
-        }
+        }*/
 
-        var items = dataApi.shops.findById(currentScene).shopData;
+        var items = dataApi.shops.findById(npcId).shopData;
         for(var i = 0 ; i < items.length ; i++) {
-            if(items[i].indexOf(wid) == 0) {
+            if(items[i].indexOf(itemId) == 0) {
                 result = true;
                 break;
             }
@@ -77,15 +81,15 @@ exports.buyItem = function(req, res) {
 //      }
         var itemInfo = {};
         var type = "";
-        if(wid.indexOf("D") >= 0) {
+        if(itemId.indexOf("D") >= 0) {
             type = PackageType.ITEMS;
-            itemInfo = dataApi.item.findById(wid);
-        } else if(wid.indexOf("W9") >= 0) {
+            itemInfo = dataApi.item.findById(itemId);
+        } else if(itemId.indexOf("W9") >= 0) {
             type = PackageType.EQUIPMENTS;
-            itemInfo = dataApi.equipmentLevelup.findById(wid);
+            itemInfo = dataApi.equipmentLevelup.findById(itemId);
         } else {
             type = PackageType.WEAPONS;
-            itemInfo = dataApi.equipmentLevelup.findById(wid);
+            itemInfo = dataApi.equipmentLevelup.findById(itemId);
         }
         if(typeof itemInfo == "undefined" || itemInfo == null) {
             data = {
@@ -96,7 +100,7 @@ exports.buyItem = function(req, res) {
         }
         if( type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS ) {
             if(num != 1) {
-                utils.send(msg, res, {code:'数据错误'});
+                utils.send(msg, res, {code:code.FAIL});
                 return;    
             }
         } else {
@@ -117,7 +121,7 @@ exports.buyItem = function(req, res) {
         }
         
         var item = {
-            itemId: wid,
+            itemId: itemId,
             itemNum: num,
             level: 1
         }
@@ -137,8 +141,7 @@ exports.buyItem = function(req, res) {
             };
             utils.send(msg, res, data);
         }*/
-
-        if(result.packageChange.length == 0) {
+        if(!result || result.packageChange.length == 0) {
             data = {
                 code: Code.PACKAGE.NOT_ENOUGHT_SPACE
             };

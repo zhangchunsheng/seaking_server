@@ -29,7 +29,9 @@ var routes = require('./routes')
     , task = require('./routes/task')
     , gm = require('./routes/gm')
     , message = require('./routes/message')
-    , authRequired = require('./middlewares/auth_required');
+    , authRequired = require('./middlewares/auth_required')
+    , astrology = require("./routes/astrology"); 
+
 
 module.exports = function (app) {
     app.get('/', authRequired, routes.index);
@@ -90,6 +92,13 @@ module.exports = function (app) {
     app.get("/mail/collectMail", authRequired, mail.collectMail);
     app.get("/mail/_Add", authRequired, mail._Add);
     app.get("/mail/_Set", authRequired, mail._Set);
+
+
+    app.get("/astrology/main", authRequired, astrology.main);
+    app.get("/astrology/use", authRequired, astrology.use);
+    app.get("/astrology/buy", authRequired, astrology.goldbuy);
+    app.get("/astrology/clean", authRequired, astrology.clean);
+    app.get("/astrology/pickUp", authRequired, astrology.pickUpAll);
 
     app.get("/package/_Set", authRequired, package._Set);
     app.get('/package/_AddItem', authRequired, package.addItem);

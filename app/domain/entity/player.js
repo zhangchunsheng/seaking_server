@@ -895,7 +895,12 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
 };
 
 Player.prototype.buyItem = function(type, item, costMoney) {
-    var packageChange = this.packageEntity.addItem(this, type, item).index;
+    var packageChange = this.packageEntity.addItemWithNoType(this, item);
+    if(!packageChange) {
+        return null;
+    }else{
+        packageChange = packageChange.index;
+    }
 
     if(packageChange.length != 0) {
         this.money = this.money - costMoney;
