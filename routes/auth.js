@@ -49,7 +49,6 @@ exports.auth = function(req, res) {
     userInfo.serverId = region.serverId;
 
     userService.getCharactersByLoginName(userInfo.serverId, userInfo.registerType, userInfo.loginName, function(err, results) {
-        console.log(results);
         if(err || !results) {
             data = {
                 code: Code.FAIL
@@ -70,7 +69,8 @@ exports.auth = function(req, res) {
         } else {
             data = {
                 code: consts.MESSAGE.RES,
-                player: results[0].strip()
+                player: results[0].strip(),
+                sessionId: req.sessionID
             };
             userInfo.playerId = results[0].id;
             utils.send(msg, res, data);

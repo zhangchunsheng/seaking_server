@@ -273,6 +273,7 @@ utils.getUserInfo = function(msg, req, res) {
  * @param data
  */
 utils.send = function(msg, res, data) {
+    res.setHeader("Access-Control-Allow-Origin","*");
     if(typeof msg.jsoncallback == "undefined") {
         res.send(data);
     } else {

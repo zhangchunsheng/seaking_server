@@ -18,7 +18,31 @@ var Package = function(opts){
 }
 util.inherits(Package, Persistent);
 module.exports = Package;
+Package.prototype.getItemType = function(item) {
+     var one = item.itemId.substring(0,1);
+    switch(one) {
+        case "C":
+            return PackageType.ITEMS;
+        break;
+        case "E":
+            return PackageType.EQUIPMENTS;
+        break;
+        case "W":
+            return PackageType.WEAPONS;
+        break;
+        case "D":
+            return PackageType.Material;
+        break;
+        case "T":
+            return PackageType.Task;
+        break;
+    }
+}
 Package.prototype.get = function(type, index) {
+    if(!index) {
+        index = type;
+        type = null;
+    }
 	return this.items[index];
 }
 
@@ -39,9 +63,13 @@ Package.prototype.checkItem = function(index, itemId) {
 
 Package.prototype.removeItem = function(index, itemNum) {
     var item =  this.items[index];
-    item.itemNum = item.itemNum - itemNum;
+    console.log(itemNum)
+    item.itemNum = (item.itemNum- 0) - itemNum;
+    if(item.itemNum == 0) {
+        delete this.items[index];
+    }
     this.save();
-    return item.itemNum;
+    return item;
 }
 
 Package.prototype.hasItem = function(_item) {
@@ -169,10 +197,6 @@ var arrayToJson = function(array) {
 Package.prototype.addItem = function(player , type, item, rIndex) {
     var changes = [];
     var _items = utils.clone(item);
-    if(!item){
-        item = type;
-        type = null;
-    }
     if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
         //返回{}并没有返回null 容易判断
         return null;
@@ -184,23 +208,27 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
     }
     var items = this;
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
-        for (var i = packageStart; i < this.itemCount+packageStart; i++) {
-            if (!this.items[i]) {
-                this.items[i] = {
+        for (var i = packageStart; i < items.itemCount+packageStart; i++) {
+            if (!items.items[i]) {
+                console.log("item:",item);
+                items.items[i] = {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
                     level: item.level
                 };
                 changes = [{
                     index: i,
-                    item: this[type].items[i]
+                    item: items.items[i]
                 }];
+
                 break;
             }
         }
     }else{
+
          for(var i in items.items) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {
+
                 _items.itemNum += this.items[i].itemNum;
                 var mitem = items.items[i];
                 if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 ) {
@@ -212,6 +240,7 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
                     });
 
                 } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) <= 99) {
+
                     mitem.itemNum = parseInt(mitem.itemNum) + parseInt(item.itemNum);
                     item.itemNum = 0 ;
                     changes.push({
@@ -222,7 +251,6 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
                 }
             }
         }
-
         var run = function() {
             if(item.itemNum > 0) {
                 var spaceCount = -1;
@@ -261,7 +289,10 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
                     item: items.items[spaceCount]
                 });
                 return {index: changes};
+            }else{
+                return {index: changes}
             }
+            
         }
             if(!run()){
             	return null;

@@ -25,6 +25,7 @@ var city = require('../../config/data/city');
 var indu_event = require('../../config/data/indu_event');
 var shops = require('../../config/data/shops');
 var casino = require('../../config/data/casino');
+var astrology = require("../../config/data/astrology");
 /**
  * Data model `new Data()`
  *
@@ -149,5 +150,6 @@ module.exports = {
     city: new Data(city),
     indu_event: new Data(indu_event)  ,
     shops: new Data(shops),
-    casino : new Data(casino)
+    casino : new Data(casino),
+    astrology : new Data(astrology)
 };
