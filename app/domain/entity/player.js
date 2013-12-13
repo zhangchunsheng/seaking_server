@@ -883,7 +883,8 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
         index = player.packageEntity.addItem(this, pkgType, {
             itemId: curEquipment.epid,
             itemNum: 1,
-            level: curEquipment.level
+            level: curEquipment.level,
+            forgeLevel: curEquipment.forgeLevel
         }, pIndex).index;
     } else {
         //player.packageEntity.removeItem(pkgType, pIndex);
