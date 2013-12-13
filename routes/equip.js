@@ -222,7 +222,8 @@ exports.unWearWeapon = function(req, res) {
         result = player.packageEntity.addItem(player, PackageType.WEAPONS, {
             itemId: epid,
             itemNum: 1,
-            level: level
+            level: level,
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
         packageIndex = result.index;
         if(packageIndex.length > 0) {
@@ -466,7 +467,8 @@ exports.unEquip = function(req, res) {
         result = player.packageEntity.addItem(player, pkgType, {
             itemId: character.equipmentsEntity.get(type).epid,
             itemNum: 1,
-            level: character.equipmentsEntity.get(type).level
+            level: character.equipmentsEntity.get(type).level,
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
         packageIndex = result.index;
         if (packageIndex.length > 0) {
