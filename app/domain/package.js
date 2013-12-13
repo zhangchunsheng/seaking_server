@@ -216,7 +216,8 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 items.items[i] = {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
-                    level: item.level
+                    level: item.level,
+                    forgeLevel: item.forgeLevel
                 };
                 changes = [{
                     index: i,
