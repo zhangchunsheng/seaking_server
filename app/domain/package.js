@@ -66,6 +66,7 @@ Package.prototype.checkItem = function(index, itemId) {
 
 Package.prototype.removeItem = function(index, itemNum) {
     var item =  this.items[index];
+    item.itemNum -= itemNum;
     item.itemNum = item.itemNum - itemNum;
     if(item.itemNum <= 0) {
         delete this.items[index];

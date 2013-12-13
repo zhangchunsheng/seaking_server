@@ -32,10 +32,10 @@ exports.buyItem = function(req, res) {
     var session = req.session;
 
     var itemId = msg.itemId
-        , num = msg.num;
+        , itemNum = msg.itemNum;
     var npcId = msg.npcId;
-    if(!itemId || !num || !npcId){
-        return utils.send(msg, res, {code: code.FAIL});
+    if(!itemId || !itemNum || !npcId){
+        return utils.send(msg, res, {code: Code.FAIL});
     }
     var uid = session.uid
         , serverId = session.serverId
@@ -57,7 +57,6 @@ exports.buyItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }*/
-
         var items = dataApi.shops.findById(npcId).shopData;
         for(var i = 0 ; i < items.length ; i++) {
             if(items[i].indexOf(itemId) == 0) {
@@ -80,40 +79,40 @@ exports.buyItem = function(req, res) {
 //          return;
 //      }
         var itemInfo = {};
-        var type = "";
+        var type ;
         if(itemId.indexOf("D") >= 0) {
             type = PackageType.ITEMS;
             itemInfo = dataApi.item.findById(itemId);
-        } else if(itemId.indexOf("W9") >= 0) {
+        } else if(itemId.indexOf("E") >= 0) {
             type = PackageType.EQUIPMENTS;
-            // itemInfo = dataApi.equipmentLevelup.findById(itemId);
-            itemInfo = dataApi.equipments.findById(itemId);
-        } else {
+            itemInfo = dataApi.equipment.findById(itemId);
+        } else if(itemId.indexOf("W") >= 0){
             type = PackageType.WEAPONS;
-            // itemInfo = dataApi.equipmentLevelup.findById(itemId);
-            itemInfo = dataApi.equipments.findById(itemId);
+            itemInfo = dataApi.weapons.findById(itemId);
         }
+        console.log("itemInfo:",itemInfo);
         if(typeof itemInfo == "undefined" || itemInfo == null) {
             data = {
                 code: Code.SHOP.NOT_EXIST_ITEM
             };
             utils.send(msg, res, data);
             return ;
+            
         }
         if( type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS ) {
-            if(num != 1) {
+            if(itemNum != 1) {
                 utils.send(msg, res, {code:code.FAIL});
                 return;    
             }
         } else {
-            /*if(itemInfo.pileNum < num) {
+            /*if(itemInfo.pileNum < itemNum) {
                 utils.send(msg, res, {code:'数据错误'});
                 return;      
             }*/
         }
         var price = itemInfo.price;
-        var costMoney = price * num;
-
+        var costMoney = price * itemNum;
+        console.log("Price:",price);
         if(player.money < costMoney) {
             data = {
                 code: Code.SHOP.NOT_ENOUGHT_MONEY
@@ -124,7 +123,7 @@ exports.buyItem = function(req, res) {
         
         var item = {
             itemId: itemId,
-            itemNum: num,
+            itemNum: itemNum,
             level: 1
         }
 
@@ -151,9 +150,11 @@ exports.buyItem = function(req, res) {
         } else {
             data = {
                 code: consts.MESSAGE.RES,
-                money: result.money,
-                packageChange: result.packageChange,
-                type: type
+                data:{
+                    money: result.money,
+                    packageChange: result.packageChange
+                }
+                
                 //costMoney: costMoney
             };
             async.parallel([
