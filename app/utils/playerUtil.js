@@ -51,45 +51,7 @@ playerUtil.initCharacter = function(opts) {
         counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), opts.level),
         gameCurrency: 100,
         money: 1000000,
-        equipments: {
-            weapon: {
-                epid: 0,
-                level: 0
-            },//武器
-
-            necklace: {
-                epid: 0,
-                level: 0
-            },//项链
-            helmet: {
-                epid: 0,
-                level: 0
-            },//头盔
-            armor: {
-                epid: 0,
-                level: 0
-            },//护甲
-            belt: {
-                epid: 0,
-                level: 0
-            },//腰带
-            legguard: {
-                epid: 0,
-                level: 0
-            },//护腿
-            amulet: {
-                epid: 0,
-                level: 0
-            },//护符
-            shoes: {
-                epid: 0,
-                level: 0
-            },//鞋
-            ring: {
-                epid: 0,
-                level: 0
-            }//戒指
-        },
+        equipments: playerUtil.initEquipments(),
         package: opts.package,
         skills: {
             currentSkill: opts.skills.currentSkill,
@@ -139,6 +101,65 @@ playerUtil.initAptitude = function(cId, dataType) {
     return data;
 }
 
+playerUtil.initEquipments = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var data = {
+        weapon: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        },//武器
+
+        necklace: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        },//项链
+        helmet: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        },//头盔
+        armor: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        },//护甲
+        belt: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        },//腰带
+        legguard: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        },//护腿
+        amulet: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        },//护符
+        shoes: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        },//鞋
+        ring: {
+            epid: 0,
+            level: 0,
+            forgeLevel: 0
+        }//戒指
+    };
+
+    if(dataType = "string") {
+        data = JSON.stringify(data);
+    }
+    return data;
+}
+
 playerUtil.initCharacterV2 = function(opts) {
     var hero = dataApi.herosV2.findById(opts.cId);
     var character = {
@@ -176,45 +197,7 @@ playerUtil.initCharacterV2 = function(opts) {
         counter: formulaV2.calculateCounter(hero.counter, opts.level),
         gameCurrency: 100,
         money: 1000000,
-        equipments: {
-            weapon: {
-                epid: 0,
-                level: 0
-            },//武器
-
-            necklace: {
-                epid: 0,
-                level: 0
-            },//项链
-            helmet: {
-                epid: 0,
-                level: 0
-            },//头盔
-            armor: {
-                epid: 0,
-                level: 0
-            },//护甲
-            belt: {
-                epid: 0,
-                level: 0
-            },//腰带
-            legguard: {
-                epid: 0,
-                level: 0
-            },//护腿
-            amulet: {
-                epid: 0,
-                level: 0
-            },//护符
-            shoes: {
-                epid: 0,
-                level: 0
-            },//鞋
-            ring: {
-                epid: 0,
-                level: 0
-            }//戒指
-        },
+        equipments: playerUtil.initEquipments(),
         package: opts.package,
         skills: {
             currentSkill: opts.skills.currentSkill,

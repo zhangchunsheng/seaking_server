@@ -51,14 +51,21 @@ exports.wearWeapon = function(req, res) {
 
     var characterId = utils.getRealCharacterId(playerId);
 
+    var data = {};
     var index = msg.index;
+    if(utils.empty(index) || index == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
     var weaponId = msg.weaponId;
     var pkgType = PackageType.WEAPONS;
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
-        var data = {};
         var packageIndex = -1;
 
         var character = player;
@@ -79,7 +86,8 @@ exports.wearWeapon = function(req, res) {
         if(player.packageEntity.checkItem(index, weaponId) > 0) {
             var item = player.packageEntity.items[index];
             // var eq = dataApi.equipment.findById(item.itemId);
-            var eq = dataApi.equipmentLevelup.findById(item.itemId);
+            // var eq = dataApi.equipmentLevelup.findById(item.itemId);
+            var eq = dataApi.equipments.findById(item.itemId);
             // if(!eq || player.level < eq.useLevel) {
             if(!eq) {
                 data = {
@@ -214,7 +222,8 @@ exports.unWearWeapon = function(req, res) {
         result = player.packageEntity.addItem(player, PackageType.WEAPONS, {
             itemId: epid,
             itemNum: 1,
-            level: level
+            level: level,
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
         packageIndex = result.index;
         if(packageIndex.length > 0) {
@@ -275,16 +284,31 @@ exports.equip = function(req, res) {
 
     var characterId = utils.getRealCharacterId(playerId);
 
+    var data = {};
     var pkgType = msg.pkgType;
     var index = msg.index;
     var eqId = msg.eqId;
+    if(utils.empty(index) || index == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    /*if(utils.empty(pkgType) || pkgType == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }*/
+    pkgType = PackageType.WEAPONS
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
         //var item = player.packageEntity[pkgType].items[index];
         var item = player.packageEntity.items[index];
-        var data = {};
 
         var character = player;
         if(!isSelf) {
@@ -320,7 +344,8 @@ exports.equip = function(req, res) {
         var packageIndex = -1;
 
         // var eq =  dataApi.equipment.findById(item.itemId);
-        var eq =  dataApi.equipmentLevelup.findById(item.itemId);
+        // var eq =  dataApi.equipmentLevelup.findById(item.itemId);
+        var eq =  dataApi.equipments.findById(item.itemId);
         //if(!eq || player.level < eq.useLevel) {
         if(!eq) {
             data = {
@@ -442,7 +467,8 @@ exports.unEquip = function(req, res) {
         result = player.packageEntity.addItem(player, pkgType, {
             itemId: character.equipmentsEntity.get(type).epid,
             itemNum: 1,
-            level: character.equipmentsEntity.get(type).level
+            level: character.equipmentsEntity.get(type).level,
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
         packageIndex = result.index;
         if (packageIndex.length > 0) {
@@ -543,7 +569,7 @@ exports.upgrade = function(req, res) {
 
         var level = parseInt(character.equipmentsEntity.get(type).level);
         level += 1;
-        var nextEqId = dataApi.equipmentLevelup.findById(epId).nextEqId;
+        /*var nextEqId = dataApi.equipmentLevelup.findById(epId).nextEqId;
 
         if(nextEqId == "") {
             data = {
@@ -551,10 +577,11 @@ exports.upgrade = function(req, res) {
             };
             utils.send(msg, res, data);
             return;
-        }
+        }*/
 
         // var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
-        var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
+        // var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
+        var equipment_levelup = dataApi.equipments.findById(epId);
 
         if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
             status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);

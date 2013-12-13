@@ -67,6 +67,7 @@ Package.prototype.checkItem = function(index, itemId) {
 Package.prototype.removeItem = function(index, itemNum) {
     var item =  this.items[index];
     item.itemNum -= itemNum;
+    item.itemNum = item.itemNum - itemNum;
     if(item.itemNum <= 0) {
         delete this.items[index];
     }
@@ -193,10 +194,9 @@ var arrayToJson = function(array) {
         }       
     }
     return json;
-} 
+}
 
-
-Package.prototype.addItem = function(player , type, item, rIndex) {
+Package.prototype.addItem = function(player, type, item, rIndex) {
     var changes = [];
     var _items = utils.clone(item);
     if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
@@ -210,27 +210,28 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
     }
     var items = this;
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
-        for (var i = packageStart; i < items.itemCount+packageStart; i++) {
+        var flag = false;
+        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
             if (!items.items[i]) {
-                console.log("item:",item);
+                flag = true;
                 items.items[i] = {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
-                    level: item.level
+                    level: item.level,
+                    forgeLevel: item.forgeLevel
                 };
                 changes = [{
                     index: i,
                     item: items.items[i]
                 }];
-
                 break;
             }
         }
-    }else{
-
+        if(!flag)
+            return null;
+    } else {
          for(var i in items.items) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {
-
                 _items.itemNum += this.items[i].itemNum;
                 var mitem = items.items[i];
                 if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 ) {
@@ -242,7 +243,6 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
                     });
 
                 } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) <= 99) {
-
                     mitem.itemNum = parseInt(mitem.itemNum) + parseInt(item.itemNum);
                     item.itemNum = 0 ;
                     changes.push({
@@ -291,12 +291,12 @@ Package.prototype.addItem = function(player , type, item, rIndex) {
                     item: items.items[spaceCount]
                 });
                 return {index: changes};
-            }else{
+            } else {
                 return {index: changes}
             }
             
         }
-            if(!run()){
+            if(!run()) {
             	return null;
             }
         }

@@ -22,6 +22,7 @@ var induMonstergroup = require('../../config/data/induMonstergroup');
 var instancedungeon = require('../../config/data/instancedungeon');
 var equipment = require('../../config/data/equipment');
 var equipmentLevelup = require('../../config/data/equipmentLevelup');
+var equipments = require('../../config/data/equipments');
 var partners = require('../../config/data/partners');
 var city = require('../../config/data/city');
 var indu_event = require('../../config/data/indu_event');
@@ -151,6 +152,7 @@ module.exports = {
     instancedungeon: new Data(instancedungeon),
     equipment: new Data(equipment),
     equipmentLevelup: new Data(equipmentLevelup),
+    equipments: new Data(equipments),
     partners: new Data(partners),
     city: new Data(city),
     indu_event: new Data(indu_event)  ,

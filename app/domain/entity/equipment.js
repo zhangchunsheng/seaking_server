@@ -30,6 +30,7 @@ var Equipment = function(opts) {
     this.price = opts.price;
     this.quality = opts.quality;
     this.level = opts.level;
+    this.forgeLevel = opts.forgeLevel;
     this.useLevel = opts.useLevel;
     this.strengthenLevel = opts.strengthenLevel;
     this.resourcePath = opts.resourcePath;
