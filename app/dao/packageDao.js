@@ -84,6 +84,7 @@ packageDao.createNewPackage = function(packageInfo, serverId, registerType, logi
     var package = new Package(packageInfo);
     return package;
 };
+
 packageDao.getType = function(item) {
     var itemId = item.itemId;
     var type = "";
@@ -95,7 +96,8 @@ packageDao.getType = function(item) {
         type = PackageType.ITEMS;
     }
     return type;
-}
+};
+
 packageDao.fullItem  = function(item){
     var itemId = item.itemId;
     var type = this.getType(item);
@@ -103,8 +105,9 @@ packageDao.fullItem  = function(item){
     if("items" == type) {
         itemInfo = dataApi.item.findById(itemId);
     } else {
-        itemInfo = dataApi.equipmentLevelup.findById(itemId);
+        // itemInfo = dataApi.equipmentLevelup.findById(itemId);
+        itemInfo = dataApi.equipments.findById(itemId);
     }
     item.level = itemInfo.level;
     return item;
-}
+};

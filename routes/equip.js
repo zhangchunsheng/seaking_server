@@ -86,7 +86,8 @@ exports.wearWeapon = function(req, res) {
         if(player.packageEntity.checkItem(index, weaponId) > 0) {
             var item = player.packageEntity.items[index];
             // var eq = dataApi.equipment.findById(item.itemId);
-            var eq = dataApi.equipmentLevelup.findById(item.itemId);
+            // var eq = dataApi.equipmentLevelup.findById(item.itemId);
+            var eq = dataApi.equipments.findById(item.itemId);
             // if(!eq || player.level < eq.useLevel) {
             if(!eq) {
                 data = {
@@ -342,7 +343,8 @@ exports.equip = function(req, res) {
         var packageIndex = -1;
 
         // var eq =  dataApi.equipment.findById(item.itemId);
-        var eq =  dataApi.equipmentLevelup.findById(item.itemId);
+        // var eq =  dataApi.equipmentLevelup.findById(item.itemId);
+        var eq =  dataApi.equipments.findById(item.itemId);
         //if(!eq || player.level < eq.useLevel) {
         if(!eq) {
             data = {
@@ -565,7 +567,7 @@ exports.upgrade = function(req, res) {
 
         var level = parseInt(character.equipmentsEntity.get(type).level);
         level += 1;
-        var nextEqId = dataApi.equipmentLevelup.findById(epId).nextEqId;
+        /*var nextEqId = dataApi.equipmentLevelup.findById(epId).nextEqId;
 
         if(nextEqId == "") {
             data = {
@@ -573,10 +575,11 @@ exports.upgrade = function(req, res) {
             };
             utils.send(msg, res, data);
             return;
-        }
+        }*/
 
         // var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
-        var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
+        // var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
+        var equipment_levelup = dataApi.equipments.findById(epId);
 
         if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
             status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);

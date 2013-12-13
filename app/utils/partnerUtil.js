@@ -55,40 +55,49 @@ partnerUtil.initPartner = function(opts) {
         equipments: {
             weapon: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             },//武器
 
             necklace: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             },//项链
             helmet: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             },//头盔
             armor: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             },//护甲
             belt: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             },//腰带
             legguard: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             },//护腿
             amulet: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             },//护符
             shoes: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             },//鞋
             ring: {
                 epid: 0,
-                level: 0
+                level: 0,
+                forgeLevel: 0
             }//戒指
         },
         skills: {

@@ -86,10 +86,12 @@ exports.buyItem = function(req, res) {
             itemInfo = dataApi.item.findById(itemId);
         } else if(itemId.indexOf("W9") >= 0) {
             type = PackageType.EQUIPMENTS;
-            itemInfo = dataApi.equipmentLevelup.findById(itemId);
+            // itemInfo = dataApi.equipmentLevelup.findById(itemId);
+            itemInfo = dataApi.equipments.findById(itemId);
         } else {
             type = PackageType.WEAPONS;
-            itemInfo = dataApi.equipmentLevelup.findById(itemId);
+            // itemInfo = dataApi.equipmentLevelup.findById(itemId);
+            itemInfo = dataApi.equipments.findById(itemId);
         }
         if(typeof itemInfo == "undefined" || itemInfo == null) {
             data = {

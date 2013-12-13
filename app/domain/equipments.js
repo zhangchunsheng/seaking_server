@@ -30,40 +30,49 @@ var Equipments = function(opts) {
     this.loginName = opts.loginName;
     this.weapon = {
         epid: opts.weapon.epid || 0,
-        level: opts.weapon.level
+        level: opts.weapon.level,
+        forgeLevel: opts.weapon.forgeLevel || 0
     };//武器
 
     this.necklace = {
         epid: opts.necklace.epid || 0,//项链
-        level: opts.necklace.level
+        level: opts.necklace.level,
+        forgeLevel: opts.necklace.forgeLevel || 0
     };
     this.helmet = {
         epid: opts.helmet.epid || 0,//头盔
-        level: opts.helmet.level
+        level: opts.helmet.level,
+        forgeLevel: opts.helmet.forgeLevel || 0
     };
     this.armor = {
         epid: opts.armor.epid || 0,//护甲
-        level: opts.armor.level
+        level: opts.armor.level,
+        forgeLevel: opts.armor.forgeLevel || 0
     };
     this.belt = {
         epid: opts.belt.epid || 0,//腰带
-        level: opts.belt.level
+        level: opts.belt.level,
+        forgeLevel: opts.belt.forgeLevel || 0
     };
     this.legguard = {
         epid: opts.legguard.epid || 0,//护腿
-        level: opts.legguard.level
+        level: opts.legguard.level,
+        forgeLevel: opts.legguard.forgeLevel || 0
     };
     this.amulet = {
         epid: opts.amulet.epid || 0,//护符
-        level: opts.amulet.level
+        level: opts.amulet.level,
+        forgeLevel: opts.amulet.forgeLevel || 0
     };
     this.shoes = {
         epid: opts.shoes.epid || 0,//鞋
-        level: opts.shoes.level
+        level: opts.shoes.level,
+        forgeLevel: opts.shoes.forgeLevel || 0
     };
     this.ring = {
         epid: opts.ring.epid || 0,//戒指
-        level: opts.ring.level
+        level: opts.ring.level,
+        forgeLevel: opts.ring.forgeLevel || 0
     };
 };
 
@@ -94,7 +103,8 @@ Equipments.prototype.syncData = function() {
 Equipments.prototype.equip = function(type, equip) {
     this[type] = {
         epid: equip.epid,
-        level: equip.level
+        level: equip.level,
+        forgeLevel: equip.forgeLevel
     };
     this.save();
 };
@@ -103,7 +113,8 @@ Equipments.prototype.equip = function(type, equip) {
 Equipments.prototype.unEquip = function(type) {
     this[type] = {
         epid: 0,
-        level: 0
+        level: 0,
+        forgeLevel: 0
     };
     this.save();
 };

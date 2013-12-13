@@ -189,7 +189,8 @@ exports.sellItem = function(req, res) {
         if(PackageType.ITEMS == type) {
             itemInfo = dataApi.item.findById(itemId);
         } else {
-            itemInfo = dataApi.equipmentLevelup.findById(itemId);
+            // itemInfo = dataApi.equipmentLevelup.findById(itemId);
+            itemInfo = dataApi.equipments.findById(itemId);
         }
         if(!itemInfo) {
             data = {
@@ -422,7 +423,8 @@ exports.userItem = function(req, res) {
         if("items" == type) {
             itemInfo = dataApi.item.findById(Item.itemId);
         } else {
-            itemInfo = dataApi.equipmentLevelup.findById(Item.itemId);
+            // itemInfo = dataApi.equipmentLevelup.findById(Item.itemId);
+            itemInfo = dataApi.equipments.findById(Item.itemId);
         }
         if(player.level < itemInfo.needLevel) {
             data = {
