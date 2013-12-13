@@ -871,7 +871,8 @@ Player.prototype.passiveSkillAdditional = function() {
  */
 Player.prototype.equip = function(pkgType, item, pIndex, player) {
     var index = 0;
-    var epType = utils.getEqType(item.itemId);
+    //var epType = utils.getEqType(item.itemId);
+    var epType = utils.getEqTypeV2(item.itemId);
 
     var curEquipment = this.equipmentsEntity.get(epType);
     this.equipmentsEntity.equip(epType, {
