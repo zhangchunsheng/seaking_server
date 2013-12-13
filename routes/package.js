@@ -177,20 +177,32 @@ exports.sellItem = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-
     var index = msg.index,
-        itemNum = msg.num;
+        itemNum = msg.itemNum;
+    if(!index || !itemNum) {
+        return utils.send(msg, res, {code: Code.FAIL});
+    }
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var itemInfo = {};
         var item = player.packageEntity.get(index);
+        if(!item || item.itemNum < itemNum){
+            return utils.send(msg, res, {code: Code.FAIL});
+        }
         var type = player.packageEntity.getItemType(item);
         var itemId = item.itemId;
-        if(PackageType.ITEMS == type) {
+        var type;
+        if(itemId.indexOf("D") >= 0) {
+            type = PackageType.ITEMS;
             itemInfo = dataApi.item.findById(itemId);
-        } else {
-            itemInfo = dataApi.equipmentLevelup.findById(itemId);
+        } else if(itemId.indexOf("E") >= 0) {
+            type = PackageType.EQUIPMENTS;
+            itemInfo = dataApi.equipment.findById(itemId);
+        } else if(itemId.indexOf("W") >= 0){
+            type = PackageType.WEAPONS;
+            itemInfo = dataApi.weapons.findById(itemId);
         }
+        console.log("itemInfo",itemInfo);
         if(!itemInfo) {
             data = {
                 code:Code.PACKAGE.NOT_EXIST_ITEM
@@ -208,17 +220,18 @@ exports.sellItem = function(req, res) {
         var price = itemInfo.price / 2;
         var incomeMoney = price * itemNum;
         var result = removeItem(req, res, msg, player);
-        console.log(result);
         if(!!result) {
+            
             player.money += incomeMoney;
-
             player.save();
 
             data = {
                 code: consts.MESSAGE.RES,
-                money: player.money,
-                changePackage: result,
-                type: type
+                data:{
+                    money: player.money,
+                    packageChange: result
+                }
+                
                 //,itemInfo: itemInfo
             };
             async.parallel([
@@ -250,7 +263,7 @@ exports.sellItem = function(req, res) {
 
 function removeItem(req, res, msg, player) {
     var index = msg.index
-        ,itemNum = msg.num;
+        ,itemNum = msg.itemNum;
     var itemInfo = {};
     var data = {};
 
@@ -419,10 +432,16 @@ exports.userItem = function(req, res) {
             return;
         }
         var itemInfo = null;
-        if("items" == type) {
-            itemInfo = dataApi.item.findById(Item.itemId);
-        } else {
-            itemInfo = dataApi.equipmentLevelup.findById(Item.itemId);
+        var type ;
+        if(itemId.indexOf("D") >= 0) {
+            type = PackageType.ITEMS;
+            itemInfo = dataApi.item.findById(itemId);
+        } else if(itemId.indexOf("E") >= 0) {
+            type = PackageType.EQUIPMENTS;
+            itemInfo = dataApi.equipment.findById(itemId);
+        } else if(itemId.indexOf("W") >= 0){
+            type = PackageType.WEAPONS;
+            itemInfo = dataApi.weapons.findById(itemId);
         }
         if(player.level < itemInfo.needLevel) {
             data = {
