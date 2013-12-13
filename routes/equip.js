@@ -51,14 +51,21 @@ exports.wearWeapon = function(req, res) {
 
     var characterId = utils.getRealCharacterId(playerId);
 
+    var data = {};
     var index = msg.index;
+    if(utils.empty(index) || index == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
     var weaponId = msg.weaponId;
     var pkgType = PackageType.WEAPONS;
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
-        var data = {};
         var packageIndex = -1;
 
         var character = player;
@@ -275,16 +282,31 @@ exports.equip = function(req, res) {
 
     var characterId = utils.getRealCharacterId(playerId);
 
+    var data = {};
     var pkgType = msg.pkgType;
     var index = msg.index;
     var eqId = msg.eqId;
+    if(utils.empty(index) || index == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    /*if(utils.empty(pkgType) || pkgType == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }*/
+    pkgType = PackageType.WEAPONS
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
         //var item = player.packageEntity[pkgType].items[index];
         var item = player.packageEntity.items[index];
-        var data = {};
 
         var character = player;
         if(!isSelf) {
