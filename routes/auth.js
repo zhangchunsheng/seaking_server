@@ -17,7 +17,7 @@ var region = require('../config/region');
 var consts = require('../app/consts/consts');
 
 var DEFAULT_SECRET = 'wozlla_session_secret';
-var DEFAULT_EXPIRE = 6 * 60 * 60 * 1000;	// default session expire time: 6 hours
+var DEFAULT_EXPIRE = 6 * 60 * 60 * 1000;        // default session expire time: 6 hours
 
 exports.index = function(req, res) {
     res.send("index");
