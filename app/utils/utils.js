@@ -252,7 +252,7 @@ utils.getEqTypeV2 = function(eqId) {
         type = consts.EqType.WEAPON;
     } else {
         var num = eqId.substr(5, 1);
-        switch(num) {
+        switch(parseInt(num)) {
             case 1:
                 type = consts.EqType.ARMOR;
                 break;
