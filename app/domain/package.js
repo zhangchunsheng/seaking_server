@@ -6,7 +6,7 @@ var PackageType = require('../consts/consts').PackageType;
 var consts = require('../consts/consts');
 var utils = require("../utils/utils");
 
-var packageStart = 1;
+var packageStart = 0;
 var Package = function(opts){
 	Persistent.call(this, opts);
   	this.playerId = opts.characterId;
@@ -21,7 +21,7 @@ module.exports = Package;
 Package.prototype.getItemType = function(item) {
      var one = item.itemId.substring(0,1);
     switch(one) {
-        case "C":
+        case "D":
             return PackageType.ITEMS;
         break;
         case "E":
@@ -30,7 +30,7 @@ Package.prototype.getItemType = function(item) {
         case "W":
             return PackageType.WEAPONS;
         break;
-        case "D":
+        case "C":
             return PackageType.Material;
         break;
         case "T":
