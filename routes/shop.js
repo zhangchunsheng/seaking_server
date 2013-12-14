@@ -57,7 +57,11 @@ exports.buyItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }*/
-        var items = dataApi.shops.findById(npcId).shopData;
+        var shops = dataApi.shops.findById(npcId);
+        if(!shops ){
+            return utils.send(msg, res, {code: Code.FAIL});
+        }
+        var items = shops.shopData;
         for(var i = 0 ; i < items.length ; i++) {
             if(items[i].indexOf(itemId) == 0) {
                 result = true;
