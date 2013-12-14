@@ -68,9 +68,11 @@ exports.wearWeapon = function(req, res) {
 
         var packageIndex = -1;
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -178,9 +180,11 @@ exports.unWearWeapon = function(req, res) {
 
         var data = {};
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -311,9 +315,11 @@ exports.equip = function(req, res) {
         //var item = player.packageEntity[pkgType].items[index];
         var item = player.packageEntity.items[index];
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -427,9 +433,11 @@ exports.unEquip = function(req, res) {
 
         var data = {};
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -537,9 +545,11 @@ exports.upgrade = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
