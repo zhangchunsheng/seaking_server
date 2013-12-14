@@ -287,8 +287,9 @@ exports.equip = function(req, res) {
     var data = {};
     var pkgType = msg.pkgType;
     var index = msg.index;
-    var eqId = msg.eqId;
-    if(utils.empty(index) || index == 0) {
+    var eqId = msg.eqId; 
+    //背包从0开始
+    if(utils.empty(index) ) {
         data = {
             code: Code.ARGUMENT_EXCEPTION
         };
