@@ -465,6 +465,8 @@ playerUtil.createPKEntity = function(player, serverId, registerType, loginName, 
     player.equipmentsEntity = equipments;
     var aptitude = aptitudeService.createNewAptitude(player.aptitude, serverId, registerType, loginName, characterId);
     player.aptitudeEntity = aptitude;
+    var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId);
+    player.ghostEntity = ghost;
 };
 
 /**
