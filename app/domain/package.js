@@ -234,7 +234,9 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             }
         }
         if(!flag)
-            return null;
+            return {
+                index: []
+            };
     } else {
          for(var i in items.items) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {

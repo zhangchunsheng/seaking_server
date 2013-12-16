@@ -229,6 +229,13 @@ exports.unWearWeapon = function(req, res) {
             level: level,
             forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
+        if(result == null || result.index.length == 0) {
+            data = {
+                code: Code.PACKAGE.NOT_ENOUGHT_SPACE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         packageIndex = result.index;
         if(packageIndex.length > 0) {
             character.unEquip(type);
@@ -467,7 +474,8 @@ exports.unEquip = function(req, res) {
         }
 
         var pkgType = "";
-        if(epId.indexOf("W9") < 0) {
+        //if(epId.indexOf("W9") < 0) {
+        if(epId.indexOf("W") >= 0) {
             pkgType = consts.PackageType.WEAPONS;
         } else {
             pkgType = consts.PackageType.EQUIPMENTS;
@@ -479,6 +487,13 @@ exports.unEquip = function(req, res) {
             level: character.equipmentsEntity.get(type).level,
             forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
+        if(result == null || result.index.length == 0) {
+            data = {
+                code: Code.PACKAGE.NOT_ENOUGHT_SPACE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         packageIndex = result.index;
         if (packageIndex.length > 0) {
             character.unEquip(type);
