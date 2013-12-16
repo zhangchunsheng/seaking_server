@@ -10,6 +10,7 @@ var dbUtil = require('../../utils/dbUtil');
 var dataApi = require('../../utils/dataApi');
 var redisService = require('../redisService');
 var ghostDao = require('../../dao/character/ghostDao');
+var Ghost = require('../../domain/attribute/ghost');
 
 var ghostService = module.exports;
 
@@ -23,4 +24,13 @@ ghostService.upgrade = function(array, player, cb) {
     redisService.setData(array, function(err, reply) {
         utils.invokeCallback(cb, err, ghost.level);
     });
+}
+
+ghostService.createNewGhost = function(ghostInfo, serverId, registerType, loginName, characterId) {
+    ghostInfo.serverId = serverId;
+    ghostInfo.registerType = registerType;
+    ghostInfo.loginName = loginName;
+    ghostInfo.characterId = characterId;
+    var ghost = new Ghost(ghostInfo);
+    return ghost;
 }

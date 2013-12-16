@@ -13,6 +13,7 @@ var buff = require('../buff');
 var Persistent = require('../persistent');
 var utils = require('../../utils/utils');
 var skill_script = require('../../../scripts/skill_scriptV2');
+var triggerSkill_script = require('../../../scripts/triggerSkill_scriptV2');
 
 /**
  *
@@ -78,6 +79,24 @@ Skill.prototype.invokeScript = function(attackSide, condition, attack_formation,
     array.push(attackData);
     array.push(defenseData);
     return skill_script["skill" + this.skillId].apply(this, array);
+}
+
+Skill.prototype.invokeTriggerScript = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var array = [];
+    array.push(attackSide);
+    array.push(condition);
+    array.push(attack_formation);
+    array.push(defense_formation);
+    array.push(attack);
+    array.push(defense);
+    array.push(attacks);
+    array.push(defenses);
+    array.push(attackFightTeam);
+    array.push(defenseFightTeam);
+    array.push(fightData);
+    array.push(attackData);
+    array.push(defenseData);
+    return triggerSkill_script["skill" + this.skillId].apply(this, array);
 }
 
 /**

@@ -15,8 +15,34 @@ var triggerSkill_script = {
     "skill101101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 生命值低于40%之后，下一个触发的觉醒技效果翻倍（作用在该角色身上）
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill101201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var player;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+        } else if(attackSide == constsV2.characterFightType.DEFENSE) {
+            player = defense;
+        }
+        if(player.fightValue.hp < player.maxHp * 0.4) {
+            return true;
+        } else {
+            return false;
+        }
     },
     "skill102101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

@@ -237,6 +237,27 @@ module.exports = {
         COUNTER: "counter"
     },
 
+    /*1 - 生命
+    2 - 攻击
+    3 - 防御
+    4 - 幸运
+    5 - 速度
+    6 - 暴击
+    7 - 格挡
+    8 - 闪避
+    9 - 反击*/
+    attrId: {
+        HP: 1,
+        ATTACK: 2,
+        DEFENSE: 3,
+        SUNDERARMOR: 4,
+        SPEED: 5,
+        CRITICALHIT: 6,
+        BLOCK: 7,
+        DODGE: 8,
+        COUNTER: 9
+    },
+
     correspondingSkillsType: {
         1: "activeSkills",
         2: "passiveSkills"
@@ -451,7 +472,8 @@ module.exports = {
         COUNTER: 7,
         BATTLE: 8,
         DEATH: 9,
-        GETDAMAGE: 10
+        GETDAMAGE: 10,
+        AWAKEN: 11
     },
 
     correspondingEffect_attr: {

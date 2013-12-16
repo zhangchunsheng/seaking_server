@@ -70,6 +70,8 @@ var Player = function(opts) {
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
+    this.aptitudeEntity = opts.aptitudeEntity;
+    this.ghostEntity = opts.ghostEntity;
 
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
@@ -1366,8 +1368,8 @@ Player.prototype.strip = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
 
@@ -1536,8 +1538,8 @@ Player.prototype.toJSON = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
 
@@ -1577,7 +1579,7 @@ Player.prototype.getBaseInfo = function() {
         buffs: this.buffs,
         formation: this.formation,
         gift: this.gift,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
