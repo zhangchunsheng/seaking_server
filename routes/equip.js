@@ -609,10 +609,12 @@ exports.upgrade = function(req, res) {
         // var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
         var equipment_levelup = dataApi.equipments.findById(epId);
 
-        if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
+        if(typeof equipment_levelup.upgradeMaterial != "undefined"
+            && equipment_levelup.upgradeMaterial != 0
+            && equipment_levelup.upgradeMaterial.length > 1) {
             status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
         } else {
-            status = character.equipmentsEntity.upgradeByMoney(player, type, equipment_levelup);
+            status = character.equipmentsEntity.upgradeByMoneyV2(player, type, equipment_levelup);
         }
 
         if(status == 1) {
@@ -632,7 +634,8 @@ exports.upgrade = function(req, res) {
             ], function(err, reply) {
                 data = {
                     //status: status
-                    code: Code.OK
+                    code: Code.OK,
+                    level: level
                 };
                 utils.send(msg, res, data);
             });
@@ -715,15 +718,17 @@ exports.forgeUpgrade = function(req, res) {
             return;
         }
 
-        var level = parseInt(character.equipmentsEntity.get(type).level);
-        level += 1;
+        var forgeLevel = parseInt(character.equipmentsEntity.get(type).forgeLevel);
+        forgeLevel += 1;
 
         var equipment_levelup = dataApi.equipments.findById(epId);
 
-        if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
+        if(typeof equipment_levelup.upgradeMaterial != "undefined"
+            && equipment_levelup.upgradeMaterial != 0
+            && equipment_levelup.upgradeMaterial.length > 1) {
             status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
         } else {
-            status = character.equipmentsEntity.upgradeByMoney(player, type, equipment_levelup);
+            status = character.equipmentsEntity.forgeUpgradeByMoney(player, type, equipment_levelup);
         }
 
         if(status == 1) {
@@ -743,7 +748,8 @@ exports.forgeUpgrade = function(req, res) {
             ], function(err, reply) {
                 data = {
                     //status: status
-                    code: Code.OK
+                    code: Code.OK,
+                    forgeLevel: forgeLevel
                 };
                 utils.send(msg, res, data);
             });

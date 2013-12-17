@@ -156,6 +156,44 @@ Equipments.prototype.upgradeByMoney = function(player, type, equipment_levelup) 
     return status;
 }
 
+/**
+ *
+ * @param type
+ * @param equipment_levelup
+ * @returns {number}
+ */
+Equipments.prototype.upgradeByMoneyV2 = function(player, type, equipment_levelup) {
+    var status = 0;
+    status = 1;
+    this[type].level = parseInt(this[type].level) + 1;
+    player.updateTaskRecord(consts.TaskGoalType.UPGRADE_EQUIPMENT, {
+        itemId: this[type].epid,
+        itemNum: this[type].level
+    });
+    this.save();
+    player.save();
+    return status;
+}
+
+/**
+ *
+ * @param type
+ * @param equipment_levelup
+ * @returns {number}
+ */
+Equipments.prototype.forgeUpgradeByMoney = function(player, type, equipment_levelup) {
+    var status = 0;
+    status = 1;
+    this[type].forgeLevel = parseInt(this[type].forgeLevel) + 1;
+    player.updateTaskRecord(consts.TaskGoalType.UPGRADE_EQUIPMENT, {
+        itemId: this[type].epid,
+        itemNum: this[type].forgeLevel
+    });
+    this.save();
+    player.save();
+    return status;
+}
+
 Equipments.prototype.updateId = function() {
     if(this.weapon.epid != 0) {
         this.weapon.epid += this.weapon.level;
