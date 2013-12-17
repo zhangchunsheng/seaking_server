@@ -50,7 +50,8 @@ module.exports = {
 
     SHOP: {
         NOT_ENOUGHT_MONEY: 1101,
-        NOT_EXIST_ITEM:1102
+        NOT_EXIST_ITEM:1102,
+        NOT_EXIST_NPCSHOP:1103
     },
 
     FRIEND: {

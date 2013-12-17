@@ -11,6 +11,12 @@ var utils = require("./utils");
 var buffUtil = require("./buffUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
+var equipmentsDao = require('../dao/equipmentsDao');
+var taskDao = require('../dao/taskDao');
+var packageDao = require('../dao/packageDao');
+var aptitudeService = require('../services/character/aptitudeService');
+var ghostService = require('../services/character/ghostService');
+var Tasks = require('../domain/tasks');
 
 var playerUtil = module.exports;
 
@@ -275,6 +281,55 @@ playerUtil.getCharacter = function(opts) {
     return character;
 }
 
+playerUtil.getPKCharacter = function(opts) {
+    var character = {
+        id: "S" + opts.serverId + "C" + opts.characterId,
+        characterId: "S" + opts.serverId + "C" + opts.characterId,
+        cId: opts.cId,
+        userId: opts.replies.userId,
+        serverId: opts.serverId,
+        registerType: opts.registerType,
+        loginName: opts.loginName,
+        nickname: opts.replies.nickname,
+        currentScene: opts.replies.currentScene,
+        x: parseInt(opts.replies.x),
+        y: parseInt(opts.replies.y),
+        experience: parseInt(opts.replies.experience),
+        buffs: JSON.parse(opts.replies.buffs).buffs,
+        level: parseInt(opts.level),
+        needExp: parseInt(opts.replies.needExp),
+        accumulated_xp: parseInt(opts.replies.accumulated_xp),
+        photo: opts.replies.photo,
+        hp: parseInt(opts.replies.hp),
+        maxHp: parseInt(opts.replies.maxHp),
+        anger: parseInt(opts.replies.anger),
+        attack: parseInt(opts.replies.attack),
+        defense: parseInt(opts.replies.defense),
+        focus: parseFloat(opts.replies.focus),
+        sunderArmor: parseFloat(opts.replies.sunderArmor),
+        speedLevel: parseInt(opts.replies.speedLevel),
+        speed: parseFloat(opts.replies.speed),
+        dodge: parseFloat(opts.replies.dodge),
+        criticalHit: parseFloat(opts.replies.criticalHit),
+        critDamage: parseFloat(opts.replies.critDamage),
+        block: parseFloat(opts.replies.block),
+        counter: parseFloat(opts.replies.counter),
+        gameCurrency: parseInt(opts.replies.gameCurrency),
+        money: parseInt(opts.replies.money),
+        equipments: JSON.parse(opts.replies.equipments),
+        skills: {
+            currentSkill: JSON.parse(opts.replies.currentSkill),
+            activeSkills: JSON.parse(opts.replies.activeSkills),
+            passiveSkills: JSON.parse(opts.replies.passiveSkills)
+        },
+        formation: JSON.parse(opts.replies.formation).formation,
+        partners: JSON.parse(opts.replies.partners).partners,
+        ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
+        aptitude: JSON.parse(opts.replies.aptitude || playerUtil.initAptitude(opts.cId, "string"))
+    };
+    return character;
+}
+
 playerUtil.getPlayer = function(character) {
     var player = new Player({
         userId: character.userId,
@@ -369,4 +424,69 @@ playerUtil.getPlayerV2 = function(character) {
         currentIndu: character.currentIndu
     });
     return player;
+}
+
+/**
+ * createEntity
+ * @param character
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ */
+playerUtil.createEntity = function(character, serverId, registerType, loginName, characterId) {
+    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId);
+    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId);
+    var curTasks = new Tasks({
+        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks),
+        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks),
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks),
+        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks)
+    });
+    var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId);
+    var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId);
+    character.packageEntity = package;
+    character.equipmentsEntity = equipments;
+    character.curTasksEntity = curTasks || {};
+    character.aptitudeEntity = aptitude;
+    character.ghostEntity = ghost;
+};
+
+/**
+ * createPKEntity
+ * @param player
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ */
+playerUtil.createPKEntity = function(player, serverId, registerType, loginName, characterId) {
+    var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
+    player.equipmentsEntity = equipments;
+    var aptitude = aptitudeService.createNewAptitude(player.aptitude, serverId, registerType, loginName, characterId);
+    player.aptitudeEntity = aptitude;
+    var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId);
+    player.ghostEntity = ghost;
+};
+
+/**
+ * 创建装备、背包、任务对象
+ * @param character
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param characterId
+ */
+playerUtil.createEPTInfo = function(character, serverId, registerType, loginName, characterId) {
+    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId);
+    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId);
+    var curTasks = new Tasks({
+        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks),
+        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks),
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks),
+        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks)
+    });
+    character.packageEntity = package;
+    character.equipmentsEntity = equipments;
+    character.curTasksEntity = curTasks || {};
 }

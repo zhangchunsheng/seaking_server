@@ -622,6 +622,11 @@ exports._Set = function(req, res) {
      });
 }
 
+/**
+ * 整理背包
+ * @param req
+ * @param res
+ */
 exports.arrange = function(req, res) {
     var msg = req.query;
     var session = req.session;
@@ -632,10 +637,15 @@ exports.arrange = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var package = player.packageEntity;
         package.arrange(function(err, r) {
-            if(err){utils.send(msg, res, {code: Code.FAIL});return;}
+            if(err) {
+                utils.send(msg, res, {
+                    code: Code.FAIL
+                });
+                return;
+            }
             async.parallel([
                 function(callback) {
                     userService.updatePlayerAttribute(player, callback);
@@ -652,9 +662,8 @@ exports.arrange = function(req, res) {
             ], function(err, reply) {
                 utils.send(msg, res,{code: Code.OK, data: r});
             });
-            
         });
-     });
+    });
 }
 
 exports.unlock = function(req, res) {

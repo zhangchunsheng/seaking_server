@@ -120,60 +120,63 @@ Package.prototype.arrange = function(callback) {
         , Ws = []
         , Ds = []
         , Ts = [];
-    for(var i = packageStart,l=this.itemCount + packageStart; i < l ;i++) {
+    for(var i = packageStart,l = this.itemCount + packageStart; i < l ;i++) {
         if(items[i]){
             var item = items[i];
             var type = item.itemId.substring(0,1);
             switch(type) {
                 case "C":
                     Cs.push(item);
-                break;
+                    break;
                 case "E":
                     Es.push(item);
-                break;
+                    break;
                 case "W":
                     Ws.push(item);
-                break;
+                    break;
                 case "D":
                     Ds.push(item);
-                break;
+                    break;
                 case "T":
                     Ts.push(item);
-                break;
+                    break;
             }
         }
     }
     var sortFun = function(a, b) {
         if(a.itemId > b.itemId) {
             return 1;
-        } else if(a.itemId < b.itemId ){
+        } else if(a.itemId < b.itemId) {
             return -1;
         } else {
             if(a.level == b.level) {
-                if( (a.substring(0,1) == "C" || a.substring(0,1) == "D" ) ){
-                var all =  a.itemNum+b.itemNum;
-                if(all>99){
-                    a.itemNum = 99;
-                    b.itemNum = all-99;
-                }else{
-                    a.itemNum = all;
-                    b.itemNum = 0;
-                }
-                return 0;
-                }else{  
+                if((a.itemId.substring(0, 1) == "C" || a.itemId.substring(0, 1) == "D")) {
+                    var all =  a.itemNum + b.itemNum;
+                    if(all > 99) {
+                        a.itemNum = 99;
+                        b.itemNum = all - 99;
+                    } else {
+                        a.itemNum = all;
+                        b.itemNum = 0;
+                    }
+                    return 0;
+                } else {
                     return 0;
                 }
-            }else{
-                if(a.level > b.level){
+            } else {
+                if(a.level > b.level) {
                     return 1;
-                }else{
+                } else {
                     return -1;
                 }
             }
-            
         }
     };
-    Cs.sort(sortFun);Es.sort(sortFun);Ws.sort(sortFun); Ds.sort(sortFun);Ts.sort(sortFun);
+    Cs.sort(sortFun);
+    Es.sort(sortFun);
+    Ws.sort(sortFun);
+    Ds.sort(sortFun);
+    Ts.sort(sortFun);
     var all = [];
     all = all.concat(Cs, Es, Ws, Ds, Ts);
 
@@ -181,7 +184,10 @@ Package.prototype.arrange = function(callback) {
     console.log(json);
     this.items = json;
     this.save();
-    callback(null, {itemCount:this.itemCount, items: json});
+    callback(null, {
+        itemCount: this.itemCount,
+        items: json
+    });
 }
 
 var arrayToJson = function(array) {
@@ -228,7 +234,9 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             }
         }
         if(!flag)
-            return null;
+            return {
+                index: []
+            };
     } else {
          for(var i in items.items) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {

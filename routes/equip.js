@@ -68,9 +68,11 @@ exports.wearWeapon = function(req, res) {
 
         var packageIndex = -1;
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -178,9 +180,11 @@ exports.unWearWeapon = function(req, res) {
 
         var data = {};
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -225,6 +229,13 @@ exports.unWearWeapon = function(req, res) {
             level: level,
             forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
+        if(result == null || result.index.length == 0) {
+            data = {
+                code: Code.PACKAGE.NOT_ENOUGHT_SPACE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         packageIndex = result.index;
         if(packageIndex.length > 0) {
             character.unEquip(type);
@@ -287,7 +298,7 @@ exports.equip = function(req, res) {
     var data = {};
     var pkgType = msg.pkgType;
     var index = msg.index;
-    var eqId = msg.eqId; 
+    var eqId = msg.eqId;
     //背包从0开始
     if(utils.empty(index) ) {
         data = {
@@ -311,9 +322,11 @@ exports.equip = function(req, res) {
         //var item = player.packageEntity[pkgType].items[index];
         var item = player.packageEntity.items[index];
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -427,9 +440,11 @@ exports.unEquip = function(req, res) {
 
         var data = {};
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -459,7 +474,8 @@ exports.unEquip = function(req, res) {
         }
 
         var pkgType = "";
-        if(epId.indexOf("W9") < 0) {
+        //if(epId.indexOf("W9") < 0) {
+        if(epId.indexOf("W") >= 0) {
             pkgType = consts.PackageType.WEAPONS;
         } else {
             pkgType = consts.PackageType.EQUIPMENTS;
@@ -471,6 +487,13 @@ exports.unEquip = function(req, res) {
             level: character.equipmentsEntity.get(type).level,
             forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
+        if(result == null || result.index.length == 0) {
+            data = {
+                code: Code.PACKAGE.NOT_ENOUGHT_SPACE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         packageIndex = result.index;
         if (packageIndex.length > 0) {
             character.unEquip(type);
@@ -537,9 +560,11 @@ exports.upgrade = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {

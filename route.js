@@ -100,12 +100,10 @@ module.exports = function (app) {
 
     app.get("/package/_Set", authRequired, package._Set);
     app.get('/package/_AddItem', authRequired, package.addItem);
-    app.get("/package/arrange", authRequired, package.arrange );
+    app.get("/package/arrange", authRequired, package.arrange);
     app.get('/package/moveItem', authRequired, package.resetItem);
     app.get('/package/throwItem', authRequired, package.discardItem);
-
     app.get('/package/sellItem', authRequired, package.sellItem);
-    
     app.get('/package/userItem', authRequired, package.userItem);
 
     app.get('/player/enterScene', authRequired, player.enterScene);

@@ -379,7 +379,8 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         }
 
                         var player = playerUtil.getPlayer(character);
-                        createEPTInfo(player, serverId, registerType, loginName, character.characterId);
+                        //createEPTInfo(player, serverId, registerType, loginName, character.characterId);
+                        playerUtil.createEntity(character, serverId, registerType, loginName, characterId);
                         redis.release(client);
                         utils.invokeCallback(cb, null, player);
                     });
@@ -442,7 +443,8 @@ userDao.getCharacterAllInfo = function (serverId, registerType, loginName, chara
             return;
         }
         var character = results[0];
-        createEPTInfo(character, serverId, registerType, loginName, characterId);
+        //createEPTInfo(character, serverId, registerType, loginName, characterId);
+        playerUtil.createEntity(character, serverId, registerType, loginName, characterId);
 
         if(typeof needCalculateWeapon != "undefined" && needCalculateWeapon == true)
             character.updateAttribute();
@@ -573,50 +575,15 @@ userDao.getPlayerById = function(playerId, cb) {
                     }
                     var cId = replies.cId;
                     var level = replies.level;
-                    var hero = dataApi.heros.findById(cId);
-                    var character = {
-                        id: "S" + serverId + "C" + characterId,
-                        characterId: "S" + serverId + "C" + characterId,
-                        cId: cId,
-                        userId: replies.userId,
+                    var character = playerUtil.getPKCharacter({
                         serverId: serverId,
+                        characterId: characterId,
+                        cId: cId,
                         registerType: registerType,
                         loginName: loginName,
-                        nickname: replies.nickname,
-                        currentScene: replies.currentScene,
-                        x: parseInt(replies.x),
-                        y: parseInt(replies.y),
-                        experience: parseInt(replies.experience),
-                        buffs: JSON.parse(replies.buffs).buffs,
-                        level: parseInt(level),
-                        needExp: parseInt(replies.needExp),
-                        accumulated_xp: parseInt(replies.accumulated_xp),
-                        photo: replies.photo,
-                        hp: parseInt(replies.hp),
-                        maxHp: parseInt(replies.maxHp),
-                        anger: parseInt(replies.anger),
-                        attack: parseInt(replies.attack),
-                        defense: parseInt(replies.defense),
-                        focus: parseFloat(replies.focus),
-                        sunderArmor: parseFloat(replies.sunderArmor),
-                        speedLevel: parseInt(replies.speedLevel),
-                        speed: parseFloat(replies.speed),
-                        dodge: parseFloat(replies.dodge),
-                        criticalHit: parseFloat(replies.criticalHit),
-                        critDamage: parseFloat(replies.critDamage),
-                        block: parseFloat(replies.block),
-                        counter: parseFloat(replies.counter),
-                        gameCurrency: parseInt(replies.gameCurrency),
-                        money: parseInt(replies.money),
-                        equipments: JSON.parse(replies.equipments),
-                        skills: {
-                            currentSkill: JSON.parse(replies.currentSkill),
-                            activeSkills: JSON.parse(replies.activeSkills),
-                            passiveSkills: JSON.parse(replies.passiveSkills)
-                        },
-                        formation: JSON.parse(replies.formation).formation,
-                        partners: JSON.parse(replies.partners).partners
-                    };
+                        level: level,
+                        replies: replies
+                    });
 
                     async.parallel([
                         function(callback) {
@@ -633,8 +600,9 @@ userDao.getPlayerById = function(playerId, cb) {
                         var partners = results[0];
                         var player = new Opponent(character);
                         player.partners = partners;
-                        var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
-                        player.equipmentsEntity = equipments;
+                        //var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
+                        //player.equipmentsEntity = equipments;
+                        playerUtil.createPKEntity(player, serverId, registerType, loginName, characterId);
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
                             redis.release(client);
                             utils.invokeCallback(cb, null, player);

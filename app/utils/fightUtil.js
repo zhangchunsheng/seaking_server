@@ -51,6 +51,10 @@ fightUtil.reduceHp = function(attack_formation, defense_formation, attack, defen
             }
             defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         }
+        var awakenCondition = {
+            type: consts.skillTriggerConditionType.AWAKEN
+        };
+        defense.awakenSkill(consts.characterFightType.DEFENSE, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
     }
 }

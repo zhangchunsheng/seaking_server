@@ -70,6 +70,8 @@ var Player = function(opts) {
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
+    this.aptitudeEntity = opts.aptitudeEntity;
+    this.ghostEntity = opts.ghostEntity;
 
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
@@ -873,26 +875,23 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
     var index = 0;
     //var epType = utils.getEqType(item.itemId);
     var epType = utils.getEqTypeV2(item.itemId);
-
     var curEquipment = this.equipmentsEntity.get(epType);
     this.equipmentsEntity.equip(epType, {
         epid: item.itemId,
         level: item.level
     });
-
     if (curEquipment.epid != 0) {
-        index = player.packageEntity.addItem(this, pkgType, {
+        index = player.packageEntity.addItem(player, pkgType, {
             itemId: curEquipment.epid,
             itemNum: 1,
             level: curEquipment.level,
-            forgeLevel: curEquipment.forgeLevel
+            forgeLevel: curEquipment.forgeLevel || 0
         }, pIndex).index;
     } else {
         //player.packageEntity.removeItem(pkgType, pIndex);
         player.packageEntity.removeItem(pIndex, 1);
     }
     //this.updateAttribute();
-
     return index;
 };
 
@@ -1369,8 +1368,8 @@ Player.prototype.strip = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
 
@@ -1539,8 +1538,8 @@ Player.prototype.toJSON = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
 
@@ -1580,7 +1579,7 @@ Player.prototype.getBaseInfo = function() {
         buffs: this.buffs,
         formation: this.formation,
         gift: this.gift,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };

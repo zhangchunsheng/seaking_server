@@ -9,6 +9,7 @@ var utils = require('../../utils/utils');
 var dbUtil = require('../../utils/dbUtil');
 var redisService = require('../redisService');
 var aptitudeDao = require('../../dao/character/aptitudeDao');
+var Aptitude = require('../../domain/attribute/aptitude');
 
 var aptitudeService = module.exports;
 
@@ -24,4 +25,13 @@ aptitudeService.upgrade = function(array, player, type, cb) {
     redisService.setData(array, function(err, reply) {
         utils.invokeCallback(cb, err, aptitude[type].level);
     });
+}
+
+aptitudeService.createNewAptitude = function(aptitudeInfo, serverId, registerType, loginName, characterId) {
+    aptitudeInfo.serverId = serverId;
+    aptitudeInfo.registerType = registerType;
+    aptitudeInfo.loginName = loginName;
+    aptitudeInfo.characterId = characterId;
+    var aptitude = new Aptitude(aptitudeInfo);
+    return aptitude;
 }

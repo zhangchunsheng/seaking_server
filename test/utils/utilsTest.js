@@ -28,6 +28,7 @@ describe('utils test', function() {
 
         console.log(playerUtil.initAptitude(1));
         console.log(JSON.parse(playerUtil.initAptitude(1, "string")));
+        console.log(utils.getEqTypeV2("E10112"));
     });
 
     it('fightData', function() {

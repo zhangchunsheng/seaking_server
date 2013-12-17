@@ -34,7 +34,7 @@ exports.buyItem = function(req, res) {
     var index = msg.index;
     var npcId = msg.npcId;
     if(!index || !npcId){
-        return utils.send(msg, res, {code: Code.FAIL});
+        return utils.send(msg, res, {code: Code.ARGUMENT_EXCEPTION});
     }
     var uid = session.uid
         , serverId = session.serverId
@@ -43,7 +43,7 @@ exports.buyItem = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-  //  var currentScene = msg.currentScene;
+    // var currentScene = msg.currentScene;
     
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
@@ -57,8 +57,10 @@ exports.buyItem = function(req, res) {
             return;
         }*/
         var shops = dataApi.shops.findById(npcId);
-        if(!shops ){
-            return utils.send(msg, res, {code: Code.FAIL});
+        if(!shops ) {
+            return utils.send(msg, res, {
+                code: Code.SHOP.NOT_EXIST_NPCSHOP
+            });
         }
         var items = shops.shopData;
         var itemData = items[index];
@@ -97,12 +99,13 @@ exports.buyItem = function(req, res) {
                 code: Code.SHOP.NOT_EXIST_ITEM
             };
             utils.send(msg, res, data);
-            return ;
-            
+            return;
         }
-        if( type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS ) {
+        if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
             if(itemNum != 1) {
-                utils.send(msg, res, {code:code.FAIL});
+                utils.send(msg, res, {
+                     code:Code.ARGUMENT_EXCEPTION
+                });
                 return;    
             }
         } else {

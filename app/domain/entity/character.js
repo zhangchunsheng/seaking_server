@@ -432,9 +432,6 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
             if(i == consts.skillV2Type.TRIGGER_SKILL) {
                 anger = this.useTriggerSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
-            } else if(i == consts.skillV2Type.AWAKEN_SKILL) {
-                anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
-                angers.push(anger);
             }
         }
         for(var i = 0 ; i < angers.length ; i++) {
@@ -455,7 +452,68 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
             if(i == consts.skillV2Type.TRIGGER_SKILL) {
                 anger = this.useTriggerSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
-            } else if(i == consts.skillV2Type.AWAKEN_SKILL) {
+            }
+        }
+        for(var i = 0 ; i < angers.length ; i++) {
+            if(angers[i] == 100) {
+                anger = 100;
+                break;
+            }
+        }
+        if(anger >= 100) {
+            defenseData.triggerSkill = 1;
+        } else {
+            if(defenseData.triggerSkill != 1)
+                defenseData.triggerSkill = 0;
+        }
+    }
+    return anger;
+}
+
+/**
+ * 觉醒技能
+ * @param fightType
+ * @param condition
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param defense
+ * @param attacks
+ * @param defenses
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ * @param fightData
+ * @param attackData
+ * @param defenseData
+ * @returns {number}
+ */
+Character.prototype.awakenSkill = function(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var angers = [];
+    var anger = 0;
+    if(fightType == consts.characterFightType.ATTACK) {//攻击者
+        var skills = attack.skills;
+        for(var i in skills) {
+            if(i == consts.skillV2Type.AWAKEN_SKILL) {
+                anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                angers.push(anger);
+            }
+        }
+        for(var i = 0 ; i < angers.length ; i++) {
+            if(angers[i] == 100) {
+                anger = 100;
+                break;
+            }
+        }
+        if(anger >= 100) {
+            attackData.action = consts.attackAction.skill;
+        } else {
+            if(attackData.action != consts.attackAction.skill)
+                attackData.action = consts.attackAction.common;
+        }
+    } else if(fightType == consts.characterFightType.DEFENSE) {//防守者
+        var skills = defense.skills;
+        for(var i in skills) {
+            if(i == consts.skillV2Type.AWAKEN_SKILL) {
                 anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
@@ -500,7 +558,7 @@ Character.prototype.useAwakenSkill = function(attackSide, condition, attack_form
         return;
     }
     var skill = this.skills[consts.skillV2Type.TRIGGER_SKILL];
-    if(skillUtil.checkAwakenCondition(skill, condition)) {
+    if(skillUtil.checkAwakenCondition(skill, attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData)) {
         anger = skill.invokeScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
     return anger;
