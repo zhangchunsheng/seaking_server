@@ -380,13 +380,3 @@ utils.getCategoryHeroId = function(cId) {
     heroId = heroId.substr(0, 2) + 0 + heroId.substr(3);
     return heroId;
 }
-
-/**
- * 获得日期
- * @param time
- */
-utils.getDate = function(time) {
-    var date = new Date();
-    date.setTime(time);
-    return utils.getDaytime(date);
-}
