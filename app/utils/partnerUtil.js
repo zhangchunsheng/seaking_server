@@ -28,9 +28,11 @@ partnerUtil.initPartner = function(opts) {
     var hero = dataApi.heros.findById(opts.cId);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
+        characterId: "S" + opts.serverId + "C" + opts.characterId,
         kindId: opts.cId,
         cId: opts.cId,
         userId: opts.userId,
+        serverId: opts.serverId,
         registerType: opts.registerType,
         loginName: opts.loginName,
         nickname: hero.name,
@@ -163,9 +165,11 @@ partnerUtil.initPartnerV2 = function(opts) {
     var hero = dataApi.heros.findById(opts.cId);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
+        characterId: "S" + opts.serverId + "C" + opts.characterId,
         kindId: opts.cId,
         cId: opts.cId,
         userId: opts.userId,
+        serverId: opts.serverId,
         registerType: opts.registerType,
         loginName: opts.loginName,
         nickname: hero.name,
@@ -204,9 +208,11 @@ partnerUtil.initPartnerV2 = function(opts) {
 partnerUtil.getPlayer = function(opts) {
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
+        characterId: "S" + opts.serverId + "C" + opts.characterId,
         kindId: opts.cId,
         cId: opts.cId,
         userId: opts.replies.userId,
+        serverId: opts.serverId,
         registerType: opts.registerType,
         loginName: opts.loginName,
         nickname: opts.replies.nickname,

@@ -15,13 +15,14 @@ var Ghost = require('../../domain/attribute/ghost');
 var ghostService = module.exports;
 
 ghostService.upgrade = function(array, mainPlayer, player, cb) {
-    var characterId = utils.getRealCharacterId(player.id);
-    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
-    array.push(["hset", key, "ghostNum", player.ghostNum]);
+    var characterId = utils.getRealCharacterId(mainPlayer.id);
+    var key = dbUtil.getPlayerKey(mainPlayer.sid, mainPlayer.registerType, mainPlayer.loginName, characterId);
+    array.push(["hset", key, "ghostNum", mainPlayer.ghostNum]);
 
     if(player.id.indexOf("P") >= 0) {
         var partnerId = utils.getRealPartnerId(player.id);
         key = dbUtil.getPartnerKey(player.sid, player.registerType, player.loginName, characterId, partnerId);
+        console.log(key);
     }
     var field = "ghost";
     var ghost = player.ghost;

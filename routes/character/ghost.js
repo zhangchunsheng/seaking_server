@@ -100,7 +100,8 @@ exports.upgrade = function(req, res) {
         ghostService.upgrade(array, player, character, function(err, reply) {
             data = {
                 code: Code.OK,
-                level: reply
+                level: reply,
+                ghostNum: player.ghostNum
             };
             utils.send(msg, res, data);
         });
