@@ -28,6 +28,7 @@ var Ghost = function(opts) {
 
     this.level = parseInt(opts.level) || 0;
     this.number = parseInt(opts.number) || 0;
+    this.addGhostNumOneMinute = consts.addGhostNumOneMinute || 10;
 
     this.hp = 0;
     this.attack = 0;
@@ -94,13 +95,13 @@ Ghost.prototype.calculateValue = function() {
         this[dict[this.ghostData[i].attrId - 1]] += parseInt(this.ghostData[i].attrValue);
         this[dict[this.ghostData[i].attrId - 1] + "Info"] = this[dict[this.ghostData[i].attrId - 1]];
     }
-    if(this.nextLevelId != 0) {
+    /*if(this.nextLevelId != 0) {
         if(this[dict[this.ghostData[this.nextLevelId - 1].attrId - 1] + "Info"] == "") {
             this[dict[this.ghostData[this.nextLevelId - 1].attrId - 1] + "Info"] = "0 +" + this.ghostData[this.nextLevelId - 1].attrValue;
         } else {
             this[dict[this.ghostData[this.nextLevelId - 1].attrId - 1] + "Info"] += " +" + this.ghostData[this.nextLevelId - 1].attrValue;
         }
-    }
+    }*/
 }
 
 Ghost.prototype.strip = function() {
@@ -124,8 +125,7 @@ Ghost.prototype.strip = function() {
 Ghost.prototype.getInfo = function() {
     var data = {};
     data.ghost = {
-        level: this.level,
-        number: this.number
+        level: this.level
     };
     data.attrValue = {};
     for(var i = 1 ; i <= 9 ; i++) {

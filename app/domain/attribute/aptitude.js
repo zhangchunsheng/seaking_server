@@ -30,6 +30,9 @@ var Aptitude = function(opts) {
         if(typeof opts[i] != "undefined")
             this.aptitudeInfo[i] = opts[i];
     }
+    this.count = opts.count;
+    this.upgradeDate = opts.upgradeDate;
+
     this[consts.attrId.HP] = opts[consts.attrId.HP] || {"level":0};
     this[consts.attrId.ATTACK] = opts[consts.attrId.ATTACK] || {"level":0};
     this[consts.attrId.DEFENSE] = opts[consts.attrId.DEFENSE] || {"level":0};
@@ -104,7 +107,8 @@ Aptitude.prototype.calculateValue = function() {
         if(this[dict[i - 1]] == 0) {
             this[dict[i - 1]] = 0;
         }
-        this[dict[i - 1] + "Info"] = "" + this[dict[i - 1]] + " +" + (this.aptitudeData[dict[i - 1]] / 50).toFixed(2);
+        //this[dict[i - 1] + "Info"] = "" + this[dict[i - 1]] + " +" + (this.aptitudeData[dict[i - 1]] / 50).toFixed(2);
+        this[dict[i - 1] + "Info"] = "" + this[dict[i - 1]];
     }
 }
 

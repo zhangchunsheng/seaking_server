@@ -53,7 +53,7 @@ exports.getPartner = function(req, res) {
         }
         if(flag) {
             data = {
-                code: Code.PARTNER.EXISTS_CID
+                code: Code.PARTNER.EXISTS_PARTNER
             };
             utils.send(msg, res, data);
             return;

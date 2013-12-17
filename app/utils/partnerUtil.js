@@ -90,6 +90,8 @@ partnerUtil.initAptitude = function(cId, dataType) {
     for(var i in aptitudes) {
         data[aptitudes[i]] = {"level":0};
     }
+    data.count = 250;
+    data.upgradeDate = 1;
 
     if(dataType == "string") {
         data = JSON.stringify(data);

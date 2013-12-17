@@ -21,6 +21,7 @@ ghostService.upgrade = function(array, player, cb) {
     var ghost = player.ghost;
     var value = JSON.stringify(ghost);
     array.push(["hset", key, field, value]);
+    array.push(["hset", key, "ghostNum", player.ghostNum]);
     redisService.setData(array, function(err, reply) {
         utils.invokeCallback(cb, err, ghost.level);
     });

@@ -258,6 +258,18 @@ module.exports = {
         COUNTER: 9
     },
 
+    addGhostNumOneMinute: 10,
+
+    MONEY_TYPE: {
+        GOLDEN: "1",
+        GAME_CURRENCY: "2"
+    },
+
+    upgradeApititude: {
+        money: 1000,
+        gameCurrency: 2
+    },
+
     correspondingSkillsType: {
         1: "activeSkills",
         2: "passiveSkills"

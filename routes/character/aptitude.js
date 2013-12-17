@@ -35,6 +35,11 @@ exports.upgrade = function(req, res) {
         , loginName = session.loginName
         , type = msg.type;
 
+    var mtype = msg.mtype;// 金币类型 1 - 金币 2 - 元宝
+    if(utils.empty(mtype)) {
+        mtype = 0;
+    }
+
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
 
@@ -48,7 +53,76 @@ exports.upgrade = function(req, res) {
     }
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var array = [];
+        var aptitude = player.aptitude;
 
+        // check upgradeDate
+        var date = new Date();
+        var upgradeDate = aptitude.upgradeDate || 1;
+        var time = date.getTime();
+        if(time < upgradeDate) {
+            data = {
+                code: Code.CHARACTER.WRONG_DATE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        aptitude[type].count = parseInt(aptitude[type].count);
+        aptitude.count = parseInt(aptitude.count);
+        if(aptitude[type].count <= 0) {
+            data = {
+                code: Code.CHARACTER.TOP_LEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.getDate(time) == utils.getDate(upgradeDate)) {
+            // check money gamecurrency
+            if(mtype != 0) {
+                if(mtype == consts.MONEY_TYPE.GOLDEN) {
+                    var money = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.money;
+                    if(player.money >= money) {
+                        player.money = player.money - money;
+                        aptitude[type].level = parseInt(aptitude[type].level) + 1;
+                        aptitude.upgradeTimeOneDay += 1;
+                        aptitude[type].count--;
+                        aptitude.count--;
+                    } else {
+                        data = {
+                            code: Code.SHOP.NOT_ENOUGHT_MONEY
+                        };
+                        utils.send(msg, res, data);
+                        return;
+                    }
+                } else if(mtype == consts.MONEY_TYPE.GAME_CURRENCY) {
+                    var gameCurrency = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.gameCurrency;
+                    if(player.gameCurrency >= gameCurrency) {
+                        player.gameCurrency = player.gameCurrency - gameCurrency;
+                        aptitude[type].level = parseInt(aptitude[type].level) + 1;
+                        aptitude.upgradeTimeOneDay += 1;
+                        aptitude[type].count--;
+                        aptitude.count--;
+                    } else {
+                        data = {
+                            code: Code.SHOP.NOT_ENOUGHT_GAMECURRENCY
+                        };
+                        utils.send(msg, res, data);
+                        return;
+                    }
+                } else {
+                    data = {
+                        code: Code.SHOP.WRONG_MONEY_TYPE
+                    };
+                    utils.send(msg, res, data);
+                    return;
+                }
+            }
+        } else {
+            aptitude[type].level = parseInt(aptitude[type].level) + 1;
+            aptitude.upgradeDate = time;
+            aptitude.upgradeTimeOneDay = 1;
+            aptitude[type].count--;
+            aptitude.count--;
+        }
         aptitudeService.upgrade(array, player, type, function(err, reply) {
             data = {
                 code: Code.OK,

@@ -18,10 +18,10 @@ aptitudeService.upgrade = function(array, player, type, cb) {
     var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
     var field = "aptitude";
     var aptitude = player.aptitude;
-    console.log(aptitude);
-    aptitude[type].level = parseInt(aptitude[type].level) + 1;
     var value = JSON.stringify(aptitude);
     array.push(["hset", key, field, value]);
+    array.push(["hset", key, "money", player.money]);
+    array.push(["hset", key, "gameCurrency", player.gameCurrency]);
     redisService.setData(array, function(err, reply) {
         utils.invokeCallback(cb, err, aptitude[type].level);
     });

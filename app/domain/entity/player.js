@@ -53,7 +53,7 @@ var Player = function(opts) {
     var heros = dataApi.heros.data;
     //this.nextLevelExp = formula.calculateAccumulated_xp(heros[this.cId]["xpNeeded"], heros[this.cId]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
     this.nextLevelExp = opts.nextLevelExp;
-    this.herosData = dataApi.herosV2.findById(this.kindId);//heros
+    this.herosData = dataApi.herosV2.findById(this.kindId) || {};//heros
     this.curTasks = opts.curTasks;
     this.range = opts.range || 2;
 
@@ -64,8 +64,8 @@ var Player = function(opts) {
     this.sid = opts.serverId;
     this.regionId = opts.serverId;
 
-    this.money = opts.money;
-    this.gameCurrency = opts.gameCurrency;
+    this.money = parseInt(opts.money);
+    this.gameCurrency = parseInt(opts.gameCurrency);
 
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
@@ -1334,6 +1334,7 @@ Player.prototype.strip = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        heroId: this.herosData.heroId,
         showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
@@ -1369,6 +1370,7 @@ Player.prototype.strip = function() {
         partners: this.getPartners(),
         gift: this.gift,
         ghost: this.ghostEntity.getInfo(),
+        ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
     };
 };
@@ -1504,6 +1506,7 @@ Player.prototype.toJSON = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        heroId: this.herosData.heroId,
         showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
@@ -1539,6 +1542,7 @@ Player.prototype.toJSON = function() {
         partners: this.getPartners(),
         gift: this.gift,
         ghost: this.ghostEntity.getInfo(),
+        ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
     };
 };
@@ -1549,6 +1553,7 @@ Player.prototype.getBaseInfo = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        heroId: this.herosData.heroId,
         showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
@@ -1580,6 +1585,7 @@ Player.prototype.getBaseInfo = function() {
         formation: this.formation,
         gift: this.gift,
         ghost: this.ghostEntity.getInfo(),
+        ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
     };
 };

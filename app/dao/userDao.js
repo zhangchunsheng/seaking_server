@@ -77,6 +77,11 @@ userDao.updateUserInfo = function(serverId, registerType, loginName, cb) {
 
 /**
  * 记录玩家进入游戏，更新hp等信息
+ * @param player
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param cb
  */
 userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
     userDao.getUserInfo(serverId, registerType, loginName, function(err, reply) {
@@ -85,14 +90,54 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
         if(typeof reply.lastLoginDate != "undefined")
             lastLoginDate = reply.lastLoginDate;
 
-        var time = date.getTime() - lastLoginDate;
-        time = Math.floor(time / 1000);
-        var hp = player.hpRecoverySpeed * time;
+        var updateRoleDate = new date.getTime();
+        if(typeof reply.updateRoleDate != "undefined")
+            updateRoleDate = reply.updateRoleDate;
 
-        playerDao.appPlayerAndPartnersHP(player, hp, cb);
+        var hp = formula.calculateAddHp(player, date, updateRoleDate);
+        var ghost = formula.calculateAddGhost(player, date, updateRoleDate);
+
+        playerDao.updatePlayerAndPartnersInfo(player, {
+            hp: hp,
+            ghost: ghost
+        }, cb);
 
         var userInfo = {
-            lastLoginDate: date.getTime()
+            lastLoginDate: date.getTime(),
+            updateRoleDate: date.getTime()
+        };
+        userDao.saveUserInfo(userInfo, serverId, registerType, loginName, function(err, reply) {
+
+        });
+    });
+}
+
+/**
+ * 更新血量和魂力
+ * @param player
+ * @param serverId
+ * @param registerType
+ * @param loginName
+ * @param cb
+ */
+userDao.updateRoleData = function(player, serverId, registerType, loginName, cb) {
+    userDao.getUserInfo(serverId, registerType, loginName, function(err, reply) {
+        var date = new Date();
+
+        var updateRoleDate = new date.getTime();
+        if(typeof reply.updateRoleDate != "undefined")
+            updateRoleDate = reply.updateRoleDate;
+
+        var hp = formula.calculateAddHp(player, date, updateRoleDate);
+        var ghost = formula.calculateAddGhost(player, date, updateRoleDate);
+
+        playerDao.updatePlayerAndPartnersInfo(player, {
+            hp: hp,
+            ghost: ghost
+        }, cb);
+
+        var userInfo = {
+            updateRoleDate: date.getTime()
         };
         userDao.saveUserInfo(userInfo, serverId, registerType, loginName, function(err, reply) {
 
@@ -549,6 +594,11 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
     });
 };
 
+/**
+ * 获得指定角色信息
+ * @param playerId
+ * @param cb
+ */
 userDao.getPlayerById = function(playerId, cb) {
     var key = "";
     redis.command(function(client) {
@@ -603,7 +653,7 @@ userDao.getPlayerById = function(playerId, cb) {
                         //var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
                         //player.equipmentsEntity = equipments;
                         playerUtil.createPKEntity(player, serverId, registerType, loginName, characterId);
-                        userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
+                        userDao.updateRoleData(player, serverId, registerType, loginName, function(err, reply) {
                             redis.release(client);
                             utils.invokeCallback(cb, null, player);
                         });

@@ -50,8 +50,10 @@ module.exports = {
 
     SHOP: {
         NOT_ENOUGHT_MONEY: 1101,
-        NOT_EXIST_ITEM:1102,
-        NOT_EXIST_NPCSHOP:1103
+        NOT_EXIST_ITEM: 1102,
+        NOT_EXIST_NPCSHOP: 1103,
+        NOT_ENOUGHT_GAMECURRENCY: 1104,
+        WRONG_MONEY_TYPE: 1105
     },
 
     FRIEND: {
@@ -82,11 +84,14 @@ module.exports = {
 
     CHARACTER: {
         EXISTS_NICKNAME: 1801,
-        NOMORE_GHOSTNUM: 1802
+        NOMORE_GHOSTNUM: 1802,
+        WRONG_DATE: 1803,
+        NO_FREETIME_LEFT: 1804,
+        TOP_LEVEL: 1805
     },
 
     PARTNER: {
-        EXISTS_CID: 1810,
+        EXISTS_PARTNER: 1810,
         NOT_EXISTS_CID: 1811
     },
 

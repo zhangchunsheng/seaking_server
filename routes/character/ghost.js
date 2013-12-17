@@ -53,14 +53,14 @@ exports.upgrade = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        if(utils.empty(ghost.number) || parseInt(ghost.number) < parseInt(ghostData.costGhostNum)) {
+        if(utils.empty(player.ghostNum) || parseInt(player.ghostNum) < parseInt(ghostData.costGhostNum)) {
             data = {
                 code: Code.CHARACTER.NOMORE_GHOSTNUM
             };
             utils.send(msg, res, data);
             return;
         }
-        ghost.number = parseInt(ghost.number) - parseInt(ghostData.costGhostNum);
+        player.ghostNum = parseInt(player.ghostNum) - parseInt(ghostData.costGhostNum);
         ghostService.upgrade(array, player, function(err, reply) {
             data = {
                 code: Code.OK,
