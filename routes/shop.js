@@ -31,10 +31,9 @@ exports.buyItem = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var itemId = msg.itemId
-        , itemNum = msg.itemNum;
+    var index = msg.index;
     var npcId = msg.npcId;
-    if(!itemId || !itemNum || !npcId){
+    if(!index || !npcId){
         return utils.send(msg, res, {code: Code.FAIL});
     }
     var uid = session.uid
@@ -62,19 +61,17 @@ exports.buyItem = function(req, res) {
             return utils.send(msg, res, {code: Code.FAIL});
         }
         var items = shops.shopData;
-        for(var i = 0 ; i < items.length ; i++) {
-            if(items[i].indexOf(itemId) == 0) {
-                result = true;
-                break;
-            }
-        }
-        if(!result) {
+        var itemData = items[index];
+        if(!itemData) {
             data = {
                 code: Code.SHOP.NOT_EXIST_ITEM
             };
             utils.send(msg, res, data);
             return;
         }
+        var data = itemData.split("|");
+        var itemId = data[0];
+        var itemNum = data[1]||1;
         
 //      if(!) {
 //          next(null,{

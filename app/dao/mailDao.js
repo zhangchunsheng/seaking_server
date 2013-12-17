@@ -168,7 +168,7 @@ mailDao.get = function(client, msg, callback, mode){
 			var find = function(start, end) {
  				if(start+1 == end  ){
  					if(mode){
- 						callback({index:end, data:null, length:length});return;
+ 						callback(null, 	{index:end, data:null, length:length});return;
  					}
  					callback("not find:"+msg[property], null);return;
  				}
