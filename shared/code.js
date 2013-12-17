@@ -87,7 +87,9 @@ module.exports = {
         NOMORE_GHOSTNUM: 1802,
         WRONG_DATE: 1803,
         NO_FREETIME_LEFT: 1804,
-        TOP_LEVEL: 1805
+        TOP_LEVEL: 1805,
+        NO_APTITUDEDATA: 1806,
+        NO_GHOSTDATA: 1807
     },
 
     PARTNER: {

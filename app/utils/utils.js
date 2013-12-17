@@ -159,6 +159,17 @@ utils.getRealCharacterId = function(characterId) {
     return characterId;
 }
 
+/**
+ *
+ * @param partnerId
+ * @returns {*}
+ */
+utils.getPartnerCId = function(partnerId) {
+    var cId;
+    cId = partnerId.substr(partnerId.indexOf("C") + 1, partnerId.indexOf("P"));
+    return cId;
+}
+
 utils.getTaskType = function(task) {
     var type = "";//1 - 主线任务 2 - 支线任务 3 - 日常任务 4 - 活动任务
     if(task.type == 1) {

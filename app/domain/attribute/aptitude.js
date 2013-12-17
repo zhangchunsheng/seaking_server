@@ -96,7 +96,11 @@ util.inherits(Aptitude, Persistent);
 module.exports = Aptitude;
 
 Aptitude.prototype.initAptitude = function(opts) {
-    var cId = utils.getRealCharacterId(this.playerId);
+    if(this.playerId.indexOf("P") >= 0) {
+        var cId = utils.getPartnerCId(this.playerId);
+    } else {
+        var cId = utils.getRealCharacterId(this.playerId);
+    }
     var heroId = utils.getCategoryHeroId(cId);
     this.heroId = heroId;
     this.aptitudeData = dataApi.aptitudes.findById(heroId);

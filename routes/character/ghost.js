@@ -14,6 +14,7 @@ var taskService = require('../../app/services/taskService');
 var redisService = require('../../app/services/redisService');
 var Code = require('../../shared/code');
 var utils = require('../../app/utils/utils');
+var partnerUtil = require('../../app/utils/partnerUtil');
 var consts = require('../../app/consts/consts');
 var EntityType = require('../../app/consts/consts').EntityType;
 var dataApi = require('../../app/utils/dataApi');
@@ -35,16 +36,51 @@ exports.upgrade = function(req, res) {
         , registerType = session.registerType
         , loginName = session.loginName;
 
-    var playerId = session.playerId;
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var array = [];
 
-        var ghost = player.ghost;
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var ghost = character.ghost;
+        if(utils.empty(ghost)) {
+            data = {
+                code: Code.CHARACTER.NO_GHOSTDATA
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         ghost.level = parseInt(ghost.level) + 1;
-        var heroId = utils.getCategoryHeroId(player.cId);
+        var heroId = utils.getCategoryHeroId(character.cId);
         var ghostData = ghosts[heroId][ghost.level - 1];
         if(utils.empty(ghostData)) {
             data = {
@@ -61,7 +97,7 @@ exports.upgrade = function(req, res) {
             return;
         }
         player.ghostNum = parseInt(player.ghostNum) - parseInt(ghostData.costGhostNum);
-        ghostService.upgrade(array, player, function(err, reply) {
+        ghostService.upgrade(array, player, character, function(err, reply) {
             data = {
                 code: Code.OK,
                 level: reply

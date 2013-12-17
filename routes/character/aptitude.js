@@ -14,6 +14,7 @@ var taskService = require('../../app/services/taskService');
 var redisService = require('../../app/services/redisService');
 var Code = require('../../shared/code');
 var utils = require('../../app/utils/utils');
+var partnerUtil = require('../../app/utils/partnerUtil');
 var consts = require('../../app/consts/consts');
 var EntityType = require('../../app/consts/consts').EntityType;
 var dataApi = require('../../app/utils/dataApi');
@@ -40,7 +41,19 @@ exports.upgrade = function(req, res) {
         mtype = 0;
     }
 
-    var playerId = session.playerId;
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
@@ -53,7 +66,30 @@ exports.upgrade = function(req, res) {
     }
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var array = [];
-        var aptitude = player.aptitude;
+
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var aptitude = character.aptitude;
+        if(utils.empty(aptitude)) {
+            data = {
+                code: Code.CHARACTER.NO_APTITUDEDATA
+            };
+            utils.send(msg, res, data);
+            return;
+        }
 
         // check upgradeDate
         var date = new Date();
@@ -129,7 +165,7 @@ exports.upgrade = function(req, res) {
             aptitude[type].count--;
             aptitude.count--;
         }
-        aptitudeService.upgrade(array, player, type, function(err, reply) {
+        aptitudeService.upgrade(array, player, character, type, function(err, reply) {
             data = {
                 code: Code.OK,
                 level: reply,

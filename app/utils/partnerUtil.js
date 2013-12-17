@@ -59,8 +59,8 @@ partnerUtil.initPartner = function(opts) {
             activeSkills: opts.skills.activeSkills,
             passiveSkills: opts.skills.passiveSkills
         },
-        ghost: JSON.parse(opts.replies.ghost || partnerUtil.initGhost("string")),
-        aptitude: JSON.parse(opts.replies.aptitude || partnerUtil.initAptitude(opts.cId, "string"))
+        ghost: partnerUtil.initGhost(),
+        aptitude: partnerUtil.initAptitude(opts.cId)
     };
     return character;
 }
@@ -88,10 +88,11 @@ partnerUtil.initAptitude = function(cId, dataType) {
 
     var data = {};
     for(var i in aptitudes) {
-        data[aptitudes[i]] = {"level":0};
+        data[aptitudes[i]] = {"level":0,"count":50};
     }
     data.count = 250;
     data.upgradeDate = 1;
+    data.upgradeTimeOneDay = 0;
 
     if(dataType == "string") {
         data = JSON.stringify(data);
@@ -194,8 +195,52 @@ partnerUtil.initPartnerV2 = function(opts) {
             activeSkills: opts.skills.activeSkills,
             passiveSkills: opts.skills.passiveSkills
         },
+        ghost: partnerUtil.initGhost(),
+        aptitude: partnerUtil.initAptitude(opts.cId)
+    };
+    return character;
+}
+
+partnerUtil.getPlayer = function(opts) {
+    var character = {
+        id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
+        kindId: opts.cId,
+        cId: opts.cId,
+        userId: opts.replies.userId,
+        registerType: opts.registerType,
+        loginName: opts.loginName,
+        nickname: opts.replies.nickname,
+        experience: parseInt(opts.replies.experience),
+        level: opts.level,
+        needExp: parseInt(opts.replies.needExp),
+        accumulated_xp: parseInt(opts.replies.accumulated_xp),
+        photo: opts.replies.photo,
+        hp: parseInt(opts.replies.hp),
+        maxHp: parseInt(opts.replies.maxHp),
+        anger: parseInt(opts.replies.anger),
+        attack: parseInt(opts.replies.attack),
+        defense: parseInt(opts.replies.defense),
+        focus: parseFloat(opts.replies.focus),
+        speedLevel: parseInt(opts.replies.speedLevel),
+        speed: parseFloat(opts.replies.speed),
+        dodge: parseFloat(opts.replies.dodge),
+        criticalHit: parseFloat(opts.replies.criticalHit),
+        critDamage: parseFloat(opts.replies.critDamage),
+        block: parseFloat(opts.replies.block),
+        counter: parseFloat(opts.replies.counter),
+        equipments: JSON.parse(opts.replies.equipments),
+        skills: {
+            currentSkill: opts.replies.currentSkill ? JSON.parse(opts.replies.currentSkill) : {},
+            activeSkills: JSON.parse(opts.replies.activeSkills),
+            passiveSkills: JSON.parse(opts.replies.passiveSkills)
+        },
+        buffs: opts.replies.buffs ? JSON.parse(opts.replies.buffs).buffs : buffUtil.getInitBuff(),
         ghost: JSON.parse(opts.replies.ghost || partnerUtil.initGhost("string")),
         aptitude: JSON.parse(opts.replies.aptitude || partnerUtil.initAptitude(opts.cId, "string"))
     };
     return character;
+}
+
+partnerUtil.getPlayerV2 = function(opts) {
+
 }

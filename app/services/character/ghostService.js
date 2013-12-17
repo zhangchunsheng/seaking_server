@@ -14,14 +14,19 @@ var Ghost = require('../../domain/attribute/ghost');
 
 var ghostService = module.exports;
 
-ghostService.upgrade = function(array, player, cb) {
+ghostService.upgrade = function(array, mainPlayer, player, cb) {
     var characterId = utils.getRealCharacterId(player.id);
     var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+    array.push(["hset", key, "ghostNum", player.ghostNum]);
+
+    if(player.id.indexOf("P") >= 0) {
+        var partnerId = utils.getRealPartnerId(player.id);
+        key = dbUtil.getPartnerKey(player.sid, player.registerType, player.loginName, characterId, partnerId);
+    }
     var field = "ghost";
     var ghost = player.ghost;
     var value = JSON.stringify(ghost);
     array.push(["hset", key, field, value]);
-    array.push(["hset", key, "ghostNum", player.ghostNum]);
     redisService.setData(array, function(err, reply) {
         utils.invokeCallback(cb, err, ghost.level);
     });

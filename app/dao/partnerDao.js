@@ -16,6 +16,7 @@ var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
 var buffUtil = require('../utils/buffUtil');
+var playerUtil = require('../utils/playerUtil');
 var partnerUtil = require('../utils/partnerUtil');
 var message = require('../i18n/zh_CN.json');
 var formula = require('../consts/formula');
@@ -97,42 +98,18 @@ function getMultiPartner(serverId, registerType, loginName, characterId, partner
 function generalPartner(serverId, registerType, loginName, characterId, partnerId, replies) {
     var cId = replies.cId;
     var level = parseInt(replies.level);
-    var hero = dataApi.heros.findById(cId);
-    var character = {
-        id: "S" + serverId + "C" + characterId + "P" + partnerId,
-        kindId: cId,
-        cId: cId,
-        userId: replies.userId,
+    var character = partnerUtil.getPlayer({
+        serverId: serverId,
         registerType: registerType,
         loginName: loginName,
-        nickname: replies.nickname,
-        experience: parseInt(replies.experience),
+        characterId: characterId,
+        partnerId: partnerId,
+        cId: cId,
         level: level,
-        needExp: parseInt(replies.needExp),
-        accumulated_xp: parseInt(replies.accumulated_xp),
-        photo: replies.photo,
-        hp: parseInt(replies.hp),
-        maxHp: parseInt(replies.maxHp),
-        anger: parseInt(replies.anger),
-        attack: parseInt(replies.attack),
-        defense: parseInt(replies.defense),
-        focus: parseFloat(replies.focus),
-        speedLevel: parseInt(replies.speedLevel),
-        speed: parseFloat(replies.speed),
-        dodge: parseFloat(replies.dodge),
-        criticalHit: parseFloat(replies.criticalHit),
-        critDamage: parseFloat(replies.critDamage),
-        block: parseFloat(replies.block),
-        counter: parseFloat(replies.counter),
-        equipments: JSON.parse(replies.equipments),
-        skills: {
-            currentSkill: replies.currentSkill ? JSON.parse(replies.currentSkill) : {},
-            activeSkills: JSON.parse(replies.activeSkills),
-            passiveSkills: JSON.parse(replies.passiveSkills)
-        },
-        buffs: replies.buffs ? JSON.parse(replies.buffs).buffs : buffUtil.getInitBuff()
-    };
-    character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
+        replies: replies
+    });
+    //character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
+    playerUtil.createPKEntity(character, serverId, registerType, loginName, characterId + "P" + partnerId);
     var Partner = require('../domain/entity/partner');
     var partner = new Partner(character);
     return partner;
@@ -216,7 +193,8 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
 
                         dbUtil.getMultiCommand(array, key, character);
                         client.multi(array).exec(function(err, replies) {
-                            character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
+                            //character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
+                            playerUtil.createPKEntity(character, serverId, registerType, loginName, characterId + "P" + partnerId);
                             var Partner = require('../domain/entity/partner');
                             var partner = new Partner(character);
                             redis.release(client);

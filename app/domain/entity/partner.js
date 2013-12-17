@@ -61,8 +61,8 @@ Partner.prototype.strip = function() {
         equipments: this.equipmentsEntity.getInfo(),
         skills: this.skills,
         buffs: this.buffs,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
 
@@ -94,7 +94,7 @@ Partner.prototype.toJSON = function() {
         equipments: this.equipmentsEntity.getInfo(),
         skills: this.skills,
         buffs: this.buffs,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
