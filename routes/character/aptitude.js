@@ -133,6 +133,7 @@ exports.upgrade = function(req, res) {
             data = {
                 code: Code.OK,
                 level: reply,
+                count: aptitude[type].count,
                 money: player.money,
                 gameCurrency: player.gameCurrency
             };

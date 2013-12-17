@@ -30,6 +30,7 @@ var Aptitude = function(opts) {
         if(typeof opts[i] != "undefined")
             this.aptitudeInfo[i] = opts[i];
     }
+    //this.aptitudeInfo.count = opts.count;
     this.count = opts.count;
     this.upgradeDate = opts.upgradeDate;
 
