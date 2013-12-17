@@ -128,7 +128,7 @@ exports.buyItem = function(req, res) {
         var item = {
             itemId: itemId,
             itemNum: itemNum,
-            level: 1
+            level: itemInfo.level || 1
         }
 
         var result = player.buyItem(type, item, costMoney);
