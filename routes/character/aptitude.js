@@ -115,6 +115,12 @@ exports.upgrade = function(req, res) {
                     utils.send(msg, res, data);
                     return;
                 }
+            } else {
+                data = {
+                    code: Code.CHARACTER.NO_FREETIME_LEFT
+                };
+                utils.send(msg, res, data);
+                return;
             }
         } else {
             aptitude[type].level = parseInt(aptitude[type].level) + 1;
