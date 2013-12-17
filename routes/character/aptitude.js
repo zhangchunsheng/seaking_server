@@ -132,7 +132,9 @@ exports.upgrade = function(req, res) {
         aptitudeService.upgrade(array, player, type, function(err, reply) {
             data = {
                 code: Code.OK,
-                level: reply
+                level: reply,
+                money: player.money,
+                gameCurrency: player.gameCurrency
             };
             utils.send(msg, res, data);
         });
