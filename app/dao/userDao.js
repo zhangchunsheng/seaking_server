@@ -90,7 +90,7 @@ userDao.logLogin = function(player, serverId, registerType, loginName, cb) {
         if(typeof reply.lastLoginDate != "undefined")
             lastLoginDate = reply.lastLoginDate;
 
-        var updateRoleDate = new date.getTime();
+        var updateRoleDate = date.getTime();
         if(typeof reply.updateRoleDate != "undefined")
             updateRoleDate = reply.updateRoleDate;
 
