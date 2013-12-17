@@ -177,19 +177,32 @@ exports.sellItem = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-
-    var type = msg.type,
-        itemId = msg.itemId,
+    var index = msg.index,
         itemNum = msg.itemNum;
-
+    if(!index || !itemNum) {
+        return utils.send(msg, res, {code: Code.FAIL});
+    }
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var itemInfo = {};
-        if("items" == type) {
-            itemInfo = dataApi.item.findById(itemId);
-        } else {
-            itemInfo = dataApi.equipmentLevelup.findById(itemId);
+        var item = player.packageEntity.get(index);
+        if(!item || item.itemNum < itemNum){
+            return utils.send(msg, res, {code: Code.FAIL});
         }
+        var type = player.packageEntity.getItemType(item);
+        var itemId = item.itemId;
+        var type;
+        if(itemId.indexOf("D") >= 0) {
+            type = PackageType.ITEMS;
+            itemInfo = dataApi.item.findById(itemId);
+        } else if(itemId.indexOf("E") >= 0) {
+            type = PackageType.EQUIPMENTS;
+            itemInfo = dataApi.equipment.findById(itemId);
+        } else if(itemId.indexOf("W") >= 0){
+            type = PackageType.WEAPONS;
+            itemInfo = dataApi.weapons.findById(itemId);
+        }
+        console.log("itemInfo",itemInfo);
         if(!itemInfo) {
             data = {
                 code:Code.PACKAGE.NOT_EXIST_ITEM
@@ -204,17 +217,21 @@ exports.sellItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        var price = itemInfo.price;
+        var price = itemInfo.price / 2;
         var incomeMoney = price * itemNum;
         var result = removeItem(req, res, msg, player);
         if(!!result) {
+            
             player.money += incomeMoney;
-            //player.save();
+            player.save();
+
             data = {
                 code: consts.MESSAGE.RES,
-                money: player.money,
-                changePackage: result,
-                type: type
+                data:{
+                    money: player.money,
+                    packageChange: result
+                }
+                
                 //,itemInfo: itemInfo
             };
             async.parallel([
@@ -235,27 +252,22 @@ exports.sellItem = function(req, res) {
                     code: Code.FAIL,
                     err: err
                 });return;}*/
+            console.log(err);
                 utils.send(msg, res, data);
             });
+        }else{
+            utils.send(msg, res, {code: code.FAIL});
         }
     });
 }
 
 function removeItem(req, res, msg, player) {
-    var type = msg.type
-        ,index = msg.index
-        ,itemId = msg.itemId
+    var index = msg.index
         ,itemNum = msg.itemNum;
     var itemInfo = {};
-    if("items" == type) {
-        itemInfo = dataApi.item.findById(itemId);
-    } else {
-        itemInfo = dataApi.equipmentLevelup.findById(itemId);
-    }
-
     var data = {};
 
-    var checkResult = player.packageEntity.checkItem(type, index, itemId);
+    var checkResult = player.packageEntity.checkItem( index);
     if(!checkResult ) {
         data = {
             code: Code.PACKAGE.NOT_EXIST_ITEM
@@ -270,10 +282,10 @@ function removeItem(req, res, msg, player) {
         utils.send(msg, res, data);
         return 0;
     }
-    if(item = player.packageEntity.removeItem(type, index, itemNum)) {
+    if(item = player.packageEntity.removeItem( index, itemNum)) {
         return item;
     }
-    return  {};
+    return  null;
 }
 
 /**
@@ -299,8 +311,7 @@ exports.discardItem = function(req, res) {
         if(result >= 0) {
             data = {
                 code:consts.MESSAGE.RES,
-                item: {
-                    type: msg.type,
+                data: {
                     index: msg.index,
                     itemNum: result,
                     itemId: msg.itemId
@@ -337,7 +348,6 @@ exports.resetItem = function(req, res) {
 
     var start = msg.start;
     var end = msg.end;
-    var type = msg.type;
 
     var uid = session.uid
         , serverId = session.serverId
@@ -349,8 +359,8 @@ exports.resetItem = function(req, res) {
 
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var startItem  =  player.packageEntity[type].items[start];
-        var endItem =  player.packageEntity[type].items[end];
+        var startItem  =  player.packageEntity.items[start];
+        var endItem =  player.packageEntity.items[end];
         if(startItem == null) {
             data = {
                 code: Code.FAIL
@@ -358,12 +368,12 @@ exports.resetItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        player.packageEntity[type].items[start] = endItem;
-        player.packageEntity[type].items[end] = startItem;
+        player.packageEntity.items[start] = endItem;
+        player.packageEntity.items[end] = startItem;
         player.packageEntity.save();
         data = {
             code:Code.OK,
-            items:[{
+            data:[{
                 index: start,
                 item: endItem
             },{
@@ -422,10 +432,16 @@ exports.userItem = function(req, res) {
             return;
         }
         var itemInfo = null;
-        if("items" == type) {
-            itemInfo = dataApi.item.findById(Item.itemId);
-        } else {
-            itemInfo = dataApi.equipmentLevelup.findById(Item.itemId);
+        var type ;
+        if(itemId.indexOf("D") >= 0) {
+            type = PackageType.ITEMS;
+            itemInfo = dataApi.item.findById(itemId);
+        } else if(itemId.indexOf("E") >= 0) {
+            type = PackageType.EQUIPMENTS;
+            itemInfo = dataApi.equipment.findById(itemId);
+        } else if(itemId.indexOf("W") >= 0){
+            type = PackageType.WEAPONS;
+            itemInfo = dataApi.weapons.findById(itemId);
         }
         if(player.level < itemInfo.needLevel) {
             data = {
@@ -571,6 +587,85 @@ exports.userItem = function(req, res) {
         }
     });
 }
+
+exports._Set = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+       var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var package = player.packageEntity;
+        package.itemCount = msg.itemCount;
+        package.items = JSON.parse(msg.items);
+        package.save();
+        async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                utils.send(msg, res, {code: Code.OK, data:msg.items});
+            });
+     });
+}
+
+/**
+ * 整理背包
+ * @param req
+ * @param res
+ */
+exports.arrange = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+       var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var package = player.packageEntity;
+        package.arrange(function(err, r) {
+            if(err) {
+                utils.send(msg, res, {
+                    code: Code.FAIL
+                });
+                return;
+            }
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                utils.send(msg, res,{code: Code.OK, data: r});
+            });
+        });
+    });
+}
+
 exports.unlock = function(req, res) {
     var msg = req.query;
     var end = msg.end;
@@ -584,7 +679,7 @@ exports.unlock = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
      userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-         var items =  player.packageEntity[type];
+         var items =  player.packageEntity;
          if( end < items.itemCount) {
             utils.send(msg, res, {
                 code: Code.FAIL

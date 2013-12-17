@@ -68,6 +68,7 @@ Enemy.prototype.updateFightValue = function() {
     var speedLevel = 0;
     var hp = 0;
     var focus = 0;
+    var sunderArmor = 0;
     var criticalHit = 0;
     var critDamage = 0;
     var dodge = 0;
@@ -83,6 +84,7 @@ Enemy.prototype.updateFightValue = function() {
     speedLevel = this.speedLevel;
     hp = this.hp;
     focus = this.focus;
+    sunderArmor = this.sunderArmor;
     criticalHit = this.criticalHit;
     critDamage = this.critDamage;
     dodge = this.dodge;
@@ -95,6 +97,7 @@ Enemy.prototype.updateFightValue = function() {
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
+    this.fightValue.sunderArmor = sunderArmor;
     this.fightValue.criticalHit = criticalHit;
     this.fightValue.critDamage = critDamage;
     this.fightValue.dodge = dodge;
@@ -110,7 +113,9 @@ Enemy.prototype.updateFightValueV2 = function() {
     var defense = 0;
     var speedLevel = 0;
     var hp = 0;
+    var maxHp = 0;
     var focus = 0;
+    var sunderArmor = 0;
     var criticalHit = 0;
     var critDamage = 0;
     var dodge = 0;
@@ -125,7 +130,9 @@ Enemy.prototype.updateFightValueV2 = function() {
     defense = this.defense;
     speedLevel = this.speedLevel;
     hp = this.hp;
+    maxHp = this.maxHp;
     focus = this.focus;
+    sunderArmor = this.sunderArmor;
     criticalHit = this.criticalHit;
     critDamage = this.critDamage;
     dodge = this.dodge;
@@ -136,8 +143,9 @@ Enemy.prototype.updateFightValueV2 = function() {
     this.fightValue.defense = Math.floor(defense);
     this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
-    this.fightValue.maxHp = hp;
+    this.fightValue.maxHp = maxHp;
     this.fightValue.focus = focus;
+    this.fightValue.sunderArmor = sunderArmor;
     this.fightValue.criticalHit = criticalHit;
     this.fightValue.critDamage = critDamage;
     this.fightValue.dodge = dodge;
@@ -154,7 +162,9 @@ Enemy.prototype.calculateBuff = function() {
     var defense = 0;
     var speedLevel = 0;
     var hp = 0;
+    var maxHp = 0;
     var focus = 0;
+    var sunderArmor = 0;
     var criticalHit = 0;
     var critDamage = 0;
     var dodge = 0;
@@ -169,7 +179,9 @@ Enemy.prototype.calculateBuff = function() {
     defense = this.fightValue.defense;
     speedLevel = this.fightValue.speedLevel;
     hp = this.fightValue.hp;
+    maxHp = this.fightValue.maxHp;
     focus = this.fightValue.focus;
+    sunderArmor = this.fightValue.sunderArmor;
     criticalHit = this.fightValue.criticalHit;
     critDamage = this.fightValue.critDamage;
     dodge = this.fightValue.dodge;
@@ -180,8 +192,9 @@ Enemy.prototype.calculateBuff = function() {
     this.fightValue.defense = Math.floor(defense);
     this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
-    this.fightValue.maxHp = hp;
+    this.fightValue.maxHp = maxHp;
     this.fightValue.focus = focus;
+    this.fightValue.sunderArmor = sunderArmor;
     this.fightValue.criticalHit = criticalHit;
     this.fightValue.critDamage = critDamage;
     this.fightValue.dodge = dodge;
@@ -191,6 +204,19 @@ Enemy.prototype.calculateBuff = function() {
     this.fight.reduceDamage = 0;//减免伤害
     this.fight.reduceDamageValue = 0;
     this.fight.addDefense = 0;
+    this.fight.addDefenseValue = 0;
+    this.fight.addAttack = 0;
+    this.fight.addAttackValue = 0;
+    this.fight.addSunderArmor = 0;
+    this.fight.addSunderArmorValue = 0;
+    this.fight.addHp = 0;
+    this.fight.addHpValue = 0;
+    this.fight.promoteHp = 0;
+    this.fight.promoteHpValue = 0;
+    this.fight.addDodge = 0;
+    this.fight.addDodgeValue = 0;
+    this.fight.ice = false;
+    this.fight.silence = false;
 }
 
 //Convert player' state to json and return
@@ -224,7 +250,9 @@ Enemy.prototype.strip = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -279,7 +307,9 @@ Enemy.prototype.toJSON = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };
 
@@ -313,6 +343,8 @@ Enemy.prototype.getBaseInfo = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         skills: this.skills,
-        buffs: this.buffs
+        buffs: this.buffs,
+        ghost: this.ghost,
+        aptitude: this.aptitude
     };
 };

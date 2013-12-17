@@ -57,7 +57,7 @@ playerDao.addHP = function(player, hp, cb) {
  * @param hp
  * @param cb
  */
-playerDao.appPlayerAndPartnersHP = function(player, hp, cb) {
+playerDao.addPlayerAndPartnersHP = function(player, hp, cb) {
     if(player.hp < player.maxHp) {
         player.hp += hp;
     }
@@ -73,7 +73,33 @@ playerDao.appPlayerAndPartnersHP = function(player, hp, cb) {
             partners[i].hp = partners[i].maxHp;
         }
     }
-    playerDao.updateAllPlayers(player, "hp", cb);
+    playerDao.updateAllPlayers(player, "hp", "", cb);
+};
+
+/**
+ * 更新所有角色血量、魂力
+ * @param player
+ * @param opts
+ * @param cb
+ */
+playerDao.updatePlayerAndPartnersInfo = function(player, opts, cb) {
+    if(player.hp < player.maxHp) {
+        player.hp += parseInt(opts.hp);
+    }
+    if(player.hp > player.maxHp) {
+        player.hp = player.maxHp;
+    }
+    var partners = player.partners;
+    for(var i = 0 ; i < partners.length ; i++) {
+        if(partners[i].hp < partners[i].maxHp) {
+            partners[i].hp += parseInt(opts.hp);
+        }
+        if(partners[i].hp > partners[i].maxHp) {
+            partners[i].hp = partners[i].maxHp;
+        }
+    }
+    player.ghostNum += parseInt(opts.ghost);
+    playerDao.updateAllPlayers(player, "hp", "ghostNum", cb);
 };
 
 /**
@@ -100,7 +126,7 @@ playerDao.addPlayerHP = function(mainPlayer, players, hp, cb) {
  * @param players
  */
 playerDao.updatePlayerAndPartnersHP = function(player, cb) {
-    playerDao.updateAllPlayers(player, "hp", cb);
+    playerDao.updateAllPlayers(player, "hp", "", cb);
 };
 
 /**
@@ -112,12 +138,12 @@ playerDao.updatePlayerHP = function(mainPlayer, players, cb) {
 };
 
 /**
- *
+ * 更新角色信息
  * @param player
  * @param field
  * @param cb
  */
-playerDao.updateAllPlayers = function (player, field, cb) {
+playerDao.updateAllPlayers = function(player, field, mainPlayerField, cb) {
     var serverId = player.regionId;
     var registerType = player.registerType;
     var loginName = player.loginName;
@@ -142,6 +168,16 @@ playerDao.updateAllPlayers = function (player, field, cb) {
     } else {
         array.push(["hset", key, field, player[field]]);
         obj[player.id][field] = player[field];
+    }
+    if(Object.prototype.toString.call(mainPlayerField) === '[object Array]') {
+        var obj = {};
+        for(var j = 0, l = mainPlayerField.length ; j < l ; j++) {
+            array.push(["hset", key, mainPlayerField[j], player[mainPlayerField[j]]]);
+            obj[player.id][mainPlayerField[j]] = player[mainPlayerField[j]];
+        }
+    } else {
+        array.push(["hset", key, mainPlayerField, player[mainPlayerField]]);
+        obj[player.id][mainPlayerField] = player[mainPlayerField];
     }
 
     // 更新partners
@@ -174,7 +210,7 @@ playerDao.updateAllPlayers = function (player, field, cb) {
 };
 
 /**
- *
+ * 更新指定角色数据
  * @param player
  * @param field
  * @param cb

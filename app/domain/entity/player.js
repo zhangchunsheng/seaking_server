@@ -47,12 +47,13 @@ var Player = function(opts) {
     this.package = opts.package;
     this.formation = opts.formation;
     this.partners = opts.partners;
+    this.allPartners = opts.allPartners;
     this.gift = opts.gift;
 
     var heros = dataApi.heros.data;
     //this.nextLevelExp = formula.calculateAccumulated_xp(heros[this.cId]["xpNeeded"], heros[this.cId]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
     this.nextLevelExp = opts.nextLevelExp;
-    this.herosData = dataApi.herosV2.findById(this.kindId);//heros
+    this.herosData = dataApi.herosV2.findById(this.kindId) || {};//heros
     this.curTasks = opts.curTasks;
     this.range = opts.range || 2;
 
@@ -63,12 +64,16 @@ var Player = function(opts) {
     this.sid = opts.serverId;
     this.regionId = opts.serverId;
 
-    this.money = opts.money;
-    this.gameCurrency = opts.gameCurrency;
+    this.money = parseInt(opts.money);
+    this.gameCurrency = parseInt(opts.gameCurrency);
 
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
+    this.aptitudeEntity = opts.aptitudeEntity;
+    this.ghostEntity = opts.ghostEntity;
+
+    this.showCIds = opts.showCIds || {"stage":opts.cId};
 
     this.pushMessage = opts.pushMessage || [];
 
@@ -446,7 +451,9 @@ Player.prototype.updateFightValueV2 = function() {
     var defense = 0;
     var speedLevel = 0;
     var hp = 0;
+    var maxHp = 0;
     var focus = 0;
+    var sunderArmor = 0;
     var criticalHit = 0;
     var critDamage = 0;
     var dodge = 0;
@@ -461,7 +468,9 @@ Player.prototype.updateFightValueV2 = function() {
     defense = this.defense;
     speedLevel = this.speedLevel;
     hp = this.hp;
+    maxHp = this.maxHp;
     focus = this.focus;
+    sunderArmor = this.sunderArmor;
     criticalHit = this.criticalHit;
     critDamage = this.critDamage;
     dodge = this.dodge;
@@ -474,8 +483,9 @@ Player.prototype.updateFightValueV2 = function() {
     this.fightValue.defense = Math.floor(defense);
     this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
-    this.fightValue.maxHp = hp;
+    this.fightValue.maxHp = maxHp;
     this.fightValue.focus = focus;
+    this.fightValue.sunderArmor = sunderArmor;
     this.fightValue.criticalHit = criticalHit;
     this.fightValue.critDamage = critDamage;
     this.fightValue.dodge = dodge;
@@ -507,6 +517,7 @@ Player.prototype.equipmentAdditional = function() {
     var speedLevel = 0;
     var hp = 0;
     var focus = 0;
+    var sunderArmor = 0;
     var criticalHit = 0;
     var critDamage = 0;
     var dodge = 0;
@@ -522,6 +533,7 @@ Player.prototype.equipmentAdditional = function() {
     speedLevel = this.speedLevel;
     hp = this.hp;
     focus = this.focus;
+    sunderArmor = this.sunderArmor;
     criticalHit = this.criticalHit;
     critDamage = this.critDamage;
     dodge = this.dodge;
@@ -566,6 +578,7 @@ Player.prototype.equipmentAdditional = function() {
     this.fightValue.hp = hp;
     this.fightValue.maxHp = hp;
     this.fightValue.focus = focus;
+    this.fightValue.sunderArmor = sunderArmor;
     this.fightValue.criticalHit = criticalHit;
     this.fightValue.critDamage = critDamage;
     this.fightValue.dodge = dodge;
@@ -689,7 +702,9 @@ Player.prototype.calculateBuff = function() {
     var defense = 0;
     var speedLevel = 0;
     var hp = 0;
+    var maxHp = 0;
     var focus = 0;
+    var sunderArmor = 0;
     var criticalHit = 0;
     var critDamage = 0;
     var dodge = 0;
@@ -702,7 +717,9 @@ Player.prototype.calculateBuff = function() {
     defense = this.fightValue.defense;
     speedLevel = this.fightValue.speedLevel;
     hp = this.fightValue.hp;
+    maxHp = this.fightValue.maxHp;
     focus = this.fightValue.focus;
+    sunderArmor = this.fightValue.sunderArmor;
     criticalHit = this.fightValue.criticalHit;
     critDamage = this.fightValue.critDamage;
     dodge = this.fightValue.dodge;
@@ -713,8 +730,9 @@ Player.prototype.calculateBuff = function() {
     this.fightValue.defense = Math.floor(defense);
     this.fightValue.speedLevel = speedLevel;
     this.fightValue.hp = hp;
-    this.fightValue.maxHp = hp;
+    this.fightValue.maxHp = maxHp;
     this.fightValue.focus = focus;
+    this.fightValue.sunderArmor = sunderArmor;
     this.fightValue.criticalHit = criticalHit;
     this.fightValue.critDamage = critDamage;
     this.fightValue.dodge = dodge;
@@ -723,6 +741,20 @@ Player.prototype.calculateBuff = function() {
 
     this.fight.reduceDamage = 0;//减免伤害
     this.fight.reduceDamageValue = 0;
+    this.fight.addDefense = 0;
+    this.fight.addDefenseValue = 0;
+    this.fight.addAttack = 0;
+    this.fight.addAttackValue = 0;
+    this.fight.addSunderArmor = 0;
+    this.fight.addSunderArmorValue = 0;
+    this.fight.addHp = 0;
+    this.fight.addHpValue = 0;
+    this.fight.promoteHp = 0;
+    this.fight.promoteHpValue = 0;
+    this.fight.addDodge = 0;
+    this.fight.addDodgeValue = 0;
+    this.fight.ice = false;
+    this.fight.silence = false;
 }
 
 /**
@@ -841,33 +873,35 @@ Player.prototype.passiveSkillAdditional = function() {
  */
 Player.prototype.equip = function(pkgType, item, pIndex, player) {
     var index = 0;
-
-    var epType = utils.getEqType(item.itemId);
-
+    //var epType = utils.getEqType(item.itemId);
+    var epType = utils.getEqTypeV2(item.itemId);
     var curEquipment = this.equipmentsEntity.get(epType);
     this.equipmentsEntity.equip(epType, {
         epid: item.itemId,
         level: item.level
     });
-
-    console.log(this.equipmentsEntity);
-    console.log(epType);
     if (curEquipment.epid != 0) {
-        index = player.packageEntity.addItem(this, pkgType, {
+        index = player.packageEntity.addItem(player, pkgType, {
             itemId: curEquipment.epid,
             itemNum: 1,
-            level: curEquipment.level
+            level: curEquipment.level,
+            forgeLevel: curEquipment.forgeLevel || 0
         }, pIndex).index;
     } else {
-        player.packageEntity.removeItem(pkgType, pIndex);
+        //player.packageEntity.removeItem(pkgType, pIndex);
+        player.packageEntity.removeItem(pIndex, 1);
     }
     //this.updateAttribute();
-
     return index;
 };
 
 Player.prototype.buyItem = function(type, item, costMoney) {
-    var packageChange = this.packageEntity.addItem(this, type, item).index;
+    var packageChange = this.packageEntity.addItemWithNoType(this, item);
+    if(!packageChange) {
+        return null;
+    }else{
+        packageChange = packageChange.index;
+    }
 
     if(packageChange.length != 0) {
         this.money = this.money - costMoney;
@@ -1300,6 +1334,8 @@ Player.prototype.strip = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        heroId: this.herosData.heroId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),
@@ -1315,6 +1351,7 @@ Player.prototype.strip = function() {
         currentScene: this.currentScene,
         currentIndu: this.currentIndu,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
@@ -1331,7 +1368,10 @@ Player.prototype.strip = function() {
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghostEntity.getInfo(),
+        ghostNum: this.ghostNum,
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
 
@@ -1466,6 +1506,8 @@ Player.prototype.toJSON = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        heroId: this.herosData.heroId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),
@@ -1481,6 +1523,7 @@ Player.prototype.toJSON = function() {
         currentScene: this.currentScene,
         currentIndu: this.currentIndu,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
@@ -1497,7 +1540,10 @@ Player.prototype.toJSON = function() {
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghostEntity.getInfo(),
+        ghostNum: this.ghostNum,
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
 
@@ -1507,6 +1553,8 @@ Player.prototype.getBaseInfo = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        heroId: this.herosData.heroId,
+        showCIds: this.showCIds,
         type: this.type,
         x: Math.floor(this.x),
         y: Math.floor(this.y),
@@ -1522,6 +1570,7 @@ Player.prototype.getBaseInfo = function() {
         currentScene: this.currentScene,
         currentIndu: this.currentIndu,
         focus: this.focus,
+        sunderArmor: this.sunderArmor,
         dodge: this.dodge,
         nextLevelExp: this.nextLevelExp,
         money: this.money,
@@ -1534,6 +1583,9 @@ Player.prototype.getBaseInfo = function() {
         skills: this.skills,
         buffs: this.buffs,
         formation: this.formation,
-        gift: this.gift
+        gift: this.gift,
+        ghost: this.ghostEntity.getInfo(),
+        ghostNum: this.ghostNum,
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };

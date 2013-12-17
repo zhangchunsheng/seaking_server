@@ -7,6 +7,7 @@
  */
 var formula = module.exports;
 var dataApi = require('../utils/dataApi');
+var utils = require('../utils/utils');
 
 /**
  * 伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
@@ -14,12 +15,28 @@ var dataApi = require('../utils/dataApi');
  * @param defenseData
  */
 formula.calDamage = function(attack, defense) {
+    var sunderArmor = attack.fightValue.sunderArmor;
+    var attackValue = attack.fightValue.attack;
     var defenseValue = defense.fightValue.defense;
     if(defense.fight.addDefense > 0) {// 增加护甲
         defense.fight.addDefenseValue = defense.defense * defense.fight.addDefense;
         defenseValue += defense.fight.addDefenseValue;
     }
-    var damage = (100 + attack.fightValue.sunderArmor) * attack.fightValue.attack / (100 + defenseValue);
+    if(attack.fight.addSunderArmor > 0) {
+        attack.fight.addSunderArmorValue = attack.sunderArmor * attack.fight.addSunderArmor;
+        sunderArmor += attack.fight.addSunderArmorValue;
+    }
+    if(attack.fight.addAttack > 0) {
+        attack.fight.addAttackValue = attack.attack * attack.fight.addAttack;
+        attackValue += attack.fight.addAttackValue;
+    }
+    if(attack.fight.reduceAttack > 0) {
+        attack.fight.reduceAttackValue = attack.attack * attack.fight.reduceAttack;
+        attackValue -= attack.fight.reduceAttackValue;
+    }
+    //var damage = (100 + sunderArmor) * attackValue / (100 + defenseValue);
+    var sunderArmorValue = utils.random(0, sunderArmor);
+    var damage = (attackValue + sunderArmorValue) * defense.fightValue.maxHp / (defenseValue + defense.fightValue.maxHp);
     if(defense.fight.reduceDamage > 0) {// 减免伤害
         defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
         damage = damage - defense.fight.reduceDamageValue;
@@ -31,10 +48,19 @@ formula.calDamage = function(attack, defense) {
     if(damage <= 0) {
         damage = 1;
     }
+
     if(defense.fight.reduceDamageCounteract == -1) {
         defense.fight.reduceDamageCounteract = 0;
         defense.fight.reduceDamageValue = damage;
         damage = 0;
+    }
+    if(attack.fight.addHp > 0) {
+        attack.fight.addHpValue = damage * attack.fight.addHp;
+        attack.fightValue.hp += attack.fight.addHpValue;
+        if(attack.fightValue.hp > attack.fightValue.maxHp) {
+            attack.fightValue.hp = attack.fightValue.maxHp;
+        }
+        attack.hp = attack.fightValue.hp;
     }
     return Math.ceil(damage);
 }
@@ -197,4 +223,30 @@ formula.calculateBlock = function(value, level) {
 
 formula.calculateCounter = function(value, level) {
     return value * (1 + level * 0.1);
+}
+
+/**
+ * 以时间计算加血
+ * @param player
+ * @param date
+ * @param updateRoleDate
+ */
+formula.calculateAddHp = function(player, date, updateRoleDate) {
+    var time = date.getTime() - updateRoleDate;
+    time = Math.floor(time / 1000);
+    var hp = player.hpRecoverySpeed * time;
+    return hp;
+}
+
+/**
+ * 以时间计算魂力
+ * @param player
+ * @param date
+ * @param updateRoleDate
+ */
+formula.calculateAddGhost = function(player, date, updateRoleDate) {
+    var time = date.getTime() - updateRoleDate;
+    time = Math.floor(time / 1000 / 60 * 10);
+    var ghost = time;
+    return ghost;
 }

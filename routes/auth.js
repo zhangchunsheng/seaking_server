@@ -15,6 +15,7 @@ var utils = require('../app/utils/utils');
 var session = require('../app/http/session');
 var region = require('../config/region');
 var consts = require('../app/consts/consts');
+var signature = require('cookie-signature');
 
 var DEFAULT_SECRET = 'wozlla_session_secret';
 var DEFAULT_EXPIRE = 6 * 60 * 60 * 1000;	// default session expire time: 6 hours
@@ -48,6 +49,7 @@ exports.auth = function(req, res) {
 
     userInfo.serverId = region.serverId;
 
+    utils.addOrigin(res, req);
     userService.getCharactersByLoginName(userInfo.serverId, userInfo.registerType, userInfo.loginName, function(err, results) {
         console.log(results);
         if(err || !results) {
@@ -58,10 +60,26 @@ exports.auth = function(req, res) {
             return;
         }
 
+        var connectSid = req.headers["cookie"];
+        if(connectSid && connectSid.indexOf("connect.sid") >= 0) {
+            var connectSidArray = connectSid.split("; ");
+            for(var i = 0 ; i < connectSidArray.length ; i++) {
+                if(connectSidArray[i].indexOf("connect.sid") >= 0) {
+                    connectSid = connectSidArray[i];
+                }
+            }
+        } else {
+            var val = 's:' + signature.sign(req.sessionID, "html5");
+            var cookie = req.session.cookie;
+            var key = "connect.sid";
+            val = cookie.serialize(key, val);
+            connectSid = val;
+        }
         if(results[0] == null || results[0] == {}) {
             data = {
                 code: Code.OK,
-                player: null
+                player: null,
+                connectSid: connectSid
             };
             roleService.getNickname(userInfo.serverId, function(err, reply) {
                 data.nicknames = reply;
@@ -70,7 +88,8 @@ exports.auth = function(req, res) {
         } else {
             data = {
                 code: consts.MESSAGE.RES,
-                player: results[0].strip()
+                player: results[0].strip(),
+                connectSid: connectSid
             };
             userInfo.playerId = results[0].id;
             utils.send(msg, res, data);

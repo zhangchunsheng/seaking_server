@@ -3,7 +3,7 @@
  * Version: 1.0
  * Author: Peter Zhang
  * Date: 2013-06-27
- * Description: equipment taskReward
+ * Description: equipment
  */
 /**
  * Module dependencies
@@ -30,6 +30,7 @@ var Equipment = function(opts) {
     this.price = opts.price;
     this.quality = opts.quality;
     this.level = opts.level;
+    this.forgeLevel = opts.forgeLevel;
     this.useLevel = opts.useLevel;
     this.strengthenLevel = opts.strengthenLevel;
     this.resourcePath = opts.resourcePath;

@@ -197,13 +197,16 @@ formula.calculatePlayerAttribute = function(player) {
         if(equipments[key].epid != 0) {
             // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
             equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
-            if(equipment.attackPercentage != 0)
+            // equipment = dataApi.equipments.findById(equipments[key].epid);
+            if(typeof equipment == "undefined")
+                continue;
+            if(typeof equipment.attackPercentage != "undefined" && equipment.attackPercentage != 0)
                 attack += player.attack * equipment.attackPercentage;
-            if(equipment.defensePercentage != 0)
+            if(typeof equipment.defensePercentage != "undefined" && equipment.defensePercentage != 0)
                 defense += player.defense * equipment.defensePercentage;
-            if(equipment.speedLevelPercentage != 0)
+            if(typeof equipment.speedLevelPercentage != "undefined" && equipment.speedLevelPercentage != 0)
                 speedLevel += player.speedLevel * equipment.speedLevelPercentage;
-            if(equipment.hpPercentage != 0)
+            if(typeof equipment.hpPercentage != "undefined" && equipment.hpPercentage != 0)
                 hp += player.hp * equipment.hpPercentage;
 
             attack += equipment.attack;
@@ -250,7 +253,10 @@ formula.calculatePlayerAttack = function(player) {
         if(equipments[key].epid != 0) {
             // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
             equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
-            if(equipment.attackPercentage != 0)
+            // equipment = dataApi.equipments.findById(equipments[key].epid);
+            if(typeof equipment == "undefined")
+                continue;
+            if(typeof equipment.attackPercentage != "undefined" && equipment.attackPercentage != 0)
                 attack += player.attack * equipment.attackPercentage;
             attack += equipment.attack;
         }
@@ -274,10 +280,39 @@ formula.calculatePlayerDefense = function(player) {
         if(equipments[key].epid != 0) {
             // equipment = dataApi.equipmentLevelup.findById(equipments[key].epid + equipments[key].level);
             equipment = dataApi.equipmentLevelup.findById(equipments[key].epid);
-            if(equipment.defensePercentage != 0)
+            // equipment = dataApi.equipments.findById(equipments[key].epid);
+            if(typeof equipment == "undefined")
+                continue;
+            if(typeof equipment.defensePercentage != "undefined" && equipment.defensePercentage != 0)
                 defense += player.defense * equipment.defensePercentage;
             defense += equipment.defense;
         }
     }
     player.defense = Math.floor(defense);
+}
+
+/**
+ * 以时间计算加血
+ * @param player
+ * @param date
+ * @param updateRoleDate
+ */
+formula.calculateAddHp = function(player, date, updateRoleDate) {
+    var time = date.getTime() - updateRoleDate;
+    time = Math.floor(time / 1000);
+    var hp = player.hpRecoverySpeed * time;
+    return hp;
+}
+
+/**
+ * 以时间计算魂力
+ * @param player
+ * @param date
+ * @param updateRoleDate
+ */
+formula.calculateAddGhost = function(player, date, updateRoleDate) {
+    var time = date.getTime() - updateRoleDate;
+    time = Math.floor(time / 1000 / 60 * 10);
+    var ghost = time;
+    return ghost;
 }

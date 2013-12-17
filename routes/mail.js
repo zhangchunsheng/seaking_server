@@ -10,6 +10,7 @@ var MailKeyType = require('../app/consts/consts').MailKeyType;
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var mailDao = require('../app/dao/mailDao');
+var redis =  require('../app/dao/redis/redis');
 
 var mail = {};
 
@@ -56,9 +57,10 @@ mail.send = function(req, res) {
         msg.fromName = player.nickname;
         var fromKey = picecBoxName(session);
         mailDao.new(msg, function(err, m) {
+            if(err){utils.send(msg, res, {code: Code.FAIL, err:err});return;}
         	mailDao.cleanOutBoxMail(m.fromId);
         	mailDao.cleanInBoxMail(m.toId);
-            msg.mail = m;
+           // msg.mail = m;
             msg.toKey = m.toKey ;
             msg.fromKey = picecBoxName(session);
         	mailDao.send(msg,function(err, mail){
@@ -95,25 +97,92 @@ mail.getOut = function(req, res) {
 }
 
 mail.collectItem = function(req, res) {
-   /* var msg = req.query;
+   var msg = req.query;
+   if(!msg.mailId ) {
+        utils.send(msg, res, {code: Code.FAIL, err: "mailId not exist"});return;
+    }
     var session = req.session;
     var Key = picecBoxName(session);
-    mailDao.collectItem(msg, function(err, r) {
-        if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
-        utils.send(msg, res, {code: Code.OK, data: r});
-    });*/
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    msg.box = Key+"_"+MailKeyType.MAILIN;
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        mailDao.collectItem(msg, function(err, r) {
+            if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
+            var changeItems = [];
+            var rdata = r.mail;
+            for(var i in rdata.items){
+                var item = rdata.items[i];
+                var change = player.packageEntity.addItemWithNoType(player, item);
+                if(!i) {
+                    callback("package error",null);return;
+                }
+                changeItems.push(change);
+            }
+            var array = [];
+            array.push(["hset",Key,"package", JSON.stringify(player.packageEntity.getInfo())]);
+            array.push(r.sql);
+            console.log(array);
+            redis.command(function(client) {
+                client.multi(array).exec(function(err){
+                    redis.release(client);
+                    if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
+                    utils.send(msg, res, {code: Code.OK, data: {changeItems: changeItems, changeMail: r.mail}});
+                });
+            });
+            
+        });
+    });
 }
 
 mail.collectMail = function(req, res) {
     var msg = req.query;
+    var session = req.session;
+    msg.Key = picecBoxName(session);
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+        var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        msg.playerId = session.playerId;
+        msg.nickName =  player.nickname;
+        mailDao.collectMail(msg, function(err, r) {
+            if(err){utils.send(msg, res, {
+                code: Code.FAIL,
+                err: err
+            });return;}
+            utils.send(msg, res, {
+                code: Code.OK,
+                data: r
+            });
+        });
+
+    });
 
 }
 
 mail.del = function(req, res) {
     var msg = req.query;
+    var mailId = msg.mailId;
+    if(!msg.mailId ) {
+        utils.send(msg, res, {code: Code.FAIL, err: "mailId not exist"});return;
+    }
+
     var session = req.session;
     var Key = picecBoxName(session);
-    msg.box = Key+"_"+MailKeyType.MAILIN;
+    var mails = [mailId.substring(0,3), mailId.substring(3)];
+    if(mails[0] == MailKeyType.SEND){
+        msg.box = Key+"_"+MailKeyType.MAILOUT;
+    }else{
+        msg.box = Key+"_"+MailKeyType.MAILIN;
+    }  
     mailDao.del(msg, function(err, r) {
         if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
         utils.send(msg, res, {code: Code.OK, data: r});
@@ -122,6 +191,9 @@ mail.del = function(req, res) {
 
 mail.read = function(req, res) {
     var msg = req.query;
+    if(!msg.mailId ) {
+        utils.send(msg, res, {code: Code.FAIL, err: "mailId not exist"});return;
+    }
     var session = req.session;
     var Key = picecBoxName(session);
     msg.box = Key+"_"+MailKeyType.MAILIN;
@@ -146,4 +218,48 @@ function picecBoxName(session) {
     return 'S'+serverId+'_T'+ registerType+'_'+ loginName+'_C'+ characterId;
 }
 
+
+mail._Add = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+    msg.serverId = session.serverId;
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        msg.from = playerId;
+        msg.fromName = player.nickname;
+        //mailDao.new(msg, function(err, m) {
+            msg.Key = picecBoxName(session);
+            mailDao.add(msg, function(err, r){
+                if(err){utils.send(msg, res, {code: Code.FAIL});return;}
+                utils.send(msg, res, {code: Code.OK, data: r});
+            });
+       // });
+       
+    });
+}
+mail._Set = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+    msg.serverId = session.serverId;
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        msg.from = playerId;
+        msg.fromName = player.nickname;
+        msg.Key = picecBoxName(session);
+        mailDao.set(msg, function(err, r){
+            if(err){utils.send(msg, res, {code: Code.FAIL});return;}
+            utils.send(msg, res, {code: Code.OK, data: r});
+        });
+    });
+}
 module.exports = mail;

@@ -56,6 +56,9 @@ module.exports = Task;
  */
 
 Task.prototype._initTaskInfo = function() {
+    if(typeof this.taskRecord.itemNum != "undefined") {
+        this.taskRecord.itemNum = parseInt(this.taskRecord.itemNum);
+    }
     var info = taskData.findById(this.kindId);
     if (!!info) {
         for(var key in info) {
@@ -170,9 +173,9 @@ Task.prototype.updateStatus = function(player, itemNum, flag) {
     }
 
     if(flag) {
-        this.taskRecord.itemNum = itemNum;
+        this.taskRecord.itemNum = parseInt(itemNum);
     } else {
-        this.taskRecord.itemNum += itemNum;
+        this.taskRecord.itemNum += parseInt(itemNum);
     }
 
     if(this.taskRecord.itemNum >= this.taskGoal.itemNum) {

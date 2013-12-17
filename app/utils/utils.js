@@ -7,6 +7,7 @@
  */
 var message = require('../i18n/zh_CN.json');
 var consts = require('../consts/consts');
+var dataApi = require('./dataApi');
 var Token = require('../../shared/token')
     , secret = require('../../config/session').secret;
 
@@ -158,6 +159,17 @@ utils.getRealCharacterId = function(characterId) {
     return characterId;
 }
 
+/**
+ *
+ * @param partnerId
+ * @returns {*}
+ */
+utils.getPartnerCId = function(partnerId) {
+    var cId;
+    cId = partnerId.substr(partnerId.indexOf("C") + 1, partnerId.indexOf("P"));
+    return cId;
+}
+
 utils.getTaskType = function(task) {
     var type = "";//1 - 主线任务 2 - 支线任务 3 - 日常任务 4 - 活动任务
     if(task.type == 1) {
@@ -210,6 +222,48 @@ utils.getEqType = function(eqId) {
     } else {
         var num = eqId.substr(3, 1);
         switch(num) {
+            case 1:
+                type = consts.EqType.ARMOR;
+                break;
+            case 2:
+                type = consts.EqType.LEGGUARD;
+                break;
+            case 3:
+                type = consts.EqType.SHOES;
+                break;
+            case 4:
+                type = consts.EqType.AMULET;
+                break;
+            case 5:
+                type = consts.EqType.NECKLACE;
+                break;
+            case 6:
+                type = consts.EqType.RING;
+                break;
+        }
+    }
+    return type;
+}
+
+/**
+ * get equipment type
+ * 第5位表示位置序号
+ * 1 - 衣服
+ * 2 - 裤子
+ * 3 - 鞋子
+ * 4 - 护符
+ * 5 - 项链
+ * 6 - 戒指
+ * @param eqId
+ * @returns {string}
+ */
+utils.getEqTypeV2 = function(eqId) {
+    var type = "";
+    if(eqId.indexOf("W") >= 0) {
+        type = consts.EqType.WEAPON;
+    } else {
+        var num = eqId.substr(5, 1);
+        switch(parseInt(num)) {
             case 1:
                 type = consts.EqType.ARMOR;
                 break;
@@ -322,4 +376,28 @@ utils.getDaytime = function(date) {
 
 utils.empty = function(obj) {
     return typeof obj == "undefined" || obj == null || obj == "";
+}
+
+utils.addOrigin = function(res, req) {
+    if(req.headers.origin) {
+        res.header('Access-Control-Allow-Origin', req.headers.origin);
+        res.header('Access-Control-Allow-Credentials', true);
+    }
+}
+
+utils.getCategoryHeroId = function(cId) {
+    var heroId;
+    heroId = dataApi.herosV2.findById(cId).heroId
+    heroId = heroId.substr(0, 2) + 0 + heroId.substr(3);
+    return heroId;
+}
+
+/**
+ * 获得日期
+ * @param time
+ */
+utils.getDate = function(time) {
+    var date = new Date();
+    date.setTime(time);
+    return utils.getDaytime(date);
 }

@@ -31,7 +31,7 @@ describe('battle test', function() {
             heroId: '1',
             level: '1',
             formationId: 1,
-            skillId1: 33,
+            skillId1: 29,
             skillId2: 0,
             skillId3: 0
         }];

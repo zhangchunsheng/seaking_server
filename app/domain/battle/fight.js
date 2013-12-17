@@ -433,6 +433,7 @@ Fight.prototype.attack = function(battleData, players, index) {
                 defenseData.isCounter = true;
                 defenseData.counterValue = damage;//反击伤害
                 attack.fightValue.hp -= damage;
+                attack.hp = attack.fightValue.hp;
                 if(attack.fightValue.hp <= 0) {
                     attack.fightValue.hp = 0;
                     attack.died = attackData.died = true;

@@ -237,6 +237,39 @@ module.exports = {
         COUNTER: "counter"
     },
 
+    /*1 - 生命
+    2 - 攻击
+    3 - 防御
+    4 - 幸运
+    5 - 速度
+    6 - 暴击
+    7 - 格挡
+    8 - 闪避
+    9 - 反击*/
+    attrId: {
+        HP: 1,
+        ATTACK: 2,
+        DEFENSE: 3,
+        SUNDERARMOR: 4,
+        SPEED: 5,
+        CRITICALHIT: 6,
+        BLOCK: 7,
+        DODGE: 8,
+        COUNTER: 9
+    },
+
+    addGhostNumOneMinute: 10,
+
+    MONEY_TYPE: {
+        GOLDEN: "1",
+        GAME_CURRENCY: "2"
+    },
+
+    upgradeApititude: {
+        money: 1000,
+        gameCurrency: 2
+    },
+
     correspondingSkillsType: {
         1: "activeSkills",
         2: "passiveSkills"
@@ -397,14 +430,29 @@ module.exports = {
         ASYLUM: "5",
         ADDMAXHP: "6",
         REDUCE_SCOPE_DAMAGE: "7",
-        CHANGETO_SCOPE_DAMAGE: "8"
+        CHANGETO_SCOPE_DAMAGE: "8",
+        ADDATTACK: "9",
+        ADDSUNDERARMOR: "10",
+        POISON: "11",
+        ADDHP: "12",
+        REDUCEATTACK_ADDSUNDERARMOR: "13",
+        EXTRATARGET: "14",
+        CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15",
+        PARALLELDAMAGE: "16",
+        RECOVERYHP: "17",
+        PROMOTEHP: "18",
+        ADDDODGE: "19",
+        ICE: "20",
+        SILENCE: "21"
     },
 
     buffCategory: {
         ATTACK: 1,
         DEFENSE: 2,
         AFTER_ATTACK: 3,
-        AFTER_DEFENSE: 4
+        AFTER_DEFENSE: 4,
+        ROUND: 5,
+        ATTACKING: 6
     },
 
     characterFightStatus: {
@@ -416,7 +464,9 @@ module.exports = {
         ATTACK: 1,
         DEFENSE: 2,
         AFTER_ATTACK: 3,
-        AFTER_DEFENSE: 4
+        AFTER_DEFENSE: 4,
+        ROUND: 5,
+        ATTACKING: 6
     },
 
     attackType: {
@@ -434,7 +484,8 @@ module.exports = {
         COUNTER: 7,
         BATTLE: 8,
         DEATH: 9,
-        GETDAMAGE: 10
+        GETDAMAGE: 10,
+        AWAKEN: 11
     },
 
     correspondingEffect_attr: {
@@ -507,12 +558,15 @@ module.exports = {
 
     attackAction: {
         common: 1,//普通攻击
-        skill: 2//技能攻击
+        skill: 2,//技能攻击
+        addHp: 3
     },
 
     damageType: {
         common: 1,
-        criticalHit: 2
+        criticalHit: 2,
+        extraDamage: 3,
+        parallelDamage: 4
     },
 
     effectTargetType: {
@@ -524,7 +578,8 @@ module.exports = {
         beHitted: 1,
         dodge: 2,
         counter: 3,
-        block: 4
+        block: 4,
+        addHp: 5
     },
 
     requirementType: {

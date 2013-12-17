@@ -56,7 +56,7 @@ var buff_script = {
 
     },
     "buff105101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        defense.fight.addDefense = this.buffData.value;
+        defense.fight.addDefense += this.buffData.value;
         return 0;
     },
     "buff105201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -101,14 +101,16 @@ var buff_script = {
     },
     "buff110101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         if(attack.fightValue.attackType != constsV2.attackType.ALL) {
-            return;
+            return 0;
         }
     },
     "buff110201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff201101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addAttack += this.buffData.value;
+        attack.removeBuff(this);
+        return 0;
     },
     "buff201201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -120,25 +122,31 @@ var buff_script = {
 
     },
     "buff203101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addHp += this.buffData.value;
+        return 0;
     },
     "buff203201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff204101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addSunderArmor += this.buffData.value;
+        return 0;
     },
     "buff204201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff205101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addSunderArmor += this.buffData.value;
+        attack.removeBuff(this);
+        return 0;
     },
     "buff205201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff206101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.reduceAttack += this.buffData.reduceAttack;
+        attack.fight.addSunderArmor += this.buffData.addSunderArmor;
+        return 0;
     },
     "buff206201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -148,13 +156,13 @@ var buff_script = {
         attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
 
         attackData.attack = attack.fightValue.attack;
-        attackData.attack = attack.fightValue.attack;
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
         var player = fightUtil.checkReduceScopeDamage(defenses);
+        var opts;
         if(player != null) {
-            var opts = {
+            opts = {
                 type: constsV2.buffTypeV2.REDUCE_SCOPE_DAMAGE,
                 player: player,
                 damage: 0,
@@ -165,8 +173,12 @@ var buff_script = {
             }
             fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
         } else {
+            opts = {
+                damage: 0,
+                damageInfo: []
+            };
             for(var i in defenses) {
-                fightUtil.attack(attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                fightUtil.attack(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             }
         }
 
@@ -176,49 +188,156 @@ var buff_script = {
 
     },
     "buff208101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var theTarget = fightData.target;
+        if(theTarget.length == 0)
+            return;
+        theTarget = theTarget[0];
 
+        var player = fightUtil.getRandomPlayer(defense, defenses);
+        if(player == null)
+            return;
+        var damage = defenseData.reduceBlood * this.buffData.value;
+        if(damage < 0)
+            damage = 0;
+        fightUtil.calculateHp(player, damage);
+        var target = {
+            id: player.id,
+            damageType: constsV2.damageType.extraDamage,
+            fId: player.formationId,
+            action: constsV2.defenseAction.beHitted,
+            hp: player.hp,
+            reduceBlood: damage,
+            buffs: player.buffs
+        };
+        fightData.target.push(target);
     },
     "buff208201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff209101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        attack.fightValue.attackType = constsV2.attackType.ALL;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
+        if(this.buffData.addHp) {
+            attack.fight.addHp = this.buffData.addHp;
+        }
 
+        attackData.attack = attack.fightValue.attack;
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OPPONENT;
+
+        var player = fightUtil.checkReduceScopeDamage(defenses);
+        var opts = {};
+        if(player != null) {
+            opts = {
+                type: constsV2.buffTypeV2.REDUCE_SCOPE_DAMAGE,
+                player: player,
+                damage: 0,
+                damageInfo: []
+            };
+            for(var i in defenses) {
+                fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+            fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+        } else {
+            opts = {
+                damage: 0,
+                damageInfo: []
+            };
+            for(var i in defenses) {
+                fightUtil.attack(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+        }
+
+        if(attack.fight.addHp) {
+            attack.fight.addHpValue = opts.damage * attack.fight.addHp;
+        }
+
+        fightData.addHp = attack.fight.addHpValue;
+
+        return 1;
     },
     "buff209201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff210101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var theTarget = fightData.target;
+        if(theTarget.length == 0)
+            return;
+        theTarget = theTarget[0];
 
+        var damage = defenseData.reduceBlood * this.buffData.value;
+        if(damage < 0)
+            damage = 0;
+        var players = fightUtil.getOtherPlayers(defense, defenses);
+        var player;
+        var target = {};
+        for(var i = 0 ; i < players.length ; i++) {
+            player = players[i];
+            fightUtil.calculateHp(player, damage);
+            target = {
+                id: player.id,
+                damageType: constsV2.damageType.parallelDamage,
+                fId: player.formationId,
+                action: constsV2.defenseAction.beHitted,
+                hp: player.hp,
+                reduceBlood: damage,
+                buffs: player.buffs
+            };
+            fightData.target.push(target);
+        }
     },
     "buff210201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff211101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addAttack += this.buffData.value;
+        return 0;
     },
     "buff211201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff301101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var key = "attackTeam";
+        var player;
+        player = fightUtil.getRandomPlayer(null, attacks);
+        if(player == null)
+            return;
+        var addHp = defenseData.reduceBlood * this.buffData.value;
+        fightUtil.addHp(player, addHp);
+        fightData[key].push({
+            id: player.id,
+            fId: player.formationId,
+            addHp: addHp,
+            buffs: player.buffs
+        });
+        attack.removeBuff(this);
+        return 0;
     },
     "buff301201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff302101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addHp += this.buffData.value;
+        attack.removeBuff(this);
+        return 0;
     },
     "buff302201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff303101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.promoteHp += this.buffData.value;
+        attack.fight.promoteHpValue += attack.maxHp * attack.fight.promoteHp;
+        fightUtil.addHp(attack, attack.fight.promoteHpValue);
+        fightData.promoteHp = attack.fight.promoteHpValue;
+        attack.removeBuff(this);
+        return 0;
     },
     "buff303201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff304101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addAttack += this.buffData.value;
+        return 0;
     },
     "buff304201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
@@ -230,19 +349,25 @@ var buff_script = {
 
     },
     "buff306101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        defense.fight.addDodge += this.buffData.value;
+        defense.removeBuff(this);
+        return 0;
     },
     "buff306201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff307101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.ice = true;
+        attack.removeBuff(this);
+        return 1;
     },
     "buff307201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff308101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.silence = true;
+        attack.removeBuff(this);
+        return 1;
     },
     "buff308201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

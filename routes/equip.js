@@ -51,19 +51,28 @@ exports.wearWeapon = function(req, res) {
 
     var characterId = utils.getRealCharacterId(playerId);
 
+    var data = {};
     var index = msg.index;
+    if(utils.empty(index) || index == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
     var weaponId = msg.weaponId;
     var pkgType = PackageType.WEAPONS;
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
-        var data = {};
         var packageIndex = -1;
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -74,10 +83,13 @@ exports.wearWeapon = function(req, res) {
             return;
         }
 
-        if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
-            var item = player.packageEntity[pkgType].items[index];
+        //if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
+            //var item = player.packageEntity[pkgType].items[index];
+        if(player.packageEntity.checkItem(index, weaponId) > 0) {
+            var item = player.packageEntity.items[index];
             // var eq = dataApi.equipment.findById(item.itemId);
-            var eq = dataApi.equipmentLevelup.findById(item.itemId);
+            // var eq = dataApi.equipmentLevelup.findById(item.itemId);
+            var eq = dataApi.equipments.findById(item.itemId);
             // if(!eq || player.level < eq.useLevel) {
             if(!eq) {
                 data = {
@@ -168,9 +180,11 @@ exports.unWearWeapon = function(req, res) {
 
         var data = {};
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -204,11 +218,24 @@ exports.unWearWeapon = function(req, res) {
         epid = character.equipmentsEntity.get(type).epid;
         level = character.equipmentsEntity.get(type).level;
 
-        result = player.packageEntity.addItem(player, PackageType.WEAPONS, {
+        /*result = player.packageEntity.addItem(player, PackageType.WEAPONS, {
             itemId: epid,
             itemNum: 1,
             level: level
+        });*/
+        result = player.packageEntity.addItem(player, PackageType.WEAPONS, {
+            itemId: epid,
+            itemNum: 1,
+            level: level,
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
+        if(result == null || result.index.length == 0) {
+            data = {
+                code: Code.PACKAGE.NOT_ENOUGHT_SPACE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         packageIndex = result.index;
         if(packageIndex.length > 0) {
             character.unEquip(type);
@@ -268,19 +295,38 @@ exports.equip = function(req, res) {
 
     var characterId = utils.getRealCharacterId(playerId);
 
+    var data = {};
     var pkgType = msg.pkgType;
     var index = msg.index;
     var eqId = msg.eqId;
+    //背包从0开始
+    if(utils.empty(index) ) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    /*if(utils.empty(pkgType) || pkgType == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }*/
+    pkgType = PackageType.WEAPONS
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
-        var item = player.packageEntity[pkgType].items[index];
-        var data = {};
+        //var item = player.packageEntity[pkgType].items[index];
+        var item = player.packageEntity.items[index];
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -312,7 +358,8 @@ exports.equip = function(req, res) {
         var packageIndex = -1;
 
         // var eq =  dataApi.equipment.findById(item.itemId);
-        var eq =  dataApi.equipmentLevelup.findById(item.itemId);
+        // var eq =  dataApi.equipmentLevelup.findById(item.itemId);
+        var eq =  dataApi.equipments.findById(item.itemId);
         //if(!eq || player.level < eq.useLevel) {
         if(!eq) {
             data = {
@@ -393,9 +440,11 @@ exports.unEquip = function(req, res) {
 
         var data = {};
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -425,7 +474,8 @@ exports.unEquip = function(req, res) {
         }
 
         var pkgType = "";
-        if(epId.indexOf("W9") < 0) {
+        //if(epId.indexOf("W9") < 0) {
+        if(epId.indexOf("W") >= 0) {
             pkgType = consts.PackageType.WEAPONS;
         } else {
             pkgType = consts.PackageType.EQUIPMENTS;
@@ -434,8 +484,16 @@ exports.unEquip = function(req, res) {
         result = player.packageEntity.addItem(player, pkgType, {
             itemId: character.equipmentsEntity.get(type).epid,
             itemNum: 1,
-            level: character.equipmentsEntity.get(type).level
+            level: character.equipmentsEntity.get(type).level,
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
         });
+        if(result == null || result.index.length == 0) {
+            data = {
+                code: Code.PACKAGE.NOT_ENOUGHT_SPACE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         packageIndex = result.index;
         if (packageIndex.length > 0) {
             character.unEquip(type);
@@ -502,9 +560,11 @@ exports.upgrade = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var status = 0;
 
-        var character = player;
+        var character;
         if(!isSelf) {
             character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
         }
 
         if(character == null) {
@@ -535,7 +595,7 @@ exports.upgrade = function(req, res) {
 
         var level = parseInt(character.equipmentsEntity.get(type).level);
         level += 1;
-        var nextEqId = dataApi.equipmentLevelup.findById(epId).nextEqId;
+        /*var nextEqId = dataApi.equipmentLevelup.findById(epId).nextEqId;
 
         if(nextEqId == "") {
             data = {
@@ -543,10 +603,233 @@ exports.upgrade = function(req, res) {
             };
             utils.send(msg, res, data);
             return;
-        }
+        }*/
 
         // var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
-        var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
+        // var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
+        var equipment_levelup = dataApi.equipments.findById(epId);
+
+        if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
+            status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
+        } else {
+            status = character.equipmentsEntity.upgradeByMoney(player, type, equipment_levelup);
+        }
+
+        if(status == 1) {
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(character.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    //status: status
+                    code: Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        } else {
+            data = {
+                //status: status
+                code: Code.EQUIPMENT.NO_UPGRADE
+            };
+            utils.send(msg, res, data);
+        }
+    });
+}
+
+/**
+ * 打造升级
+ * @param req
+ * @param res
+ */
+exports.forgeUpgrade = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var epId = msg.eqId;
+    var type = msg.type;
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var status = 0;
+
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(character.equipmentsEntity.get(type).epid == 0) {// 没有装备
+            data = {
+                //status: -2
+                code: Code.EQUIPMENT.NO_WEAPON
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(character.equipmentsEntity.get(type).epid != epId) {// 装备不正确
+            data = {
+                //status: -1
+                code: Code.EQUIPMENT.WRONG_WEAPON
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var level = parseInt(character.equipmentsEntity.get(type).level);
+        level += 1;
+
+        var equipment_levelup = dataApi.equipments.findById(epId);
+
+        if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
+            status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
+        } else {
+            status = character.equipmentsEntity.upgradeByMoney(player, type, equipment_levelup);
+        }
+
+        if(status == 1) {
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(character.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    //status: status
+                    code: Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        } else {
+            data = {
+                //status: status
+                code: Code.EQUIPMENT.NO_UPGRADE
+            };
+            utils.send(msg, res, data);
+        }
+    });
+}
+
+/**
+ * 镶嵌
+ * @param req
+ * @param res
+ */
+exports.inlay = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var epId = msg.eqId;
+    var type = msg.type;
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var status = 0;
+
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(character.equipmentsEntity.get(type).epid == 0) {// 没有装备
+            data = {
+                //status: -2
+                code: Code.EQUIPMENT.NO_WEAPON
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(character.equipmentsEntity.get(type).epid != epId) {// 装备不正确
+            data = {
+                //status: -1
+                code: Code.EQUIPMENT.WRONG_WEAPON
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var level = parseInt(character.equipmentsEntity.get(type).level);
+        level += 1;
+
+        var equipment_levelup = dataApi.equipments.findById(epId);
 
         if(equipment_levelup.upgradeMaterial != 0 && equipment_levelup.upgradeMaterial.length > 1) {
             status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);

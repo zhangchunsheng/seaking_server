@@ -90,21 +90,8 @@ skillUtil.checkTriggerCondition = function(skill, condition) {
 
 /**
  * 觉醒技能
- * @param skill
- * @param condition
  * @returns {boolean}
  */
-skillUtil.checkAwakenCondition = function(skill, condition) {
-    var type = condition.type;
-    var triggerCondition = skill.skillData.triggerCondition;
-    if(triggerCondition.indexOf("||") > 0) {
-        var array = triggerCondition.split("||");
-        for(var i = 0 ; i < array.length ; i++) {
-            if(array[i] == type)
-                return true;
-        }
-    } else {
-        return triggerCondition == type;
-    }
-    return false;
+skillUtil.checkAwakenCondition = function(skill, attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    return skill.invokeTriggerScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 }

@@ -51,7 +51,35 @@ fightUtil.reduceHp = function(attack_formation, defense_formation, attack, defen
             }
             defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         }
+        var awakenCondition = {
+            type: consts.skillTriggerConditionType.AWAKEN
+        };
+        defense.awakenSkill(consts.characterFightType.DEFENSE, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
+    }
+}
+
+fightUtil.updateAttackData = function(attack, attackData) {
+    if(attack.fight.addAttackValue > 0) {
+        attackData.addAttack = attack.fight.addAttackValue;
+    }
+    if(attack.fight.addSunderArmorValue > 0) {
+        attackData.addSunderArmor = attack.fight.addSunderArmorValue;
+    }
+    if(attack.fight.poison) {
+        attackData.poison = attack.fight.poison;
+    }
+    if(attack.fight.addHpValue > 0) {
+        attackData.addHp = attack.fight.addHpValue;
+    }
+    if(attack.fight.reduceAttackValue > 0) {
+        attackData.reduceAttack = attack.fight.reduceAttackValue;
+    }
+    if(attack.fight.ice) {
+        attackData.ice = attack.fight.ice;
+    }
+    if(attack.fight.silence) {
+        attackData.silence = attack.fight.silence;
     }
 }
 
@@ -64,6 +92,12 @@ fightUtil.updateDefenseData = function(defense, defenseData) {
     }
     if(defense.fight.addMaxHp > 0) {
         defenseData.addMaxHp = defense.fight.addMaxHp;
+    }
+    if(defense.fight.poison) {
+        defenseData.poison = defense.fight.poison;
+    }
+    if(defense.fight.addDodgeValue > 0) {
+        defenseData.addDodge = defense.fight.addDodgeValue;
     }
 }
 
@@ -88,7 +122,7 @@ fightUtil.updateDefenseData = function(defense, defenseData) {
 fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var player;
     var team;
-    if(fightType == consts.characterFightType.ATTACK || fightType == consts.characterFightType.AFTER_ATTACK) {
+    if(fightType == consts.characterFightType.ATTACK || fightType == consts.characterFightType.AFTER_ATTACK || fightType == consts.characterFightType.ATTACKING) {
         player = attack;
         team = attackFightTeam;
     } else if(fightType == consts.characterFightType.DEFENSE || fightType == consts.characterFightType.AFTER_DEFENSE) {
@@ -134,6 +168,10 @@ fightUtil.getBuffCategory = function(fightType) {
         return consts.buffCategory.AFTER_ATTACK;
     } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
         return consts.buffCategory.AFTER_DEFENSE;
+    } else if(fightType == consts.characterFightType.ROUND) {
+        return consts.buffCategory.ROUND;
+    } else if(fightType == consts.characterFightType.ATTACKING) {
+        return consts.buffCategory.ATTACKING;
     }
 }
 
@@ -208,6 +246,36 @@ fightUtil.changeTargetState = function(target, defenseData) {
     if(defenseData.addMaxHp > 0) {
         target.addMaxHp = defenseData.addMaxHp;
     }
+    if(defenseData.poison) {
+        target.poison = defenseData.poison;
+    }
+    if(defenseData.addDodge) {
+        target.addDodge = defenseData.addDodge;
+    }
+}
+
+fightUtil.changeFightData = function(fightData, attackData) {
+    if(attackData.addAttack) {
+        fightData.addAttack = attackData.addAttack;
+    }
+    if(attackData.addSunderArmor) {
+        fightData.addSunderArmor = attackData.addSunderArmor;
+    }
+    if(attackData.poison) {
+        fightData.poison = attackData.poison;
+    }
+    if(attackData.addHp) {
+        fightData.addHp = attackData.addHp;
+    }
+    if(attackData.reduceAttack) {
+        fightData.reduceAttack = attackData.reduceAttack;
+    }
+    if(attackData.ice) {
+        fightData.ice = attackData.ice;
+    }
+    if(attackData.silence) {
+        fightData.silence = attackData.silence;
+    }
 }
 
 /**
@@ -248,7 +316,7 @@ fightUtil.getRandomTeammate = function(skill, player, teams) {
         teammate = player;
     } else {
         var array = [];
-        for(var i = 0, l = teams.length ; i < l ; i++) {
+        for(var i in teams) {
             if(teams[i].id == player.id)
                 continue;
             if(teams[i].died)
@@ -266,6 +334,36 @@ fightUtil.getRandomTeammate = function(skill, player, teams) {
         }
     }
     return teammate;
+}
+
+fightUtil.getRandomOpponet = function(defense, defenses) {
+    fightUtil.getRandomPlayer(defense, defenses);
+}
+
+fightUtil.getRandomPlayer = function(player, players) {
+    var playermate = null;
+    if(players.length == 1) {
+        if(player != null) {
+            playermate = null;
+        } else {
+            playermate = players[0];
+        }
+    } else {
+        var array = [];
+        for(var i in players) {
+            if(player != null && players[i].id == player.id) {
+                continue;
+            }
+            if(players[i].died)
+                continue;
+            array.push(i);
+        }
+        if(array.length > 0) {
+            var random = utils.random(0, array.length - 1);
+            playermate = players[array[random]];
+        }
+    }
+    return playermate;
 }
 
 fightUtil.checkBuff = function(skill, player) {
@@ -320,7 +418,7 @@ fightUtil.calculateCBD = function(random, attack, defense, isCriticalHit, damage
  * @param attackData
  * @param defenseData
  */
-fightUtil.attack = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+fightUtil.attack = function(opts, attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     if(attack.died)
         return;
     if(defense.died)
@@ -391,6 +489,11 @@ fightUtil.attack = function(attackSide, attack_formation, defense_formation, att
             reduceBlood: defenseData.reduceBlood,
             buffs: defense.getBuffs()
         };
+        opts.damage += defenseData.reduceBlood;
+        opts.damageInfo.push({
+            playerId: defense.id,
+            damage: defenseData.reduceBlood
+        });
         fightData.target.push(target);
     } else {
         // 触发被攻击技能
@@ -445,6 +548,7 @@ fightUtil.attack = function(attackSide, attack_formation, defense_formation, att
             defenseData.isCounter = true;
             defenseData.counterValue = damage;//反击伤害
             attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
+            attack.hp = attack.fightValue.hp;
             fightUtil.checkDied(attack, attackData);
         }
 
@@ -475,6 +579,11 @@ fightUtil.attack = function(attackSide, attack_formation, defense_formation, att
             reduceBlood: defenseData.reduceBlood,
             buffs: defenseData.buffs
         };
+        opts.damage += defenseData.reduceBlood;
+        opts.damageInfo.push({
+            playerId: defense.id,
+            damage: defenseData.reduceBlood
+        });
         fightUtil.changeTargetState(target, defenseData);
         fightData.target.push(target);
     }
@@ -644,6 +753,7 @@ fightUtil.calculateDamage = function(opts, attackSide, attack_formation, defense
             defenseData.isCounter = true;
             defenseData.counterValue = damage;//反击伤害
             attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
+            attack.hp = attack.fightValue.hp;
             fightUtil.checkDied(attack, attackData);
         }
 
@@ -734,4 +844,182 @@ fightUtil.calculateScopeDamage = function(opts, buff, defense, defenseData, figh
             break;
         }
     }
+}
+
+/**
+ * getTeammateWithLessHp
+ * @param teams
+ * @returns {null}
+ */
+fightUtil.getTeammateWithLessHp = function(player, teams) {
+    var teammate = null;
+    var hpProportion = 1;
+    var temp = 0
+    for(var i in teams) {
+        if(teams[i].died)
+            continue;
+        temp = teams[i].fightValue.hp / teams[i].fightValue.maxHp;
+        if(hpProportion > temp) {
+            hpProportion = temp;
+            teammate = teams[i];
+        }
+    }
+    if(teammate == null) {
+        teammate = player;
+    }
+    return teammate;
+}
+
+/**
+ * recoverHp
+ * @param attackSide
+ * @param condition
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param defense
+ * @param attacks
+ * @param defenses
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ * @param fightData
+ * @param attackData
+ * @param defenseData
+ */
+fightUtil.recoverHp = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    attack.useSkillBuffs(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+    fightData.targetType = consts.effectTargetType.OWNER;
+    var teammate = fightUtil.getTeammateWithLessHp(attack, attacks);
+    var attack = fightUtil.getAttack(attack);
+    var addHp = attack;
+    if(teammate.fight.poison) {
+        addHp = addHp / 2;
+    }
+    teammate.fightValue.hp += addHp;
+    if(teammate.fightValue.hp > teammate.fightValue.maxHp) {
+        teammate.fightValue.hp = teammate.fightValue.maxHp;
+    }
+    teammate.hp = teammate.fightValue.hp;
+    var target = {
+        id: teammate.id,
+        fId: teammate.formationId,
+        hp: teammate.fightValue.hp,
+        action: consts.defenseAction.addHp,
+        addHp: addHp,
+        buffs: teammate.buffs
+    };
+    if(teammate.fight.poison) {
+        target.poison = true;
+    }
+    fightData.target.push(target);
+}
+
+fightUtil.getAttack = function(attack) {
+    var attackValue = attack.fightValue.attack;
+    if(attack.fight.addAttack > 0) {
+        attack.fight.addAttackValue = attack.attack * attack.fight.addAttack;
+        attackValue += attack.fight.addAttackValue;
+    }
+    return attackValue;
+}
+
+/**
+ * updateRoundBuff, There are so many buffs,fuck.
+ * @param fightType
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param defense
+ * @param attacks
+ * @param defenses
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ * @param fightData
+ * @param attackData
+ * @param defenseData
+ */
+fightUtil.updateRoundBuff = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var players;
+    var buffs = [];
+    var player;
+    if(fightType == consts.characterFightType.ATTACK) {
+        players = attacks;
+    } else {
+        players = defenses;
+    }
+    for(var i in players) {
+        player = players[i];
+        var skillBuffs = players[i].getSkillBuffs();
+        buffs = skillBuffs;
+        for(var j = 0, l = buffs.length ; j < l ; j++) {
+            if(buffs[j].buffCategory == consts.buffCategory.ROUND) {
+                buffs[j].invokeUpdateScript(fightType, attack_formation, defense_formation, player, player, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+        }
+    }
+}
+
+fightUtil.calculateHp = function(player, damage) {
+    player.fightValue.hp = Math.ceil(player.fightValue.hp - damage);
+    if(player.fightValue.hp < 0)
+        player.fightValue.hp = 0;
+    player.hp = player.fightValue.hp;
+}
+
+/**
+ *
+ * @param player
+ * @param addHp
+ */
+fightUtil.addHp = function(player, addHp) {
+    player.fightValue.hp = Math.ceil(player.fightValue.hp + addHp);
+    if(player.fightValue.hp > player.fightValue.maxHp)
+        player.fightValue.hp = player.fightValue.maxHp;
+    player.hp = player.fightValue.hp;
+}
+
+fightUtil.getOtherPlayers = function(player, players) {
+    var results = [];
+    for(var i in players) {
+        if(players[i].died)
+            continue;
+        if(player.id == players[i].id)
+            continue;
+        results.push(players[i]);
+    }
+    return results;
+}
+
+fightUtil.addPlayermateBuff = function(attacks, buff) {
+    for(var i in attacks) {
+        if(attacks[i].died) {
+            continue;
+        }
+        attacks[i].addBuff(buff);
+    }
+}
+
+fightUtil.updatePlayermateBuff = function(attacks, buffId, value) {
+    var buffs;
+    for(var i in attacks) {
+        if(attacks[i].died) {
+            continue;
+        }
+        buffs = attacks[i].buffs;
+        for(var j = 0 ; j < buffs.length ; j++) {
+            if(buffs[j].buffId == buffId) {
+                buffs[j].buffData.value = value;
+                break;
+            }
+        }
+    }
+}
+
+fightUtil.updateDodge = function(defense, dodge) {
+    if(defense.fight.addDodge > 0) {
+        defense.fight.addDodgeValue = defense.fight.addDodge * 100;
+        dodge = dodge + defense.fight.addDodgeValue;
+    }
+    return dodge;
 }

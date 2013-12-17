@@ -27,6 +27,7 @@ var User = function(opts) {
     this.registerDate = opts.registerDate;
     this.loginCount = opts.loginCount;
     this.lastLoginDate = opts.lastLoginDate;
+    this.updateRoleDate = opts.updateRoleDate;
     this.onlineTime = opts.onlineTime;
     this.onlineDayNum = opts.onlineDayNum;
     this.onlineDayNumContinuous = opts.onlineDayNumContinuous;

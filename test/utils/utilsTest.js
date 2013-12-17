@@ -7,6 +7,7 @@
  */
 var should = require('should');
 var utils = require('../../app/utils/utils');
+var playerUtil = require('../../app/utils/playerUtil');
 var formationUtil = require('../../app/utils/formationUtil');
 
 describe('utils test', function() {
@@ -20,6 +21,15 @@ describe('utils test', function() {
         var num = 3;
 
         console.log(formationUtil.getRandomPosition(num, positions));
+
+        var heroId = "H1201";
+        heroId = heroId.substr(0, 2) + 0 + heroId.substr(3);
+        console.log(heroId);
+
+        console.log(playerUtil.initAptitude(1));
+        console.log(JSON.parse(playerUtil.initAptitude(1, "string")));
+        console.log(utils.getEqTypeV2("E10112"));
+        console.log(utils.getDate(1));
     });
 
     it('fightData', function() {

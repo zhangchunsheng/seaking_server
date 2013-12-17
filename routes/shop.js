@@ -31,9 +31,11 @@ exports.buyItem = function(req, res) {
     var msg = req.query;
     var session = req.session;
 
-    var wid = msg.wid
-        , num = msg.num;
-
+    var index = msg.index;
+    var npcId = msg.npcId;
+    if(!index || !npcId){
+        return utils.send(msg, res, {code: Code.ARGUMENT_EXCEPTION});
+    }
     var uid = session.uid
         , serverId = session.serverId
         , registerType = session.registerType
@@ -41,33 +43,37 @@ exports.buyItem = function(req, res) {
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-    var currentScene = msg.currentScene;
+    // var currentScene = msg.currentScene;
+    
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var result = false;
 
-        if(currentScene != player.currentScene) {
+        /*if(currentScene != player.currentScene) {
             data = {
                 code: Code.AREA.WRONG_CURRENTSCENE
             };
             utils.send(msg, res, data);
             return;
+        }*/
+        var shops = dataApi.shops.findById(npcId);
+        if(!shops ) {
+            return utils.send(msg, res, {
+                code: Code.SHOP.NOT_EXIST_NPCSHOP
+            });
         }
-
-        var items = dataApi.shops.findById(currentScene).shopData;
-        for(var i = 0 ; i < items.length ; i++) {
-            if(items[i].indexOf(wid) == 0) {
-                result = true;
-                break;
-            }
-        }
-        if(!result) {
+        var items = shops.shopData;
+        var itemData = items[index];
+        if(!itemData) {
             data = {
                 code: Code.SHOP.NOT_EXIST_ITEM
             };
             utils.send(msg, res, data);
             return;
         }
+        var data = itemData.split("|");
+        var itemId = data[0];
+        var itemNum = data[1]||1;
         
 //      if(!) {
 //          next(null,{
@@ -76,38 +82,41 @@ exports.buyItem = function(req, res) {
 //          return;
 //      }
         var itemInfo = {};
-        var type = "";
-        if(wid.indexOf("D") >= 0) {
+        var type ;
+        if(itemId.indexOf("D") >= 0) {
             type = PackageType.ITEMS;
-            itemInfo = dataApi.item.findById(wid);
-        } else if(wid.indexOf("W9") >= 0) {
+            itemInfo = dataApi.item.findById(itemId);
+        } else if(itemId.indexOf("E") >= 0) {
             type = PackageType.EQUIPMENTS;
-            itemInfo = dataApi.equipmentLevelup.findById(wid);
-        } else {
+            itemInfo = dataApi.equipment.findById(itemId);
+        } else if(itemId.indexOf("W") >= 0){
             type = PackageType.WEAPONS;
-            itemInfo = dataApi.equipmentLevelup.findById(wid);
+            itemInfo = dataApi.weapons.findById(itemId);
         }
+        console.log("itemInfo:",itemInfo);
         if(typeof itemInfo == "undefined" || itemInfo == null) {
             data = {
                 code: Code.SHOP.NOT_EXIST_ITEM
             };
             utils.send(msg, res, data);
-            return ;
+            return;
         }
-        if( type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS ) {
-            if(num != 1) {
-                utils.send(msg, res, {code:'数据错误'});
+        if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
+            if(itemNum != 1) {
+                utils.send(msg, res, {
+                     code:Code.ARGUMENT_EXCEPTION
+                });
                 return;    
             }
         } else {
-            /*if(itemInfo.pileNum < num) {
+            /*if(itemInfo.pileNum < itemNum) {
                 utils.send(msg, res, {code:'数据错误'});
                 return;      
             }*/
         }
         var price = itemInfo.price;
-        var costMoney = price * num;
-
+        var costMoney = price * itemNum;
+        console.log("Price:",price);
         if(player.money < costMoney) {
             data = {
                 code: Code.SHOP.NOT_ENOUGHT_MONEY
@@ -117,9 +126,9 @@ exports.buyItem = function(req, res) {
         }
         
         var item = {
-            itemId: wid,
-            itemNum: num,
-            level: 1
+            itemId: itemId,
+            itemNum: itemNum,
+            level: itemInfo.level || 1
         }
 
         var result = player.buyItem(type, item, costMoney);
@@ -137,8 +146,7 @@ exports.buyItem = function(req, res) {
             };
             utils.send(msg, res, data);
         }*/
-
-        if(result.packageChange.length == 0) {
+        if(!result || result.packageChange.length == 0) {
             data = {
                 code: Code.PACKAGE.NOT_ENOUGHT_SPACE
             };
@@ -146,9 +154,11 @@ exports.buyItem = function(req, res) {
         } else {
             data = {
                 code: consts.MESSAGE.RES,
-                money: result.money,
-                packageChange: result.packageChange,
-                type: type
+                data:{
+                    money: result.money,
+                    packageChange: result.packageChange
+                }
+                
                 //costMoney: costMoney
             };
             async.parallel([
