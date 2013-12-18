@@ -132,6 +132,7 @@ module.exports = {
         EQUIPMENT: 5,
         TO_LEVEL: 6,
         UPGRADE_EQUIPMENT: 7,
+        FORGEUPGRADE_EQUIPMENT: 12,
         BUY_ITEM: 8,
         CONSUMER_GAMECURRENCY: 9,
         LEARN_SKILL: 10,

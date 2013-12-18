@@ -194,6 +194,25 @@ Equipments.prototype.forgeUpgradeByMoney = function(player, type, equipment_leve
     return status;
 }
 
+/**
+ *
+ * @param type
+ * @param equipment_levelup
+ * @returns {number}
+ */
+Equipments.prototype.forgeUpgradeByMaterial = function(player, type, forge) {
+    var status = 0;
+    status = 1;
+    this[type].forgeLevel = parseInt(this[type].forgeLevel) + 1;
+    player.updateTaskRecord(consts.TaskGoalType.FORGEUPGRADE_EQUIPMENT, {
+        itemId: this[type].epid,
+        itemNum: this[type].forgeLevel
+    });
+    this.save();
+    player.save();
+    return status;
+}
+
 Equipments.prototype.updateId = function() {
     if(this.weapon.epid != 0) {
         this.weapon.epid += this.weapon.level;

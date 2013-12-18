@@ -734,18 +734,48 @@ exports.forgeUpgrade = function(req, res) {
             return;
         }
 
+        var forge = dataApi.forges.findById(epId);
+
+        if(utils.empty(forge)) {
+            data = {
+                code: Code.EQUIPMENT.NO_FORGEDATA
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         var forgeLevel = parseInt(character.equipmentsEntity.get(type).forgeLevel);
+        if(forgeLevel == 4) {
+            data = {
+                code: Code.EQUIPMENT.FORGEUPGRADE_TOP_LEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         forgeLevel += 1;
 
-        var equipment_levelup = dataApi.equipments.findById(epId);
-
-        if(typeof equipment_levelup.upgradeMaterial != "undefined"
-            && equipment_levelup.upgradeMaterial != 0
-            && equipment_levelup.upgradeMaterial.length > 1) {
-            status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
-        } else {
-            status = character.equipmentsEntity.forgeUpgradeByMoney(player, type, equipment_levelup);
+        var forgeUpgradeMaterial = forge.forgeUpgradeMaterial;
+        forgeUpgradeMaterial = forgeUpgradeMaterial[forgeLevel - 1];
+        // check package
+        var array;
+        var itemId;
+        var itemNum;
+        var flag = false;
+        for(var i = 0 ; i < forgeUpgradeMaterial.length ; i++) {
+            array = forgeUpgradeMaterial[i].split("|");
+            itemId = array[0];
+            itemNum = array[1];
         }
+
+        if(!flag) {
+            data = {
+                code: Code.EQUIPMENT.NO_UPGRADEMATERIAL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        status = character.equipmentsEntity.forgeUpgradeByMaterial(player, type, forge);
 
         if(status == 1) {
             async.parallel([

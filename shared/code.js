@@ -46,7 +46,10 @@ module.exports = {
         WRONG_WEAPON: 1222,
         NO_UPGRADE: 1223,
         NOMORE_LEVEL: 1224,
-        NOT_OWNER_EQUIPMENT: 1225
+        NOT_OWNER_EQUIPMENT: 1225,
+        NO_FORGEDATA: 1226,
+        FORGEUPGRADE_TOP_LEVEL: 1227,
+        NO_UPGRADEMATERIAL: 1228
     },
 
     SHOP: {
