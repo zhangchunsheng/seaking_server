@@ -30,6 +30,9 @@ var Ghost = function(opts) {
     this.number = parseInt(opts.number) || 0;
     this.addGhostNumOneMinute = consts.addGhostNumOneMinute || 10;
 
+    this.nextAttrId = 0;
+    this.nextAttrValue = 0;
+
     this.hp = 0;
     this.attack = 0;
     this.defense = 0;
@@ -51,6 +54,18 @@ var Ghost = function(opts) {
     this.blockInfo = "";
     this.dodgeInfo = "";
     this.counterInfo = "";
+
+    this.nextValue = {
+        hp: 0,
+        attack: 0,
+        defense: 0,
+        sunderArmor: 0,
+        speed: 0,
+        criticalHit:0,
+        block: 0,
+        dodge: 0,
+        counter: 0
+    };
 
     this.initGhost(opts);
     this.calculateValue();
@@ -106,6 +121,24 @@ Ghost.prototype.calculateValue = function() {
             this[dict[this.ghostData[this.nextLevelId - 1].attrId - 1] + "Info"] += " +" + this.ghostData[this.nextLevelId - 1].attrValue;
         }
     }*/
+}
+
+Ghost.prototype.set = function(ghost) {
+    this.level = ghost.level;
+}
+
+Ghost.prototype.getValue = function() {
+    var attrId = this.ghostData[this.level - 1].attrId;
+    var attrValue = parseInt(this.ghostData[this.level - 1].attrValue);
+    var data = '{"' + attrId + '":' + attrValue + '}';
+    return JSON.parse(data);
+}
+
+Ghost.prototype.getNextValue = function() {
+    var attrId = this.ghostData[this.level - 1].attrId;
+    var attrValue = parseInt(this.ghostData[this.level - 1].attrValue);
+    var data = '{"' + attrId + '":' + attrValue + '}';
+    return JSON.parse(data);
 }
 
 Ghost.prototype.strip = function() {

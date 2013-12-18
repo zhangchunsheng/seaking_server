@@ -165,13 +165,16 @@ exports.upgrade = function(req, res) {
             aptitude[type].count--;
             aptitude.count--;
         }
+        character.aptitudeEntity.set(type, aptitude);
+        var attrValue = character.aptitudeEntity.getValue(type);
         aptitudeService.upgrade(array, player, character, type, function(err, reply) {
             data = {
                 code: Code.OK,
                 level: reply,
                 count: aptitude[type].count,
                 money: player.money,
-                gameCurrency: player.gameCurrency
+                gameCurrency: player.gameCurrency,
+                attrValue: attrValue
             };
             utils.send(msg, res, data);
         });

@@ -84,7 +84,7 @@ exports.upgrade = function(req, res) {
         var ghostData = ghosts[heroId][ghost.level - 1];
         if(utils.empty(ghostData)) {
             data = {
-                code: Code.ARGUMENT_EXCEPTION
+                code: Code.CHARACTER.TOP_LEVEL
             };
             utils.send(msg, res, data);
             return;
@@ -97,11 +97,14 @@ exports.upgrade = function(req, res) {
             return;
         }
         player.ghostNum = parseInt(player.ghostNum) - parseInt(ghostData.costGhostNum);
+        character.ghostEntity.set(ghost);
+        var attrValue = character.ghostEntity.getValue();
         ghostService.upgrade(array, player, character, function(err, reply) {
             data = {
                 code: Code.OK,
                 level: reply,
-                ghostNum: player.ghostNum
+                ghostNum: player.ghostNum,
+                attrValue: attrValue
             };
             utils.send(msg, res, data);
         });
