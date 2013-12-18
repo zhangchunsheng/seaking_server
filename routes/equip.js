@@ -760,16 +760,16 @@ exports.forgeUpgrade = function(req, res) {
         var array;
         var itemId;
         var itemNum;
-        var flag = false;
+        var flag = [];
         for(var i = 0 ; i < forgeUpgradeMaterial.length ; i++) {
             array = forgeUpgradeMaterial[i].split("|");
             itemId = array[0];
             itemNum = array[1];
         }
 
-        if(!flag) {
+        if(flag.length < 3) {
             data = {
-                code: Code.EQUIPMENT.NO_UPGRADEMATERIAL
+                code: Code.EQUIPMENT.LACK_UPGRADEMATERIAL
             };
             utils.send(msg, res, data);
             return;

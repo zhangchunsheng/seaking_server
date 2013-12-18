@@ -49,7 +49,7 @@ module.exports = {
         NOT_OWNER_EQUIPMENT: 1225,
         NO_FORGEDATA: 1226,
         FORGEUPGRADE_TOP_LEVEL: 1227,
-        NO_UPGRADEMATERIAL: 1228
+        LACK_UPGRADEMATERIAL: 1228
     },
 
     SHOP: {
