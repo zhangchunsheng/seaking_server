@@ -83,6 +83,14 @@ exports.wearWeapon = function(req, res) {
             return;
         }
 
+        if(!utils.checkOwnerEquipment(character, weaponId)) {
+            data = {
+                code: Code.EQUIPMENT.NOT_OWNER_EQUIPMENT
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         //if(player.packageEntity.checkItem(pkgType, index, weaponId) > 0) {
             //var item = player.packageEntity[pkgType].items[index];
         if(player.packageEntity.checkItem(index, weaponId) > 0) {
@@ -350,6 +358,14 @@ exports.equip = function(req, res) {
             data = {
                 //status: -2
                 code: Code.PACKAGE.NOT_EXIST_ITEM
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(!utils.checkOwnerEquipment(character, eqId)) {
+            data = {
+                code: Code.EQUIPMENT.NOT_OWNER_EQUIPMENT
             };
             utils.send(msg, res, data);
             return;

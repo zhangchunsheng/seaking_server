@@ -45,7 +45,8 @@ module.exports = {
         NO_WEAPON: 1221,
         WRONG_WEAPON: 1222,
         NO_UPGRADE: 1223,
-        NOMORE_LEVEL: 1224
+        NOMORE_LEVEL: 1224,
+        NOT_OWNER_EQUIPMENT: 1225
     },
 
     SHOP: {
