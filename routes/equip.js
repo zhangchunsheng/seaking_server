@@ -975,6 +975,16 @@ exports.inlay = function(req, res) {
             return;
         }
 
+        var eq = dataApi.equipments.findById(epId);
+        if(eq.attrId != diamond.attrId) {
+            data = {
+                //status: -1//等级不够
+                code: Code.EQUIPMENT.NOT_SAME_ATTRID
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         if(!character.equipmentsEntity.checkInlayCell(type, cellId)) {
             data = {
                 //status: -1

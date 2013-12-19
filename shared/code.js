@@ -50,7 +50,8 @@ module.exports = {
         NO_FORGEDATA: 1226,
         FORGEUPGRADE_TOP_LEVEL: 1227,
         LACK_UPGRADEMATERIAL: 1228,
-        WRONG_CELLID: 1229
+        WRONG_CELLID: 1229,
+        NOT_SAME_ATTRID: 1230
     },
 
     SHOP: {
