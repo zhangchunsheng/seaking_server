@@ -9,6 +9,7 @@ var dataApi = require('./dataApi');
 var Player = require('../domain/entity/player');
 var utils = require("./utils");
 var buffUtil = require("./buffUtil");
+var equipmentUtil = require("./equipmentUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
 
@@ -110,48 +111,57 @@ partnerUtil.initEquipments = function(dataType) {
         weapon: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//武器
 
         necklace: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//项链
         helmet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//头盔
         armor: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护甲
         belt: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//腰带
         legguard: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护腿
         amulet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护符
         shoes: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//鞋
         ring: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         }//戒指
     };
 

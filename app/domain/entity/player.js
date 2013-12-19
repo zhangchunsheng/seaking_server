@@ -878,14 +878,17 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
     var curEquipment = this.equipmentsEntity.get(epType);
     this.equipmentsEntity.equip(epType, {
         epid: item.itemId,
-        level: item.level
+        level: item.level,
+        forgeLevel: item.forgeLevel,
+        inlay: item.inlay
     });
     if (curEquipment.epid != 0) {
         index = player.packageEntity.addItem(player, pkgType, {
             itemId: curEquipment.epid,
             itemNum: 1,
             level: curEquipment.level,
-            forgeLevel: curEquipment.forgeLevel || 0
+            forgeLevel: curEquipment.forgeLevel || 0,
+            inlay: curEquipment.inlay
         }, pIndex).index;
     } else {
         //player.packageEntity.removeItem(pkgType, pIndex);

@@ -14,6 +14,7 @@ var Entity = require('./entity/entity');
 var EntityType = require('../consts/consts').EntityType;
 var Persistent = require('./persistent');
 var consts = require('../consts/consts');
+var equipmentUtil = require('../utils/equipmentUtil');
 
 /**
  * Initialize a new 'Equipments' with the given 'opts'.
@@ -31,48 +32,57 @@ var Equipments = function(opts) {
     this.weapon = {
         epid: opts.weapon.epid || 0,
         level: opts.weapon.level,
-        forgeLevel: opts.weapon.forgeLevel || 0
+        forgeLevel: opts.weapon.forgeLevel || 0,
+        inlay: opts.weapon.inlay || equipmentUtil.initInlay()
     };//武器
 
     this.necklace = {
         epid: opts.necklace.epid || 0,//项链
         level: opts.necklace.level,
-        forgeLevel: opts.necklace.forgeLevel || 0
+        forgeLevel: opts.necklace.forgeLevel || 0,
+        inlay:  opts.necklace.inlay || equipmentUtil.initInlay()
     };
     this.helmet = {
         epid: opts.helmet.epid || 0,//头盔
         level: opts.helmet.level,
-        forgeLevel: opts.helmet.forgeLevel || 0
+        forgeLevel: opts.helmet.forgeLevel || 0,
+        inlay:  opts.helmet.inlay || equipmentUtil.initInlay()
     };
     this.armor = {
         epid: opts.armor.epid || 0,//护甲
         level: opts.armor.level,
-        forgeLevel: opts.armor.forgeLevel || 0
+        forgeLevel: opts.armor.forgeLevel || 0,
+        inlay:  opts.armor.inlay || equipmentUtil.initInlay()
     };
     this.belt = {
         epid: opts.belt.epid || 0,//腰带
         level: opts.belt.level,
-        forgeLevel: opts.belt.forgeLevel || 0
+        forgeLevel: opts.belt.forgeLevel || 0,
+        inlay:  opts.belt.inlay || equipmentUtil.initInlay()
     };
     this.legguard = {
         epid: opts.legguard.epid || 0,//护腿
         level: opts.legguard.level,
-        forgeLevel: opts.legguard.forgeLevel || 0
+        forgeLevel: opts.legguard.forgeLevel || 0,
+        inlay:  opts.legguard.inlay || equipmentUtil.initInlay()
     };
     this.amulet = {
         epid: opts.amulet.epid || 0,//护符
         level: opts.amulet.level,
-        forgeLevel: opts.amulet.forgeLevel || 0
+        forgeLevel: opts.amulet.forgeLevel || 0,
+        inlay:  opts.amulet.inlay || equipmentUtil.initInlay()
     };
     this.shoes = {
         epid: opts.shoes.epid || 0,//鞋
         level: opts.shoes.level,
-        forgeLevel: opts.shoes.forgeLevel || 0
+        forgeLevel: opts.shoes.forgeLevel || 0,
+        inlay:  opts.shoes.inlay || equipmentUtil.initInlay()
     };
     this.ring = {
         epid: opts.ring.epid || 0,//戒指
         level: opts.ring.level,
-        forgeLevel: opts.ring.forgeLevel || 0
+        forgeLevel: opts.ring.forgeLevel || 0,
+        inlay:  opts.ring.inlay || equipmentUtil.initInlay()
     };
 };
 
@@ -104,7 +114,8 @@ Equipments.prototype.equip = function(type, equip) {
     this[type] = {
         epid: equip.epid,
         level: equip.level,
-        forgeLevel: equip.forgeLevel
+        forgeLevel: equip.forgeLevel || 0,
+        inlay: equip.inlay || equipmentUtil.initInlay()
     };
     this.save();
 };
@@ -114,7 +125,8 @@ Equipments.prototype.unEquip = function(type) {
     this[type] = {
         epid: 0,
         level: 0,
-        forgeLevel: 0
+        forgeLevel: 0,
+        inlay: {}
     };
     this.save();
 };
@@ -236,6 +248,9 @@ Equipments.prototype.forgeUpgradeByMaterial = function(player, type, forge, item
     return result;
 }
 
+/**
+ * 更新装备ID
+ */
 Equipments.prototype.updateId = function() {
     if(this.weapon.epid != 0) {
         this.weapon.epid += this.weapon.level;

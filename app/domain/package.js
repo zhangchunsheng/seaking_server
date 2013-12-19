@@ -272,7 +272,8 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
                     level: item.level,
-                    forgeLevel: item.forgeLevel
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
                 };
                 changes = [{
                     index: i,
