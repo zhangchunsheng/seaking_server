@@ -147,7 +147,8 @@ module.exports = {
     PackageType: {
         WEAPONS: "weapons",
         EQUIPMENTS: "equipments",
-        ITEMS: "items"
+        ITEMS: "items",
+        DIAMOND: "diamond"
     },
 
     EqType: {

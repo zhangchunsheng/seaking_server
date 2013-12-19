@@ -930,16 +930,7 @@ exports.inlay = function(req, res) {
             return;
         }
 
-        if(typeof item == "undefined") {
-            data = {
-                //status: -2
-                code: Code.PACKAGE.NOT_EXIST_ITEM
-            };
-            utils.send(msg, res, data);
-            return;
-        }
-
-        if(item.itemId != diamondId) {//no item in package
+        if(typeof item == "undefined" || item.itemId != diamondId) {
             data = {
                 //status: -2
                 code: Code.PACKAGE.NOT_EXIST_ITEM
@@ -987,7 +978,6 @@ exports.inlay = function(req, res) {
 
         if(!character.equipmentsEntity.checkInlayCell(type, cellId)) {
             data = {
-                //status: -1
                 code: Code.EQUIPMENT.WRONG_CELLID
             };
             utils.send(msg, res, data);

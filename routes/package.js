@@ -65,7 +65,7 @@ exports.addItem = function(req, res) {
     var itemLevel = msg.itemLevel;
 
     var data = {};
-    if (!itemId.match(/W|E|D/)) {
+    if (!itemId.match(/W|E|D|B/)) {
         data = {
             code: consts.MESSAGE.ARGUMENT_EXCEPTION,
             packageIndex: 0
@@ -80,6 +80,8 @@ exports.addItem = function(req, res) {
         type = PackageType.EQUIPMENTS;
     } else if(itemId.indexOf("D") == 0) {
         type = PackageType.ITEMS;
+    } else if(itemId.indexOf("B") == 0) {
+        type = PackageType.DIAMOND;
     }
 
     var item = {

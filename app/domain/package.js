@@ -253,7 +253,7 @@ var arrayToJson = function(array) {
 Package.prototype.addItem = function(player, type, item, rIndex) {
     var changes = [];
     var _items = utils.clone(item);
-    if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
+    if (!item || !item.itemId || !item.itemId.match(/W|E|D|B/)) {
         //返回{}并没有返回null 容易判断
         return null;
     }
