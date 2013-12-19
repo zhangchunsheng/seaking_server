@@ -625,13 +625,15 @@ exports.upgrade = function(req, res) {
         // var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
         var equipment_levelup = dataApi.equipments.findById(epId);
 
+        var result;
         if(typeof equipment_levelup.upgradeMaterial != "undefined"
             && equipment_levelup.upgradeMaterial != 0
             && equipment_levelup.upgradeMaterial.length > 1) {
-            status = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
+            result = character.equipmentsEntity.upgradeByMaterial(player, type, equipment_levelup);
         } else {
-            status = character.equipmentsEntity.upgradeByMoneyV2(player, type, equipment_levelup);
+            result = character.equipmentsEntity.upgradeByMoneyV2(player, type, equipment_levelup);
         }
+        status == result.status;
 
         if(status == 1) {
             async.parallel([
@@ -651,7 +653,8 @@ exports.upgrade = function(req, res) {
                 data = {
                     //status: status
                     code: Code.OK,
-                    level: level
+                    level: level,
+                    money: result.money
                 };
                 utils.send(msg, res, data);
             });
@@ -762,14 +765,25 @@ exports.forgeUpgrade = function(req, res) {
         var itemNum;
         var flag = [];
         var materials = [];
+        var index = -1;
         for(var i = 0 ; i < forgeUpgradeMaterial.length ; i++) {
             array = forgeUpgradeMaterial[i].split("|");
             itemId = array[0];
             itemNum = array[1];
-            materials.push({
-                itemId: itemId,
-                itemNum: itemNum
-            });
+            index = -1;
+            for(var j = 0 ; j < materials.length ; j++) {
+                if(itemId == materials[j].itemId) {
+                    index = 0;
+                }
+            }
+            if(index >= 0) {
+                materials[index].itemNum += parseInt(itemNum);
+            } else {
+                materials.push({
+                    itemId: itemId,
+                    itemNum: parseInt(itemNum)
+                });
+            }
         }
         flag = player.packageEntity.checkMaterial(materials);
 

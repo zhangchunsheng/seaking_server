@@ -160,19 +160,26 @@ Equipments.prototype.upgradeByMoney = function(player, type, equipment_levelup) 
  *
  * @param type
  * @param equipment_levelup
- * @returns {number}
+ * @returns {Object}
  */
 Equipments.prototype.upgradeByMoneyV2 = function(player, type, equipment_levelup) {
-    var status = 0;
-    status = 1;
-    this[type].level = parseInt(this[type].level) + 1;
-    player.updateTaskRecord(consts.TaskGoalType.UPGRADE_EQUIPMENT, {
-        itemId: this[type].epid,
-        itemNum: this[type].level
-    });
-    this.save();
-    player.save();
-    return status;
+    var result = {};
+    result.status = 0;
+    if(player.money >= 1000) {
+        player.money -= 1000;
+        result.status = 1;
+        result.money = player.money;
+        this[type].level = parseInt(this[type].level) + 1;
+        player.updateTaskRecord(consts.TaskGoalType.UPGRADE_EQUIPMENT, {
+            itemId: this[type].epid,
+            itemNum: this[type].level
+        });
+        this.save();
+        player.save();
+    } else {
+        result.status = 0;
+    }
+    return result;
 }
 
 /**
@@ -208,7 +215,7 @@ Equipments.prototype.forgeUpgradeByMaterial = function(player, type, forge, item
     //更新背包
     result.packageInfo = [];
     for(var i = 0 ; i < items.length ; i++) {
-        result.packageInfo.push(player.equipmentsEntity.removeItem(items[i].index, items[i].itemNum));
+        result.packageInfo.push(player.packageEntity.removeItem(items[i].index, items[i].itemNum));
     }
     //更新任务
     player.updateTaskRecord(consts.TaskGoalType.FORGEUPGRADE_EQUIPMENT, {
