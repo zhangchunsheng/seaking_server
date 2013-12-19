@@ -956,6 +956,11 @@ Player.prototype.unEquip = function(type) {
     //this.updateAttribute();
 };
 
+Player.prototype.unInlay = function(type, cellId) {
+    this.equipmentsEntity.unInlay(type, cellId);
+    //this.updateAttribute();
+};
+
 /**
  * Use Item
  *

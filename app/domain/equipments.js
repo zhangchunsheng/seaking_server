@@ -279,6 +279,15 @@ Equipments.prototype.inlay = function(type, cellId, diamond) {
 }
 
 /**
+ * 摘除宝石
+ * @param type
+ * @param cellId
+ */
+Equipments.prototype.unInlay = function(type, cellId) {
+    this[type].inlay.diamonds[cellId] = 0;
+}
+
+/**
  * 更新装备ID
  */
 Equipments.prototype.updateId = function() {
