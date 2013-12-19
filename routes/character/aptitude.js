@@ -14,6 +14,7 @@ var taskService = require('../../app/services/taskService');
 var redisService = require('../../app/services/redisService');
 var Code = require('../../shared/code');
 var utils = require('../../app/utils/utils');
+var partnerUtil = require('../../app/utils/partnerUtil');
 var consts = require('../../app/consts/consts');
 var EntityType = require('../../app/consts/consts').EntityType;
 var dataApi = require('../../app/utils/dataApi');
@@ -35,7 +36,24 @@ exports.upgrade = function(req, res) {
         , loginName = session.loginName
         , type = msg.type;
 
-    var playerId = session.playerId;
+    var mtype = msg.mtype;// 金币类型 1 - 金币 2 - 元宝
+    if(utils.empty(mtype)) {
+        mtype = 0;
+    }
+
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
@@ -49,10 +67,114 @@ exports.upgrade = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var array = [];
 
-        aptitudeService.upgrade(array, player, type, function(err, reply) {
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var aptitude = character.aptitude;
+        if(utils.empty(aptitude)) {
+            data = {
+                code: Code.CHARACTER.NO_APTITUDEDATA
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        // check upgradeDate
+        var date = new Date();
+        var upgradeDate = aptitude.upgradeDate || 1;
+        var time = date.getTime();
+        if(time < upgradeDate) {
+            data = {
+                code: Code.CHARACTER.WRONG_DATE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        aptitude[type].count = parseInt(aptitude[type].count);
+        aptitude.count = parseInt(aptitude.count);
+        if(aptitude[type].count <= 0) {
+            data = {
+                code: Code.CHARACTER.TOP_LEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.getDate(time) == utils.getDate(upgradeDate)) {
+            // check money gamecurrency
+            if(mtype != 0) {
+                if(mtype == consts.MONEY_TYPE.GOLDEN) {
+                    var money = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.money;
+                    if(player.money >= money) {
+                        player.money = player.money - money;
+                        aptitude[type].level = parseInt(aptitude[type].level) + 1;
+                        aptitude.upgradeTimeOneDay += 1;
+                        aptitude[type].count--;
+                        aptitude.count--;
+                    } else {
+                        data = {
+                            code: Code.SHOP.NOT_ENOUGHT_MONEY
+                        };
+                        utils.send(msg, res, data);
+                        return;
+                    }
+                } else if(mtype == consts.MONEY_TYPE.GAME_CURRENCY) {
+                    var gameCurrency = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.gameCurrency;
+                    if(player.gameCurrency >= gameCurrency) {
+                        player.gameCurrency = player.gameCurrency - gameCurrency;
+                        aptitude[type].level = parseInt(aptitude[type].level) + 1;
+                        aptitude.upgradeTimeOneDay += 1;
+                        aptitude[type].count--;
+                        aptitude.count--;
+                    } else {
+                        data = {
+                            code: Code.SHOP.NOT_ENOUGHT_GAMECURRENCY
+                        };
+                        utils.send(msg, res, data);
+                        return;
+                    }
+                } else {
+                    data = {
+                        code: Code.SHOP.WRONG_MONEY_TYPE
+                    };
+                    utils.send(msg, res, data);
+                    return;
+                }
+            } else {
+                data = {
+                    code: Code.CHARACTER.NO_FREETIME_LEFT
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        } else {
+            aptitude[type].level = parseInt(aptitude[type].level) + 1;
+            aptitude.upgradeDate = time;
+            aptitude.upgradeTimeOneDay = 1;
+            aptitude[type].count--;
+            aptitude.count--;
+        }
+        character.aptitudeEntity.set(type, aptitude);
+        var attrValue = character.aptitudeEntity.getValue(type);
+        aptitudeService.upgrade(array, player, character, type, function(err, reply) {
             data = {
                 code: Code.OK,
-                level: reply
+                level: reply,
+                count: aptitude[type].count,
+                money: player.money,
+                gameCurrency: player.gameCurrency,
+                attrValue: attrValue
             };
             utils.send(msg, res, data);
         });

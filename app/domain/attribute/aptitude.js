@@ -30,15 +30,20 @@ var Aptitude = function(opts) {
         if(typeof opts[i] != "undefined")
             this.aptitudeInfo[i] = opts[i];
     }
-    this[consts.attrId.HP] = opts[consts.attrId.HP] || {"level":0};
-    this[consts.attrId.ATTACK] = opts[consts.attrId.ATTACK] || {"level":0};
-    this[consts.attrId.DEFENSE] = opts[consts.attrId.DEFENSE] || {"level":0};
-    this[consts.attrId.SUNDERARMOR] = opts[consts.attrId.SUNDERARMOR] || {"level":0};
-    this[consts.attrId.SPEED] = opts[consts.attrId.SPEED] || {"level":0};
-    this[consts.attrId.CRITICALHIT] = opts[consts.attrId.CRITICALHIT] || {"level":0};
-    this[consts.attrId.BLOCK] = opts[consts.attrId.BLOCK] || {"level":0};
-    this[consts.attrId.DODGE] = opts[consts.attrId.DODGE] || {"level":0};
-    this[consts.attrId.COUNTER] = opts[consts.attrId.COUNTER] || {"level":0};
+    //this.aptitudeInfo.count = opts.count;
+    this.count = opts.count || 250;
+    this.upgradeDate = opts.upgradeDate;
+    this.upgradeTimeOneDay = opts.upgradeTimeOneDay;
+
+    this[consts.attrId.HP] = opts[consts.attrId.HP] || {"level":0,"count":50};
+    this[consts.attrId.ATTACK] = opts[consts.attrId.ATTACK] || {"level":0,"count":50};
+    this[consts.attrId.DEFENSE] = opts[consts.attrId.DEFENSE] || {"level":0,"count":50};
+    this[consts.attrId.SUNDERARMOR] = opts[consts.attrId.SUNDERARMOR] || {"level":0,"count":50};
+    this[consts.attrId.SPEED] = opts[consts.attrId.SPEED] || {"level":0,"count":50};
+    this[consts.attrId.CRITICALHIT] = opts[consts.attrId.CRITICALHIT] || {"level":0,"count":50};
+    this[consts.attrId.BLOCK] = opts[consts.attrId.BLOCK] || {"level":0,"count":50};
+    this[consts.attrId.DODGE] = opts[consts.attrId.DODGE] || {"level":0,"count":50};
+    this[consts.attrId.COUNTER] = opts[consts.attrId.COUNTER] || {"level":0,"count":50};
 
     this.hp = 0;
     this.attack = 0;
@@ -61,6 +66,18 @@ var Aptitude = function(opts) {
     this.blockInfo = "";
     this.dodgeInfo = "";
     this.counterInfo = "";
+
+    this.nextValue = {
+        hp: 0,
+        attack: 0,
+        defense: 0,
+        sunderArmor: 0,
+        speed: 0,
+        criticalHit:0,
+        block: 0,
+        dodge: 0,
+        counter: 0
+    };
 
     this.initAptitude(opts);
     this.calculateValue();
@@ -92,7 +109,11 @@ util.inherits(Aptitude, Persistent);
 module.exports = Aptitude;
 
 Aptitude.prototype.initAptitude = function(opts) {
-    var cId = utils.getRealCharacterId(this.playerId);
+    if(this.playerId.indexOf("P") >= 0) {
+        var cId = utils.getPartnerCId(this.playerId);
+    } else {
+        var cId = utils.getRealCharacterId(this.playerId);
+    }
     var heroId = utils.getCategoryHeroId(cId);
     this.heroId = heroId;
     this.aptitudeData = dataApi.aptitudes.findById(heroId);
@@ -104,8 +125,47 @@ Aptitude.prototype.calculateValue = function() {
         if(this[dict[i - 1]] == 0) {
             this[dict[i - 1]] = 0;
         }
-        this[dict[i - 1] + "Info"] = "" + this[dict[i - 1]] + " +" + (this.aptitudeData[dict[i - 1]] / 50).toFixed(2);
+        //this[dict[i - 1] + "Info"] = "" + this[dict[i - 1]] + " +" + (this.aptitudeData[dict[i - 1]] / 50).toFixed(2);
+        this[dict[i - 1] + "Info"] = "" + this[dict[i - 1]];
     }
+}
+
+Aptitude.prototype.upgrade = function(type) {
+    var date = new Date();
+    var time = date.getTime();
+    this[type].level = parseInt(this[type].level) + 1;
+    this.upgradeDate = time;
+    this.upgradeTimeOneDay = 1;
+    this[type].count--;
+    this.count--;
+
+    this.aptitudeInfo[type].level = this[type].level;
+    this.aptitudeInfo[type].count = this[type].count;
+}
+
+Aptitude.prototype.set = function(type, aptitude) {
+    this[type].level = aptitude[type].level;
+    this.upgradeDate = aptitude.upgradeDate;
+    this.upgradeTimeOneDay = aptitude.upgradeTimeOneDay;
+    this[type].count = aptitude[type].count;
+    this.count = aptitude.count;
+
+    this.aptitudeInfo[type].level = this[type].level;
+    this.aptitudeInfo[type].count = this[type].count;
+}
+
+Aptitude.prototype.getValue = function(type) {
+    var attrId = type;
+    var attrValue = (this.aptitudeData[dict[type - 1]] / 50 * this.aptitudeInfo[type].level).toFixed(2);
+    var data = '{"' + attrId + '":' + attrValue + '}';
+    return JSON.parse(data);
+}
+
+Aptitude.prototype.getNextValue = function(type) {
+    var attrId = type;
+    var attrValue = (this.aptitudeData[dict[type - 1]] / 50 * (this.aptitudeInfo[type].level + 1)).toFixed(2);
+    var data = '{"' + attrId + '":' + attrValue + '}';
+    return JSON.parse(data);
 }
 
 Aptitude.prototype.strip = function() {

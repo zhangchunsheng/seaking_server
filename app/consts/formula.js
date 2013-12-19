@@ -290,3 +290,29 @@ formula.calculatePlayerDefense = function(player) {
     }
     player.defense = Math.floor(defense);
 }
+
+/**
+ * 以时间计算加血
+ * @param player
+ * @param date
+ * @param updateRoleDate
+ */
+formula.calculateAddHp = function(player, date, updateRoleDate) {
+    var time = date.getTime() - updateRoleDate;
+    time = Math.floor(time / 1000);
+    var hp = player.hpRecoverySpeed * time;
+    return hp;
+}
+
+/**
+ * 以时间计算魂力
+ * @param player
+ * @param date
+ * @param updateRoleDate
+ */
+formula.calculateAddGhost = function(player, date, updateRoleDate) {
+    var time = date.getTime() - updateRoleDate;
+    time = Math.floor(time / 1000 / 60 * 10);
+    var ghost = time;
+    return ghost;
+}

@@ -9,6 +9,7 @@ var dataApi = require('./dataApi');
 var Player = require('../domain/entity/player');
 var utils = require("./utils");
 var buffUtil = require("./buffUtil");
+var equipmentUtil = require("./equipmentUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
 var equipmentsDao = require('../dao/equipmentsDao');
@@ -55,8 +56,8 @@ playerUtil.initCharacter = function(opts) {
         critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), opts.level),
         block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), opts.level),
         counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), opts.level),
-        gameCurrency: 100,
-        money: 1000000,
+        gameCurrency: playerUtil.initGameCurrency(),
+        money: playerUtil.initMoney(),
         equipments: playerUtil.initEquipments(),
         package: opts.package,
         skills: {
@@ -68,11 +69,20 @@ playerUtil.initCharacter = function(opts) {
         partners: [],
         gift: [],
         ghost: playerUtil.initGhost(),
+        ghostNum: playerUtil.initGhostNum(),
         aptitude: playerUtil.initAptitude(opts.cId),
         curTasks: opts.curTasks,
         currentIndu: {"induId":0}
     };
     return character;
+}
+
+playerUtil.initGameCurrency = function() {
+    return 100;
+}
+
+playerUtil.initMoney = function() {
+    return 1000000;
 }
 
 playerUtil.initGhost = function(dataType) {
@@ -87,6 +97,10 @@ playerUtil.initGhost = function(dataType) {
     return data;
 }
 
+playerUtil.initGhostNum = function() {
+    return 1000;
+}
+
 playerUtil.initAptitude = function(cId, dataType) {
     if(typeof dataType == "undefined")
         dataType = "json";
@@ -98,8 +112,11 @@ playerUtil.initAptitude = function(cId, dataType) {
 
     var data = {};
     for(var i in aptitudes) {
-        data[aptitudes[i]] = {"level":0};
+        data[aptitudes[i]] = {"level":0,"count":50};
     }
+    data.count = 250;
+    data.upgradeDate = 1;
+    data.upgradeTimeOneDay = 0;
 
     if(dataType == "string") {
         data = JSON.stringify(data);
@@ -115,48 +132,57 @@ playerUtil.initEquipments = function(dataType) {
         weapon: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//武器
 
         necklace: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//项链
         helmet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//头盔
         armor: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护甲
         belt: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//腰带
         legguard: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护腿
         amulet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护符
         shoes: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//鞋
         ring: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         }//戒指
     };
 
@@ -201,8 +227,8 @@ playerUtil.initCharacterV2 = function(opts) {
         critDamage: formulaV2.calculateCritDamage(hero.attack, opts.level),
         block: formulaV2.calculateBlock(hero.block, opts.level),
         counter: formulaV2.calculateCounter(hero.counter, opts.level),
-        gameCurrency: 100,
-        money: 1000000,
+        gameCurrency: playerUtil.initGameCurrency(),
+        money: playerUtil.initMoney(),
         equipments: playerUtil.initEquipments(),
         package: opts.package,
         skills: {
@@ -214,6 +240,7 @@ playerUtil.initCharacterV2 = function(opts) {
         partners: [],
         gift: [],
         ghost: playerUtil.initGhost(),
+        ghostNum: playerUtil.initGhostNum(),
         aptitude: playerUtil.initAptitude(opts.cId),
         curTasks: opts.curTasks,
         currentIndu: {"induId":0}
@@ -275,6 +302,7 @@ playerUtil.getCharacter = function(opts) {
             currentExerciseTask: JSON.parse(opts.replies.currentExerciseTask)
         },
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
+        ghostNum: opts.replies.ghostNum || 0,
         aptitude: JSON.parse(opts.replies.aptitude || playerUtil.initAptitude(opts.cId, "string")),
         currentIndu: JSON.parse(opts.replies.currentIndu)
     };
@@ -325,6 +353,7 @@ playerUtil.getPKCharacter = function(opts) {
         formation: JSON.parse(opts.replies.formation).formation,
         partners: JSON.parse(opts.replies.partners).partners,
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
+        ghostNum: opts.replies.ghostNum || 0,
         aptitude: JSON.parse(opts.replies.aptitude || playerUtil.initAptitude(opts.cId, "string"))
     };
     return character;
@@ -372,6 +401,7 @@ playerUtil.getPlayer = function(character) {
         allPartners: character.allPartners,
         gift: character.gift,
         ghost: character.ghost,
+        ghostNum: character.ghostNum,
         aptitude: character.aptitude,
         currentIndu: character.currentIndu
     });
@@ -420,6 +450,7 @@ playerUtil.getPlayerV2 = function(character) {
         allPartners: character.allPartners,
         gift: character.gift,
         ghost: character.ghost,
+        ghostNum: character.ghostNum,
         aptitude: character.aptitude,
         currentIndu: character.currentIndu
     });
@@ -465,7 +496,7 @@ playerUtil.createPKEntity = function(player, serverId, registerType, loginName, 
     player.equipmentsEntity = equipments;
     var aptitude = aptitudeService.createNewAptitude(player.aptitude, serverId, registerType, loginName, characterId);
     player.aptitudeEntity = aptitude;
-    var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId);
+    var ghost = ghostService.createNewGhost(player.ghost, serverId, registerType, loginName, characterId);
     player.ghostEntity = ghost;
 };
 

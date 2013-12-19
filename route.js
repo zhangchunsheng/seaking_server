@@ -64,11 +64,13 @@ module.exports = function (app) {
     app.get('/casino/getItems', authRequired, casino.getItems);
     app.get('/casino/gambling', authRequired, casino.gambling);
 
+    //装备
     app.get('/equip/wearWeapon', authRequired, equip.wearWeapon);
     app.get('/equip/unWearWeapon', authRequired, equip.unWearWeapon);
     app.get('/equip/equip', authRequired, equip.equip);
     app.get('/equip/unEquip', authRequired, equip.unEquip);
     app.get('/equip/upgrade', authRequired, equip.upgrade);
+    app.get('/equip/forgeUpgrade', authRequired, equip.forgeUpgrade);
 
     app.get('/formation/change', authRequired, formation.change);
 
@@ -114,10 +116,17 @@ module.exports = function (app) {
     app.get('/player/changeView', authRequired, player.changeView);
     app.get('/player/changeArea', authRequired, player.changeArea);
     app.get('/player/npcTalk', authRequired, player.npcTalk);
-    app.get('/player/learnSkill', authRequired, player.learnSkill);
-    app.get('/player/upgradeSkill', authRequired, player.upgradeSkill);
-    app.get('/player/useSkill', authRequired, player.useSkill);
-    app.get('/player/forgetSkill', authRequired, player.forgetSkill);
+
+    //技能
+    app.get('/player/learnSkill', authRequired, skill.learnSkill);
+    app.get('/player/upgradeSkill', authRequired, skill.upgradeSkill);
+    app.get('/player/useSkill', authRequired, skill.useSkill);
+    app.get('/player/forgetSkill', authRequired, skill.forgetSkill);
+    app.get('/skill/learnSkill', authRequired, skill.learnSkill);
+    app.get('/skill/upgradeSkill', authRequired, skill.upgradeSkill);
+    app.get('/skill/useSkill', authRequired, skill.useSkill);
+    app.get('/skill/forgetSkill', authRequired, skill.forgetSkill);
+    app.get('/skill/getAllSkill', authRequired, skill.getAllSkill);
 
     app.get('/partner/getPartner', authRequired, partner.getPartner);
     app.get('/partner/gotoStage', authRequired, partner.gotoStage);

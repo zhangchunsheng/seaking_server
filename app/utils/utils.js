@@ -159,6 +159,17 @@ utils.getRealCharacterId = function(characterId) {
     return characterId;
 }
 
+/**
+ *
+ * @param partnerId
+ * @returns {*}
+ */
+utils.getPartnerCId = function(partnerId) {
+    var cId;
+    cId = partnerId.substr(partnerId.indexOf("C") + 1, partnerId.indexOf("P"));
+    return cId;
+}
+
 utils.getTaskType = function(task) {
     var type = "";//1 - 主线任务 2 - 支线任务 3 - 日常任务 4 - 活动任务
     if(task.type == 1) {
@@ -374,9 +385,64 @@ utils.addOrigin = function(res, req) {
     }
 }
 
+/**
+ * getCategoryHeroId
+ * @param cId
+ * @returns {string}
+ */
 utils.getCategoryHeroId = function(cId) {
     var heroId;
-    heroId = dataApi.herosV2.findById(cId).heroId
+    heroId = dataApi.herosV2.findById(cId).heroId;
     heroId = heroId.substr(0, 2) + 0 + heroId.substr(3);
     return heroId;
+}
+
+/**
+ *
+ * @param weaponId
+ */
+utils.getHeroIdByWeaponId = function(weaponId) {
+    var heroId;
+    heroId = "H" + weaponId.substr(4);
+    return heroId;
+}
+
+utils.getFormByEquipmentId = function(equipmentId) {
+    var form;
+    form = equipmentId.substr(4, 1);
+    return form;
+}
+
+utils.checkOwnerEquipment = function(player, equipmentId) {
+    var flag = false;
+    if(equipmentId.indexOf("W") >= 0) {
+        var heroId = utils.getCategoryHeroId(player.cId);
+        var thatHeroId = utils.getHeroIdByWeaponId(equipmentId);
+        if(heroId == thatHeroId) {
+            flag = true;
+        } else {
+            flag = false;
+        }
+    } else if(equipmentId.indexOf("E") >= 0) {
+        var form = parseInt(player.herosData.form);
+        var thatForm = parseInt(utils.getFormByEquipmentId(equipmentId));
+        if(form == thatForm) {
+            flag = true;
+        } else {
+            flag = false;
+        }
+    } else {
+        flag = false;
+    }
+    return flag;
+}
+
+/**
+ * 获得日期
+ * @param time
+ */
+utils.getDate = function(time) {
+    var date = new Date();
+    date.setTime(time);
+    return utils.getDaytime(date);
 }

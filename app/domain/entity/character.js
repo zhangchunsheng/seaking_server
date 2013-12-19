@@ -35,7 +35,7 @@ var Character = function(opts) {
     this.starLevel = opts.starLevel;
     this.heroType = opts.heroType;//英雄类型
     this.sunderArmor = opts.sunderArmor;//破甲
-    this.hp = opts.hp;
+    this.hp = parseInt(opts.hp);
     this.anger = opts.anger || 0;// 能量值
     this.maxHp = opts.maxHp;
     this.maxAnger = opts.maxAnger || 100;// 最大能量值
@@ -70,6 +70,7 @@ var Character = function(opts) {
     this.isMoving = false;
 
     this.hpRecoverySpeed = 1;
+    this.ghostRecoverySpeed = consts.addGhostNumOneMinute || 10;
 
     this.formationId = opts.formationId;
 
@@ -90,6 +91,7 @@ var Character = function(opts) {
     this.skillBuffs = [];//技能buff
 
     this.ghost = opts.ghost;
+    this.ghostNum = parseInt(opts.ghostNum);
     this.aptitude = opts.aptitude;
 
     this.fightType = 0;

@@ -29,6 +29,10 @@ describe('utils test', function() {
         console.log(playerUtil.initAptitude(1));
         console.log(JSON.parse(playerUtil.initAptitude(1, "string")));
         console.log(utils.getEqTypeV2("E10112"));
+        console.log(utils.getDate(1));
+        console.log(utils.getHeroIdByWeaponId("W1011001"));
+        console.log(utils.getFormByEquipmentId("E10121"));
+        utils.getFormByEquipmentId("E10121").should.equal("2");
     });
 
     it('fightData', function() {

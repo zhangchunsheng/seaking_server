@@ -14,6 +14,7 @@ var taskService = require('../../app/services/taskService');
 var redisService = require('../../app/services/redisService');
 var Code = require('../../shared/code');
 var utils = require('../../app/utils/utils');
+var partnerUtil = require('../../app/utils/partnerUtil');
 var consts = require('../../app/consts/consts');
 var EntityType = require('../../app/consts/consts').EntityType;
 var dataApi = require('../../app/utils/dataApi');
@@ -35,36 +36,75 @@ exports.upgrade = function(req, res) {
         , registerType = session.registerType
         , loginName = session.loginName;
 
-    var playerId = session.playerId;
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var array = [];
 
-        var ghost = player.ghost;
-        ghost.level = parseInt(ghost.level) + 1;
-        var heroId = utils.getCategoryHeroId(player.cId);
-        var ghostData = ghosts[heroId][ghost.level - 1];
-        if(utils.empty(ghostData)) {
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
             data = {
-                code: Code.ARGUMENT_EXCEPTION
+                code: Code.ENTRY.NO_CHARACTER
             };
             utils.send(msg, res, data);
             return;
         }
-        if(utils.empty(ghost.number) || parseInt(ghost.number) < parseInt(ghostData.costGhostNum)) {
+
+        var ghost = character.ghost;
+        if(utils.empty(ghost)) {
+            data = {
+                code: Code.CHARACTER.NO_GHOSTDATA
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        ghost.level = parseInt(ghost.level) + 1;
+        var heroId = utils.getCategoryHeroId(character.cId);
+        var ghostData = ghosts[heroId][ghost.level - 1];
+        if(utils.empty(ghostData)) {
+            data = {
+                code: Code.CHARACTER.TOP_LEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(player.ghostNum) || parseInt(player.ghostNum) < parseInt(ghostData.costGhostNum)) {
             data = {
                 code: Code.CHARACTER.NOMORE_GHOSTNUM
             };
             utils.send(msg, res, data);
             return;
         }
-        ghost.number = parseInt(ghost.number) - parseInt(ghostData.costGhostNum);
-        ghostService.upgrade(array, player, function(err, reply) {
+        player.ghostNum = parseInt(player.ghostNum) - parseInt(ghostData.costGhostNum);
+        character.ghostEntity.set(ghost);
+        var attrValue = character.ghostEntity.getValue();
+        ghostService.upgrade(array, player, character, function(err, reply) {
             data = {
                 code: Code.OK,
-                level: reply
+                level: reply,
+                ghostNum: player.ghostNum,
+                attrValue: attrValue
             };
             utils.send(msg, res, data);
         });

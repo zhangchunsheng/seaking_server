@@ -9,6 +9,7 @@ var dataApi = require('./dataApi');
 var Player = require('../domain/entity/player');
 var utils = require("./utils");
 var buffUtil = require("./buffUtil");
+var equipmentUtil = require("./equipmentUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
 
@@ -28,9 +29,11 @@ partnerUtil.initPartner = function(opts) {
     var hero = dataApi.heros.findById(opts.cId);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
+        characterId: "S" + opts.serverId + "C" + opts.characterId,
         kindId: opts.cId,
         cId: opts.cId,
         userId: opts.userId,
+        serverId: opts.serverId,
         registerType: opts.registerType,
         loginName: opts.loginName,
         nickname: hero.name,
@@ -59,8 +62,8 @@ partnerUtil.initPartner = function(opts) {
             activeSkills: opts.skills.activeSkills,
             passiveSkills: opts.skills.passiveSkills
         },
-        ghost: JSON.parse(opts.replies.ghost || partnerUtil.initGhost("string")),
-        aptitude: JSON.parse(opts.replies.aptitude || partnerUtil.initAptitude(opts.cId, "string"))
+        ghost: partnerUtil.initGhost(),
+        aptitude: partnerUtil.initAptitude(opts.cId)
     };
     return character;
 }
@@ -88,8 +91,11 @@ partnerUtil.initAptitude = function(cId, dataType) {
 
     var data = {};
     for(var i in aptitudes) {
-        data[aptitudes[i]] = {"level":0};
+        data[aptitudes[i]] = {"level":0,"count":50};
     }
+    data.count = 250;
+    data.upgradeDate = 1;
+    data.upgradeTimeOneDay = 0;
 
     if(dataType == "string") {
         data = JSON.stringify(data);
@@ -105,48 +111,57 @@ partnerUtil.initEquipments = function(dataType) {
         weapon: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//武器
 
         necklace: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//项链
         helmet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//头盔
         armor: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护甲
         belt: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//腰带
         legguard: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护腿
         amulet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护符
         shoes: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//鞋
         ring: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         }//戒指
     };
 
@@ -160,9 +175,11 @@ partnerUtil.initPartnerV2 = function(opts) {
     var hero = dataApi.heros.findById(opts.cId);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
+        characterId: "S" + opts.serverId + "C" + opts.characterId,
         kindId: opts.cId,
         cId: opts.cId,
         userId: opts.userId,
+        serverId: opts.serverId,
         registerType: opts.registerType,
         loginName: opts.loginName,
         nickname: hero.name,
@@ -192,8 +209,54 @@ partnerUtil.initPartnerV2 = function(opts) {
             activeSkills: opts.skills.activeSkills,
             passiveSkills: opts.skills.passiveSkills
         },
+        ghost: partnerUtil.initGhost(),
+        aptitude: partnerUtil.initAptitude(opts.cId)
+    };
+    return character;
+}
+
+partnerUtil.getPlayer = function(opts) {
+    var character = {
+        id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
+        characterId: "S" + opts.serverId + "C" + opts.characterId,
+        kindId: opts.cId,
+        cId: opts.cId,
+        userId: opts.replies.userId,
+        serverId: opts.serverId,
+        registerType: opts.registerType,
+        loginName: opts.loginName,
+        nickname: opts.replies.nickname,
+        experience: parseInt(opts.replies.experience),
+        level: opts.level,
+        needExp: parseInt(opts.replies.needExp),
+        accumulated_xp: parseInt(opts.replies.accumulated_xp),
+        photo: opts.replies.photo,
+        hp: parseInt(opts.replies.hp),
+        maxHp: parseInt(opts.replies.maxHp),
+        anger: parseInt(opts.replies.anger),
+        attack: parseInt(opts.replies.attack),
+        defense: parseInt(opts.replies.defense),
+        focus: parseFloat(opts.replies.focus),
+        speedLevel: parseInt(opts.replies.speedLevel),
+        speed: parseFloat(opts.replies.speed),
+        dodge: parseFloat(opts.replies.dodge),
+        criticalHit: parseFloat(opts.replies.criticalHit),
+        critDamage: parseFloat(opts.replies.critDamage),
+        block: parseFloat(opts.replies.block),
+        counter: parseFloat(opts.replies.counter),
+        equipments: JSON.parse(opts.replies.equipments),
+        skills: {
+            currentSkill: opts.replies.currentSkill ? JSON.parse(opts.replies.currentSkill) : {},
+            activeSkills: JSON.parse(opts.replies.activeSkills),
+            passiveSkills: JSON.parse(opts.replies.passiveSkills)
+        },
+        buffs: opts.replies.buffs ? JSON.parse(opts.replies.buffs).buffs : buffUtil.getInitBuff(),
         ghost: JSON.parse(opts.replies.ghost || partnerUtil.initGhost("string")),
         aptitude: JSON.parse(opts.replies.aptitude || partnerUtil.initAptitude(opts.cId, "string"))
     };
     return character;
+}
+
+partnerUtil.getPlayerV2 = function(opts) {
+
 }

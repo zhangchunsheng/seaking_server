@@ -66,7 +66,6 @@ Package.prototype.checkItem = function(index, itemId) {
 
 Package.prototype.removeItem = function(index, itemNum) {
     var item =  this.items[index];
-    item.itemNum -= itemNum;
     item.itemNum = item.itemNum - itemNum;
     if(item.itemNum <= 0) {
         delete this.items[index];
@@ -78,13 +77,13 @@ Package.prototype.removeItem = function(index, itemNum) {
 Package.prototype.hasItem = function(_item) {
 	var flag = [];
 	var num = _item.itemNum;
-	for(var i = packageStart, l= this.itemCount+packageStart; i < l; i++ ) {
-		if( this.items[i] && this.itesm[i].itemId == _item.itemId){
+	for(var i = packageStart, l = this.itemCount + packageStart; i < l; i++ ) {
+		if(this.items[i] && this.items[i].itemId == _item.itemId) {
 			var item = this.items[i];
-			if(num > item.itemNum){
+			if(num > item.itemNum) {
 				num = num - item.itemNum;
 				flag.push(item);
-			}else{
+			} else {
 				flag.push({
 					itemId: item.itemId,
 					itemNum: num,
@@ -100,6 +99,56 @@ Package.prototype.hasItem = function(_item) {
 	return null;
 }
 
+/**
+ * 检索材料
+ * @param materials []
+ * @returns {*}
+ */
+Package.prototype.checkMaterial = function(materials) {
+    var flag = [];
+    var items = [];
+    var material;
+    var num;
+    var item;
+    for(var i = 0 ; i < materials.length ; i++) {
+        material = materials[i];
+        var num = material.itemNum;
+        for(var j = packageStart, l = this.itemCount + packageStart ; j < l ; j++ ) {
+            if(this.items[j] && this.items[j].itemId == material.itemId) {
+                item = this.items[j];
+                if(num > item.itemNum) {
+                    num = num - item.itemNum;
+                    items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: item.itemNum
+                    });
+                } else {
+                    items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: num
+                    });
+                    num = 0;
+                }
+                if(num == 0) {
+                    break;
+                }
+            }
+        }
+        if(num == 0) {
+            flag.push(items);
+        } else {
+            return [];
+        }
+    }
+    if(flag.length == materials.length) {
+        return flag;
+    } else {
+        return [];
+    }
+}
+
 Package.prototype.addItemWithNoType = function(player, item) {
 	var type = "";
     if(item.itemId.indexOf("W") >= 0) {
@@ -111,7 +160,6 @@ Package.prototype.addItemWithNoType = function(player, item) {
     }
     return this.addItem(player, type, item);
 }
-
 
 Package.prototype.arrange = function(callback) {
     var items = this.items;
@@ -193,7 +241,7 @@ Package.prototype.arrange = function(callback) {
 var arrayToJson = function(array) {
     var json = {};
     var n = packageStart;
-    for(var i=0,l = array.length;i < l;i++){
+    for(var i = 0,l = array.length ; i < l ; i++) {
         if(array[i] && array[i].itemNum != 0){
             json[n] = array[i];
             n++;
@@ -224,7 +272,8 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
                     level: item.level,
-                    forgeLevel: item.forgeLevel
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
                 };
                 changes = [{
                     index: i,

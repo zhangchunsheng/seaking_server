@@ -13,13 +13,18 @@ var Aptitude = require('../../domain/attribute/aptitude');
 
 var aptitudeService = module.exports;
 
-aptitudeService.upgrade = function(array, player, type, cb) {
-    var characterId = utils.getRealCharacterId(player.id);
-    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+aptitudeService.upgrade = function(array, mainPlayer, player, type, cb) {
+    var characterId = utils.getRealCharacterId(mainPlayer.id);
+    var key = dbUtil.getPlayerKey(mainPlayer.sid, mainPlayer.registerType, mainPlayer.loginName, characterId);
+    array.push(["hset", key, "money", mainPlayer.money]);
+    array.push(["hset", key, "gameCurrency", mainPlayer.gameCurrency]);
+
+    if(player.id.indexOf("P") >= 0) {
+        var partnerId = utils.getRealPartnerId(player.id);
+        key = dbUtil.getPartnerKey(player.sid, player.registerType, player.loginName, characterId, partnerId);
+    }
     var field = "aptitude";
     var aptitude = player.aptitude;
-    console.log(aptitude);
-    aptitude[type].level = parseInt(aptitude[type].level) + 1;
     var value = JSON.stringify(aptitude);
     array.push(["hset", key, field, value]);
     redisService.setData(array, function(err, reply) {

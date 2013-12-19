@@ -132,6 +132,7 @@ module.exports = {
         EQUIPMENT: 5,
         TO_LEVEL: 6,
         UPGRADE_EQUIPMENT: 7,
+        FORGEUPGRADE_EQUIPMENT: 12,
         BUY_ITEM: 8,
         CONSUMER_GAMECURRENCY: 9,
         LEARN_SKILL: 10,
@@ -256,6 +257,18 @@ module.exports = {
         BLOCK: 7,
         DODGE: 8,
         COUNTER: 9
+    },
+
+    addGhostNumOneMinute: 10,
+
+    MONEY_TYPE: {
+        GOLDEN: "1",
+        GAME_CURRENCY: "2"
+    },
+
+    upgradeApititude: {
+        money: 1000,
+        gameCurrency: 2
     },
 
     correspondingSkillsType: {

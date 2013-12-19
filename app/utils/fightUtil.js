@@ -9,6 +9,8 @@ var consts = require('../consts/constsV2');
 var EntityType = require('../consts/consts').EntityType;
 var formulaV2 = require('../consts/formulaV2');
 var utils = require('./utils');
+var dataApi = require('./dataApi');
+var ghosts = require('../../config/data/ghosts');
 
 var fightUtil = module.exports;
 
@@ -1022,4 +1024,16 @@ fightUtil.updateDodge = function(defense, dodge) {
         dodge = dodge + defense.fight.addDodgeValue;
     }
     return dodge;
+}
+
+fightUtil.getAptitudeData = function(cId) {
+    var heroId = utils.getCategoryHeroId(cId);
+    var aptitudeData = dataApi.aptitudes.findById(heroId);
+    return aptitudeData;
+}
+
+fightUtil.getGhostData = function(cId) {
+    var heroId = utils.getCategoryHeroId(cId);
+    var ghostData = ghosts[heroId];
+    return ghostData;
 }

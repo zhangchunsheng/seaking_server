@@ -45,13 +45,19 @@ module.exports = {
         NO_WEAPON: 1221,
         WRONG_WEAPON: 1222,
         NO_UPGRADE: 1223,
-        NOMORE_LEVEL: 1224
+        NOMORE_LEVEL: 1224,
+        NOT_OWNER_EQUIPMENT: 1225,
+        NO_FORGEDATA: 1226,
+        FORGEUPGRADE_TOP_LEVEL: 1227,
+        LACK_UPGRADEMATERIAL: 1228
     },
 
     SHOP: {
         NOT_ENOUGHT_MONEY: 1101,
-        NOT_EXIST_ITEM:1102,
-        NOT_EXIST_NPCSHOP:1103
+        NOT_EXIST_ITEM: 1102,
+        NOT_EXIST_NPCSHOP: 1103,
+        NOT_ENOUGHT_GAMECURRENCY: 1104,
+        WRONG_MONEY_TYPE: 1105
     },
 
     FRIEND: {
@@ -82,11 +88,16 @@ module.exports = {
 
     CHARACTER: {
         EXISTS_NICKNAME: 1801,
-        NOMORE_GHOSTNUM: 1802
+        NOMORE_GHOSTNUM: 1802,
+        WRONG_DATE: 1803,
+        NO_FREETIME_LEFT: 1804,
+        TOP_LEVEL: 1805,
+        NO_APTITUDEDATA: 1806,
+        NO_GHOSTDATA: 1807
     },
 
     PARTNER: {
-        EXISTS_CID: 1810,
+        EXISTS_PARTNER: 1810,
         NOT_EXISTS_CID: 1811
     },
 

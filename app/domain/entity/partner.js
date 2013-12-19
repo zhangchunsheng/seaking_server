@@ -39,6 +39,7 @@ Partner.prototype.strip = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        heroId: this.herosData.heroId,
         type: this.type,
         hp: this.hp,
         maxHp: this.maxHp,
@@ -60,8 +61,8 @@ Partner.prototype.strip = function() {
         equipments: this.equipmentsEntity.getInfo(),
         skills: this.skills,
         buffs: this.buffs,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
 
@@ -71,6 +72,7 @@ Partner.prototype.toJSON = function() {
         entityId: this.entityId,
         nickname: this.nickname,
         cId: this.cId,
+        heroId: this.herosData.heroId,
         type: this.type,
         hp: this.hp,
         maxHp: this.maxHp,
@@ -92,7 +94,7 @@ Partner.prototype.toJSON = function() {
         equipments: this.equipmentsEntity.getInfo(),
         skills: this.skills,
         buffs: this.buffs,
-        ghost: this.ghost,
-        aptitude: this.aptitude
+        ghost: this.ghostEntity.getInfo(),
+        aptitude: this.aptitudeEntity.getInfo()
     };
 };
