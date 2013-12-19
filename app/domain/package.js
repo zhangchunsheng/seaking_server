@@ -110,10 +110,9 @@ Package.prototype.checkMaterial = function(materials) {
     var material;
     var num;
     var item;
-    console.log(materials.length);
     for(var i = 0 ; i < materials.length ; i++) {
         material = materials[i];
-        var num = material.itemId;
+        var num = material.itemNum;
         for(var j = packageStart, l = this.itemCount + packageStart ; j < l ; j++ ) {
             if(this.items[j] && this.items[j].itemId == material.itemId) {
                 item = this.items[j];

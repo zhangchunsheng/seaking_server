@@ -214,8 +214,15 @@ Equipments.prototype.forgeUpgradeByMaterial = function(player, type, forge, item
     this[type].forgeLevel = parseInt(this[type].forgeLevel) + 1;
     //更新背包
     result.packageInfo = [];
+    var item;
     for(var i = 0 ; i < items.length ; i++) {
-        result.packageInfo.push(player.packageEntity.removeItem(items[i].index, items[i].itemNum));
+        for(var j = 0 ; j < items[i].length ; j++) {
+            item = player.packageEntity.removeItem(items[i][j].index, items[i][j].itemNum);
+            result.packageInfo.push({
+                index: items[i][j].index,
+                item: item
+            });
+        }
     }
     //更新任务
     player.updateTaskRecord(consts.TaskGoalType.FORGEUPGRADE_EQUIPMENT, {

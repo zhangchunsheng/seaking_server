@@ -633,7 +633,7 @@ exports.upgrade = function(req, res) {
         } else {
             result = character.equipmentsEntity.upgradeByMoneyV2(player, type, equipment_levelup);
         }
-        status == result.status;
+        status = result.status;
 
         if(status == 1) {
             async.parallel([
@@ -816,7 +816,8 @@ exports.forgeUpgrade = function(req, res) {
                 data = {
                     //status: status
                     code: Code.OK,
-                    forgeLevel: forgeLevel
+                    forgeLevel: forgeLevel,
+                    packageIndex: result.packageInfo
                 };
                 utils.send(msg, res, data);
             });
