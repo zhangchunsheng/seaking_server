@@ -1120,7 +1120,7 @@ exports.unInlay = function(req, res) {
         }
         var packageIndex = result.index;
         if (packageIndex.length > 0) {
-            character.unEquip(type);
+            character.unInlay(type, cellId);
             status = 1;
         }
 
