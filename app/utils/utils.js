@@ -446,3 +446,17 @@ utils.getDate = function(time) {
     date.setTime(time);
     return utils.getDaytime(date);
 }
+
+/**
+ * 检查装备位置
+ * @param type
+ */
+utils.checkEquipmentPositionType = function(type) {
+    var dict = consts.EqDict;
+    for(var i = 0 ; i < dict.length ; i++) {
+        if(type == dict[i]) {
+            return true;
+        }
+    }
+    return false;
+}

@@ -249,6 +249,36 @@ Equipments.prototype.forgeUpgradeByMaterial = function(player, type, forge, item
 }
 
 /**
+ * 检查镶嵌位置
+ * @param type
+ * @param cellId
+ */
+Equipments.prototype.checkInlayCell = function(type, cellId) {
+    var inlay = this[type].inlay;
+    var diamonds = inlay.diamonds;
+    if(typeof diamonds[cellId] != "undefined") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+Equipments.prototype.getDiamond = function(type, cellId) {
+    var inlay = this[type].inlay;
+    var diamonds = inlay.diamonds;
+    return diamonds[cellId];
+}
+
+/**
+ * 镶嵌
+ * @param type
+ * @param cellId
+ */
+Equipments.prototype.inlay = function(type, cellId, diamond) {
+    this[type].inlay.diamonds[cellId] = diamond.diamondId;
+}
+
+/**
  * 更新装备ID
  */
 Equipments.prototype.updateId = function() {
