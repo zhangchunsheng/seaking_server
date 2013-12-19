@@ -761,13 +761,19 @@ exports.forgeUpgrade = function(req, res) {
         var itemId;
         var itemNum;
         var flag = [];
+        var materials = [];
         for(var i = 0 ; i < forgeUpgradeMaterial.length ; i++) {
             array = forgeUpgradeMaterial[i].split("|");
             itemId = array[0];
             itemNum = array[1];
+            materials.push({
+                itemId: itemId,
+                itemNum: itemNum
+            });
         }
+        flag = player.packageEntity.checkMaterial(materials);
 
-        if(flag.length < 3) {
+        if(flag.length < materials.length) {
             data = {
                 code: Code.EQUIPMENT.LACK_UPGRADEMATERIAL
             };
@@ -775,7 +781,8 @@ exports.forgeUpgrade = function(req, res) {
             return;
         }
 
-        status = character.equipmentsEntity.forgeUpgradeByMaterial(player, type, forge);
+        var result = character.equipmentsEntity.forgeUpgradeByMaterial(player, type, forge, flag);
+        status = result.status;
 
         if(status == 1) {
             async.parallel([

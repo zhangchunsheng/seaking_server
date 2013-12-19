@@ -195,22 +195,31 @@ Equipments.prototype.forgeUpgradeByMoney = function(player, type, equipment_leve
 }
 
 /**
- *
+ * 打造升级
+ * @param player
  * @param type
- * @param equipment_levelup
- * @returns {number}
+ * @param forge
+ * @param items
+ * @returns {Object}
  */
-Equipments.prototype.forgeUpgradeByMaterial = function(player, type, forge) {
-    var status = 0;
-    status = 1;
+Equipments.prototype.forgeUpgradeByMaterial = function(player, type, forge, items) {
+    var result = {};
     this[type].forgeLevel = parseInt(this[type].forgeLevel) + 1;
+    //更新背包
+    result.packageInfo = [];
+    for(var i = 0 ; i < items.length ; i++) {
+        result.packageInfo.push(player.equipmentsEntity.removeItem(items[i].index, items[i].itemNum));
+    }
+    //更新任务
     player.updateTaskRecord(consts.TaskGoalType.FORGEUPGRADE_EQUIPMENT, {
         itemId: this[type].epid,
         itemNum: this[type].forgeLevel
     });
     this.save();
     player.save();
-    return status;
+
+    result.status = 1;
+    return result;
 }
 
 Equipments.prototype.updateId = function() {

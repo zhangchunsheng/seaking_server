@@ -936,7 +936,8 @@ Player.prototype.useItem = function(type, index) {
     if (!item || !item.itemId.match(/D/)) {
         return false;
     }
-    this.packageEntity.removeItem(type, index);
+    //this.packageEntity.removeItem(type, index);
+    this.packageEntity.removeItem(index, 1);
     return true;
 };
 
