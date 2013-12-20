@@ -251,6 +251,23 @@ var arrayToJson = function(array) {
 }
 
 Package.prototype.addItem = function(player, type, item, rIndex) {
+    var itemInfo ;
+    if(type.pileNum) {
+        itemInfo = type;
+    }else{
+        switch(type) {
+            case PackageType.ITEMS:
+                itemInfo = datasApi.items.get(item.itemId);
+            break;
+            case PackageType.EQUIPMENTS:
+                itemInfo = datasApi.equpments.get(item.itemId);
+            break;
+            case PackageType.WEAPONS:
+                itemInfo = datasApi.weapons.get(item.itemId);
+            break;
+        }
+        console.log("###itemInfo:",itemInfo);
+    }
     var changes = [];
     var _items = utils.clone(item);
     if (!item || !item.itemId || !item.itemId.match(/W|E|D|B/)) {
@@ -263,7 +280,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         }
     }
     var items = this;
-    if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
+    if(!itemInfo.pileNum || itemInfo.pileNum == 1 ) {
         var flag = false;
         for (var i = packageStart; i < items.itemCount + packageStart; i++) {
             if (!items.items[i]) {
@@ -288,18 +305,18 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             };
     } else {
          for(var i in items.items) {
-            if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {
+            if(items.items[i].itemId == item.itemId && items.items[i].itemNum < itemInfo.pileNum) {
                 _items.itemNum += this.items[i].itemNum;
                 var mitem = items.items[i];
-                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 ) {
-                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - 99;
-                    mitem.itemNum = 99;
+                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > itemInfo.pileNum ) {
+                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - itemInfo;
+                    mitem.itemNum = itemInfo;
                     changes.push({
                         index: i,
                         item: mitem
                     });
 
-                } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) <= 99) {
+                } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) <= itemInfo.pileNum) {
                     mitem.itemNum = parseInt(mitem.itemNum) + parseInt(item.itemNum);
                     item.itemNum = 0 ;
                     changes.push({
@@ -322,18 +339,18 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 if(spaceCount == -1) {
                     return null;
                 }
-                if(item.itemNum > 99) {
+                if(item.itemNum > itemInfo.pileNum) {
                     // 一定小于99个所以直接添加就好了，传入数值最大99
                     items.items[spaceCount] = {
                         itemId: item.itemId,
-                        itemNum: 99,
+                        itemNum: itemInfo.pileNum,
                         level: item.level
                     };
                     changes.push({
                         index: spaceCount,
                         item: items.items[spaceCount]
                     });
-                    item.itemNum -= 99;
+                    item.itemNum -= itemInfo.pileNum;
 
                     return run();
                 }
