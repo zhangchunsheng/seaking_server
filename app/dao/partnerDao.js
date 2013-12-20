@@ -157,10 +157,6 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                     });
                 } else {
                     partnerDao.getPartnerId(client, function(err, partnerId) {
-                        var partner = dataApi.partners.findById(cId);
-                        var level = partner.level;
-                        var skills = new Skills();
-                        skills.initSkills(cId);
                         var character = partnerUtil.initPartner({
                             cId: cId,
                             serverId: serverId,
@@ -168,9 +164,7 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                             partnerId: partnerId,
                             userId: userId,
                             registerType: registerType,
-                            loginName: loginName,
-                            level: level,
-                            skills: skills
+                            loginName: loginName
                         });
 
                         partners.push({
