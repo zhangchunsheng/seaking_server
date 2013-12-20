@@ -135,6 +135,7 @@ module.exports = function (app) {
     app.get('/partner/leaveTeam', authRequired, partner.leaveTeam);
 
     app.get('/aptitude/upgrade', authRequired, aptitude.upgrade);
+    app.get('/aptitude/checkFreeTime', authRequired, aptitude.checkFreeTime);
     app.get('/ghost/upgrade', authRequired, ghost.upgrade);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);

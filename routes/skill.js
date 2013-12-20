@@ -221,6 +221,79 @@ exports.upgradeSkill = function(req, res) {
 }
 
 /**
+ * 学习升级技能
+ * @param req
+ * @param res
+ */
+exports.learnAndUpgradeSkill = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , type = msg.type;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var skillId = msg.skillId;
+
+    var data = {};
+
+    if(utils.empty(type) || type > 6 || type < 1) {
+        data = {
+            code: Code.SKILL.WRONG_TYPE
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var currentSkills = player.currentSkills;
+        if(typeof currentSkills[type] != "undefined") {
+            if(currentSkills[type].skillId != skillId) {
+                data = {
+                    code: Code.ARGUMENT_EXCEPTION
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        }
+        player.learnAndUpgradeSkill(type, skillId, function(err, result) {
+            if(err) {
+                data = {
+                    code:Code.SKILL.NEED_REQUIREMENT
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    code: Code.OK,
+                    skillId: skillId,
+                    level: result
+                };
+                utils.send(msg, res, data);
+            });
+        });
+    });
+}
+
+/**
  * 使用技能
  * @param req
  * @param res

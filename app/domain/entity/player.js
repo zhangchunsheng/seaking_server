@@ -1125,6 +1125,32 @@ Player.prototype.learnSkill = function(skillId, callback) {
     });
 };
 
+Player.prototype.learnAndUpgradeSkill = function(type, skillId, callback) {
+    var currentSkills = this.currentSkills;
+    if(typeof currentSkills[type] == "undefined") {
+        this.learnSkillV2(type, skillId, callback);
+    } else {
+        this.upgradeSkillV2(type, skillId, callback);
+    }
+};
+
+Player.prototype.learnSkillV2 = function(type, skillId, callback) {
+    var currentSkills = this.currentSkills;
+    var level = 1;
+    currentSkills[type] = {
+        skillId: skillId,
+        level: level
+    };
+
+    var array = [];
+    var characterId = utils.getRealCharacterId(this.id);
+    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, level);
+    });
+};
+
 /**
  * Upgrade the existing skill.
  *
@@ -1162,6 +1188,19 @@ Player.prototype.upgradeSkill = function(skillId, callback) {
     array.push(["hset", key, type, JSON.stringify(skills)]);
     userDao.update(array, function(err, repy) {
         utils.invokeCallback(callback, null, nextSkillId);
+    });
+};
+
+Player.prototype.upgradeSkillV2 = function(type, skillId, callback) {
+    var currentSkills = this.currentSkills;
+    currentSkills[type].level++;
+
+    var array = [];
+    var characterId = utils.getRealCharacterId(this.id);
+    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, currentSkills[type].level);
     });
 };
 
