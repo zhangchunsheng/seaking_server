@@ -150,7 +150,7 @@ Skills.prototype.initAllSkills = function(dataType) {
             level: 1
         });
     }
-    var data = this.currentSkills
+    var data = this.allSkills
     if(dataType == "string") {
         data = JSON.stringify(data);
     }
