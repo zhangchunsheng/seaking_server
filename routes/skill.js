@@ -36,10 +36,38 @@ exports.initSkill = function(req, res) {
 
     var cId = msg.cId;
     skillService.initSkill();
-    res.send("index");
+    var data = {};
+    data = {
+        code: Code.SKILL.NO_SKILL
+    };
+    utils.send(msg, res, data);
 }
 
+/**
+ * initSkill
+ * @param req
+ * @param res
+ */
+exports.initAllSkills = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+
+    var array = [];
+    skillService.initAllSkills(array, serverId, registerType, loginName, playerId, function() {
+        var data = {};
+        data = {
+            code: Code.OK
+        };
+        utils.send(msg, res, data);
+    });
+}
 
 /**
  * 学习技能

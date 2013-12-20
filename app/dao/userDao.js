@@ -354,17 +354,6 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
         }).hexists(key, "characters", function(err, reply) {
             if(reply == 0) {
                 userDao.getCharacterId(client, function(err, characterId) {
-                    var level = 1;
-                    var date = new Date();
-                    var curTasks = {
-                        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
-                        currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
-                        currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
-                        currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
-                    };
-                    var skills = new Skills();
-                    skills.initSkills(cId);
-                    var package = packageUtil.initPackage(cId);
                     var character = playerUtil.initCharacter({
                         cId: cId,
                         serverId: serverId,
@@ -373,11 +362,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         registerType: registerType,
                         loginName: loginName,
                         nickname: nickname,
-                        isRandom: isRandom,
-                        level: level,
-                        package: package,
-                        skills: skills,
-                        curTasks: curTasks
+                        isRandom: isRandom
                     });
 
                     //client.hset(key, "characters", characterId);

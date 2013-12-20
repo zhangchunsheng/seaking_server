@@ -84,6 +84,9 @@ var Character = function(opts) {
     this.activeSkills = [];
     this.passiveSkills = [];
 
+    this.currentSkills = opts.currentSkills;
+    this.allSkills = opts.allSkills;
+
     this.restoreAngerSpeed = opts.restoreAngerSpeed || {ea:10, ehr: 3, eshr: 6};//能量恢复速度
 
     this.hasBuff = false;

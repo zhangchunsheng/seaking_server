@@ -93,7 +93,7 @@ var Player = function(opts) {
         counter: this.counter
     };
 
-    this.initSkills();
+    this.initSkillsV2();
     this.updateRestoreAngerSpeed();
 };
 
@@ -290,6 +290,13 @@ Player.prototype.initSkills = function() {
         }
     }
     this.updateSkillBuffs();
+};
+
+/**
+ * 初始化技能
+ */
+Player.prototype.initSkillsV2 = function() {
+
 };
 
 /**
@@ -1402,7 +1409,9 @@ Player.prototype.strip = function() {
         curTasks: this.curTasksEntity.getInfo(),
         equipments: this.equipmentsEntity.getInfo(),
         package: this.packageEntity.getInfo(),
-        skills: this.skills,
+        //skills: this.skills,
+        currentSkills: this.currentSkills,
+        allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
@@ -1574,7 +1583,9 @@ Player.prototype.toJSON = function() {
         curTasks: this.curTasksEntity.getInfo(),
         equipments: this.equipmentsEntity.getInfo(),
         package: this.packageEntity.getInfo(),
-        skills: this.skills,
+        //skills: this.skills,
+        currentSkills: this.currentSkills,
+        allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
         partners: this.getPartners(),
@@ -1618,7 +1629,9 @@ Player.prototype.getBaseInfo = function() {
         critDamage: this.critDamage,
         block: this.block,//格挡
         counter: this.counter,//反击
-        skills: this.skills,
+        //skills: this.skills,
+        currentSkills: this.currentSkills,
+        allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
         gift: this.gift,
