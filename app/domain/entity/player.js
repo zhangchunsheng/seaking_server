@@ -898,6 +898,35 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
     return index;
 };
 
+/**
+ * 镶嵌
+ * @param pkgType
+ * @param item
+ * @param index
+ * @param player
+ * @param type
+ * @param cellId
+ * @returns {number}
+ */
+Player.prototype.inlay = function(pkgType, item, pIndex, player, type, cellId) {
+    var index = 0;
+    var curDiamond = this.equipmentsEntity.getDiamond(type, cellId);
+    this.equipmentsEntity.inlay(type, cellId, {
+        diamondId: item.itemId
+    });
+    if (curDiamond != "" && curDiamond != 0) {
+        index = player.packageEntity.addItem(player, pkgType, {
+            itemId: curDiamond,
+            itemNum: 1
+        }, pIndex).index;
+    } else {
+        //player.packageEntity.removeItem(pkgType, pIndex);
+        player.packageEntity.removeItem(pIndex, 1);
+    }
+    //this.updateAttribute();
+    return index;
+}
+
 Player.prototype.buyItem = function(type, item, costMoney) {
     var packageChange = this.packageEntity.addItemWithNoType(this, item);
     if(!packageChange) {
@@ -924,6 +953,11 @@ Player.prototype.buyItem = function(type, item, costMoney) {
  */
 Player.prototype.unEquip = function(type) {
     this.equipmentsEntity.unEquip(type);
+    //this.updateAttribute();
+};
+
+Player.prototype.unInlay = function(type, cellId) {
+    this.equipmentsEntity.unInlay(type, cellId);
     //this.updateAttribute();
 };
 

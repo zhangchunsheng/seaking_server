@@ -147,7 +147,8 @@ module.exports = {
     PackageType: {
         WEAPONS: "weapons",
         EQUIPMENTS: "equipments",
-        ITEMS: "items"
+        ITEMS: "items",
+        DIAMOND: "diamond"
     },
 
     EqType: {
@@ -161,6 +162,18 @@ module.exports = {
         SHOES: 'shoes',//鞋
         RING: 'ring'//戒指
     },
+
+    EqDict: [
+        'weapon',//武器
+        'necklace',//项链
+        'helmet',//头盔
+        'armor' ,//护甲
+        'belt',//腰带
+        'legguard',//护腿
+        'amulet',//护符
+        'shoes',//鞋
+        'ring'//戒指
+    ],
 
     MailType: {
         SYSTEM: 1,
