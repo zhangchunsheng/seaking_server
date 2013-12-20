@@ -719,7 +719,7 @@ Fight.createTestPlayer = function(opts) {
     var skills = {};
     var skillId = "";
     for(var i = 0 ; i < opts.skills.length ; i++) {
-        skillId = dataApi.skillsV2.findById(opts.skills[i]).skillId;
+        skillId = dataApi.skillsV2.findByMId(opts.skills[i]).skillId;
         skills[i + 1] = new SkillV2({
             id: opts.skills[i],
             skillId: skillId,

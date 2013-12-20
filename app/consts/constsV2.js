@@ -502,6 +502,25 @@ module.exports = {
         AWAKEN: 11
     },
 
+    /**
+     * 1触发技能
+     * 2觉醒技能
+     * 3先手技能
+     * 4主属性强化
+     * 5此属性强化
+     * 6技能强化
+     * 7其他
+     */
+    onsetType: {
+        TRIGGER_SKILL: 1,
+        AWAKEN_SKILL: 2,
+        SENTE_SKILL: 3,
+        MAINATTRIMPROVE_SKILL: 4,
+        SECONDORYATTRIMPROVE_SKILL: 5,
+        SKILLIMPROVE_SKILL: 6,
+        OTHER: 7
+    },
+
     correspondingEffect_attr: {
         1: "hp",
         2: "experience",

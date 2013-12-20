@@ -46,12 +46,19 @@ var Data = function(data) {
     data.splice(0, 2);
 
     var result = {}, item;
+    var mresult = {};
     data.forEach(function(k) {
         item = mapData(fields, k);
         result[item.id] = item;
+        if(typeof item._id != "undefined") {
+            mresult[item._id] = item;
+        } else {
+            mresult[item.id] = item;
+        }
     });
 
     this.data = result;
+    this.mdata = mresult;
 };
 
 /**
@@ -125,6 +132,10 @@ Data.prototype.findSmaller = function(attr, value) {
  */
 Data.prototype.findById = function(id) {
     return this.data[id];
+};
+
+Data.prototype.findByMId = function(id) {
+    return this.mdata[id];
 };
 
 /**

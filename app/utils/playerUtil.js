@@ -7,6 +7,7 @@
  */
 var dataApi = require('./dataApi');
 var Player = require('../domain/entity/player');
+var Skills = require('../domain/skill/skills');
 var utils = require("./utils");
 var buffUtil = require("./buffUtil");
 var equipmentUtil = require("./equipmentUtil");
@@ -22,7 +23,23 @@ var Tasks = require('../domain/tasks');
 var playerUtil = module.exports;
 
 playerUtil.initCharacter = function(opts) {
-    var hero = dataApi.heros.findById(opts.cId);
+    var level = 1;
+    var date = new Date();
+
+    var hero = dataApi.heros.findById(opts);
+
+    var curTasks = {
+        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
+        currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
+    };
+
+    var skills = new Skills(opts);
+    skills.initSkills(opts.cId);
+
+    var package = packageUtil.initPackage(opts.cId);
+
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -36,34 +53,34 @@ playerUtil.initCharacter = function(opts) {
         currentScene: "city01",
         x: 1000,
         y: 100,
-        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
-        level: opts.level,
-        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, opts.level + 1),
-        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
+        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
+        level: level,
+        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
+        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         photo: '',
         buffs: buffUtil.getInitBuff(),
-        hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), opts.level),
-        maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), opts.level),
+        hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
+        maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
         anger: 0,
-        attack: formula.calculateAttack(parseInt(hero.attack), parseInt(hero.attLevelUpRate), opts.level),
-        defense: formula.calculateDefense(parseInt(hero.defense), parseInt(hero.defLevelUpRate), opts.level),
-        focus: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), opts.level),
-        sunderArmor: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), opts.level),
-        speedLevel: formula.calculateSpeedLevel(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), opts.level),
-        speed: formula.calculateSpeed(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), opts.level),
-        dodge: formula.calculateDodge(parseInt(hero.dodge), parseInt(hero.dodgeMaxIncrement), opts.level),
-        criticalHit: formula.calculateCriticalHit(parseInt(hero.criticalHit), parseInt(hero.critHitMaxIncrement), opts.level),
-        critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), opts.level),
-        block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), opts.level),
-        counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), opts.level),
+        attack: formula.calculateAttack(parseInt(hero.attack), parseInt(hero.attLevelUpRate), level),
+        defense: formula.calculateDefense(parseInt(hero.defense), parseInt(hero.defLevelUpRate), level),
+        focus: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), level),
+        sunderArmor: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), level),
+        speedLevel: formula.calculateSpeedLevel(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
+        speed: formula.calculateSpeed(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
+        dodge: formula.calculateDodge(parseInt(hero.dodge), parseInt(hero.dodgeMaxIncrement), level),
+        criticalHit: formula.calculateCriticalHit(parseInt(hero.criticalHit), parseInt(hero.critHitMaxIncrement), level),
+        critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), level),
+        block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), level),
+        counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), level),
         gameCurrency: playerUtil.initGameCurrency(),
         money: playerUtil.initMoney(),
         equipments: playerUtil.initEquipments(),
-        package: opts.package,
+        package: package,
         skills: {
-            currentSkill: opts.skills.currentSkill,
-            activeSkills: opts.skills.activeSkills,
-            passiveSkills: opts.skills.passiveSkills
+            currentSkill: skills.currentSkill,
+            activeSkills: skills.activeSkills,
+            passiveSkills: skills.passiveSkills
         },
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
@@ -71,7 +88,7 @@ playerUtil.initCharacter = function(opts) {
         ghost: playerUtil.initGhost(),
         ghostNum: playerUtil.initGhostNum(),
         aptitude: playerUtil.initAptitude(opts.cId),
-        curTasks: opts.curTasks,
+        curTasks: curTasks,
         currentIndu: {"induId":0}
     };
     return character;
@@ -91,7 +108,7 @@ playerUtil.initGhost = function(dataType) {
 
     var data = {"level":0};
 
-    if(dataType = "string") {
+    if(dataType == "string") {
         data = JSON.stringify(data);
     }
     return data;
@@ -186,14 +203,29 @@ playerUtil.initEquipments = function(dataType) {
         }//戒指
     };
 
-    if(dataType = "string") {
+    if(dataType == "string") {
         data = JSON.stringify(data);
     }
     return data;
 }
 
 playerUtil.initCharacterV2 = function(opts) {
+    var level = 1;
+    var date = new Date();
+
     var hero = dataApi.herosV2.findById(opts.cId);
+
+    var curTasks = {
+        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
+        currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
+    };
+
+    var skills = new Skills(opts);
+    skills.initSkillsV2(opts.cId);
+
+    var package = packageUtil.initPackage(opts.cId);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -207,48 +239,51 @@ playerUtil.initCharacterV2 = function(opts) {
         currentScene: "city01",
         x: 1000,
         y: 100,
-        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
-        level: opts.level,
-        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, opts.level + 1),
-        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
+        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
+        level: level,
+        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
+        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         photo: '',
         buffs: buffUtil.getInitBuff(),
-        hp: formulaV2.calculateHp(hero.hp, hero.addHp, opts.level),
-        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, opts.level),
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
         anger: 0,
-        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, opts.level),
-        defense: formulaV2.calculateDefense(hero.defense, opts.level),
-        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, opts.level),
-        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, opts.level),
-        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, opts.level),
-        speed: formulaV2.calculateSpeed(hero.speed, opts.level),
-        dodge: formulaV2.calculateDodge(hero.dodge, opts.level),
-        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, opts.level),
-        critDamage: formulaV2.calculateCritDamage(hero.attack, opts.level),
-        block: formulaV2.calculateBlock(hero.block, opts.level),
-        counter: formulaV2.calculateCounter(hero.counter, opts.level),
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level),
         gameCurrency: playerUtil.initGameCurrency(),
         money: playerUtil.initMoney(),
         equipments: playerUtil.initEquipments(),
-        package: opts.package,
-        skills: {
-            currentSkill: opts.skills.currentSkill,
-            activeSkills: opts.skills.activeSkills,
-            passiveSkills: opts.skills.passiveSkills
-        },
+        package: package,
+        /*skills: {
+            currentSkill: skills.currentSkill,
+            activeSkills: skills.activeSkills,
+            passiveSkills: skills.passiveSkills
+        },*/
+        currentSkills: skills.currentSkills,
+        allSkills: skills.allSkills,
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
         gift: [],
         ghost: playerUtil.initGhost(),
         ghostNum: playerUtil.initGhostNum(),
         aptitude: playerUtil.initAptitude(opts.cId),
-        curTasks: opts.curTasks,
+        curTasks: curTasks,
         currentIndu: {"induId":0}
     };
     return character;
 }
 
 playerUtil.getCharacter = function(opts) {
+    var skills = new Skills(opts);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -286,11 +321,13 @@ playerUtil.getCharacter = function(opts) {
         money: parseInt(opts.replies.money),
         equipments: JSON.parse(opts.replies.equipments),
         package: JSON.parse(opts.replies.package),
-        skills: {
+        /*skills: {
             currentSkill: JSON.parse(opts.replies.currentSkill),
             activeSkills: JSON.parse(opts.replies.activeSkills),
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
-        },
+        },*/
+        currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")),
         formation: JSON.parse(opts.replies.formation).formation,
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
@@ -310,6 +347,7 @@ playerUtil.getCharacter = function(opts) {
 }
 
 playerUtil.getPKCharacter = function(opts) {
+    var skills = new Skills(opts);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -345,11 +383,13 @@ playerUtil.getPKCharacter = function(opts) {
         gameCurrency: parseInt(opts.replies.gameCurrency),
         money: parseInt(opts.replies.money),
         equipments: JSON.parse(opts.replies.equipments),
-        skills: {
+        /*skills: {
             currentSkill: JSON.parse(opts.replies.currentSkill),
             activeSkills: JSON.parse(opts.replies.activeSkills),
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
-        },
+        },*/
+        currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")),
         formation: JSON.parse(opts.replies.formation).formation,
         partners: JSON.parse(opts.replies.partners).partners,
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
@@ -395,7 +435,9 @@ playerUtil.getPlayer = function(character) {
         equipments: character.equipments,
         curTasks: character.curTasks,
         package: character.package,
-        skills: character.skills,
+        skills: character.skills || {},
+        currentSkills: character.currentSkills || {},
+        allSkills: character.allSkills || {},
         formation: character.formation,
         partners: character.partners,
         allPartners: character.allPartners,
@@ -444,7 +486,9 @@ playerUtil.getPlayerV2 = function(character) {
         equipments: character.equipments,
         curTasks: character.curTasks,
         package: character.package,
-        skills: character.skills,
+        skills: character.skills || {},
+        currentSkills: character.currentSkills || {},
+        allSkills: character.allSkills || {},
         formation: character.formation,
         partners: character.partners,
         allPartners: character.allPartners,

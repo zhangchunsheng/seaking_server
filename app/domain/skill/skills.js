@@ -20,9 +20,13 @@ var Skills = function(opts) {
     this.serverId = opts.serverId;
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
+    this.cId = opts.cId;
     this.currentSkill = opts.currentSkill || {};
     this.activeSkills = opts.activeSkills || [];
     this.passiveSkills = opts.passiveSkills || [];
+
+    this.currentSkills = opts.currentSkills || {};
+    this.allSkills = opts.allSkills = [];
 };
 
 module.exports = Skills;
@@ -67,7 +71,12 @@ Skills.prototype.setSkills = function(opts) {
  * @param cId
  */
 Skills.prototype.initSkills = function(cId) {
-    var skills = heroSkills[cId];
+    if(cId) {
+        var skills = heroSkills[cId];
+    } else {
+        var skills = heroSkills[this.cId];
+    }
+
     this.currentSkill = {};
     for(var i = 0 ; i < skills.length ; i++) {
         if(skills[i].type == consts.skillType.ACTIVE_SKILL) {
@@ -96,4 +105,54 @@ Skills.prototype.initSkills = function(cId) {
         }
     }
     console.log(this);
+}
+/**
+ * 初始化技能
+ * @param cId
+ */
+Skills.prototype.initSkillsV2 = function(cId) {
+    this.initCurrentSkills(cId);
+    this.initAllSkills(cId);
+}
+
+
+/**
+ * 初始化当前技能
+ * @param cId
+ */
+Skills.prototype.initCurrentSkills = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+    this.currentSkills = {};
+    this.currentSkills[1] = {
+        skillId: 101101,
+        level: 1
+    };
+    var data = this.currentSkills
+    if(dataType == "string") {
+        data = JSON.stringify(data);
+    }
+    return data;
+}
+
+/**
+ * 初始化所有技能
+ * @param cId
+ */
+Skills.prototype.initAllSkills = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+    this.allSkills = [];
+    var skills = dataApi.skillsV2.all();
+    for(var i in skills) {
+        this.allSkills.push({
+            skillId: skills[i].id,
+            level: 1
+        });
+    }
+    var data = this.allSkills
+    if(dataType == "string") {
+        data = JSON.stringify(data);
+    }
+    return data;
 }
