@@ -252,7 +252,7 @@ exports.learnAndUpgradeSkill = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var currentSkills = player.currentSkills;
         if(typeof currentSkills[type] != "undefined") {
-            if(currentSkills[type].skillId != skillId) {
+            if(currentSkills[type].skillId != 0 && currentSkills[type].skillId != skillId) {
                 data = {
                     code: Code.ARGUMENT_EXCEPTION
                 };

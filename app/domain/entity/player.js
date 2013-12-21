@@ -1127,7 +1127,7 @@ Player.prototype.learnSkill = function(skillId, callback) {
 
 Player.prototype.learnAndUpgradeSkill = function(type, skillId, callback) {
     var currentSkills = this.currentSkills;
-    if(typeof currentSkills[type] == "undefined") {
+    if(typeof currentSkills[type] == "undefined" || currentSkills[type].skillId == 0) {
         this.learnSkillV2(type, skillId, callback);
     } else {
         this.upgradeSkillV2(type, skillId, callback);
