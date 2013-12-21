@@ -351,7 +351,8 @@ exports.forgetSkill = function(req, res) {
     var uid = session.uid
         , serverId = session.serverId
         , registerType = session.registerType
-        , loginName = session.loginName;
+        , loginName = session.loginName
+        , type = msg.type;
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
@@ -359,29 +360,62 @@ exports.forgetSkill = function(req, res) {
     var skillId = msg.skillId;
 
     var data = {};
+
+    if(utils.empty(type) || type > 6 || type < 1) {
+        data = {
+            code: Code.SKILL.WRONG_TYPE
+        };
+        utils.send(msg, res, data);
+        return;
+    }
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var status = player.checkUseSkill(skillId);
-        if(status == 1) {
-            player.useSkill(msg.skillId, function(err, reply) {
-                if(err) {
-                    data = {
-                        code:Code.SKILL.NO_SKILL
-                    };
-                    utils.send(msg, res, data);
-                    return;
-                }
-                data = {
-                    skillId: skillId,
-                    code:Code.OK
-                };
-                utils.send(msg, res, data);
-            });
-        } else {
+        var currentSkills = player.currentSkills;
+        if(typeof currentSkills[type] == "undefined") {
             data = {
                 code: Code.SKILL.NO_SKILL
             };
             utils.send(msg, res, data);
+            return;
         }
+        if(typeof currentSkills[type] != "undefined") {
+            if(currentSkills[type].skillId != skillId) {
+                data = {
+                    code: Code.ARGUMENT_EXCEPTION
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        }
+        player.forgeSkill(type, skillId, function(err, result) {
+            if(err) {
+                data = {
+                    code:Code.SKILL.NEED_REQUIREMENT
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(player, callback);
+                },
+                function(callback) {
+                    packageService.update(player.packageEntity.strip(), callback);
+                },
+                function(callback) {
+                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
+                },
+                function(callback) {
+                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    code: Code.OK,
+                    skillId: skillId,
+                    level: result
+                };
+                utils.send(msg, res, data);
+            });
+        });
     });
 }
 

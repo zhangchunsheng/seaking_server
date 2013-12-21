@@ -64,7 +64,7 @@ var Player = function(opts) {
     this.sid = opts.serverId;
     this.regionId = opts.serverId;
 
-    this.money = parseInt(opts.money);
+    this.money = parseInt(opts.money || 0);
     this.gameCurrency = parseInt(opts.gameCurrency);
 
     this.curTasksEntity = opts.curTasksEntity;
@@ -1132,6 +1132,37 @@ Player.prototype.learnAndUpgradeSkill = function(type, skillId, callback) {
     } else {
         this.upgradeSkillV2(type, skillId, callback);
     }
+};
+
+Player.prototype.forgeSkill = function(type, skillId, callback) {
+    var currentSkills = this.currentSkills;
+    currentSkills[type] = {
+        skillId: 0,
+        level: 0
+    };
+    var allSkills = this.allSkills;
+    var flag = false;
+    for(var i = 0 ; i < allSkills.length ; i++) {
+        if(allSkills[i].skillId == skillId) {
+            flag = true;
+            break;
+        }
+    }
+    if(!flag) {
+        allSkills.push({
+            skillId: skillId,
+            level: 1
+        });
+    }
+
+    var array = [];
+    var characterId = utils.getRealCharacterId(this.id);
+    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    array.push(["hset", key, "allSkills", JSON.stringify(allSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, 1);
+    });
 };
 
 Player.prototype.learnSkillV2 = function(type, skillId, callback) {

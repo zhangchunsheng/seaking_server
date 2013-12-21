@@ -128,6 +128,26 @@ Skills.prototype.initCurrentSkills = function(dataType) {
         skillId: 101101,
         level: 1
     };
+    this.currentSkills[2] = {
+        skillId: 0,
+        level: 0
+    };
+    this.currentSkills[3] = {
+        skillId: 0,
+        level: 0
+    };
+    this.currentSkills[4] = {
+        skillId: 0,
+        level: 0
+    };
+    this.currentSkills[5] = {
+        skillId: 0,
+        level: 0
+    };
+    this.currentSkills[6] = {
+        skillId: 0,
+        level: 0
+    };
     var data = this.currentSkills
     if(dataType == "string") {
         data = JSON.stringify(data);
