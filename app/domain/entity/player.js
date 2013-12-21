@@ -1161,7 +1161,7 @@ Player.prototype.forgeSkill = function(type, skillId, callback) {
     array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
     array.push(["hset", key, "allSkills", JSON.stringify(allSkills)]);
     userDao.update(array, function(err, repy) {
-        utils.invokeCallback(callback, null, 1);
+        utils.invokeCallback(callback, null, 0);
     });
 };
 

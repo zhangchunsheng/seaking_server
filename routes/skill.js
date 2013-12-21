@@ -410,8 +410,8 @@ exports.forgetSkill = function(req, res) {
             ], function(err, reply) {
                 data = {
                     code: Code.OK,
-                    skillId: skillId,
-                    level: result
+                    skillId: 0,
+                    level: 0
                 };
                 utils.send(msg, res, data);
             });
