@@ -129,6 +129,7 @@ module.exports = function (app) {
     app.get('/skill/useSkill', authRequired, skill.useSkill);
     app.get('/skill/forgetSkill', authRequired, skill.forgetSkill);
     app.get('/skill/getAllSkill', authRequired, skill.getAllSkill);
+    app.get('/skill/learnAndUpgradeSkill', authRequired, skill.learnAndUpgradeSkill);
 
     app.get('/partner/getPartner', authRequired, partner.getPartner);
     app.get('/partner/gotoStage', authRequired, partner.gotoStage);
