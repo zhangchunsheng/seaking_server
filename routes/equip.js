@@ -1202,7 +1202,6 @@ exports.changeDiamond = function(req, res) {
         return;
     }
 
-
     var diamond;
     for(var i in newDiamonds) {
         if(typeof newDiamonds[i] == "undefined") {
@@ -1213,13 +1212,15 @@ exports.changeDiamond = function(req, res) {
             return;
         }
 
-        diamond = dataApi.diamonds.findById(newDiamonds[i]);
-        if(!diamond) {
-            data = {
-                code: Code.PACKAGE.NOT_EXIST_ITEM
-            };
-            utils.send(msg, res, data);
-            return;
+        if(newDiamonds[i] != 0) {
+            diamond = dataApi.diamonds.findById(newDiamonds[i]);
+            if(!diamond) {
+                data = {
+                    code: Code.PACKAGE.NOT_EXIST_ITEM
+                };
+                utils.send(msg, res, data);
+                return;
+            }
         }
     }
 
@@ -1300,6 +1301,8 @@ exports.changeDiamond = function(req, res) {
 
         var eq = dataApi.equipments.findById(epId);
         for(var i in newDiamonds) {
+            if(newDiamonds[i] == 0)
+                continue;
             diamond = dataApi.diamonds.findById(newDiamonds[i]);
             if(eq.attrId != diamond.attrId) {
                 data = {

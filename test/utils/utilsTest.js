@@ -32,6 +32,7 @@ describe('utils test', function() {
         console.log(utils.getDate(1));
         console.log(utils.getHeroIdByWeaponId("W1011001"));
         console.log(utils.getFormByEquipmentId("E10121"));
+        console.log(0 == "0");
         utils.getFormByEquipmentId("E10121").should.equal("2");
     });
 
