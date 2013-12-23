@@ -76,11 +76,12 @@ packageDao.destroy = function(characterId, cb) {
 
 };
 
-packageDao.createNewPackage = function(packageInfo, serverId, registerType, loginName, characterId) {
+packageDao.createNewPackage = function(packageInfo, serverId, registerType, loginName, characterId, character) {
     packageInfo.serverId = serverId;
     packageInfo.registerType = registerType;
     packageInfo.loginName = loginName;
     packageInfo.characterId = characterId;
+    packageInfo.character = character;
     var package = new Package(packageInfo);
     return package;
 };

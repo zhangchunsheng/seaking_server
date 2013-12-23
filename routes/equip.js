@@ -1269,7 +1269,7 @@ exports.changeDiamond = function(req, res) {
 
         var changedDiamonds = character.equipmentsEntity.getNeedChangedDiamonds(type, newDiamonds);
         var needChangedDiamonds = changedDiamonds.needChangedDiamonds;//使用宝石
-        var needPutIntoPackageDiamonds = changedDiamonds.needPutIntoPackageDiamonds;
+        var needPutIntoPackageDiamonds = changedDiamonds.needPutIntoPackageDiamonds;//放入背包
 
         var packageDiamonds = player.packageEntity.checkDiamonds(needChangedDiamonds);
         if(packageDiamonds.length != needChangedDiamonds.length) {//物品不足
@@ -1300,10 +1300,14 @@ exports.changeDiamond = function(req, res) {
         }
 
         var eq = dataApi.equipments.findById(epId);
+        console.log(newDiamonds);
         for(var i in newDiamonds) {
             if(newDiamonds[i] == 0)
                 continue;
             diamond = dataApi.diamonds.findById(newDiamonds[i]);
+            console.log(diamond);
+            console.log("ttttttttttt");
+            console.log(eq.attrId);
             if(eq.attrId != diamond.attrId) {
                 data = {
                     //status: -1//等级不够
@@ -1315,12 +1319,20 @@ exports.changeDiamond = function(req, res) {
         }
 
         //消耗物品
+        var result = [];
+        var item;
         for(var i = 0 ; i < packageDiamonds.length ; i++) {
-            player.packageEntity.removeItem(packageDiamonds[i].index, packageDiamonds[i].itemNum);
+            for(var j = 0 ; j < packageDiamonds[i].length ; j++) {
+                item = player.packageEntity.removeItem(packageDiamonds[i][j].index, packageDiamonds[i][j].itemNum);
+                result.push({
+                    index: packageDiamonds[i][j].index,
+                    itemId: item.itemId,
+                    itemNum: item.itemNum
+                });
+            }
         }
         //放入背包
         var packageIndex = 0;
-        var result = [];
         for(var i = 0 ; i < needPutIntoPackageDiamonds.length ; i++) {
             packageIndex = player.packageEntity.addItem(player, pkgType, {
                 itemId: needPutIntoPackageDiamonds[i].itemId,

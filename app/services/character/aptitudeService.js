@@ -32,11 +32,12 @@ aptitudeService.upgrade = function(array, mainPlayer, player, type, cb) {
     });
 }
 
-aptitudeService.createNewAptitude = function(aptitudeInfo, serverId, registerType, loginName, characterId) {
+aptitudeService.createNewAptitude = function(aptitudeInfo, serverId, registerType, loginName, characterId, character) {
     aptitudeInfo.serverId = serverId;
     aptitudeInfo.registerType = registerType;
     aptitudeInfo.loginName = loginName;
     aptitudeInfo.characterId = characterId;
+    aptitudeInfo.character = character;
     var aptitude = new Aptitude(aptitudeInfo);
     return aptitude;
 }

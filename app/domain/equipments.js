@@ -312,7 +312,6 @@ Equipments.prototype.getNeedChangedDiamonds = function(type, newDiamonds) {
     var diamonds = this[type].inlay.diamonds;//已有宝石
     var needChangedDiamonds = [];//消耗背包宝石
     var needPutIntoPackageDiamonds = [];//放入背包宝石
-    console.log(diamonds);
     for(var i in diamonds) {
         if(diamonds[i] != 0) {//已有宝石
             if(diamonds[i] != newDiamonds[i]) {

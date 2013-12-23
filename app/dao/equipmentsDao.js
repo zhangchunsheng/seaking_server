@@ -87,11 +87,12 @@ equipmentsDao.destroy = function(characterId, cb) {
 
 };
 
-equipmentsDao.createNewEquipment = function(equipmentInfo, serverId, registerType, loginName, characterId) {
+equipmentsDao.createNewEquipment = function(equipmentInfo, serverId, registerType, loginName, characterId, character) {
     equipmentInfo.serverId = serverId;
     equipmentInfo.registerType = registerType;
     equipmentInfo.loginName = loginName;
     equipmentInfo.characterId = characterId;
+    equipmentInfo.character = character;
     var equipments = new Equipments(equipmentInfo);
     return equipments;
 };

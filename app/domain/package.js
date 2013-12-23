@@ -157,26 +157,26 @@ Package.prototype.checkMaterial = function(materials) {
  */
 Package.prototype.checkItems = function(items) {
     var flag = [];
-    var items = [];
-    var material;
+    var _items = [];
+    var _item;
     var num;
     var item;
     for(var i = 0 ; i < items.length ; i++) {
-        material = items[i];
-        num = material.itemNum;
-        items = [];
+        _item = items[i];
+        num = _item.itemNum;
+        _items = [];
         for(var j = packageStart, l = this.itemCount + packageStart ; j < l ; j++ ) {
-            if(this.items[j] && this.items[j].itemId == material.itemId) {
+            if(this.items[j] && this.items[j].itemId == _item.itemId) {
                 item = this.items[j];
                 if(num > item.itemNum) {
                     num = num - item.itemNum;
-                    items.push({
+                    _items.push({
                         index: j,
                         itemId: item.itemId,
                         itemNum: item.itemNum
                     });
                 } else {
-                    items.push({
+                    _items.push({
                         index: j,
                         itemId: item.itemId,
                         itemNum: num
@@ -189,7 +189,7 @@ Package.prototype.checkItems = function(items) {
             }
         }
         if(num == 0) {
-            flag.push(items);
+            flag.push(_items);
         } else {
             return [];
         }

@@ -186,12 +186,13 @@ taskDao.destroy = function(characterId, cb) {
  * @param {Object} taskInfo
  * @return {Object} task
  */
-taskDao.createNewTask = function(taskInfo, serverId, registerType, loginName, characterId, curTasks) {
+taskDao.createNewTask = function(taskInfo, serverId, registerType, loginName, characterId, curTasks, character) {
     taskInfo.serverId = serverId;
     taskInfo.registerType = registerType;
     taskInfo.loginName = loginName;
     taskInfo.characterId = characterId;
     taskInfo.curTasks = curTasks;
+    taskInfo.character = character;
     var task = new Task(taskInfo);
     task.on('save', function() {
         console.log("task sync data");

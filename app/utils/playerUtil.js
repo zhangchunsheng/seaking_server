@@ -510,16 +510,16 @@ playerUtil.getPlayerV2 = function(character) {
  * @param characterId
  */
 playerUtil.createEntity = function(character, serverId, registerType, loginName, characterId) {
-    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId);
-    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId);
+    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId, character);
+    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId, character);
     var curTasks = new Tasks({
-        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks),
-        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks)
+        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks, character)
     });
-    var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId);
-    var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId);
+    var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId, character);
+    var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
@@ -536,11 +536,11 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
  * @param characterId
  */
 playerUtil.createPKEntity = function(player, serverId, registerType, loginName, characterId) {
-    var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
+    var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId, player);
     player.equipmentsEntity = equipments;
-    var aptitude = aptitudeService.createNewAptitude(player.aptitude, serverId, registerType, loginName, characterId);
+    var aptitude = aptitudeService.createNewAptitude(player.aptitude, serverId, registerType, loginName, characterId, player);
     player.aptitudeEntity = aptitude;
-    var ghost = ghostService.createNewGhost(player.ghost, serverId, registerType, loginName, characterId);
+    var ghost = ghostService.createNewGhost(player.ghost, serverId, registerType, loginName, characterId, player);
     player.ghostEntity = ghost;
 };
 
@@ -553,13 +553,13 @@ playerUtil.createPKEntity = function(player, serverId, registerType, loginName, 
  * @param characterId
  */
 playerUtil.createEPTInfo = function(character, serverId, registerType, loginName, characterId) {
-    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId);
-    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId);
+    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId, character);
+    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId, character);
     var curTasks = new Tasks({
-        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks),
-        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks)
+        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks, character)
     });
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
