@@ -1319,7 +1319,7 @@ exports.changeDiamond = function(req, res) {
             player.packageEntity.removeItem(packageDiamonds[i].index, packageDiamonds[i].itemNum);
         }
         //放入背包
-        var packageIndex;
+        var packageIndex = 0;
         for(var i = 0 ; i < needPutIntoPackageDiamonds.length ; i++) {
             packageIndex = player.packageEntity.addItem(player, pkgType, {
                 itemId: needPutIntoPackageDiamonds[i].itemId,
