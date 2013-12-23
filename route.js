@@ -73,6 +73,7 @@ module.exports = function (app) {
     app.get('/equip/forgeUpgrade', authRequired, equip.forgeUpgrade);
     app.get('/equip/inlay', authRequired, equip.inlay);
     app.get('/equip/unInlay', authRequired, equip.unInlay);
+    app.get('/equip/changeDiamond', authRequired, equip.changeDiamond);
 
     app.get('/formation/change', authRequired, formation.change);
 

@@ -925,13 +925,31 @@ Player.prototype.inlay = function(pkgType, item, pIndex, player, type, cellId) {
         index = player.packageEntity.addItem(player, pkgType, {
             itemId: curDiamond,
             itemNum: 1
-        }, pIndex).index;
+        }, pIndex);
+        if(index == null) {
+            index = [];
+        } else {
+            index = index.index;
+        }
     } else {
         //player.packageEntity.removeItem(pkgType, pIndex);
         player.packageEntity.removeItem(pIndex, 1);
     }
     //this.updateAttribute();
     return index;
+}
+
+/**
+ * 镶嵌
+ * @param pkgType
+ * @param player
+ * @param type
+ * @param packageDiamonds 包裹中物品
+ * @param needPutIntoPackageDiamonds 放入包括物品
+ * @param newDiamonds
+ */
+Player.prototype.changeEquipDiamonds = function(pkgType, player, type, packageDiamonds, needPutIntoPackageDiamonds, newDiamonds) {
+    this.equipmentsEntity.changeEquipDiamonds(type, newDiamonds);
 }
 
 Player.prototype.buyItem = function(type, item, costMoney) {

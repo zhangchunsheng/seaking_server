@@ -986,6 +986,14 @@ exports.inlay = function(req, res) {
 
         var packageIndex = character.inlay(pkgType, item, index, player, type, cellId);
 
+        if(packageIndex == null || packageIndex.length == 0) {
+            data = {
+                code: Code.PACKAGE.NOT_ENOUGHT_SPACE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
         async.parallel([
             function(callback) {
                 userService.updatePlayerAttribute(player, callback);
@@ -1123,6 +1131,207 @@ exports.unInlay = function(req, res) {
             character.unInlay(type, cellId);
             status = 1;
         }
+
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(character.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            data = {
+                //status: status
+                code: Code.OK,
+                packageIndex: packageIndex
+            };
+            utils.send(msg, res, data);
+        });
+    });
+}
+
+/**
+ * 镶嵌
+ * @param req
+ * @param res
+ */
+exports.changeDiamond = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var epId = msg.eqId;
+    var type = msg.type;
+    //var index = msg.index;
+    //var diamondId = msg.diamondId;//宝石
+    //var cellId = msg.cellId;//镶嵌位置
+
+    var data = {};
+    try {
+        var newDiamonds = JSON.parse(msg.diamonds);//宝石信息[{index:0,diamondId:0,cellId:0}] {1:1}
+    } catch(e) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+
+    var diamond;
+    for(var i in newDiamonds) {
+        if(typeof newDiamonds[i] == "undefined") {
+            data = {
+                code: Code.ARGUMENT_EXCEPTION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        diamond = dataApi.diamonds.findById(newDiamonds[i]);
+        if(!diamond) {
+            data = {
+                code: Code.PACKAGE.NOT_EXIST_ITEM
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+    }
+
+    /*if(utils.empty(index) ) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }*/
+
+    var pkgType = PackageType.DIAMOND;
+
+    if(!utils.checkEquipmentPositionType(type)) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var status = 0;
+
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(!character.equipmentsEntity.checkInlayCells(type, newDiamonds)) {
+            data = {
+                code: Code.EQUIPMENT.WRONG_CELLID
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var changedDiamonds = character.equipmentsEntity.getNeedChangedDiamonds(type, newDiamonds);
+        var needChangedDiamonds = changedDiamonds.needChangedDiamonds;
+        var needPutIntoPackageDiamonds = changedDiamonds.needPutIntoPackageDiamonds;
+
+        var packageDiamonds = player.packageEntity.checkDiamonds(needChangedDiamonds);
+        if(packageDiamonds.length != needChangedDiamonds.length) {//物品不足
+            data = {
+                //status: -2
+                code: Code.PACKAGE.NOT_ENOUGH_ITEM
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(character.equipmentsEntity.get(type).epid == 0) {// 没有装备
+            data = {
+                //status: -2
+                code: Code.EQUIPMENT.NO_WEAPON
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(character.equipmentsEntity.get(type).epid != epId) {// 装备不正确
+            data = {
+                //status: -1
+                code: Code.EQUIPMENT.WRONG_WEAPON
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var eq = dataApi.equipments.findById(epId);
+        for(var i in newDiamonds) {
+            diamond = dataApi.diamonds.findById(newDiamonds[i]);
+            if(eq.attrId != diamond.attrId) {
+                data = {
+                    //status: -1//等级不够
+                    code: Code.EQUIPMENT.NOT_SAME_ATTRID
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        }
+
+        //消耗物品
+        for(var i = 0 ; i < packageDiamonds.length ; i++) {
+            player.packageEntity.removeItem(packageDiamonds[i].index, packageDiamonds[i].itemNum);
+        }
+        //放入背包
+        var packageIndex;
+        for(var i = 0 ; i < needPutIntoPackageDiamonds.length ; i++) {
+            packageIndex = player.packageEntity.addItem(player, pkgType, {
+                itemId: needPutIntoPackageDiamonds[i].itemId,
+                itemNum: needPutIntoPackageDiamonds[i].itemNum
+            });
+            if(packageIndex == null || packageIndex.index.length == 0) {
+                data = {
+                    code: Code.PACKAGE.NOT_ENOUGHT_SPACE
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        }
+
+        character.changeEquipDiamonds(pkgType, player, type, packageDiamonds, needPutIntoPackageDiamonds, newDiamonds);
 
         async.parallel([
             function(callback) {

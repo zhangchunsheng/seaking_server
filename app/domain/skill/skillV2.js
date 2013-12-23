@@ -78,7 +78,7 @@ Skill.prototype.invokeScript = function(attackSide, condition, attack_formation,
     array.push(fightData);
     array.push(attackData);
     array.push(defenseData);
-    return skill_script["skill" + this.skillId].apply(this, array);
+    return skill_script["skill" + this.skillId.replace("SK", "")].apply(this, array);
 }
 
 Skill.prototype.invokeTriggerScript = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -96,7 +96,7 @@ Skill.prototype.invokeTriggerScript = function(attackSide, condition, attack_for
     array.push(fightData);
     array.push(attackData);
     array.push(defenseData);
-    return triggerSkill_script["skill" + this.skillId].apply(this, array);
+    return triggerSkill_script["skill" + this.skillId.replace("SK", "")].apply(this, array);
 }
 
 /**

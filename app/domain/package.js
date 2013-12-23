@@ -150,6 +150,65 @@ Package.prototype.checkMaterial = function(materials) {
     }
 }
 
+/**
+ * 检索物品
+ * @param items
+ * @returns {Array}
+ */
+Package.prototype.checkItems = function(items) {
+    var flag = [];
+    var items = [];
+    var material;
+    var num;
+    var item;
+    for(var i = 0 ; i < items.length ; i++) {
+        material = items[i];
+        num = material.itemNum;
+        items = [];
+        for(var j = packageStart, l = this.itemCount + packageStart ; j < l ; j++ ) {
+            if(this.items[j] && this.items[j].itemId == material.itemId) {
+                item = this.items[j];
+                if(num > item.itemNum) {
+                    num = num - item.itemNum;
+                    items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: item.itemNum
+                    });
+                } else {
+                    items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: num
+                    });
+                    num = 0;
+                }
+                if(num == 0) {
+                    break;
+                }
+            }
+        }
+        if(num == 0) {
+            flag.push(items);
+        } else {
+            return [];
+        }
+    }
+    if(flag.length == items.length) {
+        return flag;
+    } else {
+        return [];
+    }
+}
+
+/**
+ *
+ * @param needChangedDiamonds
+ */
+Package.prototype.checkDiamonds = function(needChangedDiamonds) {
+    this.checkItems(needChangedDiamonds);
+}
+
 Package.prototype.addItemWithNoType = function(player, item) {
 	var type = "";
     if(item.itemId.indexOf("W") >= 0) {
@@ -260,7 +319,11 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
     }
     if(rIndex) {
         if(this.items[rIndex]) {
-            delete this.items[rIndex];
+            var _item =  this.items[rIndex];
+            _item.itemNum = _item.itemNum - 1;
+            if(_item.itemNum <= 0) {
+                delete this.items[rIndex];
+            }
         }
     }
     var items = this;
