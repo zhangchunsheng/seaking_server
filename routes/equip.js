@@ -1320,6 +1320,7 @@ exports.changeDiamond = function(req, res) {
         }
         //放入背包
         var packageIndex = 0;
+        var result = [];
         for(var i = 0 ; i < needPutIntoPackageDiamonds.length ; i++) {
             packageIndex = player.packageEntity.addItem(player, pkgType, {
                 itemId: needPutIntoPackageDiamonds[i].itemId,
@@ -1332,6 +1333,12 @@ exports.changeDiamond = function(req, res) {
                 utils.send(msg, res, data);
                 return;
             }
+            for(var j = 0 ; j < packageIndex.index.length ; j++) {
+                result.push(packageIndex.index[j]);
+            }
+        }
+        if(result == []) {
+            result = 0;
         }
 
         character.changeEquipDiamonds(pkgType, player, type, packageDiamonds, needPutIntoPackageDiamonds, newDiamonds);
@@ -1353,7 +1360,7 @@ exports.changeDiamond = function(req, res) {
             data = {
                 //status: status
                 code: Code.OK,
-                packageIndex: packageIndex
+                packageIndex: result
             };
             utils.send(msg, res, data);
         });
