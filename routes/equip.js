@@ -798,7 +798,7 @@ exports.forgeUpgrade = function(req, res) {
             index = -1;
             for(var j = 0 ; j < materials.length ; j++) {
                 if(itemId == materials[j].itemId) {
-                    index = 0;
+                    index = j;
                 }
             }
             if(index >= 0) {
@@ -1310,7 +1310,7 @@ exports.changeDiamond = function(req, res) {
         }
 
         var eq = dataApi.equipments.findById(epId);
-        console.log(newDiamonds);
+
         for(var i in newDiamonds) {
             if(newDiamonds[i] == 0)
                 continue;

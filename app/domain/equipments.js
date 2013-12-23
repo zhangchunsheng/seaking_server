@@ -312,29 +312,55 @@ Equipments.prototype.getNeedChangedDiamonds = function(type, newDiamonds) {
     var diamonds = this[type].inlay.diamonds;//已有宝石
     var needChangedDiamonds = [];//消耗背包宝石
     var needPutIntoPackageDiamonds = [];//放入背包宝石
+    var diamondsArray = [];
+    var newDiamondsArray = [];
+    var flag;
+    var index;
     for(var i in diamonds) {
-        if(diamonds[i] != 0) {//已有宝石
-            if(diamonds[i] != newDiamonds[i]) {
-                needPutIntoPackageDiamonds.push({
-                    index: i,
-                    diamondId: diamonds[i],
-                    itemNum: 1
-                });
-                if(newDiamonds[i] != 0) {
-                    needChangedDiamonds.push({
-                        index: i,
-                        diamondId: newDiamonds[i],
-                        itemNum: 1
-                    });
-                }
+        index = -1;
+        for(var j = 0 ; j < diamondsArray.length ; j++) {
+            if(diamonds[i] == diamondsArray[j].diamondId) {
+                index = j;
+                break;
             }
+        }
+        if(index >= 0) {
+            diamondsArray[index].itemNum++;
         } else {
-            if(newDiamonds[i] != 0) {
-                needChangedDiamonds.push({
-                    index: i,
-                    diamondId: newDiamonds[i],
-                    itemNum: 1
-                });
+            diamondsArray.push({
+                diamondId: diamonds[i],
+                itemNum: 1
+            });
+        }
+    }
+    for(var i in newDiamonds) {
+        index = -1;
+        for(var j = 0 ; j < newDiamondsArray.length ; j++) {
+            if(newDiamonds[i] == newDiamondsArray[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            newDiamondsArray[index].itemNum++;
+        } else {
+            newDiamondsArray.push({
+                diamondId: newDiamonds[i],
+                itemNum: 1
+            });
+        }
+    }
+    var theSameDiamonds = [];
+    for(var i = 0 ; i < diamondsArray.length ; i++) {
+        for(var j = 0 ; j < newDiamondsArray.length ; j++) {
+            if(diamondsArray[i].diamondId == newDiamondsArray[j].diamondId) {
+                if(diamondsArray[i].diamondId != 0) {
+                    if(diamondsArray[i].itemNum >= newDiamondsArray[j].itemNum) {
+                        theSameDiamonds.push(newDiamondsArray[j]);
+                    } else {
+                        theSameDiamonds.push(diamondsArray[i]);
+                    }
+                }
             }
         }
     }
@@ -342,14 +368,63 @@ Equipments.prototype.getNeedChangedDiamonds = function(type, newDiamonds) {
     var _needPutIntoPackageDiamonds = [];
     var diamondId;
     var itemNum;
-    var index;
+    for(var i = 0 ; i < newDiamondsArray.length ; i++) {
+        if(newDiamondsArray[i].diamondId == 0)
+            continue;
+        index = -1;
+        for(var j = 0 ; j < theSameDiamonds.length ; j++) {
+            if(newDiamondsArray[i].diamondId == theSameDiamonds[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            itemNum = newDiamondsArray[i].itemNum - theSameDiamonds[index].itemNum;
+            if(itemNum > 0) {
+                needChangedDiamonds.push({
+                    diamondId: newDiamondsArray[i].diamondId,
+                    itemNum: itemNum
+                });
+            }
+        } else {
+            needChangedDiamonds.push({
+                diamondId: newDiamondsArray[i].diamondId,
+                itemNum: newDiamondsArray[i].itemNum
+            });
+        }
+    }
+    for(var i = 0 ; i < diamondsArray.length ; i++) {
+        if(diamondsArray[i].diamondId == 0)
+            continue;
+        index = -1;
+        for(var j = 0 ; j < theSameDiamonds.length ; j++) {
+            if(diamondsArray[i].diamondId == theSameDiamonds[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            itemNum = diamondsArray[i].itemNum - theSameDiamonds[index].itemNum;
+            if(itemNum > 0) {
+                needPutIntoPackageDiamonds.push({
+                    diamondId: diamondsArray[i].diamondId,
+                    itemNum: itemNum
+                });
+            }
+        } else {
+            needPutIntoPackageDiamonds.push({
+                diamondId: diamondsArray[i].diamondId,
+                itemNum: diamondsArray[i].itemNum
+            });
+        }
+    }
     for(var i = 0 ; i < needChangedDiamonds.length ; i++) {
         diamondId = needChangedDiamonds[i].diamondId;
         itemNum = needChangedDiamonds[i].itemNum;
         index = -1;
         for(var j = 0 ; j < _needChangedDiamonds.length ; j++) {
             if(diamondId == _needChangedDiamonds[j].diamondId) {
-                index = 0;
+                index = j;
                 break;
             }
         }
@@ -357,7 +432,6 @@ Equipments.prototype.getNeedChangedDiamonds = function(type, newDiamonds) {
             _needChangedDiamonds[index].itemNum += parseInt(itemNum);
         } else {
             _needChangedDiamonds.push({
-                index: needChangedDiamonds[i].index,
                 itemId: diamondId,
                 itemNum: parseInt(itemNum)
             });
@@ -369,7 +443,7 @@ Equipments.prototype.getNeedChangedDiamonds = function(type, newDiamonds) {
         index = -1;
         for(var j = 0 ; j < _needPutIntoPackageDiamonds.length ; j++) {
             if(diamondId == _needPutIntoPackageDiamonds[j].diamondId) {
-                index = 0;
+                index = j;
                 break;
             }
         }
@@ -377,7 +451,6 @@ Equipments.prototype.getNeedChangedDiamonds = function(type, newDiamonds) {
             _needPutIntoPackageDiamonds[index].itemNum += parseInt(itemNum);
         } else {
             _needPutIntoPackageDiamonds.push({
-                index: needPutIntoPackageDiamonds[i].index,
                 itemId: diamondId,
                 itemNum: parseInt(itemNum)
             });
