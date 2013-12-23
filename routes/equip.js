@@ -1183,6 +1183,17 @@ exports.changeDiamond = function(req, res) {
         isSelf = false;
     }
 
+    var data = {};
+    if(isSelf) {
+        if(playerId != session.playerId) {
+            data = {
+                code: Code.ARGUMENT_EXCEPTION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+    }
+
     var characterId = utils.getRealCharacterId(playerId);
 
     var epId = msg.eqId;
@@ -1191,7 +1202,6 @@ exports.changeDiamond = function(req, res) {
     //var diamondId = msg.diamondId;//宝石
     //var cellId = msg.cellId;//镶嵌位置
 
-    var data = {};
     try {
         var newDiamonds = JSON.parse(msg.diamonds);//宝石信息[{index:0,diamondId:0,cellId:0}] {1:1}
     } catch(e) {
@@ -1305,9 +1315,6 @@ exports.changeDiamond = function(req, res) {
             if(newDiamonds[i] == 0)
                 continue;
             diamond = dataApi.diamonds.findById(newDiamonds[i]);
-            console.log(diamond);
-            console.log("ttttttttttt");
-            console.log(eq.attrId);
             if(eq.attrId != diamond.attrId) {
                 data = {
                     //status: -1//等级不够
@@ -1349,7 +1356,7 @@ exports.changeDiamond = function(req, res) {
                 result.push(packageIndex.index[j]);
             }
         }
-        if(result == []) {
+        if(result.length == 0) {
             result = 0;
         }
 
