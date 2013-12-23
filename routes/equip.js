@@ -1268,7 +1268,7 @@ exports.changeDiamond = function(req, res) {
         }
 
         var changedDiamonds = character.equipmentsEntity.getNeedChangedDiamonds(type, newDiamonds);
-        var needChangedDiamonds = changedDiamonds.needChangedDiamonds;
+        var needChangedDiamonds = changedDiamonds.needChangedDiamonds;//使用宝石
         var needPutIntoPackageDiamonds = changedDiamonds.needPutIntoPackageDiamonds;
 
         var packageDiamonds = player.packageEntity.checkDiamonds(needChangedDiamonds);

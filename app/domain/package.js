@@ -206,7 +206,7 @@ Package.prototype.checkItems = function(items) {
  * @param needChangedDiamonds
  */
 Package.prototype.checkDiamonds = function(needChangedDiamonds) {
-    this.checkItems(needChangedDiamonds);
+    return this.checkItems(needChangedDiamonds);
 }
 
 Package.prototype.addItemWithNoType = function(player, item) {
