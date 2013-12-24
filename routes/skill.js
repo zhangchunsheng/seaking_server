@@ -367,7 +367,7 @@ exports.learnAndUpgradeSkill = function(req, res) {
                     skillId: skillId,
                     level: result,
                     packageIndex: packageIndex,
-                    money: money
+                    money: player.money
                 };
                 utils.send(msg, res, data);
             });

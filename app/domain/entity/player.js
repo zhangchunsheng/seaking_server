@@ -1337,7 +1337,7 @@ Player.prototype.checkRequirement = function(skillData) {
  */
 Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkillRequired) {
     var required = {};
-    var skillLevel = this[type].level;//level 0 0-1
+    var skillLevel = this.currentSkills[type].level;//level 0 0-1
     var requirement = upgradeSkillRequired[skillLevel];
     var materials = requirement.materials;
     var level = requirement.level;
@@ -1353,6 +1353,7 @@ Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkill
         itemNum: itemNum
     }];
     flag = player.packageEntity.checkMaterial(materials);
+    console.log(materials);
     if(flag.length != materials.length) {
         return 0;
     }
@@ -1373,17 +1374,22 @@ Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkill
 Player.prototype.checkForgetSkillRequired = function(player, type, forgetSkillRequired) {
     var required = {};
     var requirement = forgetSkillRequired;
-    var materials = requirement.materials;
+    var materials = [];
+    var array;
+    var itemId;
+    var itemNum;
+    var flag = [];
+    for(var i = 0 ; i < requirement.length ; i++) {
+        array = requirement[i].materials.split("|");
+        itemId = array[0];
+        itemNum = array[1];
+        materials.push({
+            itemId: itemId,
+            itemNum: itemNum
+        });
+    }
 
     // check materials
-    var array = materials.split("|");
-    var itemId = array[0];
-    var itemNum = array[1];
-    var flag = [];
-    materials = [{
-        itemId: itemId,
-        itemNum: itemNum
-    }];
     flag = player.packageEntity.checkMaterial(materials);
     if(flag.length != materials.length) {
         return 0;
