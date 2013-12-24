@@ -72,6 +72,7 @@ var Player = function(opts) {
     this.packageEntity = opts.packageEntity;
     this.aptitudeEntity = opts.aptitudeEntity;
     this.ghostEntity = opts.ghostEntity;
+    this.skillsEntity = opts.skillsEntity;
 
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
@@ -1143,16 +1144,16 @@ Player.prototype.learnSkill = function(skillId, callback) {
     });
 };
 
-Player.prototype.learnAndUpgradeSkill = function(type, skillId, callback) {
+Player.prototype.learnAndUpgradeSkill = function(player, type, skillId, required, callback) {
     var currentSkills = this.currentSkills;
     if(typeof currentSkills[type] == "undefined" || currentSkills[type].skillId == 0) {
-        this.learnSkillV2(type, skillId, callback);
+        this.learnSkillV2(player, type, skillId, required, callback);
     } else {
-        this.upgradeSkillV2(type, skillId, callback);
+        this.upgradeSkillV2(player, type, skillId, required, callback);
     }
 };
 
-Player.prototype.forgeSkill = function(type, skillId, callback) {
+Player.prototype.forgeSkill = function(player, type, skillId, callback) {
     var currentSkills = this.currentSkills;
     currentSkills[type] = {
         skillId: 0,
@@ -1183,7 +1184,7 @@ Player.prototype.forgeSkill = function(type, skillId, callback) {
     });
 };
 
-Player.prototype.learnSkillV2 = function(type, skillId, callback) {
+Player.prototype.learnSkillV2 = function(player, type, skillId, required, callback) {
     var currentSkills = this.currentSkills;
     var level = 1;
     currentSkills[type] = {
@@ -1240,7 +1241,7 @@ Player.prototype.upgradeSkill = function(skillId, callback) {
     });
 };
 
-Player.prototype.upgradeSkillV2 = function(type, skillId, callback) {
+Player.prototype.upgradeSkillV2 = function(player, type, skillId, required, callback) {
     var currentSkills = this.currentSkills;
     currentSkills[type].level++;
 
@@ -1328,6 +1329,67 @@ Player.prototype.checkRequirement = function(skillData) {
     if(count == requirement.length)
         status = 1;
     return status;
+}
+
+/**
+ * materials,player level limit,money
+ * @param upgradeSkillRequired [{"materials":"D10030113|1","level":"1","money":"1000"},{"materials":"D10030114|1","level":"10","money":"10000"},{"materials":"D10030108|5","level":"20","money":"20000"},{"materials":"D10030106|10","level":"30","money":"50000"}],[{"materials":"D10030112|2"}]
+ */
+Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkillRequired) {
+    var required = {};
+    var skillLevel = this[type].level;//level 0 0-1
+    var requirement = upgradeSkillRequired[skillLevel];
+    var materials = requirement.materials;
+    var level = requirement.level;
+    var money = requirement.money;
+
+    // check materials
+    var array = materials.split("|");
+    var itemId = array[0];
+    var itemNum = array[1];
+    var flag = [];
+    materials = [{
+        itemId: itemId,
+        itemNum: itemNum
+    }];
+    flag = player.packageEntity.checkMaterial(materials);
+    if(flag.length != materials.length) {
+        return 0;
+    }
+    required.packageInfo = flag;
+    // check level
+    if(level > this.level) {
+        return 0;
+    }
+    required.level = level;
+    // check money
+    if(money > player.money) {
+        return 0;
+    }
+    required.money = money;
+    return required;
+}
+
+Player.prototype.checkForgetSkillRequired = function(player, type, forgetSkillRequired) {
+    var required = {};
+    var requirement = forgetSkillRequired;
+    var materials = requirement.materials;
+
+    // check materials
+    var array = materials.split("|");
+    var itemId = array[0];
+    var itemNum = array[1];
+    var flag = [];
+    materials = [{
+        itemId: itemId,
+        itemNum: itemNum
+    }];
+    flag = player.packageEntity.checkMaterial(materials);
+    if(flag.length != materials.length) {
+        return 0;
+    }
+    required.packageInfo = flag;
+    return required;
 }
 
 // Emit the event 'save'.

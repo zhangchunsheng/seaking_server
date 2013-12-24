@@ -110,6 +110,7 @@ module.exports = {
         NEED_REQUIREMENT: 1823,
         NO_REACH_SKILL: 1824,
         NO_SKILL: 1825,
-        WRONG_TYPE: 1826
+        WRONG_TYPE: 1826,
+        LACK_UPGRADEMATERIAL: 1827
     }
 };

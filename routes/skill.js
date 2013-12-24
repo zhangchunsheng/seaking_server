@@ -14,6 +14,7 @@ var equipmentsService = require('../app/services/equipmentsService');
 var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
+var partnerUtil = require('../app/utils/partnerUtil');
 var consts = require('../app/consts/consts');
 var EntityType = require('../app/consts/consts').EntityType;
 var dataApi = require('../app/utils/dataApi');
@@ -235,10 +236,40 @@ exports.learnAndUpgradeSkill = function(req, res) {
         , loginName = session.loginName
         , type = msg.type;
 
-    var playerId = session.playerId;
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
+    var data = {};
+    if(isSelf) {
+        if(playerId != session.playerId) {
+            data = {
+                code: Code.ARGUMENT_EXCEPTION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+    }
+
     var characterId = utils.getRealCharacterId(playerId);
 
     var skillId = msg.skillId;
+    if(utils.empty(skillId)) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
 
     var data = {};
 
@@ -250,7 +281,22 @@ exports.learnAndUpgradeSkill = function(req, res) {
         return;
     }
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var currentSkills = player.currentSkills;
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var currentSkills = character.currentSkills;
         if(typeof currentSkills[type] != "undefined") {
             if(currentSkills[type].skillId != 0 && currentSkills[type].skillId != skillId) {
                 data = {
@@ -260,7 +306,41 @@ exports.learnAndUpgradeSkill = function(req, res) {
                 return;
             }
         }
-        player.learnAndUpgradeSkill(type, skillId, function(err, result) {
+
+        var skill = dataApi.skillsV2.findById(skillId);
+        if(utils.empty(skill)) {
+            data = {
+                code: Code.SKILL.NO_SKILL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        var upgradeSkillRequired = skill.upgradeSkillRequired;//D10030113|1
+        var status = character.checkUpgradeSkillRequired(player, type, upgradeSkillRequired);
+        if(status == 0) {
+            data = {
+                code: Code.SKILL.LACK_UPGRADEMATERIAL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        //packageInfo
+        var packageInfo = status.packageInfo;
+        var packageIndex = [];
+        var item;
+        for(var i = 0 ; i < packageInfo.length ; i++) {
+            for(var j = 0 ; j < packageInfo[i].length ; j++) {
+                item = player.packageEntity.removeItem(packageInfo[i][j].index, packageInfo[i][j].itemNum);
+                packageIndex.push({
+                    index: packageInfo[i][j].index,
+                    itemId: item.itemId,
+                    itemNum: item.itemNum
+                });
+            }
+        }
+        var money = status.money;
+        player.money = player.money - money;
+        character.learnAndUpgradeSkill(player, type, skillId, status, function(err, result) {
             if(err) {
                 data = {
                     code:Code.SKILL.NEED_REQUIREMENT
@@ -285,7 +365,9 @@ exports.learnAndUpgradeSkill = function(req, res) {
                 data = {
                     code: Code.OK,
                     skillId: skillId,
-                    level: result
+                    level: result,
+                    packageIndex: packageIndex,
+                    money: money
                 };
                 utils.send(msg, res, data);
             });
@@ -354,7 +436,29 @@ exports.forgetSkill = function(req, res) {
         , loginName = session.loginName
         , type = msg.type;
 
-    var playerId = session.playerId;
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
+    var data = {};
+    if(isSelf) {
+        if(playerId != session.playerId) {
+            data = {
+                code: Code.ARGUMENT_EXCEPTION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+    }
     var characterId = utils.getRealCharacterId(playerId);
 
     var skillId = msg.skillId;
@@ -369,7 +473,22 @@ exports.forgetSkill = function(req, res) {
         return;
     }
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var currentSkills = player.currentSkills;
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var currentSkills = character.currentSkills;
         if(typeof currentSkills[type] == "undefined") {
             data = {
                 code: Code.SKILL.NO_SKILL
@@ -386,7 +505,38 @@ exports.forgetSkill = function(req, res) {
                 return;
             }
         }
-        player.forgeSkill(type, skillId, function(err, result) {
+        var skill = dataApi.skillsV2.findById(skillId);
+        if(utils.empty(skill)) {
+            data = {
+                code: Code.SKILL.NO_SKILL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        var forgetSkillRequired = skill.forgetSkillRequired;//D10030113|1
+        var status = character.checkForgetSkillRequired(player, type, forgetSkillRequired);
+        if(status == 0) {
+            data = {
+                code: Code.SKILL.LACK_UPGRADEMATERIAL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        //packageInfo
+        var packageInfo = status.packageInfo;
+        var packageIndex = [];
+        var item;
+        for(var i = 0 ; i < packageInfo.length ; i++) {
+            for(var j = 0 ; j < packageInfo[i].length ; j++) {
+                item = player.packageEntity.removeItem(packageInfo[i][j].index, packageInfo[i][j].itemNum);
+                packageIndex.push({
+                    index: packageInfo[i][j].index,
+                    itemId: item.itemId,
+                    itemNum: item.itemNum
+                });
+            }
+        }
+        character.forgeSkill(player, type, skillId, function(err, result) {
             if(err) {
                 data = {
                     code:Code.SKILL.NEED_REQUIREMENT
@@ -411,7 +561,8 @@ exports.forgetSkill = function(req, res) {
                 data = {
                     code: Code.OK,
                     skillId: 0,
-                    level: 0
+                    level: 0,
+                    packageIndex: packageIndex
                 };
                 utils.send(msg, res, data);
             });

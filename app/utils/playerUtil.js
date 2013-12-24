@@ -18,6 +18,7 @@ var taskDao = require('../dao/taskDao');
 var packageDao = require('../dao/packageDao');
 var aptitudeService = require('../services/character/aptitudeService');
 var ghostService = require('../services/character/ghostService');
+var skillService = require('../services/skillService');
 var Tasks = require('../domain/tasks');
 
 var playerUtil = module.exports;
@@ -520,11 +521,13 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     });
     var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId, character);
     var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
+    var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
     character.aptitudeEntity = aptitude;
     character.ghostEntity = ghost;
+    character.skillsEntity = skills;
 };
 
 /**
@@ -542,6 +545,8 @@ playerUtil.createPKEntity = function(player, serverId, registerType, loginName, 
     player.aptitudeEntity = aptitude;
     var ghost = ghostService.createNewGhost(player.ghost, serverId, registerType, loginName, characterId, player);
     player.ghostEntity = ghost;
+    var skills = skillService.createNewSkills(player.currentSkills, serverId, registerType, loginName, characterId, player);
+    player.skillsEntity = skills;
 };
 
 /**

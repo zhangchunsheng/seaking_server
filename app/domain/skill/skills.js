@@ -66,6 +66,11 @@ Skills.prototype.setSkills = function(opts) {
     this.passiveSkills = opts.passiveSkills || [];
 }
 
+Skills.prototype.setSkillsV2 = function(opts) {
+    this.currentSkills = opts.currentSkills || {};
+    this.allSkills = opts.allSkills || [];
+}
+
 /**
  * 初始化技能
  * @param cId
@@ -104,7 +109,6 @@ Skills.prototype.initSkills = function(cId) {
             });
         }
     }
-    console.log(this);
 }
 /**
  * 初始化技能
