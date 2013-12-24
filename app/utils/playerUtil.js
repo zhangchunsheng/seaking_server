@@ -522,6 +522,7 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId, character);
     var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
     var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
+    console.log(skills);
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};

@@ -119,7 +119,6 @@ Skills.prototype.initSkillsV2 = function(cId) {
     this.initAllSkills(cId);
 }
 
-
 /**
  * 初始化当前技能
  * @param cId
