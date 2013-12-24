@@ -1353,7 +1353,6 @@ Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkill
         itemNum: itemNum
     }];
     flag = player.packageEntity.checkMaterial(materials);
-    console.log(materials);
     if(flag.length != materials.length) {
         return 0;
     }
