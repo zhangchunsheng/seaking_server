@@ -128,7 +128,7 @@ Skills.prototype.initCurrentSkills = function(dataType) {
         dataType = "json";
     this.currentSkills = {};
     this.currentSkills[1] = {
-        skillId: "101101",
+        skillId: "SK101101",
         level: 1
     };
     this.currentSkills[2] = {
