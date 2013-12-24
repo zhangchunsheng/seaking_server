@@ -1175,10 +1175,16 @@ Player.prototype.forgeSkill = function(player, type, skillId, callback) {
     }
 
     var array = [];
-    var characterId = utils.getRealCharacterId(this.id);
-    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+        array.push(["hset", key, "allSkills", JSON.stringify(allSkills)]);
+    }
     array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
-    array.push(["hset", key, "allSkills", JSON.stringify(allSkills)]);
     userDao.update(array, function(err, repy) {
         utils.invokeCallback(callback, null, 0);
     });
@@ -1193,8 +1199,14 @@ Player.prototype.learnSkillV2 = function(player, type, skillId, required, callba
     };
 
     var array = [];
-    var characterId = utils.getRealCharacterId(this.id);
-    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    }
     array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
     userDao.update(array, function(err, repy) {
         utils.invokeCallback(callback, null, level);
@@ -1246,8 +1258,14 @@ Player.prototype.upgradeSkillV2 = function(player, type, skillId, required, call
     currentSkills[type].level++;
 
     var array = [];
-    var characterId = utils.getRealCharacterId(this.id);
-    var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    }
     array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
     userDao.update(array, function(err, repy) {
         utils.invokeCallback(callback, null, currentSkills[type].level);
