@@ -62,7 +62,7 @@ function getBuffCategory(buffType) {
 function getSkillBuff(buffType, skill, buffData) {
     var effectId = "XG" + skill.skillId;
     var buff = new BuffV2({
-        buffId: skill.skillId,
+        buffId: skill.skillId.replace("SK", ""),
         useEffectId: effectId,
         type: buffType,
         skillId: skill.skillId,
@@ -79,7 +79,7 @@ function getSkillBuff(buffType, skill, buffData) {
 function getTeamSkillBuff(buffType, skill, buffData) {
     var effectId = "XG" + skill.skillId;
     var buff = new BuffV2({
-        buffId: skill.skillId,
+        buffId: skill.skillId.replace("SK", ""),
         useEffectId: effectId,
         type: buffType,
         skillId: skill.skillId,

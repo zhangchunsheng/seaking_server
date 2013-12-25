@@ -52,3 +52,13 @@ skillService.initAllSkills = function(array, serverId, registerType, loginName, 
 skillService.getNextSkill = function(skill) {
 
 }
+
+skillService.createNewSkills = function(skillInfo, serverId, registerType, loginName, characterId, character) {
+    skillInfo.serverId = serverId;
+    skillInfo.registerType = registerType;
+    skillInfo.loginName = loginName;
+    skillInfo.characterId = characterId;
+    skillInfo.allSkills = character.allSkills;
+    var skills = new Skills(skillInfo);
+    return skills;
+}

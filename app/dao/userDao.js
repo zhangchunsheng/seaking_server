@@ -379,7 +379,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         cId: cId,
                         characterId: characterId,
                         nickname: nickname,
-                        level: level
+                        level: character.level
                     }
                     ucenter.addPlayer(data);
 

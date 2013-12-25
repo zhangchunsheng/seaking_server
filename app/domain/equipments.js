@@ -279,6 +279,213 @@ Equipments.prototype.checkInlayCell = function(type, cellId) {
     }
 }
 
+/**
+ * checkInlayCells
+ * @param type
+ * @param newDiamonds
+ * @returns {boolean}
+ */
+Equipments.prototype.checkInlayCells = function(type, newDiamonds) {
+    var inlay = this[type].inlay;
+    var diamonds = inlay.diamonds;
+    var flag = false;
+    for(var i in diamonds) {
+        if(typeof newDiamonds[i] == "undefined") {
+            return false;
+        }
+    }
+    for(var i in newDiamonds) {
+        if(typeof diamonds[i] == "undefined") {
+            return false;
+        }
+    }
+    flag = true;
+    return flag;
+}
+
+/**
+ * 获得需要改变的宝石信息
+ * @param type
+ * @param newDiamonds
+ */
+Equipments.prototype.getNeedChangedDiamonds = function(type, newDiamonds) {
+    var diamonds = this[type].inlay.diamonds;//已有宝石
+    var needChangedDiamonds = [];//消耗背包宝石
+    var needPutIntoPackageDiamonds = [];//放入背包宝石
+    var diamondsArray = [];
+    var newDiamondsArray = [];
+    var flag;
+    var index;
+    for(var i in diamonds) {
+        index = -1;
+        for(var j = 0 ; j < diamondsArray.length ; j++) {
+            if(diamonds[i] == diamondsArray[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            diamondsArray[index].itemNum++;
+        } else {
+            diamondsArray.push({
+                diamondId: diamonds[i],
+                itemNum: 1
+            });
+        }
+    }
+    for(var i in newDiamonds) {
+        index = -1;
+        for(var j = 0 ; j < newDiamondsArray.length ; j++) {
+            if(newDiamonds[i] == newDiamondsArray[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            newDiamondsArray[index].itemNum++;
+        } else {
+            newDiamondsArray.push({
+                diamondId: newDiamonds[i],
+                itemNum: 1
+            });
+        }
+    }
+    var theSameDiamonds = [];
+    for(var i = 0 ; i < diamondsArray.length ; i++) {
+        for(var j = 0 ; j < newDiamondsArray.length ; j++) {
+            if(diamondsArray[i].diamondId == newDiamondsArray[j].diamondId) {
+                if(diamondsArray[i].diamondId != 0) {
+                    if(diamondsArray[i].itemNum >= newDiamondsArray[j].itemNum) {
+                        theSameDiamonds.push(newDiamondsArray[j]);
+                    } else {
+                        theSameDiamonds.push(diamondsArray[i]);
+                    }
+                }
+            }
+        }
+    }
+    var _needChangedDiamonds = [];
+    var _needPutIntoPackageDiamonds = [];
+    var diamondId;
+    var itemNum;
+    for(var i = 0 ; i < newDiamondsArray.length ; i++) {
+        if(newDiamondsArray[i].diamondId == 0)
+            continue;
+        index = -1;
+        for(var j = 0 ; j < theSameDiamonds.length ; j++) {
+            if(newDiamondsArray[i].diamondId == theSameDiamonds[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            itemNum = newDiamondsArray[i].itemNum - theSameDiamonds[index].itemNum;
+            if(itemNum > 0) {
+                needChangedDiamonds.push({
+                    diamondId: newDiamondsArray[i].diamondId,
+                    itemNum: itemNum
+                });
+            }
+        } else {
+            needChangedDiamonds.push({
+                diamondId: newDiamondsArray[i].diamondId,
+                itemNum: newDiamondsArray[i].itemNum
+            });
+        }
+    }
+    for(var i = 0 ; i < diamondsArray.length ; i++) {
+        if(diamondsArray[i].diamondId == 0)
+            continue;
+        index = -1;
+        for(var j = 0 ; j < theSameDiamonds.length ; j++) {
+            if(diamondsArray[i].diamondId == theSameDiamonds[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            itemNum = diamondsArray[i].itemNum - theSameDiamonds[index].itemNum;
+            if(itemNum > 0) {
+                needPutIntoPackageDiamonds.push({
+                    diamondId: diamondsArray[i].diamondId,
+                    itemNum: itemNum
+                });
+            }
+        } else {
+            needPutIntoPackageDiamonds.push({
+                diamondId: diamondsArray[i].diamondId,
+                itemNum: diamondsArray[i].itemNum
+            });
+        }
+    }
+    for(var i = 0 ; i < needChangedDiamonds.length ; i++) {
+        diamondId = needChangedDiamonds[i].diamondId;
+        itemNum = needChangedDiamonds[i].itemNum;
+        index = -1;
+        for(var j = 0 ; j < _needChangedDiamonds.length ; j++) {
+            if(diamondId == _needChangedDiamonds[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            _needChangedDiamonds[index].itemNum += parseInt(itemNum);
+        } else {
+            _needChangedDiamonds.push({
+                itemId: diamondId,
+                itemNum: parseInt(itemNum)
+            });
+        }
+    }
+    for(var i = 0 ; i < needPutIntoPackageDiamonds.length ; i++) {
+        diamondId = needPutIntoPackageDiamonds[i].diamondId;
+        itemNum = needPutIntoPackageDiamonds[i].itemNum;
+        index = -1;
+        for(var j = 0 ; j < _needPutIntoPackageDiamonds.length ; j++) {
+            if(diamondId == _needPutIntoPackageDiamonds[j].diamondId) {
+                index = j;
+                break;
+            }
+        }
+        if(index >= 0) {
+            _needPutIntoPackageDiamonds[index].itemNum += parseInt(itemNum);
+        } else {
+            _needPutIntoPackageDiamonds.push({
+                itemId: diamondId,
+                itemNum: parseInt(itemNum)
+            });
+        }
+    }
+    return {
+        needChangedDiamonds: _needChangedDiamonds,
+        needPutIntoPackageDiamonds: _needPutIntoPackageDiamonds
+    };
+}
+
+/**
+ * 获得需要放入背包的宝石信息
+ * @param type
+ * @param newDiamonds
+ */
+Equipments.prototype.getNeedPutIntoPackageDiamonds = function(type, newDiamonds) {
+    this.getNeedChangedDiamonds(type, newDiamonds);
+}
+
+/**
+ * 更换宝石
+ * @param type
+ * @param newDiamonds
+ * @returns {boolean}
+ */
+Equipments.prototype.changeEquipDiamonds = function(type, newDiamonds) {
+    var diamonds = this[type].inlay.diamonds;//已有宝石
+    for(var i in diamonds) {
+        if(diamonds[i] != newDiamonds[i]) {
+            diamonds[i] = newDiamonds[i];
+        }
+    }
+}
+
 Equipments.prototype.getDiamond = function(type, cellId) {
     var inlay = this[type].inlay;
     var diamonds = inlay.diamonds;

@@ -32,11 +32,12 @@ ghostService.upgrade = function(array, mainPlayer, player, cb) {
     });
 }
 
-ghostService.createNewGhost = function(ghostInfo, serverId, registerType, loginName, characterId) {
+ghostService.createNewGhost = function(ghostInfo, serverId, registerType, loginName, characterId, character) {
     ghostInfo.serverId = serverId;
     ghostInfo.registerType = registerType;
     ghostInfo.loginName = loginName;
     ghostInfo.characterId = characterId;
+    ghostInfo.cId = character.cId;
     var ghost = new Ghost(ghostInfo);
     return ghost;
 }

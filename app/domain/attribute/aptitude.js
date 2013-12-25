@@ -24,6 +24,7 @@ var Aptitude = function(opts) {
     this.serverId = opts.serverId;
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
+    this.cId = opts.cId;
 
     this.aptitudeInfo = {};
     for(var i = 1 ; i <= 9 ; i++) {
@@ -109,11 +110,7 @@ util.inherits(Aptitude, Persistent);
 module.exports = Aptitude;
 
 Aptitude.prototype.initAptitude = function(opts) {
-    if(this.playerId.indexOf("P") >= 0) {
-        var cId = utils.getPartnerCId(this.playerId);
-    } else {
-        var cId = utils.getRealCharacterId(this.playerId);
-    }
+    var cId = this.cId;
     var heroId = utils.getCategoryHeroId(cId);
     this.heroId = heroId;
     this.aptitudeData = dataApi.aptitudes.findById(heroId);

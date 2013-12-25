@@ -64,7 +64,7 @@ var Player = function(opts) {
     this.sid = opts.serverId;
     this.regionId = opts.serverId;
 
-    this.money = parseInt(opts.money);
+    this.money = parseInt(opts.money || 0);
     this.gameCurrency = parseInt(opts.gameCurrency);
 
     this.curTasksEntity = opts.curTasksEntity;
@@ -72,6 +72,7 @@ var Player = function(opts) {
     this.packageEntity = opts.packageEntity;
     this.aptitudeEntity = opts.aptitudeEntity;
     this.ghostEntity = opts.ghostEntity;
+    this.skillsEntity = opts.skillsEntity;
 
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
@@ -925,13 +926,31 @@ Player.prototype.inlay = function(pkgType, item, pIndex, player, type, cellId) {
         index = player.packageEntity.addItem(player, pkgType, {
             itemId: curDiamond,
             itemNum: 1
-        }, pIndex).index;
+        }, pIndex);
+        if(index == null) {
+            index = [];
+        } else {
+            index = index.index;
+        }
     } else {
         //player.packageEntity.removeItem(pkgType, pIndex);
         player.packageEntity.removeItem(pIndex, 1);
     }
     //this.updateAttribute();
     return index;
+}
+
+/**
+ * 镶嵌
+ * @param pkgType
+ * @param player
+ * @param type
+ * @param packageDiamonds 包裹中物品
+ * @param needPutIntoPackageDiamonds 放入包括物品
+ * @param newDiamonds
+ */
+Player.prototype.changeEquipDiamonds = function(pkgType, player, type, packageDiamonds, needPutIntoPackageDiamonds, newDiamonds) {
+    this.equipmentsEntity.changeEquipDiamonds(type, newDiamonds);
 }
 
 Player.prototype.buyItem = function(type, item, costMoney) {
@@ -1125,6 +1144,75 @@ Player.prototype.learnSkill = function(skillId, callback) {
     });
 };
 
+Player.prototype.learnAndUpgradeSkill = function(player, type, skillId, required, callback) {
+    var currentSkills = this.currentSkills;
+    if(typeof currentSkills[type] == "undefined" || currentSkills[type].skillId == 0) {
+        this.learnSkillV2(player, type, skillId, required, callback);
+    } else {
+        this.upgradeSkillV2(player, type, skillId, required, callback);
+    }
+};
+
+Player.prototype.forgeSkill = function(player, type, skillId, callback) {
+    var currentSkills = this.currentSkills;
+    currentSkills[type] = {
+        skillId: 0,
+        level: 0
+    };
+    var allSkills = this.allSkills;
+    var flag = false;
+    for(var i = 0 ; i < allSkills.length ; i++) {
+        if(allSkills[i].skillId == skillId) {
+            flag = true;
+            break;
+        }
+    }
+    if(!flag) {
+        allSkills.push({
+            skillId: skillId,
+            level: 1
+        });
+    }
+
+    var array = [];
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+        array.push(["hset", key, "allSkills", JSON.stringify(allSkills)]);
+    }
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, 0);
+    });
+};
+
+Player.prototype.learnSkillV2 = function(player, type, skillId, required, callback) {
+    var currentSkills = this.currentSkills;
+    var level = 1;
+    currentSkills[type] = {
+        skillId: skillId,
+        level: level
+    };
+
+    var array = [];
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    }
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, level);
+    });
+};
+
 /**
  * Upgrade the existing skill.
  *
@@ -1162,6 +1250,25 @@ Player.prototype.upgradeSkill = function(skillId, callback) {
     array.push(["hset", key, type, JSON.stringify(skills)]);
     userDao.update(array, function(err, repy) {
         utils.invokeCallback(callback, null, nextSkillId);
+    });
+};
+
+Player.prototype.upgradeSkillV2 = function(player, type, skillId, required, callback) {
+    var currentSkills = this.currentSkills;
+    currentSkills[type].level++;
+
+    var array = [];
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    }
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, currentSkills[type].level);
     });
 };
 
@@ -1240,6 +1347,72 @@ Player.prototype.checkRequirement = function(skillData) {
     if(count == requirement.length)
         status = 1;
     return status;
+}
+
+/**
+ * materials,player level limit,money
+ * @param upgradeSkillRequired [{"materials":"D10030113|1","level":"1","money":"1000"},{"materials":"D10030114|1","level":"10","money":"10000"},{"materials":"D10030108|5","level":"20","money":"20000"},{"materials":"D10030106|10","level":"30","money":"50000"}],[{"materials":"D10030112|2"}]
+ */
+Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkillRequired) {
+    var required = {};
+    var skillLevel = this.currentSkills[type].level;//level 0 0-1
+    var requirement = upgradeSkillRequired[skillLevel];
+    var materials = requirement.materials;
+    var level = requirement.level;
+    var money = requirement.money;
+
+    // check materials
+    var array = materials.split("|");
+    var itemId = array[0];
+    var itemNum = array[1];
+    var flag = [];
+    materials = [{
+        itemId: itemId,
+        itemNum: itemNum
+    }];
+    flag = player.packageEntity.checkMaterial(materials);
+    if(flag.length != materials.length) {
+        return 0;
+    }
+    required.packageInfo = flag;
+    // check level
+    if(level > this.level) {
+        return 0;
+    }
+    required.level = level;
+    // check money
+    if(money > player.money) {
+        return 0;
+    }
+    required.money = money;
+    return required;
+}
+
+Player.prototype.checkForgetSkillRequired = function(player, type, forgetSkillRequired) {
+    var required = {};
+    var requirement = forgetSkillRequired;
+    var materials = [];
+    var array;
+    var itemId;
+    var itemNum;
+    var flag = [];
+    for(var i = 0 ; i < requirement.length ; i++) {
+        array = requirement[i].materials.split("|");
+        itemId = array[0];
+        itemNum = array[1];
+        materials.push({
+            itemId: itemId,
+            itemNum: itemNum
+        });
+    }
+
+    // check materials
+    flag = player.packageEntity.checkMaterial(materials);
+    if(flag.length != materials.length) {
+        return 0;
+    }
+    required.packageInfo = flag;
+    return required;
 }
 
 // Emit the event 'save'.

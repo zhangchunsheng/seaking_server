@@ -66,6 +66,11 @@ Skills.prototype.setSkills = function(opts) {
     this.passiveSkills = opts.passiveSkills || [];
 }
 
+Skills.prototype.setSkillsV2 = function(opts) {
+    this.currentSkills = opts.currentSkills || {};
+    this.allSkills = opts.allSkills || [];
+}
+
 /**
  * 初始化技能
  * @param cId
@@ -104,7 +109,6 @@ Skills.prototype.initSkills = function(cId) {
             });
         }
     }
-    console.log(this);
 }
 /**
  * 初始化技能
@@ -115,7 +119,6 @@ Skills.prototype.initSkillsV2 = function(cId) {
     this.initAllSkills(cId);
 }
 
-
 /**
  * 初始化当前技能
  * @param cId
@@ -125,8 +128,28 @@ Skills.prototype.initCurrentSkills = function(dataType) {
         dataType = "json";
     this.currentSkills = {};
     this.currentSkills[1] = {
-        skillId: 101101,
+        skillId: "SK101101",
         level: 1
+    };
+    this.currentSkills[2] = {
+        skillId: 0,
+        level: 0
+    };
+    this.currentSkills[3] = {
+        skillId: 0,
+        level: 0
+    };
+    this.currentSkills[4] = {
+        skillId: 0,
+        level: 0
+    };
+    this.currentSkills[5] = {
+        skillId: 0,
+        level: 0
+    };
+    this.currentSkills[6] = {
+        skillId: 0,
+        level: 0
     };
     var data = this.currentSkills
     if(dataType == "string") {

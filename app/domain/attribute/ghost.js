@@ -25,6 +25,7 @@ var Ghost = function(opts) {
     this.serverId = opts.serverId;
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
+    this.cId = opts.cId;
 
     this.level = parseInt(opts.level) || 0;
     this.number = parseInt(opts.number) || 0;
@@ -97,11 +98,7 @@ util.inherits(Ghost, Persistent);
 module.exports = Ghost;
 
 Ghost.prototype.initGhost = function(opts) {
-    if(this.playerId.indexOf("P") >= 0) {
-        var cId = utils.getPartnerCId(this.playerId);
-    } else {
-        var cId = utils.getRealCharacterId(this.playerId);
-    }
+    var cId = this.cId;
     var heroId = utils.getCategoryHeroId(cId);
     this.heroId = heroId;
     this.ghostData = ghosts[heroId];

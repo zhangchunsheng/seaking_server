@@ -73,6 +73,7 @@ module.exports = function (app) {
     app.get('/equip/forgeUpgrade', authRequired, equip.forgeUpgrade);
     app.get('/equip/inlay', authRequired, equip.inlay);
     app.get('/equip/unInlay', authRequired, equip.unInlay);
+    app.get('/equip/changeDiamond', authRequired, equip.changeDiamond);
 
     app.get('/formation/change', authRequired, formation.change);
 
@@ -129,12 +130,14 @@ module.exports = function (app) {
     app.get('/skill/useSkill', authRequired, skill.useSkill);
     app.get('/skill/forgetSkill', authRequired, skill.forgetSkill);
     app.get('/skill/getAllSkill', authRequired, skill.getAllSkill);
+    app.get('/skill/learnAndUpgradeSkill', authRequired, skill.learnAndUpgradeSkill);
 
     app.get('/partner/getPartner', authRequired, partner.getPartner);
     app.get('/partner/gotoStage', authRequired, partner.gotoStage);
     app.get('/partner/leaveTeam', authRequired, partner.leaveTeam);
 
     app.get('/aptitude/upgrade', authRequired, aptitude.upgrade);
+    app.get('/aptitude/checkFreeTime', authRequired, aptitude.checkFreeTime);
     app.get('/ghost/upgrade', authRequired, ghost.upgrade);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
