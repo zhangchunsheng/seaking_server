@@ -81,7 +81,6 @@ packageDao.createNewPackage = function(packageInfo, serverId, registerType, logi
     packageInfo.registerType = registerType;
     packageInfo.loginName = loginName;
     packageInfo.characterId = characterId;
-    packageInfo.character = character;
     var package = new Package(packageInfo);
     return package;
 };

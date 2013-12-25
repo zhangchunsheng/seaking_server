@@ -37,7 +37,7 @@ aptitudeService.createNewAptitude = function(aptitudeInfo, serverId, registerTyp
     aptitudeInfo.registerType = registerType;
     aptitudeInfo.loginName = loginName;
     aptitudeInfo.characterId = characterId;
-    aptitudeInfo.character = character;
+    aptitudeInfo.cId = character.cId;
     var aptitude = new Aptitude(aptitudeInfo);
     return aptitude;
 }

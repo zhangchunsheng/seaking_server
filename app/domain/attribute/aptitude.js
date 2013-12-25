@@ -24,7 +24,7 @@ var Aptitude = function(opts) {
     this.serverId = opts.serverId;
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
-    this.cId = opts.character.cId;
+    this.cId = opts.cId;
 
     this.aptitudeInfo = {};
     for(var i = 1 ; i <= 9 ; i++) {

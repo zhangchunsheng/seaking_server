@@ -37,7 +37,7 @@ ghostService.createNewGhost = function(ghostInfo, serverId, registerType, loginN
     ghostInfo.registerType = registerType;
     ghostInfo.loginName = loginName;
     ghostInfo.characterId = characterId;
-    ghostInfo.character = character;
+    ghostInfo.cId = character.cId;
     var ghost = new Ghost(ghostInfo);
     return ghost;
 }

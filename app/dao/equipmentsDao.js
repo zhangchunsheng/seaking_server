@@ -92,7 +92,6 @@ equipmentsDao.createNewEquipment = function(equipmentInfo, serverId, registerTyp
     equipmentInfo.registerType = registerType;
     equipmentInfo.loginName = loginName;
     equipmentInfo.characterId = characterId;
-    equipmentInfo.character = character;
     var equipments = new Equipments(equipmentInfo);
     return equipments;
 };

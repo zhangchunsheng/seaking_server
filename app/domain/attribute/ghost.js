@@ -25,7 +25,7 @@ var Ghost = function(opts) {
     this.serverId = opts.serverId;
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
-    this.cId = opts.character.cId;
+    this.cId = opts.cId;
 
     this.level = parseInt(opts.level) || 0;
     this.number = parseInt(opts.number) || 0;
