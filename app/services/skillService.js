@@ -42,7 +42,9 @@ skillService.initAllSkills = function(array, serverId, registerType, loginName, 
             level: 1
         });
     }
-    var value = JSON.stringify(allSkills);
+    var value = JSON.stringify({
+        allSkills: allSkills
+    });
     array.push(["hset", key, field, value]);
     redisService.setData(array, function(err, reply) {
         utils.invokeCallback(cb, err, allSkills);

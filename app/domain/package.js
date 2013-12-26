@@ -311,22 +311,23 @@ var arrayToJson = function(array) {
 }
 
 Package.prototype.addItem = function(player, type, item, rIndex) {
-    var itemInfo ;
+    var itemInfo = {};
     if(type.pileNum) {
         itemInfo = type;
-    }else{
-        switch(type) {
+    } else {
+        itemInfo.pileNum = 99;
+        /*switch(type) {
             case PackageType.ITEMS:
                 itemInfo = datasApi.items.get(item.itemId);
-            break;
+                break;
             case PackageType.EQUIPMENTS:
                 itemInfo = datasApi.equpments.get(item.itemId);
-            break;
+                break;
             case PackageType.WEAPONS:
                 itemInfo = datasApi.weapons.get(item.itemId);
-            break;
+                break;
         }
-        console.log("###itemInfo:",itemInfo);
+        console.log("###itemInfo:",itemInfo);*/
     }
     var changes = [];
     var _items = utils.clone(item);
@@ -344,7 +345,30 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         }
     }
     var items = this;
-    if(!itemInfo.pileNum || itemInfo.pileNum == 1 ) {
+    if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
+        var flag = false;
+        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+            if (!items.items[i]) {
+                flag = true;
+                items.items[i] = {
+                    itemId: item.itemId,
+                    itemNum: item.itemNum,
+                    level: item.level,
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
+                };
+                changes = [{
+                    index: i,
+                    item: items.items[i]
+                }];
+                break;
+            }
+        }
+        if(!flag)
+            return {
+                index: []
+            };
+    } else if(!itemInfo.pileNum || itemInfo.pileNum == 1) {
         var flag = false;
         for (var i = packageStart; i < items.itemCount + packageStart; i++) {
             if (!items.items[i]) {
@@ -372,9 +396,9 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < itemInfo.pileNum) {
                 _items.itemNum += this.items[i].itemNum;
                 var mitem = items.items[i];
-                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > itemInfo.pileNum ) {
-                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - itemInfo;
-                    mitem.itemNum = itemInfo;
+                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > itemInfo.pileNum) {
+                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - itemInfo.pileNum;
+                    mitem.itemNum = itemInfo.pileNum;
                     changes.push({
                         index: i,
                         item: mitem
