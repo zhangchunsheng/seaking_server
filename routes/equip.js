@@ -235,7 +235,8 @@ exports.unWearWeapon = function(req, res) {
             itemId: epid,
             itemNum: 1,
             level: level,
-            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel,
+            inlay: character.equipmentsEntity.get(type).inlay
         });
         if(result == null || result.index.length == 0) {
             data = {
