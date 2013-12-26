@@ -453,6 +453,9 @@ exports.userItem = function(req, res) {
         } else if(itemId.indexOf("W") >= 0){
             type = PackageType.WEAPONS;
             itemInfo = dataApi.weapons.findById(itemId);
+        } else if(itemId.indexOf("B") >= 0){
+            type = PackageType.DIAMOND;
+            itemInfo = dataApi.diamonds.findById(itemId);
         }
         if(player.level < itemInfo.needLevel) {
             data = {
