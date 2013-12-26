@@ -11,6 +11,7 @@ var Skills = require('../domain/skill/skills');
 var utils = require("./utils");
 var buffUtil = require("./buffUtil");
 var equipmentUtil = require("./equipmentUtil");
+var packageUtil = require("./packageUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
 var equipmentsDao = require('../dao/equipmentsDao');
@@ -27,7 +28,7 @@ playerUtil.initCharacter = function(opts) {
     var level = 1;
     var date = new Date();
 
-    var hero = dataApi.heros.findById(opts);
+    var hero = dataApi.heros.findById(opts.cId);
 
     var curTasks = {
         currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
@@ -37,9 +38,11 @@ playerUtil.initCharacter = function(opts) {
     };
 
     var skills = new Skills(opts);
-    skills.initSkills(opts.cId);
+    //skills.initSkills(opts.cId);
+    skills.initSkillsV2(opts.cId);
 
-    var package = packageUtil.initPackage(opts.cId);
+    //var package = packageUtil.initPackage(opts.cId);
+    var package = packageUtil.initPackageV2(opts.cId);
 
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
@@ -83,6 +86,8 @@ playerUtil.initCharacter = function(opts) {
             activeSkills: skills.activeSkills,
             passiveSkills: skills.passiveSkills
         },
+        currentSkills: skills.currentSkills,
+        allSkills: skills.allSkills,
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
         gift: [],
@@ -226,7 +231,7 @@ playerUtil.initCharacterV2 = function(opts) {
     var skills = new Skills(opts);
     skills.initSkillsV2(opts.cId);
 
-    var package = packageUtil.initPackage(opts.cId);
+    var package = packageUtil.initPackageV2(opts.cId);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,

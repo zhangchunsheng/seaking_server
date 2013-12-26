@@ -410,7 +410,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
 
                         var player = playerUtil.getPlayer(character);
                         //createEPTInfo(player, serverId, registerType, loginName, character.characterId);
-                        playerUtil.createEntity(character, serverId, registerType, loginName, characterId);
+                        playerUtil.createEntity(player, serverId, registerType, loginName, character.characterId);
                         redis.release(client);
                         utils.invokeCallback(cb, null, player);
                     });

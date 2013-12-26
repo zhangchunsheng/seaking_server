@@ -235,7 +235,8 @@ exports.unWearWeapon = function(req, res) {
             itemId: epid,
             itemNum: 1,
             level: level,
-            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel,
+            inlay: character.equipmentsEntity.get(type).inlay
         });
         if(result == null || result.index.length == 0) {
             data = {
@@ -509,7 +510,8 @@ exports.unEquip = function(req, res) {
             itemId: character.equipmentsEntity.get(type).epid,
             itemNum: 1,
             level: character.equipmentsEntity.get(type).level,
-            forgeLevel: character.equipmentsEntity.get(type).forgeLevel
+            forgeLevel: character.equipmentsEntity.get(type).forgeLevel,
+            inlay: character.equipmentsEntity.get(type).inlay
         });
         if(result == null || result.index.length == 0) {
             data = {
@@ -640,6 +642,14 @@ exports.upgrade = function(req, res) {
         // var equipment_levelup = dataApi.equipmentLevelup.findById(epId + level);
         // var equipment_levelup = dataApi.equipmentLevelup.findById(nextEqId);
         var equipment_levelup = dataApi.equipments.findById(epId);
+
+        if(character.level < level) {
+            data = {
+                code: Code.EQUIPMENT.NO_UPGRADE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
 
         var result;
         if(typeof equipment_levelup.upgradeMaterial != "undefined"
