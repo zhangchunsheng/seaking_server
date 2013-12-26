@@ -40,3 +40,14 @@ packageUtil.initPackage = function(heroId) {
     };
     return package;
 }
+
+packageUtil.initPackageV2 = function(heroId) {
+    var package = {
+        itemCount: 12,
+        items: {"1":{
+            "itemId":"D10010101",
+            "itemNum":1
+        }}
+    };
+    return package;
+}
