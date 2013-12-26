@@ -5,7 +5,7 @@ var Persistent = require('./persistent');
 var PackageType = require('../consts/consts').PackageType;
 var consts = require('../consts/consts');
 var utils = require("../utils/utils");
-
+var dataApi = require("../utils/dataApi");
 var packageStart = 0;
 var Package = function(opts){
 	Persistent.call(this, opts);
@@ -227,7 +227,8 @@ Package.prototype.arrange = function(callback) {
         , Es = []
         , Ws = []
         , Ds = []
-        , Ts = [];
+        , Ts = []
+        , Bs = [];
     for(var i = packageStart,l = this.itemCount + packageStart; i < l ;i++) {
         if(items[i]){
             var item = items[i];
@@ -248,45 +249,83 @@ Package.prototype.arrange = function(callback) {
                 case "T":
                     Ts.push(item);
                     break;
+                case "B":
+                    Bs.push(item);
             }
         }
     }
-    var sortFun = function(a, b) {
+    var sortFun1 = function(a, b) {
         if(a.itemId > b.itemId) {
             return 1;
         } else if(a.itemId < b.itemId) {
             return -1;
         } else {
-            if(a.level == b.level) {
-                if((a.itemId.substring(0, 1) == "C" || a.itemId.substring(0, 1) == "D")) {
-                    var all =  a.itemNum + b.itemNum;
-                    if(all > 99) {
-                        a.itemNum = 99;
-                        b.itemNum = all - 99;
-                    } else {
-                        a.itemNum = all;
-                        b.itemNum = 0;
+            if(a.level) {
+                if(a.level == b.level) {
+                    if(a.itemNum) {
+                        if(a.itemNum != 0 && b.itemNum != 0) {
+                            var all =  a.itemNum + b.itemNum;
+                            var itemInfo = dataApi.items.findById(a.itemId);
+                            if(all > itemInfo.pileNum) {
+                                a.itemNum = itemInfo.pileNum;
+                                b.itemNum = all - itemInfo.pileNum;
+                            } else {
+                                a.itemNum = all;
+                                b.itemNum = 0;
+                            }
+                            return 0;
+                        } else if(a.itemNum == 0){
+                            return -1;
+                        }else if(b.itemNum == 0) {
+                            return 1;
+                        }                       
                     }
-                    return 0;
+                    
+                
                 } else {
-                    return 0;
+                    if(a.level > b.level) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
                 }
-            } else {
-                if(a.level > b.level) {
-                    return 1;
-                } else {
-                    return -1;
+            }else {
+                if(a.itemNum ) {
+
                 }
             }
+            
         }
     };
-    Cs.sort(sortFun);
-    Es.sort(sortFun);
-    Ws.sort(sortFun);
-    Ds.sort(sortFun);
-    Ts.sort(sortFun);
+    var sortFun2 = function(a, b) {
+        if(a.itemId) {
+            if( a.itemId > b.itemId) {
+                return 1;
+            } else if( a.itemId < b.itemId) {
+                return -1;
+            } else if( a.itemId == b.itemId){
+                if(a.level) {
+                    if(a.level >= b.level) {
+                        return 1;                        
+                    }else if(a.level < b.level) {
+                        return -1;
+                    }
+                }
+                return 0;
+            }
+        }else {
+            console.log(a);
+            return -1;
+        }
+    }
+    Cs.sort(sortFun1);
+    Es.sort(sortFun2);
+    Ws.sort(sortFun2);
+    Ds.sort(sortFun1);
+    Ts.sort(sortFun1);
+    Bs.sort(sortFun2);
     var all = [];
-    all = all.concat(Cs, Es, Ws, Ds, Ts);
+    all = all.concat(Cs, Es, Ws, Ds, Ts, Bs);
 
     var json = arrayToJson(all);
     console.log(json);
@@ -317,13 +356,13 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
     }else{
         switch(type) {
             case PackageType.ITEMS:
-                itemInfo = datasApi.items.get(item.itemId);
+                itemInfo = dataApi.items.findById(item.itemId);
             break;
             case PackageType.EQUIPMENTS:
-                itemInfo = datasApi.equpments.get(item.itemId);
+                itemInfo = dataApi.equpments.findById(item.itemId);
             break;
             case PackageType.WEAPONS:
-                itemInfo = datasApi.weapons.get(item.itemId);
+                itemInfo = dataApi.weapons.findById(item.itemId);
             break;
         }
         console.log("###itemInfo:",itemInfo);

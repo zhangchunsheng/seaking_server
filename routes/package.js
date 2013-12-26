@@ -204,7 +204,6 @@ exports.sellItem = function(req, res) {
             type = PackageType.WEAPONS;
             itemInfo = dataApi.weapons.findById(itemId);
         }
-        console.log("itemInfo",itemInfo);
         if(!itemInfo) {
             data = {
                 code:Code.PACKAGE.NOT_EXIST_ITEM
