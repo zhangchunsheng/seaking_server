@@ -101,14 +101,14 @@ exports.buyItem = function(req, res) {
         } else if(itemId.indexOf("E") >= 0) {
             type = PackageType.EQUIPMENTS;
             itemInfo = dataApi.equipment.findById(itemId);
-        } else if(itemId.indexOf("W") >= 0){
+        } else if(itemId.indexOf("W") >= 0) {
             type = PackageType.WEAPONS;
             itemInfo = dataApi.weapons.findById(itemId);
-        } else if(itemId.indexOf("B") >= 0){
+        } else if(itemId.indexOf("B") >= 0) {
             type = PackageType.DIAMOND;
             itemInfo = dataApi.diamonds.findById(itemId);
         }
-        console.log("itemInfo:",itemInfo);
+        console.log("itemInfo:", itemInfo);
         if(typeof itemInfo == "undefined" || itemInfo == null || itemInfo == {}) {
             data = {
                 code: Code.SHOP.NOT_EXIST_ITEM
@@ -131,7 +131,7 @@ exports.buyItem = function(req, res) {
         }
         var price = itemInfo.price;
         var costMoney = price * itemNum;
-        console.log("Price:",price);
+        console.log("Price:", price);
         if(typeof price == "undefined") {
             data = {
                 code: Code.SHOP.NOT_EXIST_PRICE

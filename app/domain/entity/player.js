@@ -965,6 +965,7 @@ Player.prototype.buyItem = function(type, item, costMoney) {
         this.money = this.money - costMoney;
         this.save();
     }
+    console.log(this.money);
     return {
         money: this.money,
         packageChange: packageChange
