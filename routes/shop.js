@@ -33,8 +33,10 @@ exports.buyItem = function(req, res) {
 
     var index = msg.index;
     var npcId = msg.npcId;
-    if(!index || !npcId){
-        return utils.send(msg, res, {code: Code.ARGUMENT_EXCEPTION});
+    if(!index || !npcId) {
+        return utils.send(msg, res, {
+            code: Code.ARGUMENT_EXCEPTION
+        });
     }
     var uid = session.uid
         , serverId = session.serverId
@@ -117,12 +119,19 @@ exports.buyItem = function(req, res) {
         var price = itemInfo.price;
         var costMoney = price * itemNum;
         console.log("Price:",price);
+        if(typeof price == "undefined") {
+            data = {
+                code: Code.SHOP.NOT_EXIST_PRICE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         if(player.money < costMoney) {
             data = {
                 code: Code.SHOP.NOT_ENOUGHT_MONEY
             };
             utils.send(msg, res, data);
-            return ;
+            return;
         }
         
         var item = {
