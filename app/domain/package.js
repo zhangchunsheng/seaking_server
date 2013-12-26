@@ -472,6 +472,65 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         return r;
 }
 
+/**
+ * 添加武器装备
+ * @param player
+ * @param type
+ * @param item
+ * @param rIndex
+ * @returns {*}
+ */
+Package.prototype.addEquipment = function(player, type, item, rIndex) {
+    var changes = [];
+    var _items = utils.clone(item);
+    if (!item || !item.itemId || !item.itemId.match(/W|E/)) {
+        //返回{}并没有返回null 容易判断
+        return null;
+    }
+    if(rIndex) {
+        if(this.items[rIndex]) {
+            var _item =  this.items[rIndex];
+            _item.itemNum = _item.itemNum - 1;
+            if(_item.itemNum <= 0) {
+                delete this.items[rIndex];
+            }
+        }
+    }
+    var items = this;
+    if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
+        var flag = false;
+        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+            if (!items.items[i]) {
+                flag = true;
+                items.items[i] = {
+                    itemId: item.itemId,
+                    itemNum: item.itemNum,
+                    level: item.level,
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
+                };
+                changes = [{
+                    index: i,
+                    item: items.items[i]
+                }];
+                break;
+            }
+        }
+        if(!flag)
+            return {
+                index: []
+            };
+    }
+    var task;
+    var r = {index: changes};
+    if(changes.length > 0) {
+        this.save();
+        task = player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+        r.task = task;
+    }
+    return r;
+}
+
 Package.prototype.strip = function() {
     var characterId = this.playerId.substr(this.playerId.indexOf("C") + 1);
     //this.updateId();
