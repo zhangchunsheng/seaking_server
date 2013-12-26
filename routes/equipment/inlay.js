@@ -16,6 +16,7 @@ var Code = require('../../shared/code');
 var utils = require('../../app/utils/utils');
 var consts = require('../../app/consts/consts');
 var EntityType = require('../../app/consts/consts').EntityType;
+var PackageType = require('../../app/consts/consts').PackageType;
 var dataApi = require('../../app/utils/dataApi');
 var area = require('../../app/domain/area/area');
 var world = require('../../app/domain/world');

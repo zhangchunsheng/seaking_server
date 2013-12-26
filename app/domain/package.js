@@ -215,6 +215,8 @@ Package.prototype.addItemWithNoType = function(player, item) {
         type = PackageType.WEAPONS;
     } else if(item.itemId.indexOf("E") >= 0) {
         type = PackageType.EQUIPMENTS;
+    } else if(item.itemId.indexOf("B") >= 0) {
+        type = PackageType.DIAMOND;
     } else {
         type = PackageType.ITEMS;
     }
@@ -315,7 +317,13 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
     if(type.pileNum) {
         itemInfo = type;
     } else {
-        itemInfo.pileNum = 99;
+        if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
+            itemInfo.pileNum = 1;
+        } else if(type == PackageType.DIAMOND) {
+            itemInfo.pileNum = 20;
+        }else {
+            itemInfo.pileNum = 99;
+        }
         /*switch(type) {
             case PackageType.ITEMS:
                 itemInfo = datasApi.items.get(item.itemId);
