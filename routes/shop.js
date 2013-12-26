@@ -32,6 +32,7 @@ exports.buyItem = function(req, res) {
     var session = req.session;
 
     var index = msg.index;
+    var _itemId = msg.itemId;
     var npcId = msg.npcId;
     if(!index || !npcId) {
         return utils.send(msg, res, {
@@ -75,7 +76,16 @@ exports.buyItem = function(req, res) {
         }
         var data = itemData.split("|");
         var itemId = data[0];
-        var itemNum = data[1]||1;
+        var itemNum = data[1] || 1;
+        if(typeof _itemId != "undefined") {
+            if(itemId != _itemId) {
+                data = {
+                    code: Code.ARGUMENT_EXCEPTION
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        }
         
 //      if(!) {
 //          next(null,{
