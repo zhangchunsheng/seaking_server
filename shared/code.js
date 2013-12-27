@@ -59,7 +59,8 @@ module.exports = {
         NOT_EXIST_ITEM: 1102,
         NOT_EXIST_NPCSHOP: 1103,
         NOT_ENOUGHT_GAMECURRENCY: 1104,
-        WRONG_MONEY_TYPE: 1105
+        WRONG_MONEY_TYPE: 1105,
+        NOT_EXIST_PRICE: 1106
     },
 
     FRIEND: {

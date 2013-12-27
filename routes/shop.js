@@ -32,9 +32,12 @@ exports.buyItem = function(req, res) {
     var session = req.session;
 
     var index = msg.index;
+    var _itemId = msg.itemId;
     var npcId = msg.npcId;
-    if(!index || !npcId){
-        return utils.send(msg, res, {code: Code.ARGUMENT_EXCEPTION});
+    if(!index || !npcId) {
+        return utils.send(msg, res, {
+            code: Code.ARGUMENT_EXCEPTION
+        });
     }
     var uid = session.uid
         , serverId = session.serverId
@@ -44,7 +47,6 @@ exports.buyItem = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
     // var currentScene = msg.currentScene;
-    
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var result = false;
@@ -73,7 +75,16 @@ exports.buyItem = function(req, res) {
         }
         var data = itemData.split("|");
         var itemId = data[0];
-        var itemNum = data[1]||1;
+        var itemNum = data[1] || 1;
+        if(typeof _itemId != "undefined") {
+            if(itemId != _itemId) {
+                data = {
+                    code: Code.ARGUMENT_EXCEPTION
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        }
         
 //      if(!) {
 //          next(null,{
@@ -89,12 +100,14 @@ exports.buyItem = function(req, res) {
         } else if(itemId.indexOf("E") >= 0) {
             type = PackageType.EQUIPMENTS;
             itemInfo = dataApi.equipment.findById(itemId);
-        } else if(itemId.indexOf("W") >= 0){
+        } else if(itemId.indexOf("W") >= 0) {
             type = PackageType.WEAPONS;
             itemInfo = dataApi.weapons.findById(itemId);
+        } else if(itemId.indexOf("B") >= 0) {
+            type = PackageType.DIAMOND;
+            itemInfo = dataApi.diamonds.findById(itemId);
         }
-        console.log("itemInfo:",itemInfo);
-        if(typeof itemInfo == "undefined" || itemInfo == null) {
+        if(typeof itemInfo == "undefined" || itemInfo == null || itemInfo == {}) {
             data = {
                 code: Code.SHOP.NOT_EXIST_ITEM
             };
@@ -114,15 +127,21 @@ exports.buyItem = function(req, res) {
                 return;      
             }*/
         }
-        var price = itemInfo.price;
+        var price = itemInfo.price;   
+        if(typeof price == "undefined") {
+            data = {
+                code: Code.SHOP.NOT_EXIST_PRICE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         var costMoney = price * itemNum;
-        console.log("Price:",price);
         if(player.money < costMoney) {
             data = {
                 code: Code.SHOP.NOT_ENOUGHT_MONEY
             };
             utils.send(msg, res, data);
-            return ;
+            return;
         }
         
         var item = {

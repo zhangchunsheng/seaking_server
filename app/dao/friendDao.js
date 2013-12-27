@@ -79,8 +79,33 @@ friendDao.removeFriend = function(player, f_playerId, cb) {
 friendDao.getFriends = function(player, start, stop, cb) {
     var characterId = utils.getRealCharacterId(player.id);
     var key = dbUtil.getFriendKey(player.sid, player.registerType, player.loginName, characterId);
-    var array = [];
-    array.push(["zrange", key, start, stop]);
 
-    dbUtil.getObject(redis, redisConfig, array, cb);
+
+    dbUtil.getObject(redis, redisConfig, [["zrange", key, start, stop]], function(err, res) {
+        if(err){return cb(err);}
+        var array = [];
+        if(res.length == 0) {
+            return cb(null, []);
+        }
+        for(var i in res) {
+            array.push(["get", res[i]]);
+        }
+        redis.command(function(client) {
+            client.select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
+                if(err){return cb(err);}
+                client.multi(array).exec(function(err, result) {
+                    if(err) {redis.release(client);return cb(err);}
+                    var parray = [];
+                    for(var i in result) {
+                        parray.push(["hmget", result[i],"id", "nickname", "time"]);
+                    }
+                    client.multi(parray).exec(function(err, presult) {
+                        redis.release(client);
+                        console.log(presult);
+                        cb(err, presult);
+                    });
+                })
+            });
+        });
+    });
 };

@@ -173,7 +173,9 @@ Skills.prototype.initAllSkills = function(dataType) {
             level: 1
         });
     }
-    var data = this.allSkills
+    var data = {
+        allSkills: this.allSkills
+    }
     if(dataType == "string") {
         data = JSON.stringify(data);
     }

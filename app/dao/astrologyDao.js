@@ -198,7 +198,7 @@ function prizeIndex(array) {
 var dataApi = require('../utils/dataApi');
 astrologyDao.randomItem = function(index) {
 	//{itemId:"D", itemNum:1, level:1}
-	return prizeItem(dataApi.astrology.findById(index));
+	return prizeItem(dataApi.astrologyRandom.findById(index));
 }
 
 astrologyDao.random = function(index) {
@@ -405,4 +405,108 @@ astrologyDao.exchange = function(Key, exchangeIndex, num ,callback) {
 
 astrologyDao.find = function(index) {
 	return {integral :1, item:{}};
+}
+
+astrologyDao.merger = function(player) {
+	var _items = [];
+	redis.command(function(client){
+		astrologyDao.get(player.Key, function(err, res) {
+			if(err){redis.release(client);callback(err);return;}
+			if(!res){redis.release(client);callback("Operator error");return;}
+			var astrology = JSON.parse(res);
+			var all = {};
+			for(var i = 0 , len = astrology.items.length ; i < len ; i ++) {
+				var a = astrology.items[i];
+				if(!all[a.itemId]) {
+					all[a.itemId] = {
+						main:a,
+						all:[]
+					}
+				}else{
+					if(all[a.itemId].main.level < a.level) {
+						var _a = all[a.itemId].main ;
+						all[a.itemId].main = a;
+						all[a.itemId].all.push(_a);
+					}else if(all[a.itemId].main.level == a.level){
+						if(all[a.itemId].main.experience < a.experience) {
+							var _a = all[a.itemId].main ;
+							all[a.itemId].main = a;
+							all.push(_a);
+						}
+					}else{
+						all.push(a);
+					}
+				}
+
+			}
+			for( var i in all) {
+				var main = all[i].main;
+				var as = all[i].all;
+				for(var i = 0, len = as.length; i< len ;i++) {
+					addExperience(main, as[i]);
+				}
+				_items.push(main);
+			}
+			astrology.items  = _items;
+			client.hset(Key, "astrology", JSON.stringify(astrology), function(err, res) {
+				redis.release(client);
+				callback(err, astrology);
+			});
+
+		}, client);
+	});
+}
+astrologyDao.load = function(index, player, callback) {
+	redis.command(function(client){
+		astrologyDao.get(player.Key, function(err, res) {
+			if(err){redis.release(client);callback(err);return;}
+			if(!res){redis.release(client);callback("Operator error");return;}
+			var astrology = JSON.parse(res);
+			var item = astrology.items[index];
+			if(!item) {
+				return callback("not item");
+			}
+			var itemInfo = dataApi.astrologys.findById(item.itemId);
+			var property = itemInfo.property;
+			var value = itemInfo.value;
+			
+			var _item;
+			var data = {};
+			var character;
+			if(!index) {
+				character = partnerUtil.getPartner(playerId, player);
+			}else {
+				character = player;
+			}
+			if(!character) {
+				return callback("not player");
+			}
+			
+			switch(property) {
+				case 1:
+					character.attack += (itemInfo.value - _itemInfo.value);
+				break;
+
+			}
+
+			astrology.items[index] = _item;
+			player.save();
+			client.hset(Key, "astrology", JSON.stringify(astrology), function(err, res) {
+				redis.release(client);
+				callback(err, {
+					astrology: astrology,
+					data: data
+				});
+			});
+		},client);
+	});
+}
+
+function addExperience(main , o) {
+	var itemInfo = dataApi.astrologys[main.itemId];
+	main.experience += Math.pow(2,o.level-1)*itemInfo.experience+o.experience;
+	if(main.experience > Math.pow(2, main.level)) {
+		main.experience -= Math.pow(2,main.level);
+		main.level += 1;
+	}
 }

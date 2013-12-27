@@ -36,6 +36,9 @@ Package.prototype.getItemType = function(item) {
         case "T":
             return PackageType.Task;
         break;
+        case "B":
+            return PackageType.DIAMOND;
+        break;
     }
 }
 Package.prototype.get = function(type, index) {
@@ -215,11 +218,50 @@ Package.prototype.addItemWithNoType = function(player, item) {
         type = PackageType.WEAPONS;
     } else if(item.itemId.indexOf("E") >= 0) {
         type = PackageType.EQUIPMENTS;
+    } else if(item.itemId.indexOf("B") >= 0) {
+        type = PackageType.DIAMOND;
     } else {
         type = PackageType.ITEMS;
     }
     return this.addItem(player, type, item);
 }
+
+function sort1(array, max) {
+    for(var i =array.length-1;i> 0;i--) {
+        for(var l = 0,len = i;l<len;l++) {
+            if(array[l].itemId < array[l+1].itemId ){
+                var t = array[l];
+                array[l] = array[l+1];
+                array[l+1] = t;
+            }else if(array[l].itemId == array[l+1].itemId){
+                array[l].itemNum  =(array[l].itemNum-0) + (array[l+1].itemNum -0);
+                if(max) {
+                   if(array[l].itemNum > max) {
+                    array[l+1].itemNum = array[l].itemNum - max;
+                    array[l].itemNum  = max;
+                    
+                    }else {
+                        array[l+1].itemNum= 0;
+                    } 
+                }else {
+                    var itemInfo = dataApi.item.findById(array[l].itemId);
+                    var _max = itemInfo.pileNum - 0 ||99;
+                    if(array[l].itemNum > _max) {
+                        array[l+1].itemNum = array[l].itemNum - _max;
+                        array[l].itemNum  = _max;
+                    
+                    }else {
+                        array[l+1].itemNum= 0;
+                    } 
+                }
+                
+            }
+        }
+    }
+    return array;
+} ;
+
+var sort
 
 Package.prototype.arrange = function(callback) {
     var items = this.items;
@@ -264,8 +306,9 @@ Package.prototype.arrange = function(callback) {
                 if(a.level == b.level) {
                     if(a.itemNum) {
                         if(a.itemNum != 0 && b.itemNum != 0) {
-                            var all =  a.itemNum + b.itemNum;
-                            var itemInfo = dataApi.items.findById(a.itemId);
+                            var all =  (a.itemNum - 0) + (b.itemNum -0);
+                            var itemInfo = dataApi.item.findById(a.itemId);
+                            itemInfo.pileNum = itemInfo.pileNum || 99;
                             if(all > itemInfo.pileNum) {
                                 a.itemNum = itemInfo.pileNum;
                                 b.itemNum = all - itemInfo.pileNum;
@@ -318,12 +361,18 @@ Package.prototype.arrange = function(callback) {
             return -1;
         }
     }
-    Cs.sort(sortFun1);
+    Cs = sort1(Cs);
+    Es.sort(sortFun2);
+    Ws.sort(sortFun2);
+    Ds = sort1(Ds);
+    Ts = sort1(Ts);
+    Bs = sort1(Bs);
+    /*Cs.sort(sortFun1);
     Es.sort(sortFun2);
     Ws.sort(sortFun2);
     Ds.sort(sortFun1);
     Ts.sort(sortFun1);
-    Bs.sort(sortFun2);
+    Bs.sort(sortFun1);*/
     var all = [];
     all = all.concat(Cs, Es, Ws, Ds, Ts, Bs);
 
@@ -350,19 +399,23 @@ var arrayToJson = function(array) {
 }
 
 Package.prototype.addItem = function(player, type, item, rIndex) {
-    var itemInfo ;
+    var itemInfo = {};
     if(type.pileNum) {
         itemInfo = type;
-    }else{
+    } else {
+       
         switch(type) {
-            case PackageType.ITEMS:
-                itemInfo = dataApi.items.findById(item.itemId);
-            break;
             case PackageType.EQUIPMENTS:
-                itemInfo = dataApi.equpments.findById(item.itemId);
+                itemInfo = dataApi.equipments.findById(item.itemId);
             break;
             case PackageType.WEAPONS:
                 itemInfo = dataApi.weapons.findById(item.itemId);
+            break;
+            case PackageType.DIAMOND:
+                itemInfo = dataApi.item.findById(item.itemId);
+            break;
+            case PackageType.ITEMS:
+                itemInfo = dataApi.item.findById(item.itemId);
             break;
         }
         console.log("###itemInfo:",itemInfo);
@@ -383,7 +436,30 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         }
     }
     var items = this;
-    if(!itemInfo.pileNum || itemInfo.pileNum == 1 ) {
+    if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
+        var flag = false;
+        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+            if (!items.items[i]) {
+                flag = true;
+                items.items[i] = {
+                    itemId: item.itemId,
+                    itemNum: item.itemNum,
+                    level: item.level,
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
+                };
+                changes = [{
+                    index: i,
+                    item: items.items[i]
+                }];
+                break;
+            }
+        }
+        if(!flag)
+            return {
+                index: []
+            };
+    } else if(!itemInfo.pileNum || itemInfo.pileNum == 1) {
         var flag = false;
         for (var i = packageStart; i < items.itemCount + packageStart; i++) {
             if (!items.items[i]) {
@@ -411,9 +487,9 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < itemInfo.pileNum) {
                 _items.itemNum += this.items[i].itemNum;
                 var mitem = items.items[i];
-                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > itemInfo.pileNum ) {
-                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - itemInfo;
-                    mitem.itemNum = itemInfo;
+                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > itemInfo.pileNum) {
+                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - itemInfo.pileNum;
+                    mitem.itemNum = itemInfo.pileNum;
                     changes.push({
                         index: i,
                         item: mitem
@@ -457,7 +533,6 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
 
                     return run();
                 }
-                console.log(item.itemNum);
                 items.items[spaceCount] = {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
@@ -485,6 +560,65 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             r.task = task;
         }
         return r;
+}
+
+/**
+ * 添加武器装备
+ * @param player
+ * @param type
+ * @param item
+ * @param rIndex
+ * @returns {*}
+ */
+Package.prototype.addEquipment = function(player, type, item, rIndex) {
+    var changes = [];
+    var _items = utils.clone(item);
+    if (!item || !item.itemId || !item.itemId.match(/W|E/)) {
+        //返回{}并没有返回null 容易判断
+        return null;
+    }
+    if(rIndex) {
+        if(this.items[rIndex]) {
+            var _item =  this.items[rIndex];
+            _item.itemNum = _item.itemNum - 1;
+            if(_item.itemNum <= 0) {
+                delete this.items[rIndex];
+            }
+        }
+    }
+    var items = this;
+    if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
+        var flag = false;
+        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+            if (!items.items[i]) {
+                flag = true;
+                items.items[i] = {
+                    itemId: item.itemId,
+                    itemNum: item.itemNum,
+                    level: item.level,
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
+                };
+                changes = [{
+                    index: i,
+                    item: items.items[i]
+                }];
+                break;
+            }
+        }
+        if(!flag)
+            return {
+                index: []
+            };
+    }
+    var task;
+    var r = {index: changes};
+    if(changes.length > 0) {
+        this.save();
+        task = player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+        r.task = task;
+    }
+    return r;
 }
 
 Package.prototype.strip = function() {

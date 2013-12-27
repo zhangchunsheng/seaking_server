@@ -92,6 +92,8 @@ packageDao.getType = function(item) {
         type = PackageType.WEAPONS;
     } else if(itemId.indexOf("E") != -1) {
         type = PackageType.EQUIPMENTS;
+    } else if(itemId.indexOf("B") != -1) {
+        type = PackageType.DIAMOND;
     } else if(itemId.indexOf("D") != -1) {
         type = PackageType.ITEMS;
     }

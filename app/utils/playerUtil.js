@@ -333,7 +333,7 @@ playerUtil.getCharacter = function(opts) {
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
-        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         formation: JSON.parse(opts.replies.formation).formation,
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
@@ -395,7 +395,7 @@ playerUtil.getPKCharacter = function(opts) {
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
-        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         formation: JSON.parse(opts.replies.formation).formation,
         partners: JSON.parse(opts.replies.partners).partners,
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),

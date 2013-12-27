@@ -200,9 +200,12 @@ exports.sellItem = function(req, res) {
         } else if(itemId.indexOf("E") >= 0) {
             type = PackageType.EQUIPMENTS;
             itemInfo = dataApi.equipment.findById(itemId);
-        } else if(itemId.indexOf("W") >= 0){
+        } else if(itemId.indexOf("W") >= 0) {
             type = PackageType.WEAPONS;
             itemInfo = dataApi.weapons.findById(itemId);
+        } else if(itemId.indexOf("B") >= 0) {
+            type = PackageType.DIAMOND;
+            itemInfo = dataApi.diamonds.findById(itemId);
         }
         if(!itemInfo) {
             data = {
@@ -218,11 +221,17 @@ exports.sellItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
+        if(typeof itemInfo.price == "undefined") {
+            data = {
+                code: Code.SHOP.NOT_EXIST_PRICE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         var price = itemInfo.price / 2;
         var incomeMoney = price * itemNum;
         var result = removeItem(req, res, msg, player);
         if(!!result) {
-            
             player.money += incomeMoney;
             player.save();
 
@@ -443,6 +452,9 @@ exports.userItem = function(req, res) {
         } else if(itemId.indexOf("W") >= 0){
             type = PackageType.WEAPONS;
             itemInfo = dataApi.weapons.findById(itemId);
+        } else if(itemId.indexOf("B") >= 0){
+            type = PackageType.DIAMOND;
+            itemInfo = dataApi.diamonds.findById(itemId);
         }
         if(player.level < itemInfo.needLevel) {
             data = {

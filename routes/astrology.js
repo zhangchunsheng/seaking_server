@@ -170,15 +170,36 @@ astrology.exchange = function(req, res) {
         utils.send(msg, res, {code: Code.FAIL});return;
     }
     var Key = picecBoxName(session);
-    astrologyDao.exchange(player, msg.exchangeIndex, function(err, res) {
-        if(err){utils.send(msg, res, {code: Code.FAIL});return;}
-        utils.send(msg, res, {
-            code: Code.OK,
-            data: r
-        })
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        astrologyDao.exchange(player, msg.exchangeIndex, function(err, res) {
+            if(err){utils.send(msg, res, {code: Code.FAIL});return;}
+            utils.send(msg, res, {
+                code: Code.OK,
+                data: r
+            })
+        });
     });
 }
 
+astrology.merage = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        astrologyDao.merage(player, function(err, res) {
+            if(err){return utils.send(msg, res, {code: Code.FAIL});}
+            utils.send(msg, res, {
+                code: Code.OK,
+                data: r
+            });
+        });
+    });
+}
 
 function picecBoxName(session) {
     var playerId = session.playerId
@@ -190,3 +211,27 @@ function picecBoxName(session) {
     return 'S'+serverId+'_T'+ registerType+'_'+ loginName+'_C'+ characterId;
 
 }
+
+astrology.load = function(req, res) {
+    var msg = req.query;
+    var index = msg.index;
+    if(!index) {
+        return  utils.send(msg, res, {code: Code.FAIL});
+    }
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        astrologyDao.load(index, player, function(err, result) {
+            if(err){return utils.send(msg, res, {code: Code.FAIL});}
+            utils.send(msg, res, {
+                code: Code.OK,
+                data: result
+            });
+        });
+    });
+} 

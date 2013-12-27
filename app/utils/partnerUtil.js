@@ -32,7 +32,8 @@ partnerUtil.initPartner = function(opts) {
     var partner = dataApi.partners.findById(opts.cId);
     var level = partner.level;
     var skills = new Skills(opts);
-    skills.initSkills(opts.cId);
+    //skills.initSkills(opts.cId);
+    skills.initSkillsV2(opts.cId);
 
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
@@ -69,6 +70,8 @@ partnerUtil.initPartner = function(opts) {
             activeSkills: skills.activeSkills,
             passiveSkills: skills.passiveSkills
         },
+        currentSkills: skills.currentSkills,
+        allSkills: skills.allSkills,
         ghost: partnerUtil.initGhost(),
         aptitude: partnerUtil.initAptitude(opts.cId)
     };
@@ -267,7 +270,7 @@ partnerUtil.getPlayer = function(opts) {
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
-        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         buffs: opts.replies.buffs ? JSON.parse(opts.replies.buffs).buffs : buffUtil.getInitBuff(),
         ghost: JSON.parse(opts.replies.ghost || partnerUtil.initGhost("string")),
         aptitude: JSON.parse(opts.replies.aptitude || partnerUtil.initAptitude(opts.cId, "string"))

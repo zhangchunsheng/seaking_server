@@ -32,6 +32,7 @@ var shops = require('../../config/data/shops');
 var casino = require('../../config/data/casino');
 var astrology = require("../../config/data/astrology");
 var weapons = require("../../config/data/weapons");
+var astrologyRandom = require("../../config/data/astrologyRandom");
 /**
  * Data model `new Data()`
  *
@@ -170,9 +171,10 @@ module.exports = {
     diamonds: new Data(diamonds),
     partners: new Data(partners),
     city: new Data(city),
-    indu_event: new Data(indu_event)  ,
+    indu_event: new Data(indu_event) ,
     shops: new Data(shops),
     casino : new Data(casino),
     astrology : new Data(astrology),
+    astrologyRandom: new Data(astrologyRandom),
     weapons : new Data(weapons)
 };

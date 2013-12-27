@@ -1182,7 +1182,9 @@ Player.prototype.forgeSkill = function(player, type, skillId, callback) {
     } else {
         var characterId = utils.getRealCharacterId(this.id);
         var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
-        array.push(["hset", key, "allSkills", JSON.stringify(allSkills)]);
+        array.push(["hset", key, "allSkills", JSON.stringify({
+            allSkills: allSkills
+        })]);
     }
     array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
     userDao.update(array, function(err, repy) {
