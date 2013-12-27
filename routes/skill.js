@@ -338,6 +338,9 @@ exports.learnAndUpgradeSkill = function(req, res) {
                 });
             }
         }
+        if(packageIndex.length == 0) {
+            packageIndex = 0;
+        }
         var money = status.money;
         player.money = player.money - money;
         character.learnAndUpgradeSkill(player, type, skillId, status, function(err, result) {
