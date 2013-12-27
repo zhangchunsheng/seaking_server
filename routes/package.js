@@ -205,7 +205,7 @@ exports.sellItem = function(req, res) {
             itemInfo = dataApi.weapons.findById(itemId);
         } else if(itemId.indexOf("B") >= 0) {
             type = PackageType.DIAMOND;
-            itemInfo = dataApi.diamonds.findById(itemId);
+            itemInfo = dataApi.item.findById(itemId);
         }
         if(!itemInfo) {
             data = {
@@ -229,6 +229,7 @@ exports.sellItem = function(req, res) {
             return;
         }
         var price = itemInfo.price / 2;
+        console.log(price);
         var incomeMoney = price * itemNum;
         var result = removeItem(req, res, msg, player);
         if(!!result) {

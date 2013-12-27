@@ -105,7 +105,7 @@ exports.buyItem = function(req, res) {
             itemInfo = dataApi.weapons.findById(itemId);
         } else if(itemId.indexOf("B") >= 0) {
             type = PackageType.DIAMOND;
-            itemInfo = dataApi.diamonds.findById(itemId);
+            itemInfo = dataApi.item.findById(itemId);
         }
         if(typeof itemInfo == "undefined" || itemInfo == null || itemInfo == {}) {
             data = {
@@ -128,6 +128,7 @@ exports.buyItem = function(req, res) {
             }*/
         }
         var price = itemInfo.price;   
+        console.log(price);
         if(typeof price == "undefined") {
             data = {
                 code: Code.SHOP.NOT_EXIST_PRICE
