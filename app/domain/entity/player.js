@@ -1358,30 +1358,36 @@ Player.prototype.checkRequirement = function(skillData) {
 Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkillRequired) {
     var required = {};
     var skillLevel = this.currentSkills[type].level;//level 0 0-1
-    var requirement = upgradeSkillRequired[skillLevel];
-    var materials = requirement.materials;
-    var level = requirement.level;
-    var money = requirement.money;
+    if(skillLevel == 0) {
+        var money = 1000;
+        required.packageInfo = [];
+    } else {
+        var requirement = upgradeSkillRequired[skillLevel - 1];
+        var materials = requirement.materials;
+        var level = requirement.level;
+        var money = requirement.money;
 
-    // check materials
-    var array = materials.split("|");
-    var itemId = array[0];
-    var itemNum = array[1];
-    var flag = [];
-    materials = [{
-        itemId: itemId,
-        itemNum: itemNum
-    }];
-    flag = player.packageEntity.checkMaterial(materials);
-    if(flag.length != materials.length) {
-        return 0;
+        // check materials
+        var array = materials.split("|");
+        var itemId = array[0];
+        var itemNum = array[1];
+        var flag = [];
+        materials = [{
+            itemId: itemId,
+            itemNum: itemNum
+        }];
+        flag = player.packageEntity.checkMaterial(materials);
+        if(flag.length != materials.length) {
+            return 0;
+        }
+        required.packageInfo = flag;
+        // check level
+        if(level > this.level) {
+            return 0;
+        }
+        required.level = level;
     }
-    required.packageInfo = flag;
-    // check level
-    if(level > this.level) {
-        return 0;
-    }
-    required.level = level;
+
     // check money
     if(money > player.money) {
         return 0;
