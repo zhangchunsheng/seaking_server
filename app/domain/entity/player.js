@@ -74,6 +74,8 @@ var Player = function(opts) {
     this.ghostEntity = opts.ghostEntity;
     this.skillsEntity = opts.skillsEntity;
 
+    this.friends = opts.friends || [];
+
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
     this.pushMessage = opts.pushMessage || [];
@@ -1597,6 +1599,7 @@ Player.prototype.strip = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift,
+        friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
@@ -1771,6 +1774,7 @@ Player.prototype.toJSON = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift,
+        friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
@@ -1816,6 +1820,7 @@ Player.prototype.getBaseInfo = function() {
         buffs: this.buffs,
         formation: this.formation,
         gift: this.gift,
+        friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
