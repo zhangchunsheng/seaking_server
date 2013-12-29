@@ -20,6 +20,7 @@ var packageDao = require('../dao/packageDao');
 var aptitudeService = require('../services/character/aptitudeService');
 var ghostService = require('../services/character/ghostService');
 var skillService = require('../services/skillService');
+var miscsService = require('../services/miscsService');
 var Tasks = require('../domain/tasks');
 
 var playerUtil = module.exports;
@@ -90,6 +91,7 @@ playerUtil.initCharacter = function(opts) {
         allSkills: skills.allSkills,
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
+        miscs: [],
         gift: [],
         ghost: playerUtil.initGhost(),
         ghostNum: playerUtil.initGhostNum(),
@@ -278,6 +280,7 @@ playerUtil.initCharacterV2 = function(opts) {
         allSkills: skills.allSkills,
         formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
         partners: [],
+        miscs: [],
         gift: [],
         ghost: playerUtil.initGhost(),
         ghostNum: playerUtil.initGhostNum(),
@@ -337,6 +340,7 @@ playerUtil.getCharacter = function(opts) {
         formation: JSON.parse(opts.replies.formation).formation,
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
+        miscs: JSON.parse(opts.replies.miscs || '{"miscs":[]}').miscs,
         gift: JSON.parse(opts.replies.gift).gift,
         curTasks: {
             currentMainTask: JSON.parse(opts.replies.currentMainTask),
@@ -447,6 +451,7 @@ playerUtil.getPlayer = function(character) {
         formation: character.formation,
         partners: character.partners,
         allPartners: character.allPartners,
+        miscs: character.miscs,
         gift: character.gift,
         ghost: character.ghost,
         ghostNum: character.ghostNum,
@@ -498,6 +503,7 @@ playerUtil.getPlayerV2 = function(character) {
         formation: character.formation,
         partners: character.partners,
         allPartners: character.allPartners,
+        miscs: character.miscs,
         gift: character.gift,
         ghost: character.ghost,
         ghostNum: character.ghostNum,
@@ -527,12 +533,14 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId, character);
     var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
     var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
+    var miscs = miscsService.createNewMiscs(character.miscs, serverId, registerType, loginName, characterId, character);
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
     character.aptitudeEntity = aptitude;
     character.ghostEntity = ghost;
     character.skillsEntity = skills;
+    character.miscsEntity = miscs;
 };
 
 /**

@@ -67,12 +67,16 @@ var Player = function(opts) {
     this.money = parseInt(opts.money || 0);
     this.gameCurrency = parseInt(opts.gameCurrency);
 
+    this.miscs = opts.miscs || [];
+    this.soulPackage = opts.soulPackage;
+
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
     this.aptitudeEntity = opts.aptitudeEntity;
     this.ghostEntity = opts.ghostEntity;
     this.skillsEntity = opts.skillsEntity;
+    this.miscsEntity = opts.miscsEntity;
 
     this.friends = opts.friends || [];
 
