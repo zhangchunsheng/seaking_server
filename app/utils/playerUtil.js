@@ -20,7 +20,7 @@ var packageDao = require('../dao/packageDao');
 var aptitudeService = require('../services/character/aptitudeService');
 var ghostService = require('../services/character/ghostService');
 var skillService = require('../services/skillService');
-var miscsService = require('../services/miscsService');
+var miscsService = require('../services/character/miscsService');
 var Tasks = require('../domain/tasks');
 
 var playerUtil = module.exports;
