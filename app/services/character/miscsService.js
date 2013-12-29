@@ -19,6 +19,7 @@ miscsService.createNewMiscs = function(miscsInfo, serverId, registerType, loginN
     miscsInfo.loginName = loginName;
     miscsInfo.characterId = characterId;
     miscsInfo.cId = character.cId;
+    miscsInfo.miscs = character.miscs;
     var miscs = new Miscs(miscsInfo);
     return miscs;
 }
