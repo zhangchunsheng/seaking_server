@@ -1825,8 +1825,8 @@ Player.prototype.getBaseInfo = function() {
         formation: this.formation,
         gift: this.gift,
         friends: this.friends,
-        ghost: this.ghostEntity.getInfo(),
+        ghost: this.ghost,
         ghostNum: this.ghostNum,
-        aptitude: this.aptitudeEntity.getInfo()
+        aptitude: this.aptitude
     };
 };

@@ -756,6 +756,8 @@ Fight.createTestPlayer = function(opts) {
         block: formulaV2.calculateBlock(hero.block, level),
         counter: formulaV2.calculateCounter(hero.counter, level),
         level: level,
+        ghost: {level:0},
+        aptitude: {1:{"level":0,"count":50}},
         skills: skills
     };
     data.fightValue = {};
