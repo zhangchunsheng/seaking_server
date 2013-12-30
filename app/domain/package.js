@@ -403,20 +403,21 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
     if(type.pileNum) {
         itemInfo = type;
     } else {
-       
         switch(type) {
             case PackageType.EQUIPMENTS:
                 itemInfo = dataApi.equipments.findById(item.itemId);
-            break;
+                break;
             case PackageType.WEAPONS:
                 itemInfo = dataApi.weapons.findById(item.itemId);
-            break;
+                break;
             case PackageType.DIAMOND:
                 itemInfo = dataApi.item.findById(item.itemId);
-            break;
+                break;
             case PackageType.ITEMS:
                 itemInfo = dataApi.item.findById(item.itemId);
-            break;
+                break;
+            default:
+                itemInfo.pileNum = 99;
         }
         console.log("###itemInfo:",itemInfo);
     }

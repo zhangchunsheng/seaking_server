@@ -67,12 +67,18 @@ var Player = function(opts) {
     this.money = parseInt(opts.money || 0);
     this.gameCurrency = parseInt(opts.gameCurrency);
 
+    this.miscs = opts.miscs || [];
+    this.soulPackage = opts.soulPackage;
+
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
     this.aptitudeEntity = opts.aptitudeEntity;
     this.ghostEntity = opts.ghostEntity;
     this.skillsEntity = opts.skillsEntity;
+    this.miscsEntity = opts.miscsEntity;
+
+    this.friends = opts.friends || [];
 
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
@@ -1597,6 +1603,7 @@ Player.prototype.strip = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift,
+        friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
@@ -1771,6 +1778,7 @@ Player.prototype.toJSON = function() {
         formation: this.formation,
         partners: this.getPartners(),
         gift: this.gift,
+        friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
@@ -1816,8 +1824,9 @@ Player.prototype.getBaseInfo = function() {
         buffs: this.buffs,
         formation: this.formation,
         gift: this.gift,
-        ghost: this.ghostEntity.getInfo(),
+        friends: this.friends,
+        ghost: this.ghost,
         ghostNum: this.ghostNum,
-        aptitude: this.aptitudeEntity.getInfo()
+        aptitude: this.aptitude
     };
 };

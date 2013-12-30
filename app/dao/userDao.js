@@ -18,6 +18,7 @@ var induDao = require('./induDao');
 var taskDao = require('./taskDao');
 var partnerDao = require('./partnerDao');
 var playerDao = require('./playerDao');
+var friendDao = require('./friendDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
@@ -569,8 +570,10 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                         character.partners = partners;
                         var player = playerUtil.getPlayer(character);
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
+                            friendDao.getFriends(player, 0, 9, function(err, reply) {
+                                utils.invokeCallback(cb, null, player);
+                            });
                             redis.release(client);
-                            utils.invokeCallback(cb, null, player);
                         });
                     });
                 });

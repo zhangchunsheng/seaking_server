@@ -254,6 +254,9 @@ fightUtil.changeTargetState = function(target, defenseData) {
     if(defenseData.addDodge) {
         target.addDodge = defenseData.addDodge;
     }
+    if(defenseData.awakeSkill) {
+        target.awakeSkill = defenseData.awakeSkill;
+    }
 }
 
 fightUtil.changeFightData = function(fightData, attackData) {

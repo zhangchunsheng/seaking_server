@@ -9,6 +9,7 @@ var Buff = require('../app/domain/buff');
 var BuffV2 = require('../app/domain/buffV2');
 var utils = require('../app/utils/utils');
 var fightUtil = require('../app/utils/fightUtil');
+var buffUtil = require('../app/utils/buffUtil');
 var constsV2 = require('../app/consts/constsV2');
 
 function getBuffCategory(buffType) {
@@ -107,15 +108,24 @@ var skill_script = {
      */
     "skill101101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var random = utils.random(1, 100);
+        var value = 0.2;
+        var enhanceBuff = {};
         if(random >= 1 && random <= 75) {
             var buffs = attack.buffs;
+
+            enhanceBuff = buffUtil.getBuff("101201", buffs);//skillId  SK101201
+            if(typeof enhanceBuff.buffData != "undefined") {
+                value = value * enhanceBuff.buffData.value;
+            }
+
             for(var i = 0, l = buffs.length ; i < l ; i++) {
                 if(buffs[i].buffId == this.skillId) {
+                    buffs[i].value = value;
                     return 100;
                 }
             }
             var buffData = {
-                value: 0.2
+                value: value
             };
             attackData.skillId = this.skillId;
             var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
@@ -142,7 +152,28 @@ var skill_script = {
      * @param defenseData
      */
     "skill101201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
+        var buffs = player.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 2
+        };
+        playerData.skillId = this.skillId;
+        var buff = getSkillBuff(constsV2.buffTypeV2.AWAKEN_ENHANCE_TRIGGERSKILL, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 被攻击时，如果身上没有护盾，则产生一个护盾，该护盾使下次受到的攻击伤害减免30%

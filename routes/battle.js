@@ -260,15 +260,15 @@ exports.battle2 = function(req, res) {
         owner_formationData[owner_heros[i].formationId - 1] = {};
         owner_formationData[owner_heros[i].formationId - 1].heroId = owner_heros[i].heroId;
         owner_formationData[owner_heros[i].formationId - 1].level = owner_heros[i].level;
-        owner_formationData[owner_heros[i].formationId - 1].skills = [];
+        owner_formationData[owner_heros[i].formationId - 1].skills = {};
         if(owner_heros[i].skillId1 != 0) {
-            owner_formationData[owner_heros[i].formationId - 1].skills.push(owner_heros[i].skillId1);
+            owner_formationData[owner_heros[i].formationId - 1].skills[1] = owner_heros[i].skillId1;
         }
         if(owner_heros[i].skillId2 != 0) {
-            owner_formationData[owner_heros[i].formationId - 1].skills.push(owner_heros[i].skillId2);
+            owner_formationData[owner_heros[i].formationId - 1].skills[2] = owner_heros[i].skillId2;
         }
         if(owner_heros[i].skillId3 != 0) {
-            owner_formationData[owner_heros[i].formationId - 1].skills.push(owner_heros[i].skillId3);
+            owner_formationData[owner_heros[i].formationId - 1].skills[3] = owner_heros[i].skillId3;
         }
     }
 
@@ -276,15 +276,15 @@ exports.battle2 = function(req, res) {
         monster_formationData[opponent_heros[i].formationId - 1] = {};
         monster_formationData[opponent_heros[i].formationId - 1].heroId = opponent_heros[i].heroId;
         monster_formationData[opponent_heros[i].formationId - 1].level = opponent_heros[i].level;
-        monster_formationData[opponent_heros[i].formationId - 1].skills = [];
+        monster_formationData[opponent_heros[i].formationId - 1].skills = {};
         if(opponent_heros[i].skillId1 != 0) {
-            monster_formationData[opponent_heros[i].formationId - 1].skills.push(opponent_heros[i].skillId1);
+            monster_formationData[opponent_heros[i].formationId - 1].skills[1] = opponent_heros[i].skillId1;
         }
         if(opponent_heros[i].skillId2 != 0) {
-            monster_formationData[opponent_heros[i].formationId - 1].skills.push(opponent_heros[i].skillId2);
+            monster_formationData[opponent_heros[i].formationId - 1].skills[2] = opponent_heros[i].skillId2;
         }
         if(opponent_heros[i].skillId3 != 0) {
-            monster_formationData[opponent_heros[i].formationId - 1].skills.push(opponent_heros[i].skillId3);
+            monster_formationData[opponent_heros[i].formationId - 1].skills[3] = opponent_heros[i].skillId3;
         }
     }
 
