@@ -21,3 +21,7 @@ buffUtil.getBuff = function(buffId, buffs) {
     }
     return {};
 }
+
+buffUtil.calculateValue = function(buffId, buffs) {
+
+}

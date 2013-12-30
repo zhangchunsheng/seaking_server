@@ -113,9 +113,9 @@ var skill_script = {
         if(random >= 1 && random <= 75) {
             var buffs = attack.buffs;
 
-            enhanceBuff = buffUtil.getBuff("SK101201", buffs);
-            if(enhanceBuff != {}) {
-                value = value * enhanceBuff.value;
+            enhanceBuff = buffUtil.getBuff("101201", buffs);//skillId  SK101201
+            if(typeof enhanceBuff.buffData != "undefined") {
+                value = value * enhanceBuff.buffData.value;
             }
 
             for(var i = 0, l = buffs.length ; i < l ; i++) {
