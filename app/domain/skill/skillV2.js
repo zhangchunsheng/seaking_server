@@ -26,7 +26,11 @@ var Skill = function(opts) {
     });
     this.skillId = opts.skillId;
     this.additional = {};//额外加成
-    this.skillData = dataApi.skillsV2.findById(opts.id);
+    if(opts.id.indexOf("SK") >= 0) {
+        this.skillData = dataApi.skillsV2.findById(opts.id);
+    } else {
+        this.skillData = dataApi.skillsV2.findByMId(opts.id);
+    }
     this.name = this.skillData.skillName;
     this.type = this.skillData.type;
     this.level = opts.level || this.skillData.level;
