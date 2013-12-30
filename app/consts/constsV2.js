@@ -457,7 +457,8 @@ module.exports = {
         PROMOTEHP: "18",
         ADDDODGE: "19",
         ICE: "20",
-        SILENCE: "21"
+        SILENCE: "21",
+        AWAKEN_ENHANCE_TRIGGERSKILL: "22"
     },
 
     buffCategory: {
@@ -466,7 +467,8 @@ module.exports = {
         AFTER_ATTACK: 3,
         AFTER_DEFENSE: 4,
         ROUND: 5,
-        ATTACKING: 6
+        ATTACKING: 6,
+        AWAKEN: 7
     },
 
     characterFightStatus: {
