@@ -31,7 +31,7 @@ describe('battle test', function() {
             heroId: '1',
             level: '1',
             formationId: 1,
-            skillId1: 29,
+            skillId1: "SK101101",
             skillId2: 0,
             skillId3: 0
         }];
@@ -164,7 +164,7 @@ describe('battle test', function() {
         });
 
         fight.fight(function(err, eventResult) {
-            //console.log(eventResult);
+            console.log(eventResult);
             //getTarget(eventResult);
         });
     });
