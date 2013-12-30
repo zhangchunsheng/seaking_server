@@ -81,6 +81,7 @@ module.exports = function (app) {
     app.get('/friend/add', authRequired, friend.add);
     app.get('/friend/addByName', authRequired, friend.addByName);
     app.get('/friend/remove', authRequired, friend.remove);
+    app.get('/friend/getProperty', authRequired, friend.getProperty);
 
     app.get('/guide/get', authRequired, guide.get);
     app.get('/guide/save', authRequired, guide.save);
