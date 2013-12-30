@@ -556,7 +556,7 @@ Character.prototype.useAwakenSkill = function(attackSide, condition, attack_form
     if(utils.empty(this.skills[consts.skillV2Type.AWAKEN_SKILL])) {
         return;
     }
-    var skill = this.skills[consts.skillV2Type.TRIGGER_SKILL];
+    var skill = this.skills[consts.skillV2Type.AWAKEN_SKILL];
     if(skillUtil.checkAwakenCondition(skill, attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData)) {
         anger = skill.invokeScript(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
