@@ -9,6 +9,7 @@ var Buff = require('../app/domain/buff');
 var BuffV2 = require('../app/domain/buffV2');
 var utils = require('../app/utils/utils');
 var fightUtil = require('../app/utils/fightUtil');
+var buffUtil = require('../app/utils/buffUtil');
 var constsV2 = require('../app/consts/constsV2');
 
 function getBuffCategory(buffType) {
@@ -107,15 +108,24 @@ var skill_script = {
      */
     "skill101101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var random = utils.random(1, 100);
+        var value = 0.2;
+        var enhanceBuff = {};
         if(random >= 1 && random <= 75) {
             var buffs = attack.buffs;
+
+            enhanceBuff = buffUtil.getBuff("SK101201", buffs);
+            if(enhanceBuff != {}) {
+                value = value * enhanceBuff.value;
+            }
+
             for(var i = 0, l = buffs.length ; i < l ; i++) {
                 if(buffs[i].buffId == this.skillId) {
+                    buffs[i].value = value;
                     return 100;
                 }
             }
             var buffData = {
-                value: 0.2
+                value: value
             };
             attackData.skillId = this.skillId;
             var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
@@ -154,7 +164,7 @@ var skill_script = {
         var buffs = player.buffs;
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == this.skillId) {
-                return 100;
+                return 0;
             }
         }
         var buffData = {
