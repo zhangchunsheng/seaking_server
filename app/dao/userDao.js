@@ -569,8 +569,10 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                         var partners = results[0];
                         character.partners = partners;
                         var player = playerUtil.getPlayer(character);
+                        var fKey = dbUtil.getFriendKey(serverId, registerType, loginName, characterId);
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
-                            friendDao.getFriends(player, 0, 9, function(err, reply) {
+                            friendDao.getFriends(fKey, function(err, reply) {
+                                player.friends = reply;
                                 utils.invokeCallback(cb, null, player);
                             });
                             redis.release(client);
