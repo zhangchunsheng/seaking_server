@@ -237,7 +237,7 @@ var fullName = {
 exports.battle2 = function(req, res) {
     var msg = req.query;
 
-    var owner_heros = JSON.parse(msg.owner_heros);//[{ heroId: '1', level: '1', formationId: 1 }] [{ h: '1', l: '1', f: 1, s1: "", s2: "", s3: "" }]
+    var owner_heros = JSON.parse(msg.owner_heros);//[{ heroId: 'H1101', level: '1', formationId: 1 }] [{ h: '1', l: '1', f: 1, s1: "", s2: "", s3: "" }]
     var opponent_heros = JSON.parse(msg.opponent_heros);
 
     for(var i = 0 ; i < owner_heros.length ; i++) {

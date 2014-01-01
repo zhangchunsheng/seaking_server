@@ -28,7 +28,7 @@ var async = require('async');
 describe('battle test', function() {
     it('should successully', function() {
         var owner_heros = [{
-            heroId: '1',
+            heroId: 'H1101',
             level: '1',
             formationId: 1,
             skillId1: "",
@@ -36,7 +36,7 @@ describe('battle test', function() {
             skillId3: 0
         }];
         var opponent_heros = [{
-            heroId: '1',
+            heroId: 'H1101',
             level: '1',
             formationId: 1,
             skillId1: 0,

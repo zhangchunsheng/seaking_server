@@ -11,7 +11,6 @@
             "epid": 0,
             "level": 0
         },//武器
-
         "necklace": {
             "epid": 0,
             "level": 0
@@ -63,8 +62,8 @@
         "activeSkills": [],
         "passiveSkills": []
     },
-    "formation": [{"cId":1},{"cId":3},{"cId":4},null,null,null,null],
-    "partners": [{"cId": 3},{"cId": 4}],
+    "formation": [{"cId":"H1101"},{"cId":"H1102"},{"cId":"H1103"},null,null,null,null],
+    "partners": [{"cId": "H1102"},{"cId": "H1103"}],
     "gift": [],
     "curTasks": {
         "currentMainTask": {"taskId": 10100, "status": 0, "taskRecord": {"itemNum": 0}, "startTime": 0},
