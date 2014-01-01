@@ -42,9 +42,22 @@ exports.getAreaPlayers = function(req, res) {
 
     var sceneId = msg.sceneId;
     area.getAreaPlayers(sceneId, function(err, results) {
+        var entities = [];
+        var entity = {};
+        var result;
+        for(var i in results) {
+            result = JSON.parse(results[i]);
+            entity = {
+                id: i,
+                nickname: result.name,
+                cId: result.cId,
+                level: result.level
+            };
+            entities.push(entity);
+        }
         var data = {
             code: consts.MESSAGE.RES,
-            entities: results
+            entities: entities
         };
         utils.send(msg, res, data);
     });

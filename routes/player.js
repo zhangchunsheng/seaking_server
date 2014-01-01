@@ -110,7 +110,18 @@ exports.changeAndGetSceneData = function(req, res) {
             return;
         }
 
-        area.getAreaInfo(player, function(err, results) {
+        var cityInfo = dataApi.city.findById(target);
+        if(typeof cityInfo == "undefined") {
+            data = {
+                code: Code.AREA.WRONG_AREA
+            };
+            utils.send(msg, res, data);
+
+            return;
+        }
+
+        //area.getAreaInfo(player, function(err, results) {
+        area.getAreaPlayers(target, function(err, results) {
             if (err) {
                 data = {
                     code: consts.MESSAGE.ERR
@@ -120,12 +131,26 @@ exports.changeAndGetSceneData = function(req, res) {
                 return;
             }
 
+            var entities = [];
+            var entity = {};
+            var result;
+            for(var i in results) {
+                result = JSON.parse(results[i]);
+                entity = {
+                    id: i,
+                    nickname: result.name,
+                    cId: result.cId,
+                    level: result.level
+                };
+                entities.push(entity);
+            }
+
             areaId = player.currentScene;
             if(areaId == target || target == "") {
                 data = {
                     code: consts.MESSAGE.RES,
                     currentScene: areaId,
-                    entities: results
+                    entities: entities
                 };
                 utils.send(msg, res, data);
             } else {
@@ -137,13 +162,13 @@ exports.changeAndGetSceneData = function(req, res) {
                         data = {
                             code: consts.MESSAGE.RES,
                             currentScene: areaId,
-                            entities: results
+                            entities: entities
                         };
                     } else {
                         data = {
                             code: consts.MESSAGE.RES,
                             currentScene: target,
-                            entities: results
+                            entities: entities
                         };
                     }
                     utils.send(msg, res, data);

@@ -115,6 +115,8 @@ areaDao.removeAndUpdatePlayer = function(areaId, player, cb) {
                 var date = new Date();
                 var value = {
                     name: player.nickname,
+                    cId: player.cId,
+                    level: player.level,
                     time: date.getTime()
                 };
                 array.push(["hset", key, player.id, JSON.stringify(value)]);

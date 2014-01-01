@@ -86,7 +86,8 @@ module.exports = {
     },
 
     AREA: {
-        WRONG_CURRENTSCENE: 1701
+        WRONG_CURRENTSCENE: 1701,
+        WRONG_AREA: 1702
     },
 
     CHARACTER: {
