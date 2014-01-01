@@ -135,6 +135,8 @@ exports.changeAndGetSceneData = function(req, res) {
             var entity = {};
             var result;
             for(var i in results) {
+                if(i == player.id)
+                    continue;
                 result = JSON.parse(results[i]);
                 entity = {
                     id: i,
