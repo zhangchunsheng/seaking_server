@@ -141,7 +141,7 @@ exports.changeAndGetSceneData = function(req, res) {
                 entity = {
                     id: i,
                     nickname: result.name,
-                    cId: result.cId,
+                    heroId: result.cId,
                     level: result.level
                 };
                 entities.push(entity);
