@@ -13,6 +13,7 @@ var equipmentsService = require('../app/services/equipmentsService');
 var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
+var areaUtil = require('../app/utils/areaUtil');
 var consts = require('../app/consts/consts');
 var EntityType = require('../app/consts/consts').EntityType;
 var dataApi = require('../app/utils/dataApi');
@@ -132,20 +133,7 @@ exports.changeAndGetSceneData = function(req, res) {
             }
 
             var entities = [];
-            var entity = {};
-            var result;
-            for(var i in results) {
-                if(i == player.id)
-                    continue;
-                result = JSON.parse(results[i]);
-                entity = {
-                    id: i,
-                    nickname: result.name,
-                    heroId: result.cId,
-                    level: result.level
-                };
-                entities.push(entity);
-            }
+            //entities = areaUtil.getEntities(target, results, player);
 
             areaId = player.currentScene;
             if(areaId == target || target == "") {

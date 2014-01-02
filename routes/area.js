@@ -5,9 +5,11 @@
  * Date: 2013-09-24
  * Description: area
  */
+var userService = require('../app/services/userService');
 var areaService = require('../app/services/areaService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
+var areaUtil = require('../app/utils/areaUtil');
 var consts = require('../app/consts/consts');
 var EntityType = require('../app/consts/consts').EntityType;
 var dataApi = require('../app/utils/dataApi');
@@ -60,5 +62,51 @@ exports.getAreaPlayers = function(req, res) {
             entities: entities
         };
         utils.send(msg, res, data);
+    });
+}
+
+/**
+ * getSceneData
+ * @param req
+ * @param res
+ */
+exports.getSceneData = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var sceneId = msg.sceneId;
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        if(utils.empty(sceneId)) {
+            sceneId = player.currentScene;
+        }
+        var cityInfo = dataApi.city.findById(sceneId);
+        if(typeof cityInfo == "undefined") {
+            data = {
+                code: Code.AREA.WRONG_AREA
+            };
+            utils.send(msg, res, data);
+
+            return;
+        }
+        area.getAreaPlayers(sceneId, function(err, results) {
+            var entities = [];
+            //entities = areaUtil.getEntities(sceneId, results, player);
+
+            var data = {
+                code: consts.MESSAGE.RES,
+                entities: entities
+            };
+            utils.send(msg, res, data);
+        });
     });
 }

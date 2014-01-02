@@ -48,6 +48,7 @@ module.exports = function (app) {
 
     app.get('/area/getAreaInfo', area.getAreaInfo);
     app.get('/area/getAreaPlayers', area.getAreaPlayers);
+    app.get('/area/getSceneData', area.getSceneData);
 
     // 竞技场
     app.get('/arena/pk', authRequired, arena.pk);
