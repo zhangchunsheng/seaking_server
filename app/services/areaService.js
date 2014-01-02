@@ -6,7 +6,7 @@
  * Description: areaService
  */
 var redisService = require('./redisService');
-var initData = require('../../../config/data/initData');
+var initData = require('../../config/data/initData');
 var areaDao = require('../dao/areaDao');
 var utils = require('../utils/utils');
 var areaUtil = require('../utils/areaUtil');

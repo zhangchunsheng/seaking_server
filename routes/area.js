@@ -102,11 +102,13 @@ exports.getSceneData = function(req, res) {
             var entities = [];
             //entities = areaUtil.getEntities(sceneId, results, player);
 
-            var data = {
-                code: consts.MESSAGE.RES,
-                entities: entities
-            };
-            utils.send(msg, res, data);
+            areaService.getEntities(sceneId, results, player, function(err, entities) {
+                var data = {
+                    code: consts.MESSAGE.RES,
+                    entities: entities
+                };
+                utils.send(msg, res, data);
+            });
         });
     });
 }

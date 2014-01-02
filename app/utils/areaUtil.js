@@ -6,7 +6,7 @@
  * Description: buffUtil
  */
 var consts = require('../consts/consts');
-var redisService = require('../app/services/redisService');
+var redisService = require('../services/redisService');
 
 var areaUtil = module.exports;
 

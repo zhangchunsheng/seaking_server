@@ -11,6 +11,7 @@ var partnerService = require('../app/services/partnerService');
 var packageService = require('../app/services/packageService');
 var equipmentsService = require('../app/services/equipmentsService');
 var taskService = require('../app/services/taskService');
+var areaService = require('../app/services/areaService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var areaUtil = require('../app/utils/areaUtil');
@@ -134,36 +135,37 @@ exports.changeAndGetSceneData = function(req, res) {
 
             var entities = [];
             //entities = areaUtil.getEntities(target, results, player);
-
-            areaId = player.currentScene;
-            if(areaId == target || target == "") {
-                data = {
-                    code: consts.MESSAGE.RES,
-                    currentScene: areaId,
-                    entities: entities
-                };
-                utils.send(msg, res, data);
-            } else {
-                player.x = 100;
-                player.y = 100;
-                player.currentScene = target;
-                world.removeAndUpdatePlayer(areaId, player, function(err) {
-                    if(err) {
-                        data = {
-                            code: consts.MESSAGE.RES,
-                            currentScene: areaId,
-                            entities: entities
-                        };
-                    } else {
-                        data = {
-                            code: consts.MESSAGE.RES,
-                            currentScene: target,
-                            entities: entities
-                        };
-                    }
+            areaService.getEntities(target, results, player, function(err, entities) {
+                areaId = player.currentScene;
+                if(areaId == target || target == "") {
+                    data = {
+                        code: consts.MESSAGE.RES,
+                        currentScene: areaId,
+                        entities: entities
+                    };
                     utils.send(msg, res, data);
-                });
-            }
+                } else {
+                    player.x = 100;
+                    player.y = 100;
+                    player.currentScene = target;
+                    world.removeAndUpdatePlayer(areaId, player, function(err) {
+                        if(err) {
+                            data = {
+                                code: consts.MESSAGE.RES,
+                                currentScene: areaId,
+                                entities: entities
+                            };
+                        } else {
+                            data = {
+                                code: consts.MESSAGE.RES,
+                                currentScene: target,
+                                entities: entities
+                            };
+                        }
+                        utils.send(msg, res, data);
+                    });
+                }
+            });
         });
     });
 }
