@@ -106,8 +106,6 @@ areaDao.removeAndUpdatePlayer = function(areaId, player, cb) {
     redis.command(function(client) {
         client.multi()
             .select(redisConfig.database.SEAKING_REDIS_DB, function(err, reply) {
-                var key = player.currentScene;
-
                 var array = [];
                 array.push(["hdel", areaId, player.id]);
                 var key = player.currentScene;
