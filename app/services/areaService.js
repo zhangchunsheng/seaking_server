@@ -140,19 +140,20 @@ areaService.setEntities = function(sceneId, cb) {
             cId = cIds[utils.random(0, cIds.length - 1)];
             level = utils.random(1, 10);
             entity = {
-                nickname: results[i].nickname,
+                name: results[i].nickname,
                 cId: cId,
                 level: level,
                 time: time
             }
-            array.push(["hset", sceneId, results[i].id, JSON.stringify(entity)]);
+            array.push(["hset", sceneId, results[i][0], JSON.stringify(entity)]);
 
             array.push(["hset", keys[i], "cId", cId]);
             array.push(["hset", keys[i], "level", level]);
+            array.push(["hset", keys[i], "currentScene", sceneId]);
             areaService.setAttribute(array, keys[i], entity);
             entities.push({
-                id: results[i].id,
-                nickname: results[i].nickname,
+                id: results[i][0],
+                name: results[i][1],
                 cId: cId,
                 level: level
             });
