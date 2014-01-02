@@ -683,48 +683,55 @@ exports.arrange = function(req, res) {
 exports.unlock = function(req, res) {
     var msg = req.query;
     var end = msg.end;
-    var type = msg.type;
     var session = req.session;
        var uid = session.uid
         , serverId = session.serverId
         , registerType = session.registerType
         , loginName = session.loginName;
-
+    if(end <= 0) {
+        return utils.send(msg, res , {
+            code: Code.FAIL,
+            err: "参数有点问题"
+        })
+    }
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
      userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
          var items =  player.packageEntity;
-         if( end < items.itemCount) {
-            utils.send(msg, res, {
+         var costMoney = 0, costGameCurrency =0;
+         if(end < 32) {
+            costMoney = (32 - items.itemCount)*(2000*(items.itemCount+1-16)+2000*(end-16))/2;
+         } else if(end <= 48 &&end >= 32 && items.itemCount <= 32 ) {
+            costMoney = (32 - items.itemCount) * (2000*(items.itemCount -16 +1)+2000*(32-16))/2;
+            costGameCurrency = (end - 32)*((end-32)+1)/2;
+         }else if(items.itemCount >= 32 && end <= 48 ){
+             costGameCurrency = (end-items.itemCount)*((end-32)+(items.itemCount-32+1))/2;
+         }else{
+            return utils.send(msg, res, {
                 code: Code.FAIL
             });
-             return;
-         }
-         var costMoney = 0, costGameCurrency =0;
-         if(end < 23) {
-            costMoney = (23 - items.itemCount)*(2000*(itemCount+1-14)+2000*(end-14))/2;
-         } else if(end >= 23 && items.itemCount <= 23 ) {
-            costMoney = (23 - items.itemCount) * (2000*(items.itemCount -14 +1)+2000*(23-14))/2;
-            costGameCurrency = (end - 23)*((end-23)+1)/2;
-         }else{
-             costGameCurrency = (end-items.itemCount)*((end-23)+(items.itemCount-23+1))/2;
          }
          if(player.money < costMoney || player.gameCurrency < costGameCurrency) {
             utils.send(msg, res, {
-                code: Code.FAIL
+                code: Code.FAIL,
+                err: "没钱"
             });
              return;
          }
          player.money = player.money - costMoney;
          player.gameCurrency = player.gameCurrency - costGameCurrency;
-         player.packageEntity.unlock(type, end);
+         player.packageEntity.unlock( end);
          player.save();
          var data = {
             code: consts.MESSAGE.RES,
-            money: player.money,
-            gameCurrency: player.gameCurrency
+            data:{
+                money: player.money,
+                gameCurrency: player.gameCurrency
+                ,itemCount: end
+            }
+            
          }
-         async.parallel([
+        async.parallel([
                 function(callback) {
                     userService.updatePlayerAttribute(player, callback);
                 },

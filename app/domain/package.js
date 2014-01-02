@@ -76,7 +76,9 @@ Package.prototype.removeItem = function(index, itemNum) {
     this.save();
     return item;
 }
-
+Package.prototype.unlock = function(end) {
+    this.itemCount = end;
+}
 Package.prototype.hasItem = function(_item) {
 	var flag = [];
 	var num = _item.itemNum;
