@@ -112,6 +112,7 @@ module.exports = function (app) {
     app.get('/package/throwItem', authRequired, package.discardItem);
     app.get('/package/sellItem', authRequired, package.sellItem);
     app.get('/package/userItem', authRequired, package.userItem);
+    app.get("/package/unlock", authRequired, package.unlock);
 
     app.get('/player/enterScene', authRequired, player.enterScene);
     app.get('/player/changeAndGetSceneData', authRequired, player.changeAndGetSceneData);
