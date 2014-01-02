@@ -145,10 +145,10 @@ areaService.setEntities = function(sceneId, cb) {
                 level: level,
                 time: time
             }
-            array.push("hset", sceneId, results[i].id, JSON.stringify(entity));
+            array.push(["hset", sceneId, results[i].id, JSON.stringify(entity)]);
 
-            array.push("hset", keys[i], "cId", cId);
-            array.push("hset", keys[i], "level", level);
+            array.push(["hset", keys[i], "cId", cId]);
+            array.push(["hset", keys[i], "level", level]);
             areaService.setAttribute(array, keys[i], entity);
             entities.push({
                 id: results[i].id,
@@ -184,7 +184,7 @@ areaService.setAttribute = function(array, key, entity) {
     }
 
     for(var i in attributes) {
-        array.push("hset", key, i, attributes[i]);
+        array.push(["hset", key, i, attributes[i]]);
     }
 }
 
