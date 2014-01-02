@@ -101,14 +101,14 @@ exports.changeAndGetSceneData = function(req, res) {
             return;
         }
 
-        if(areaId != player.currentScene) {
+        /*if(areaId != player.currentScene) {
             data = {
                 code: Code.AREA.WRONG_CURRENTSCENE
             };
             utils.send(msg, res, data);
 
             return;
-        }
+        }*/
 
         var cityInfo = dataApi.city.findById(target);
         if(typeof cityInfo == "undefined") {
