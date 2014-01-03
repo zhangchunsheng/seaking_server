@@ -153,7 +153,7 @@ areaService.setEntities = function(sceneId, cb) {
             areaService.setAttribute(array, keys[i], entity);
             entities.push({
                 id: results[i][0],
-                name: results[i][1],
+                nickname: results[i][1],
                 cId: cId,
                 level: level
             });
