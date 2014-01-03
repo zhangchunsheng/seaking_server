@@ -32,7 +32,10 @@ areaUtil.getEntities = function(sceneId, results, player) {
 areaUtil.getOneMoreLevelEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level == (level + 1)) {
-            twentyEntities.push(entities[i]);
+            if(twentyEntities.length < 20)
+                twentyEntities.push(entities[i]);
+            else
+                break;
         }
     }
 }
@@ -40,7 +43,10 @@ areaUtil.getOneMoreLevelEntities = function(twentyEntities, entities, level) {
 areaUtil.getTheSameLevelEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level == level) {
-            twentyEntities.push(entities[i]);
+            if(twentyEntities.length < 20)
+                twentyEntities.push(entities[i]);
+            else
+                break;
         }
     }
 }
@@ -48,7 +54,10 @@ areaUtil.getTheSameLevelEntities = function(twentyEntities, entities, level) {
 areaUtil.getOneLessLevelEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level == (level - 1)) {
-            twentyEntities.push(entities[i]);
+            if(twentyEntities.length < 20)
+                twentyEntities.push(entities[i]);
+            else
+                break;
         }
     }
 }
@@ -56,7 +65,10 @@ areaUtil.getOneLessLevelEntities = function(twentyEntities, entities, level) {
 areaUtil.getMoreLevelEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level > (level + 1)) {
-            twentyEntities.push(entities[i]);
+            if(twentyEntities.length < 20)
+                twentyEntities.push(entities[i]);
+            else
+                break;
         }
     }
 }
@@ -64,7 +76,10 @@ areaUtil.getMoreLevelEntities = function(twentyEntities, entities, level) {
 areaUtil.getLessLevelEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level < (level - 1)) {
-            twentyEntities.push(entities[i]);
+            if(twentyEntities.length < 20)
+                twentyEntities.push(entities[i]);
+            else
+                break;
         }
     }
 }

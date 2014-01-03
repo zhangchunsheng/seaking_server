@@ -140,7 +140,7 @@ areaService.setEntities = function(sceneId, cb) {
             cId = cIds[utils.random(0, cIds.length - 1)];
             level = utils.random(1, 10);
             entity = {
-                name: results[i].nickname,
+                name: results[i][1],
                 cId: cId,
                 level: level,
                 time: time
