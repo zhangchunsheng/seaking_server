@@ -291,12 +291,29 @@ exports.checkFreeTime = function(req, res) {
         } else {
             freeTime = 1;
         }
-        aptitudeService.upgrade(array, player, character, type, function(err, reply) {
-            data = {
-                code: Code.OK,
-                freeTime: freeTime
-            };
-            utils.send(msg, res, data);
-        });
+        var costInfo = {};
+        costInfo[consts.MONEY_TYPE.GOLDEN] = 0;
+        costInfo[consts.MONEY_TYPE.GAME_CURRENCY] = 0;
+        if(utils.getDate(time) == utils.getDate(upgradeDate)) {
+            // check money gamecurrency
+            freeTime = 0;
+
+            var money = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.money;
+            costInfo[consts.MONEY_TYPE.GOLDEN] = money;
+
+            var gameCurrency = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.gameCurrency;
+            costInfo[consts.MONEY_TYPE.GAME_CURRENCY] = gameCurrency;
+        } else {
+            freeTime = 1;
+        }
+
+        data = {
+            code: Code.OK,
+            freeTime: freeTime
+        };
+        if(freeTime == 0) {
+            data.costInfo = costInfo;
+        }
+        utils.send(msg, res, data);
     });
 }
