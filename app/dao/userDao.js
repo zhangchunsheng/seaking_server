@@ -125,7 +125,7 @@ userDao.updateRoleData = function(player, serverId, registerType, loginName, cb)
     userDao.getUserInfo(serverId, registerType, loginName, function(err, reply) {
         var date = new Date();
 
-        var updateRoleDate = new date.getTime();
+        var updateRoleDate = date.getTime();
         if(typeof reply.updateRoleDate != "undefined")
             updateRoleDate = reply.updateRoleDate;
 

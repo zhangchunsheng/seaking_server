@@ -325,3 +325,42 @@ exports.npcTalk = function(req, res) {
         utils.send(msg, res, data);
     });
 }
+
+/**
+ * getPlayerInfo
+ * @param req
+ * @param res
+ */
+exports.getPlayerInfo = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , playerId = msg.playerId;
+
+    var data = {};
+    if(utils.empty(playerId)) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    userService.getPlayerById(playerId, function(err, reply) {
+        if(err) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        data = {
+            code: Code.OK,
+            player: reply
+        };
+        utils.send(msg, res, data);
+    });
+}

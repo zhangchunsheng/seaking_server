@@ -47,8 +47,34 @@ var triggerSkill_script = {
     "skill102101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 生命值低于30%之后，会产生一个持久性的护盾，该护盾使受到的攻击伤害减免25%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill102201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var player;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+        } else if(attackSide == constsV2.characterFightType.DEFENSE) {
+            player = defense;
+        }
+        if(player.fightValue.hp < player.maxHp * 0.3) {
+            return true;
+        } else {
+            return false;
+        }
     },
     "skill103101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 

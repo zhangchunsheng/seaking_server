@@ -123,6 +123,7 @@ module.exports = function (app) {
     app.get('/player/changeView', authRequired, player.changeView);
     app.get('/player/changeArea', authRequired, player.changeArea);
     app.get('/player/npcTalk', authRequired, player.npcTalk);
+    app.get('/player/getPlayerInfo', authRequired, player.getPlayerInfo);
 
     //技能
     app.get('/player/learnSkill', authRequired, skill.learnSkill);
