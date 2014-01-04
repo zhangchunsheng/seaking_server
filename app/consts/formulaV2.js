@@ -92,6 +92,20 @@ formula.calCounterDamage = function(attack, defense) {
     return damage;
 }
 
+formula.calculateXpNeeded = function(level) {
+    var xpNeeded = level * 1000;
+    return Math.floor(xpNeeded);
+}
+
+formula.calculateAccumulated_xp = function(level) {
+    var accumulated_xp = 0;
+    for(var i = 0 ; i < level ; i++) {
+        accumulated_xp += ((i + 1) * 1000);
+    }
+
+    return Math.floor(accumulated_xp);
+}
+
 /**
  * format time
  * @param date
@@ -128,26 +142,6 @@ formula.calculateAddUp = function(value, rate, level) {
 formula.calculateValue = function(value, rate, level) {
     var number = value + rate * level;
     return number;
-}
-
-formula.calculateXpNeeded = function(value, rate, level) {
-    var xpNeeded = value - rate;
-    /*for(var i = 0 ; i < level ; i++) {
-     xpNeeded += rate * (i + 1);
-     }*/
-    xpNeeded += level * (rate + rate * level) / 2;
-    return Math.floor(xpNeeded);
-}
-
-formula.calculateAccumulated_xp = function(value, rate, level) {
-    var xpNeeded = value - rate;
-    var accumulated_xp = 0;
-    for(var i = 0 ; i < level ; i++) {
-        xpNeeded += rate * (i + 1);
-        accumulated_xp += xpNeeded;
-    }
-
-    return Math.floor(accumulated_xp);
 }
 
 /**

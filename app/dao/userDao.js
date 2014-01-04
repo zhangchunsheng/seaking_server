@@ -355,7 +355,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
         }).hexists(key, "characters", function(err, reply) {
             if(reply == 0) {
                 userDao.getCharacterId(client, function(err, characterId) {
-                    var character = playerUtil.initCharacter({
+                    var character = playerUtil.initCharacterV2({
                         cId: cId,
                         serverId: serverId,
                         characterId: characterId,
