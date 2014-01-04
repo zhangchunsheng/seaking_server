@@ -12,6 +12,7 @@ var packageService = require('../app/services/packageService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
+var dataApi = require('../app/utils/dataApi');
 var async = require('async');
 
 exports.index = function(req, res) {
@@ -37,6 +38,15 @@ exports.createMainPlayer = function(req, res) {
 
     var data = {};
     if(typeof msg.cId == "undefined" || msg.cId == "" || msg.cId == 0) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var hero = dataApi.herosV2.findById(msg.cId);
+    if(utils.empty(hero)) {
         data = {
             code: Code.ARGUMENT_EXCEPTION
         };
