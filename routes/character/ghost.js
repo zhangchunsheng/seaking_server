@@ -103,9 +103,9 @@ exports.upgrade = function(req, res) {
             data = {
                 code: Code.OK,
                 level: reply,
-                ghostNum: player.ghostNum,
-                attrValue: attrValue
+                ghostNum: player.ghostNum
             };
+            //data.attrValue = attrValue;
             utils.send(msg, res, data);
         });
     });

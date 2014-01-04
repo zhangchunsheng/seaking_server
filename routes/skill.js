@@ -324,6 +324,27 @@ exports.learnAndUpgradeSkill = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
+        if(status == -1) {
+            data = {
+                code: Code.SKILL.LACK_UPGRADEMATERIAL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(status == -2) {
+            data = {
+                code: Code.SKILL.LACK_UPGRADELEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(status == -3) {
+            data = {
+                code: Code.SKILL.LACK_UPGRADEMONEY
+            };
+            utils.send(msg, res, data);
+            return;
+        }
         //packageInfo
         var packageInfo = status.packageInfo;
         var packageIndex = [];

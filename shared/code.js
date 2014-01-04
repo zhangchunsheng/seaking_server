@@ -113,6 +113,8 @@ module.exports = {
         NO_REACH_SKILL: 1824,
         NO_SKILL: 1825,
         WRONG_TYPE: 1826,
-        LACK_UPGRADEMATERIAL: 1827
+        LACK_UPGRADEMATERIAL: 1827,
+        LACK_UPGRADELEVEL: 1828,
+        LACK_UPGRADEMONEY: 1829
     }
 };

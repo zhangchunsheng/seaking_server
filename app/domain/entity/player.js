@@ -1384,19 +1384,19 @@ Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkill
         }];
         flag = player.packageEntity.checkMaterial(materials);
         if(flag.length != materials.length) {
-            return 0;
+            return -1;
         }
         required.packageInfo = flag;
         // check level
         if(level > this.level) {
-            return 0;
+            return -2;
         }
         required.level = level;
     }
 
     // check money
     if(money > player.money) {
-        return 0;
+        return -3;
     }
     required.money = money;
     return required;
