@@ -218,7 +218,8 @@ exports.updateExp = function(req, res) {
                 }
             ], function(err, reply) {
                 data = {
-                    code: Code.OK
+                    code: Code.OK,
+                    exp: exp
                 };
                 utils.send(msg, res, data);
             });

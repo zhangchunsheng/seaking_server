@@ -797,6 +797,7 @@ userDao.upgrade = function(player, columns, cb) {
                 array.push(["hset", key, o, column[o]]);
                 player[o] = column[o];
             }
+            console.log(array);
             client.multi(array).exec(function(err, replies) {
                 redis.release(client);
                 utils.invokeCallback(cb, null, column);

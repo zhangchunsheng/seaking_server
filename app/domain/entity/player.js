@@ -164,6 +164,7 @@ Player.prototype._upgrade = function() {
     var hero = dataApi.heros.findById(this.cId);
     var upgradeColumn = {
         level: level,
+        experience: this.experience,
         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
@@ -189,6 +190,7 @@ Player.prototype._upgradeV2 = function() {
     var hero = dataApi.herosV2.findById(this.cId);
     var upgradeColumn = {
         level: level,
+        experience: this.experience,
         needExp: formulaV2.calculateXpNeeded(level + 1),
         accumulated_xp: formulaV2.calculateAccumulated_xp(level),
         hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
@@ -215,6 +217,7 @@ Player.prototype.calculatorUpgrade = function(experience) {
     var hero = dataApi.herosV2.findById(this.cId);
     var upgradeColumn = {
         level: level,
+        experience: experience,
         needExp: formulaV2.calculateXpNeeded(level + 1),
         accumulated_xp: formulaV2.calculateAccumulated_xp(level),
         hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
