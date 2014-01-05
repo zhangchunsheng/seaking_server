@@ -11,6 +11,7 @@
 var util = require('util');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
+var formulaV2 = require('../../consts/formulaV2');
 var consts = require('../../consts/consts');
 var EntityType = require('../../consts/consts').EntityType;
 var TaskType = require('../../consts/consts').TaskType;
@@ -182,9 +183,67 @@ Player.prototype._upgrade = function() {
     return upgradeColumn;
 };
 
+Player.prototype._upgradeV2 = function() {
+    this.level += 1;
+    var level = this.level;
+    var hero = dataApi.herosV2.findById(this.cId);
+    var upgradeColumn = {
+        level: level,
+        needExp: formulaV2.calculateXpNeeded(level + 1),
+        accumulated_xp: formulaV2.calculateAccumulated_xp(level),
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level)
+    }
+    this.setNextLevelExpV2();
+    return upgradeColumn;
+};
+
+Player.prototype.calculatorUpgrade = function(experience) {
+    this.level = formulaV2.calculateLevel(experience);
+    var level = this.level;
+    var hero = dataApi.herosV2.findById(this.cId);
+    var upgradeColumn = {
+        level: level,
+        needExp: formulaV2.calculateXpNeeded(level + 1),
+        accumulated_xp: formulaV2.calculateAccumulated_xp(level),
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level)
+    }
+    this.setNextLevelExpV2();
+    this.equipmentsEntity.upgradeInlayCell(this);
+    return upgradeColumn;
+};
+
 Player.prototype.setNextLevelExp = function() {
     var hero = dataApi.heros.findById(this.cId);
     this.nextLevelExp = formula.calculateAccumulated_xp(hero["xpNeeded"], hero["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
+}
+
+Player.prototype.setNextLevelExpV2 = function() {
+    var hero = dataApi.herosV2.findById(this.cId);
+    this.nextLevelExp = formulaV2.calculateXpNeeded(this.level + 1);
 }
 
 Player.prototype.getUpgradeInfo = function() {
@@ -890,7 +949,7 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
     //var epType = utils.getEqType(item.itemId);
     var epType = utils.getEqTypeV2(item.itemId);
     var curEquipment = this.equipmentsEntity.get(epType);
-    this.equipmentsEntity.equip(epType, {
+    this.equipmentsEntity.equip(this, epType, {
         epid: item.itemId,
         level: item.level,
         forgeLevel: item.forgeLevel,

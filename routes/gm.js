@@ -8,6 +8,7 @@
 var gmService = require('../app/services/gmService');
 var userService = require('../app/services/userService');
 var taskService = require('../app/services/taskService');
+var equipmentsService = require('../app/services/equipmentsService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -206,11 +207,14 @@ exports.updateExp = function(req, res) {
         characterId = array[3].replace("C", "");
 
         userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
-            character.updateExp(exp);
+            var upgradeColumn = character.calculatorUpgrade(exp);
 
             async.parallel([
                 function(callback) {
-                    userService.updatePlayerAttribute(character, callback);
+                    userService.upgrade(character, upgradeColumn, callback);
+                },
+                function(callback) {
+                    equipmentsService.update(character.equipmentsEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {
