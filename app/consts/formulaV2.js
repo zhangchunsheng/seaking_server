@@ -119,7 +119,7 @@ formula.calculateLevel = function(experience) {
     } else if(delt < 0) {
         level = 1;
     }
-    return level;
+    return Math.floor(level);
 }
 
 formula.calculateXpNeeded = function(level) {
