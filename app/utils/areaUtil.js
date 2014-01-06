@@ -29,7 +29,73 @@ areaUtil.getEntities = function(sceneId, results, player) {
     return entities;
 }
 
-areaUtil.getOneMoreLevelEntities = function(twentyEntities, entities, level) {
+areaUtil.getOneMoreLevelEntities = function(orderEntities, entities, level) {
+    for(var i = 0 ; i < entities.length ; i++) {
+        if(entities[i].level == (level + 1)) {
+            orderEntities.push(entities[i]);
+        }
+    }
+}
+
+areaUtil.getTheSameLevelEntities = function(orderEntities, entities, level) {
+    for(var i = 0 ; i < entities.length ; i++) {
+        if(entities[i].level == level) {
+            orderEntities.push(entities[i]);
+        }
+    }
+}
+
+areaUtil.getOneLessLevelEntities = function(orderEntities, entities, level) {
+    for(var i = 0 ; i < entities.length ; i++) {
+        if(entities[i].level == (level - 1)) {
+            orderEntities.push(entities[i]);
+        }
+    }
+}
+
+areaUtil.getMoreLevelEntities = function(orderEntities, entities, level) {
+    for(var i = 0 ; i < entities.length ; i++) {
+        if(entities[i].level > (level + 1)) {
+            orderEntities.push(entities[i]);
+        }
+    }
+}
+
+areaUtil.getLessLevelEntities = function(orderEntities, entities, level) {
+    for(var i = 0 ; i < entities.length ; i++) {
+        if(entities[i].level < (level - 1)) {
+            orderEntities.push(entities[i]);
+        }
+    }
+}
+
+areaUtil.getCurrentEntities = function(pageInfo, entities, player) {
+    var currentPage = pageInfo.currentPage || 1;
+    var perPage = pageInfo.perPage || 20;
+    var allPage = Math.ceil(entities.length / perPage);
+    pageInfo.allPage = allPage;
+    if(currentPage < 1) {
+        currentPage = 1;
+    }
+    if(currentPage > allPage) {
+        currentPage = allPage;
+    }
+
+    var start = 0;
+    var end = perPage - 1;
+    start = (currentPage - 1) * perPage;
+    end = currentPage * perPage - 1;
+    var currentEntities = [];
+    for(var i = start ; i < end ; i++) {
+        currentEntities.push(entities[i]);
+    }
+    return {
+        pageInfo: pageInfo,
+        currentEntities: currentEntities
+    };
+}
+
+areaUtil.getOneMoreLevelTwentyEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level == (level + 1)) {
             if(twentyEntities.length < 20)
@@ -40,7 +106,7 @@ areaUtil.getOneMoreLevelEntities = function(twentyEntities, entities, level) {
     }
 }
 
-areaUtil.getTheSameLevelEntities = function(twentyEntities, entities, level) {
+areaUtil.getTheSameLevelTwentyEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level == level) {
             if(twentyEntities.length < 20)
@@ -51,7 +117,7 @@ areaUtil.getTheSameLevelEntities = function(twentyEntities, entities, level) {
     }
 }
 
-areaUtil.getOneLessLevelEntities = function(twentyEntities, entities, level) {
+areaUtil.getOneLessLevelTwentyEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level == (level - 1)) {
             if(twentyEntities.length < 20)
@@ -62,7 +128,7 @@ areaUtil.getOneLessLevelEntities = function(twentyEntities, entities, level) {
     }
 }
 
-areaUtil.getMoreLevelEntities = function(twentyEntities, entities, level) {
+areaUtil.getMoreLevelTwentyEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level > (level + 1)) {
             if(twentyEntities.length < 20)
@@ -73,7 +139,7 @@ areaUtil.getMoreLevelEntities = function(twentyEntities, entities, level) {
     }
 }
 
-areaUtil.getLessLevelEntities = function(twentyEntities, entities, level) {
+areaUtil.getLessLevelTwentyEntities = function(twentyEntities, entities, level) {
     for(var i = 0 ; i < entities.length ; i++) {
         if(entities[i].level < (level - 1)) {
             if(twentyEntities.length < 20)

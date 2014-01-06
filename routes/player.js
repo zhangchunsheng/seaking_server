@@ -134,14 +134,20 @@ exports.changeAndGetSceneData = function(req, res) {
             }
 
             var entities = [];
+            var pageInfo = {
+                currentPage: 1,
+                perPage: 20
+            };
             //entities = areaUtil.getEntities(target, results, player);
-            areaService.getEntities(target, results, player, function(err, entities) {
+            //areaService.getEntities(target, results, player, function(err, entities) {
+            areaService.getCurrentPageEntities(target, results, player, pageInfo, function(err, entities) {
                 areaId = player.currentScene;
                 if(areaId == target || target == "") {
                     data = {
                         code: consts.MESSAGE.RES,
                         currentScene: areaId,
-                        entities: entities
+                        pageInfo: entities.pageInfo,
+                        entities: entities.currentEntities
                     };
                     utils.send(msg, res, data);
                 } else {
@@ -153,13 +159,15 @@ exports.changeAndGetSceneData = function(req, res) {
                             data = {
                                 code: consts.MESSAGE.RES,
                                 currentScene: areaId,
-                                entities: entities
+                                pageInfo: entities.pageInfo,
+                                entities: entities.currentEntities
                             };
                         } else {
                             data = {
                                 code: consts.MESSAGE.RES,
                                 currentScene: target,
-                                entities: entities
+                                pageInfo: entities.pageInfo,
+                                entities: entities.currentEntities
                             };
                         }
                         utils.send(msg, res, data);
