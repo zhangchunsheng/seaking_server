@@ -112,7 +112,7 @@ exports.getSceneData = function(req, res) {
 
             //areaService.getEntities(sceneId, results, player, function(err, entities) {
             areaService.getCurrentPageEntities(sceneId, results, player, pageInfo, function(err, entities) {
-                if(entities == []) {
+                if(entities.length == 0) {
                     data = {
                         code: Code.AREA.NOMORE_DATA
                     };
