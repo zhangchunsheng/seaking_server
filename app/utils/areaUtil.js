@@ -85,6 +85,9 @@ areaUtil.getCurrentEntities = function(pageInfo, entities, player) {
     var end = perPage - 1;
     start = (currentPage - 1) * perPage;
     end = currentPage * perPage;
+    if(end > entities.length) {
+        end = entities.length;
+    }
     var currentEntities = [];
     for(var i = start ; i < end ; i++) {
         currentEntities.push(entities[i]);
