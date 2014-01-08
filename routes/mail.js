@@ -199,7 +199,7 @@ mail.del = function(req, res) {
         msg.box = Key+"_"+MailKeyType.MAILIN;
     }  
     mailDao.del(msg, function(err, r) {
-        if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
+        if(err){utils.send(msg, res, {code: Code.OK, err: err});return;}
         utils.send(msg, res, {code: Code.OK, data: r});
     });
 }
