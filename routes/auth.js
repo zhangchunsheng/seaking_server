@@ -51,7 +51,7 @@ exports.auth = function(req, res) {
 
     utils.addOrigin(res, req);
     userService.getCharactersByLoginName(userInfo.serverId, userInfo.registerType, userInfo.loginName, function(err, results) {
-        console.log(results);
+        //console.log(results);
         if(err || !results) {
             data = {
                 code: Code.FAIL

@@ -35,6 +35,7 @@ Partner.prototype.update = function(field, value) {
  */
 Partner.prototype.strip = function() {
     return {
+        ZX:this.ZX,
         id: this.id,
         entityId: this.entityId,
         nickname: this.nickname,

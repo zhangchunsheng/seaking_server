@@ -83,7 +83,7 @@ module.exports = function (app) {
     app.get('/friend/add', authRequired, friend.add);
     app.get('/friend/addByName', authRequired, friend.addByName);
     app.get('/friend/remove', authRequired, friend.remove);
-    app.get('/friend/getProperty', authRequired, friend.getProperty);
+
 
     app.get('/guide/get', authRequired, guide.get);
     app.get('/guide/save', authRequired, guide.save);
@@ -101,10 +101,15 @@ module.exports = function (app) {
     app.get("/mail/_Set", authRequired, mail._Set);
 
     app.get("/astrology/main", authRequired, astrology.main);
-    app.get("/astrology/use", authRequired, astrology.use);
-    app.get("/astrology/buy", authRequired, astrology.goldbuy);
-    app.get("/astrology/clean", authRequired, astrology.clean);
-    app.get("/astrology/pickUp", authRequired, astrology.pickUpAll);
+    app.get("/astrology/random", authRequired, astrology.random);
+    app.get("/astrology/buy", authRequired, astrology.buy);
+    app.get("/astrology/sell", authRequired, astrology.sell);
+    app.get("/astrology/load", authRequired, astrology.load);
+    app.get("/astrology/test", authRequired, astrology.test);
+    //app.get("/astrology/pickUp", authRequired, astrology.pickUp);
+    app.get("/astrology/pickUpAll", authRequired, astrology.pickUpAll);
+    //app.get("/astrology/exchange", authRequired, astrology.exchange);
+    //app.get("/astrology/merger", authRequired, astrology.merger);
 
     app.get("/package/_Set", authRequired, package._Set);
     app.get('/package/_AddItem', authRequired, package.addItem);

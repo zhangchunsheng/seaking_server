@@ -94,7 +94,7 @@ module.exports = {
      		})
      	});
 	},
-    getProperty: function(req, res) {
+    _getProperty: function(req, res) {
         var msg =req.query;
         if(!msg.playerId) {
             return utils.send(msg ,res, {code: Code.FAIL});

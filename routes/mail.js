@@ -46,13 +46,15 @@ mail.send = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
-    	if (msg.to == playerId || msg.toName == player.nickname) {
+    	/*
+        if (msg.to == playerId || msg.toName == player.nickname) {
             utils.send(msg,res, {
                 code : Code.FAIL,
                 err:"不能发给自己"
             });
             return;
         }
+        */
         msg.from = playerId;
         msg.fromName = player.nickname;
         var fromKey = picecBoxName(session);
@@ -63,6 +65,7 @@ mail.send = function(req, res) {
            // msg.mail = m;
             msg.toKey = m.toKey ;
             msg.fromKey = picecBoxName(session);
+            console.log("msg",msg);
         	mailDao.send(msg,function(err, mail){
         		if(err){utils.send(msg, res, {code: Code.FAIL, err:err});return;}
         		utils.send(msg, res, {code: Code.OK, data:{mailId:mail.mailId, time: mail.time}});
@@ -73,7 +76,19 @@ mail.send = function(req, res) {
     });
 }
 
-//
+function aToj(array) {
+    var jsons = [];
+    console.log(array.length)
+    for(var i = 0, len = array.length; i< len;i++) {
+        if(array[i]){
+            jsons.push(JSON.parse(array[i]));
+        }else{
+           // jsons.push(array[i]);
+        }
+        
+    }
+    return jsons;
+}
 mail.getIn = function(req, res) {
     var msg = req.query;
     var session = req.session;
@@ -81,7 +96,7 @@ mail.getIn = function(req, res) {
     msg.box = Key+"_"+MailKeyType.MAILIN;
     mailDao.getAll(msg, function(err, mails) {
         if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
-        utils.send(msg, res, {code: Code.OK, data: mails});
+        utils.send(msg, res, {code: Code.OK, data: aToj(mails)});
     });
 }
 
@@ -92,7 +107,7 @@ mail.getOut = function(req, res) {
     msg.box = Key+"_"+MailKeyType.MAILOUT;
     mailDao.getAll(msg, function(err, mails) {
         if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
-        utils.send(msg, res, {code: Code.OK, data: mails});
+        utils.send(msg, res, {code: Code.OK, data: aToj(mails)});
     });
 }
 

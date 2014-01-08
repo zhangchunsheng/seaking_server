@@ -540,6 +540,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                         level: level,
                         replies: replies
                     });
+
                     var taskInfo = {};
                     for(var o in character.curTasks) {
                         if(o == "currentDayTask") {
@@ -557,17 +558,21 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
 
                     async.parallel([
                         function(callback) {
+                           
                             partnerDao.getAllPartner(client, character.partners, serverId, registerType, loginName, characterId, function(err, partners) {
                                 if(!!err || !partners) {
                                     console.log('Get partners for partnerDao failed! ' + err);
                                 }
+                                
                                 callback(err, partners);
                             });
                         }
                     ],
                     function(err, results) {
+
                         var partners = results[0];
                         character.partners = partners;
+                            
                         var player = playerUtil.getPlayer(character);
                         var fKey = dbUtil.getFriendKey(serverId, registerType, loginName, characterId);
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
@@ -624,7 +629,6 @@ userDao.getPlayerById = function(playerId, cb) {
                         level: level,
                         replies: replies
                     });
-
                     async.parallel([
                         function(callback) {
                             partnerDao.getAllPartner(client, character.partners, character.serverId, character.registerType, character.loginName, characterId, function(err, partners) {

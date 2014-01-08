@@ -236,6 +236,7 @@ partnerUtil.initPartnerV2 = function(opts) {
 partnerUtil.getPlayer = function(opts) {
     var skills = new Skills(opts);
     var character = {
+        ZX: JSON.parse(opts.replies.ZX || "{\"i\":[],\"c\":3}"),
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
         kindId: opts.cId,

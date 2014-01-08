@@ -21,7 +21,7 @@ if(redisConfig[env]) {
 */
 
 function getvipNum(player) {
-	return 2+player.vip || 100;
+	return 2+player.vip || 3;
 }
 
 astrologyDao.get = function( key , callback, client) {
@@ -60,7 +60,7 @@ astrologyDao.main = function(player, callback) {
 				var astrology ={time : Date.now()};
 				astrology.items =  [];
 				astrology.cacheItems =  [];
-				astrology.opens = [1];
+				astrology.opens = 0;
 				astrology.integral =  0;
 				astrology.itemCount =  10;
 				run(astrology);
@@ -92,32 +92,31 @@ astrologyDao.maxItems = 30;
 astrologyDao.getUseMoney = function(index) {
 	switch(index) {
 		case 0:
-			return 10;
+			return 1000;
 		break;
 		case 1:
-			return 20;
+			return 2000;
 		break;
 		case 2:
-			return 30;
+			return 5000;
 		break;
 		case 3:
-			return 40;
+			return 10000;
 		break;
 		case 4:
-			return 50;
+			return 20000;
 		break;
 	}
 };
-//抽取数据需要修改
-//数据只有到0,1 2的话就错误了
-astrologyDao.use = function(player, index, callback) {
-	var index = parseInt(index);
+astrologyDao.use = function(player,  callback) {
+	//var index = parseInt(index);
 	redis.command(function(client){
 		astrologyDao.get(player.Key, function(err, res) {
 			if(err){redis.release(client);callback(err);return;}
 			if(!res){redis.release(client);callback("Operator error");return;}
 			var astrology = JSON.parse(res);
-			if( !astrology.opens[index] || astrology.cacheItems.length >= astrologyDao.maxCacheItems){
+			var index = astrology.opens;
+			if( astrology.cacheItems.length >= astrologyDao.maxCacheItems){
 				redis.release(client);callback("data err");return;
 			}
 			var array = [];
@@ -132,14 +131,11 @@ astrologyDao.use = function(player, index, callback) {
 				astrology.num--;
 			}
 
-			if(index != 0){
-				astrology.opens[index]=0;
-			}
 			astrology.integral  = (astrology.integral - 0) + astrologyDao.integral(index);
 			var random = astrologyDao.random(index);
 			var item = astrologyDao.randomItem(index);
 			astrology.cacheItems.push(item);
-			if(random){astrology.opens[index+1]=1;}
+			if(random){astrology.opens=index+1;}else{astrology.opens=0;}
 			array.push(["hset", player.Key, "astrology", JSON.stringify(astrology)]);
 			client.multi(array).exec(function(err, res) {
 				redis.release(client);
@@ -153,47 +149,32 @@ astrologyDao.use = function(player, index, callback) {
 astrologyDao.integral = function(index) {
 	switch(index){
 		case 0:
-			return 1;
+			return 20;
 		case 1:
-			return 2;
+			return 50;
 		case 2:
-			return 3;
+			return 100;
 		case 3:
-			return 4;
+			return 200;
 		case 4:
-			return 5;
+			return 500;
 
 	}
 }
 
-function prizeItem(casino, level) {
+function prizeItem(casino) {
     var items = casino.itemData;
-    var allPricen = casino.allPricen;
-    var array = [];
+    var random = Math.random();
     for (var i = 0; i < items.length; i++) {
-        var probability = items[i].probability / allPricen;
-        array.push(probability);
+       if(random < items[i].probability ) {
+       		return  {
+       			id: items[i].id,
+       			//level: items[i].level || 1
+       		}
+       }
     }
-    var index = prizeIndex(array);
-	return items[index];
 }
 
-function prizeIndex(array) {
-    var k = 0;
-    for (var i = 0; i < array.length; i++) {
-        k += array[i];
-    }
-    var j = Math.random() * k;
-    k = 0;
-    var i;
-    for (i = 0; i < array.length; i++) {
-        k += array[i];
-        if (j < k) {
-            break;
-        }
-    }
-    return i;
-}
 
 var dataApi = require('../utils/dataApi');
 astrologyDao.randomItem = function(index) {
@@ -205,16 +186,16 @@ astrologyDao.random = function(index) {
 	var r;
 	switch(index) {
 		case 0:
-			r = 40;
+			r = 50;
 			break;
 		case 1:
-			r = 30;
+				r = 40;
 			break;
 		case 2:
-			r = 20;
+			r = 30;
 			break;
 		case 3:
-			r = 40 ;
+			r = 50 ;
 			break;
 		case 4:
 			r = 0;
@@ -225,7 +206,37 @@ astrologyDao.random = function(index) {
 	}
 	return false;
 }
-
+var isBad = function(item) {
+	var i = item.id.substring(1,2);
+	if(i<=1) {
+		return true;
+	}
+	return false;
+}
+astrologyDao.sell = function(player, callback) {
+	redis.command(function(client) {
+		astrologyDao.get(player.Key, function(err, res) {
+			if(err){redis.release(client);callback(err);return;}
+			if(!res){redis.release(client);callback("Operator error");return;}
+			var astrology = JSON.parse(res);
+			var money = 0;
+			var goodItems = [];
+			var cacheItems = astrology.cacheItems;
+			for(var i in cacheItems) {
+				var item = cacheItems[i];
+				if( isBad(item) ){
+					var info = dataApi.astrology.findById(item.id);
+					money += (info.price ) - 0;
+				}else{
+					goodItems.push(item);
+				}
+			}
+			callback(null, {
+				money: money
+			});
+		});
+	});
+}
 astrologyDao.clean = function(player, callback) {
 	redis.command(function(client) {
 		astrologyDao.get(player.Key, function(err, res) {
@@ -244,7 +255,9 @@ astrologyDao.clean = function(player, callback) {
 			}
 			player.money += money;
 			astrology.cacheItems = goodItems;
-			var array = [];
+			var array = [
+				["select", redisConfig.database.SEAKING_REDIS_DB]
+			];
 			array.push(["hset", player.Key, "money", player.money]);
 			array.push(["hset", player.Key, "astrology", JSON.stringify(astrology)]);
 			client.multi(array).exec(function(err, res) {
@@ -257,7 +270,7 @@ astrologyDao.clean = function(player, callback) {
 
 astrologyDao.maxBad = 10;
 astrologyDao.isBadItem = function(item) {
-	if(item.level < astrologyDao.maxBad){
+	if(item.id.substring(1,2) <= 1) {
 		return true;
 	}
 	return false;
@@ -304,10 +317,14 @@ astrologyDao.pickUpAll = function(Key , callback) {
 				data.isfull = 1;
 			}
 			data.astrology = astrology;
-			console.log(data);
-			client.hset(Key, "astrology" , JSON.stringify(astrology), function(err, res) {
-				callback(err, data);
-			}) ;
+			var array = [
+				["select", redisConfig.database.SEAKING_REDIS_DB],
+				["hset", Key, "astrology", JSON.stringify(astrology)]
+			];
+			client.multi(array).exec(function(err, res) {
+				redis.release(client);
+				callback(err, {astrology: astrology});
+			});
 		});
 	});
 }
@@ -316,12 +333,14 @@ astrologyDao.pickUpAll = function(Key , callback) {
 
 
 astrologyDao.onceGame = 10;
-astrologyDao.onceGold = 1;
+astrologyDao.onceGold = 10;
 astrologyDao.buy = function(player, callback) {
 	if(player.gameCurrency <  astrologyDao.onceGold) {
 		callback("gold money not  enough");return;
 	}
-	var array = [];
+	var array = [
+		["select", redisConfig.database.SEAKING_REDIS_DB]
+	];
 	player.gameCurrency -=  astrologyDao.onceGold;
 	array.push(["hset", player.Key, "gameCurrency", player.gameCurrency]);
 	
@@ -329,8 +348,15 @@ astrologyDao.buy = function(player, callback) {
 		astrologyDao.get(player.Key, function(err, res) {
 			if(err){redis.release(client);callback(err);return;}
 			if(!res){redis.release(client);callback("Operator error");return;}
-			var astrology = JSON.parse(res);			
-			astrology.opens["3"] = 1;
+			var astrology = JSON.parse(res);
+			if(astrology.opens>=3) {
+				//先获得执行
+				var index = astrology.opens;
+				var item = astrologyDao.randomItem(index);
+				astrology.cacheItems.push(item);
+				astrology.integral  = (astrology.integral - 0) + astrologyDao.integral(index);
+			}			
+			astrology.opens=3;
 			console.log(astrology);
 			array.push(["hset", player.Key, "astrology", JSON.stringify(astrology)]);
 			client.multi(array).exec(function(err , res) {
@@ -348,7 +374,9 @@ astrologyDao.unlock = function(player, end,  callback) {
 			if(!res){redis.release(client);callback("Operator error");return;}
 			var astrology = JSON.parse(res);
 			var  moneys = astrologyDao.getunlockMoney(astrology.itemCount , end);
-			var array = [];
+			var array = [
+				["select", redisConfig.database.SEAKING_REDIS_DB]
+			];
 			if(moneys.money &&  (player.money < moneys.money ) ) {
 				redis.release(client);callback("money not enough", null);return;
 			}else{
@@ -395,9 +423,13 @@ astrologyDao.exchange = function(Key, exchangeIndex, num ,callback) {
 			if(r.integral > astrology.integral){redis.release(client);callback("integral enough ");return;}
 			astrology.integral -= r.integral;
 			astrology.items.push(r.item);
-			client.hset(Key, "astrology", JSON.stringify(astrology), function(err, res) {
+			var array = [
+				["select", redisConfig.database.SEAKING_REDIS_DB],
+				["hset", Key, "astrology", JSON.stringify(astrology)]
+			]
+			client.multi(array).exec(function(err, res) {
 				redis.release(client);
-				callback(err, astrology);
+				callback(err, {gold: player.gameCurrency, money: player.money, astrology: astrology});
 			});
 		});
 	});
@@ -448,28 +480,35 @@ astrologyDao.merger = function(player) {
 				_items.push(main);
 			}
 			astrology.items  = _items;
-			client.hset(Key, "astrology", JSON.stringify(astrology), function(err, res) {
+			var array = [
+				["select", redisConfig.database.SEAKING_REDIS_DB],
+				["hset", Key, "astrology", JSON.stringify(astrology)]
+			];
+			client.multi(array).exec(function(err, res) {
 				redis.release(client);
-				callback(err, astrology);
+				callback(err, {gold: player.gameCurrency, money: player.money, astrology: astrology});
 			});
 
 		}, client);
 	});
 }
-astrologyDao.load = function(index, player, callback) {
+astrologyDao.load = function(data, player, callback) {
+	var index = data.index;
 	redis.command(function(client){
 		astrologyDao.get(player.Key, function(err, res) {
 			if(err){redis.release(client);callback(err);return;}
 			if(!res){redis.release(client);callback("Operator error");return;}
+			
 			var astrology = JSON.parse(res);
 			var item = astrology.items[index];
 			if(!item) {
 				return callback("not item");
 			}
-			var itemInfo = dataApi.astrologys.findById(item.itemId);
+			var itemInfo = dataApi.astrology.findById(item.id);
 			var property = itemInfo.property;
 			var value = itemInfo.value;
-			
+			console.log(itemInfo);
+			throw new Error("ffff");
 			var _item;
 			var data = {};
 			var character;
@@ -482,21 +521,45 @@ astrologyDao.load = function(index, player, callback) {
 				return callback("not player");
 			}
 			
-			switch(property) {
+			/*switch(property) {
 				case 1:
 					character.attack += (itemInfo.value - _itemInfo.value);
 				break;
 
+			}*/
+			//查找相同的属性的星蕴
+			var items = character.astrology.items;
+			var hasNull=[];
+			for(var i = 0, len = character.astrology.itemCount ;i <len ;i++) {
+				var __item = items[i];
+				if(__item){
+					var __itemInfo = dataApi.astrologys.findById(__item.id);
+					if(itemInfo.property == __itemInfo.property) {
+						index = i;
+						_item = items[i];
+						break;
+					}
+				}else{
+					hasNull.push(i);
+				}
 			}
-
+			if(!index ) {
+				if(hasNull.length <=0) {
+					return callback("partner astrology location not enough");
+				}else{
+					index = hasNull.shift();
+				}
+			}
+			items[index] = item;
 			astrology.items[index] = _item;
 			player.save();
-			client.hset(Key, "astrology", JSON.stringify(astrology), function(err, res) {
+			var array = [
+				["select", redisConfig.database.SEAKING_REDIS_DB],
+				["hset", Key, "astrology", JSON.stringify(astrology)]
+			]
+			client.multi(array).exec(function(err, res) {
 				redis.release(client);
-				callback(err, {
-					astrology: astrology,
-					data: data
-				});
+				callback(err, {gold: player.gameCurrency, money: player.money, astrology: astrology});
 			});
 		},client);
 	});

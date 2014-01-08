@@ -183,15 +183,15 @@ module.exports = {
 	},
 	getProperty: function(data, callback) {
 		/*
-		1 - 生命
-		2 - 攻击
-		3 - 防御
-		4 - 幸运
-		5 - 速度
-		6 - 暴击
-		7 - 格挡
-		8 - 闪避
-		9 - 反击
+		1 - 生命 'hp'
+		2 - 攻击 'attack'
+		3 - 防御 'defense'
+		4 - 幸运 'sunderArmor'
+		5 - 速度 'speed'
+		6 - 暴击 'criticalHit'
+		7 - 格挡 'block'
+		8 - 闪避 'dodge'
+		9 - 反击 'counter'
 		*/
 		var key = data.key;
 		var playerId = data.playerId;
@@ -199,25 +199,32 @@ module.exports = {
 			client.select(redisConfig.database.SEAKING_REDIS_DB, function(err) {
 				if(err){redis.release(client); return callback(err);}
 				//是否验证有该好友
-				client.ZRANK(key, playerId, function(err, result) {
-					if(err) {redis.release(client);return callback(err);}
-					if(result===null){redis.release(client);return callback("不是你好友");}
+				//client.ZRANK(key, playerId, function(err, result) {
+					//if(err) {redis.release(client);return callback(err);}
+					//if(result===null){redis.release(client);return callback("不是你好友");}
 					client.get(playerId, function(err, result) {
 						if(err) {redis.release(client);return callback(err);}
-						client.hmget(result, "hp", "maxHp", "attack", "defense", "speed", "critDamage" , "dodge" ,function(err, res) {
+						console.log(result);
+						client.hmget(result,  "hp", "attack", "defense", "sunderArmor", "speed", "criticalHit", "block", "dodge", "counter", "currentSkills",function(err, res) {
 							redis.release(client);
+							console.log(res);
 							callback(null, {
-								hp: res[0],
-								maxHp: res[1],
-								attack: res[2],
-								defense: res[3],
-								speed: res[4],
-								critDamage: res[5],
-								dodge: res[6]
+								Property: {
+									1: res[0] || 0 ,
+									2: res[1] || 0,
+									3: res[2] || 0,
+									4: res[3] || 0,
+									5: res[4] || 0,
+									6: res[5] || 0,
+									7: res[6] || 0,
+									8: res[7] || 0,
+									9: res[8] || 0,
+								},
+								currentSkills: res[9] 
 							});
 						});
 					});
-				});
+				//});
 			});
 		});
 	}

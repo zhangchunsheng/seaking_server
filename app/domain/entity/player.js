@@ -37,6 +37,7 @@ var skillUtil = require('../../utils/skillUtil');
  */
 var Player = function(opts) {
     Character.call(this, opts);
+    this.ZX = opts.ZX;
     this.id = opts.id;
     this.type = EntityType.PLAYER;
     this.userId = opts.userId;
@@ -1562,6 +1563,7 @@ Player.prototype.logTaskData = function(type) {
 //Convert player' state to json and return
 Player.prototype.strip = function() {
     return {
+        ZX: this.ZX,
         id: this.id,
         entityId: this.entityId,
         nickname: this.nickname,
@@ -1781,7 +1783,8 @@ Player.prototype.toJSON = function() {
         friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
-        aptitude: this.aptitudeEntity.getInfo()
+        aptitude: this.aptitudeEntity.getInfo(),
+        ZX: this.ZX
     };
 };
 

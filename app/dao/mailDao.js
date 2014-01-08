@@ -18,7 +18,7 @@ var mailDao = module.exports;
 
 
 mailDao.new = function(msg, callback) {
-	async.parallel([
+	async.series([
 		function(cb) {
 			mailDao.setTo(msg, cb);
 		},
@@ -83,7 +83,6 @@ mailDao.send = function(msg, callback) {
 	var array=[["select", redisConfig.database.SEAKING_REDIS_DB]];
 	array.push(["lpush", fromBox, getString(smail)]);
 	array.push(["lpush", toBox, getString(rmail)]);
-	logger.info(array);
 	redis.command(function(client){
 		client.multi(array).exec(function(err, res) {
 			redis.release(client);
@@ -108,7 +107,6 @@ mailDao.getAll = function(msg, callback) {
 		});
 		
 	}else{
-
 		redis.command(function(client){
 			mailDao.get(client, msg , function(err, r) {
 				if(err){redis.release(client);callback(err, null);return;}
@@ -196,10 +194,10 @@ mailDao.get = function(client, msg, callback, mode){
  						return null;
  					}
  					var m = Math.ceil((start+end)/2);
- 					var property = getJson(res[m])[property];
- 					if(property > msg[property]) {
+ 					var _property = getJson(res[m])[property];
+ 					if(_property > msg[property]) {
  						return find(m, end);
- 					}else if(property < msg[property]) {
+ 					}else if(_property < msg[property]) {
  						return find(start, m);
  					}else{
  						return m;
@@ -209,6 +207,8 @@ mailDao.get = function(client, msg, callback, mode){
  				if(m==null){
  					callback("not find", null);return;
  				}
+ 				//console.log(msg[property]);
+ 				//console.log(JSON.parse(res[m]).time);
  				callback(null, {index: m, data: res[m], length: length});
 			});
 		}

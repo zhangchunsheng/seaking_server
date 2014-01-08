@@ -22,7 +22,6 @@ var Partners = function(opts) {
     this.serverId = opts.serverId;
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
-
     this.partner = opts.partner;
     this.allPartner = opts.allPartner;
 };

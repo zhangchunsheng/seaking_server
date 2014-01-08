@@ -357,9 +357,34 @@ exports.getPlayerInfo = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
+        var currentSkills =JSON.parse(JSON.stringify(reply.currentSkills));
+        delete currentSkills.serverId;delete currentSkills.registerType;delete  currentSkills.loginName;delete  currentSkills.characterId;delete  currentSkills.allSkills;
+        for(var i in currentSkills) {
+            if( currentSkills[i].skillId == 0 ) {
+                delete currentSkills[i];
+            }
+        }
+        var  properties = {
+            hp : reply.hp || 0,
+            attack: reply.attack || 0,
+            defense: reply.defense || 0,
+            sunderArmor: reply.sunderArmor || 0,
+            speed: reply.speed || 0,
+            criticalHit : reply.criticalHit || 0,
+            block: reply.block || 0,
+            dodge: reply.dodge || 0,
+            counter: reply.counter || 0
+        }
+        var combat = Math.floor ( properties.hp * (1+ (properties.dodge/5) +(properties.block/8) ) + properties.attack * (5+properties.criticalHit +properties.counter)+properties.defense+2.5*properties.sunderArmor+properties.speed );
         data = {
             code: Code.OK,
-            player: reply
+            data : [
+                {
+                    properties: properties,
+                    currentSkills: currentSkills,
+                    combat: combat
+                }
+            ]
         };
         utils.send(msg, res, data);
     });

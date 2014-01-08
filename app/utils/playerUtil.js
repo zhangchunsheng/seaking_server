@@ -149,6 +149,16 @@ playerUtil.initAptitude = function(cId, dataType) {
     return data;
 }
 
+playerUtil.initAstrology =function(dataType) {
+    var data = {
+
+    }
+    if(dataType == "string") {
+        data = JSON.stringify(data);
+    }
+    return data;
+}
+
 playerUtil.initEquipments = function(dataType) {
     if(typeof dataType == "undefined")
         dataType = "json";
@@ -294,6 +304,7 @@ playerUtil.initCharacterV2 = function(opts) {
 playerUtil.getCharacter = function(opts) {
     var skills = new Skills(opts);
     var character = {
+        ZX: JSON.parse(opts.replies.ZX || "{\"i\":[],\"c\":3}"),
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
         cId: opts.cId,
@@ -411,6 +422,7 @@ playerUtil.getPKCharacter = function(opts) {
 
 playerUtil.getPlayer = function(character) {
     var player = new Player({
+        ZX: character.ZX,
         userId: character.userId,
         serverId: character.serverId,
         registerType: character.registerType,
