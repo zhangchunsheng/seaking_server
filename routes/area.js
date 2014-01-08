@@ -83,6 +83,65 @@ exports.getSceneData = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var sceneId = msg.sceneId;
+    var currentPage = msg.currentPage;
+    if(utils.empty(currentPage)) {
+        currentPage = 1;
+    }
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        if(utils.empty(sceneId)) {
+            sceneId = player.currentScene;
+        }
+        var cityInfo = dataApi.city.findById(sceneId);
+        if(typeof cityInfo == "undefined") {
+            data = {
+                code: Code.AREA.WRONG_AREA
+            };
+            utils.send(msg, res, data);
+
+            return;
+        }
+        area.getAreaPlayers(sceneId, function(err, results) {
+            var entities = [];
+            var pageInfo = {
+                currentPage: currentPage,
+                perPage: 20
+            };
+            //entities = areaUtil.getEntities(sceneId, results, player);
+
+            //areaService.getEntities(sceneId, results, player, function(err, entities) {
+            areaService.getCurrentPageEntities(sceneId, results, player, pageInfo, function(err, entities) {
+                if(entities.length == 0) {
+                    data = {
+                        code: Code.AREA.NOMORE_DATA
+                    };
+                } else {
+                    data = {
+                        code: consts.MESSAGE.RES,
+                        pageInfo: entities.pageInfo,
+                        entities: entities.currentEntities
+                    };
+                }
+                utils.send(msg, res, data);
+            });
+        });
+    });
+}
+
+exports.getScenePlayers = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var sceneId = msg.sceneId;
 
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
@@ -103,7 +162,7 @@ exports.getSceneData = function(req, res) {
             //entities = areaUtil.getEntities(sceneId, results, player);
 
             areaService.getEntities(sceneId, results, player, function(err, entities) {
-                var data = {
+                data = {
                     code: consts.MESSAGE.RES,
                     entities: entities
                 };

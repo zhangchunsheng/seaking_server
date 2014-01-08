@@ -92,6 +92,67 @@ areaService.getEntities = function(sceneId, results, player, cb) {
 }
 
 /**
+ * getCurrentPageEntities
+ * @param sceneId
+ * @param results
+ * @param player
+ * @param pageInfo
+ * @param cb
+ */
+areaService.getCurrentPageEntities = function(sceneId, results, player, pageInfo, cb) {
+    var entities = [];
+    var entity = {};
+    var result;
+    var count = 0;
+    for(var i in results) {
+        count++;
+    }
+    if(count < 20) {
+        areaService.setEntities(sceneId, function(err, entities) {
+            for(var i in results) {
+                if(i == player.id)
+                    continue;
+                result = JSON.parse(results[i]);
+                entity = {
+                    id: i,
+                    nickname: result.name,
+                    heroId: result.cId,
+                    level: result.level
+                };
+                entities.push(entity);
+            }
+            if(areaService.hasMoreEntity(pageInfo, entities, player)) {
+                entities = areaService.getOrderedEntities(entities, player);
+                entities = areaService.getCurrentEntities(pageInfo, entities, player);
+            } else {
+                entities = [];
+            }
+            utils.invokeCallback(cb, null, entities);
+        });
+    } else {
+        for(var i in results) {
+            if(i == player.id)
+                continue;
+            result = JSON.parse(results[i]);
+            entity = {
+                id: i,
+                nickname: result.name,
+                heroId: result.cId,
+                level: result.level
+            };
+            entities.push(entity);
+        }
+        if(areaService.hasMoreEntity(pageInfo, entities, player)) {
+            entities = areaService.getOrderedEntities(entities, player);
+            entities = areaService.getCurrentEntities(pageInfo, entities, player);
+        } else {
+            entities = [];
+        }
+        utils.invokeCallback(cb, null, entities);
+    }
+}
+
+/**
  * getTwentyEntities
  * level+1 level level-1 >level <level type:1 2 3 4 5
  * @param entities
@@ -100,20 +161,53 @@ areaService.getEntities = function(sceneId, results, player, cb) {
 areaService.getTwentyEntities = function(entities, player) {
     var twentyEntities = [];
     var level = parseInt(player.level);
-    areaUtil.getOneMoreLevelEntities(twentyEntities, entities, level);
+    areaUtil.getOneMoreLevelTwentyEntities(twentyEntities, entities, level);
     if(twentyEntities.length < 20) {
-        areaUtil.getTheSameLevelEntities(twentyEntities, entities, level);
+        areaUtil.getTheSameLevelTwentyEntities(twentyEntities, entities, level);
     }
     if(twentyEntities.length < 20) {
-        areaUtil.getOneLessLevelEntities(twentyEntities, entities, level);
+        areaUtil.getOneLessLevelTwentyEntities(twentyEntities, entities, level);
     }
     if(twentyEntities.length < 20) {
-        areaUtil.getMoreLevelEntities(twentyEntities, entities, level);
+        areaUtil.getMoreLevelTwentyEntities(twentyEntities, entities, level);
     }
     if(twentyEntities.length < 20) {
-        areaUtil.getLessLevelEntities(twentyEntities, entities, level);
+        areaUtil.getLessLevelTwentyEntities(twentyEntities, entities, level);
     }
     return twentyEntities;
+}
+
+areaService.getOrderedEntities = function(entities, player) {
+    var orderedEntities = [];
+    var level = parseInt(player.level);
+    areaUtil.getOneMoreLevelEntities(orderedEntities, entities, level);
+    areaUtil.getTheSameLevelEntities(orderedEntities, entities, level);
+    areaUtil.getOneLessLevelEntities(orderedEntities, entities, level);
+    areaUtil.getMoreLevelEntities(orderedEntities, entities, level);
+    areaUtil.getLessLevelEntities(orderedEntities, entities, level);
+    return orderedEntities;
+}
+
+areaService.getCurrentEntities = function(pageInfo, entities, player) {
+    var currentEntities = [];
+    var level = parseInt(player.level);
+    currentEntities = areaUtil.getCurrentEntities(pageInfo, entities, level);
+    return currentEntities;
+}
+
+areaService.hasMoreEntity = function(pageInfo, entities, player) {
+    var currentPage = pageInfo.currentPage || 1;
+    var perPage = pageInfo.perPage || 20;
+    var allPage = Math.ceil(entities.length / perPage);
+    pageInfo.allPage = allPage;
+    var flag = true;
+    if(currentPage < 1) {
+        flag = false;
+    }
+    if(currentPage > allPage) {
+        flag = false;
+    }
+    return flag;
 }
 
 /**

@@ -460,3 +460,17 @@ utils.checkEquipmentPositionType = function(type) {
     }
     return false;
 }
+
+utils.getPageInfo = function(pageInfo, entities) {
+    var currentPage = pageInfo.currentPage || 1;
+    var perPage = pageInfo.perPage || 20;
+    var allPage = Math.ceil(entities.length / perPage);
+    pageInfo.allPage = allPage;
+    if(currentPage < 1) {
+        currentPage = 1;
+    }
+    if(currentPage > allPage) {
+        currentPage = allPage;
+    }
+    return pageInfo;
+}

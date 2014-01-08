@@ -110,15 +110,58 @@ Equipments.prototype.syncData = function() {
 }
 
 //Equip equipment by type and id
-Equipments.prototype.equip = function(type, equip) {
+Equipments.prototype.equip = function(player, type, equip) {
     this[type] = {
         epid: equip.epid,
         level: equip.level,
         forgeLevel: equip.forgeLevel || 0,
         inlay: equip.inlay || equipmentUtil.initInlay()
     };
+    if(player.level >= 20) {
+        var inlay = this[type].inlay;
+        var diamonds = inlay.diamonds;
+        if(typeof(diamonds[1]) == "undefined") {
+            diamonds[1] = 0;
+        }
+    }
+    if(player.level >= 40) {
+        var inlay = this[type].inlay;
+        var diamonds = inlay.diamonds;
+        if(typeof(diamonds[1]) == "undefined") {
+            diamonds[1] = 0;
+        }
+        if(typeof(diamonds[6]) == "undefined") {
+            diamonds[6] = 0;
+        }
+    }
     this.save();
 };
+
+Equipments.prototype.upgradeInlayCell = function(player) {
+    var inlay;
+    var diamonds;
+    if(player.level >= 20) {
+        for(var i = 0 ; i < dict.length ; i++) {
+            inlay = this[dict[i]].inlay;
+            diamonds = inlay.diamonds;
+            if(typeof(diamonds[1]) == "undefined") {
+                diamonds[1] = 0;
+            }
+        }
+    }
+    if(player.level >= 40) {
+        for(var i = 0 ; i < dict.length ; i++) {
+            var inlay = this[dict[i]].inlay;
+            var diamonds = inlay.diamonds;
+            if(typeof(diamonds[1]) == "undefined") {
+                diamonds[1] = 0;
+            }
+            if(typeof(diamonds[6]) == "undefined") {
+                diamonds[6] = 0;
+            }
+        }
+    }
+}
 
 //Unequip equipment by type
 Equipments.prototype.unEquip = function(type) {
