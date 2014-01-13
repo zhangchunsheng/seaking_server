@@ -68,6 +68,8 @@ module.exports = function (app) {
     app.get('/casino/gambling', authRequired, casino.gambling);
     app.get("/casino/gmRepair", authRequired, casino.gmRepair);
 
+    //app.get("/clifford/test", authRequired, clifford.test);
+
     //装备
     app.get('/equip/wearWeapon', authRequired, equip.wearWeapon);
     app.get('/equip/unWearWeapon', authRequired, equip.unWearWeapon);

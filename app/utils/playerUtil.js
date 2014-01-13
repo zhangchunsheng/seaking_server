@@ -300,11 +300,25 @@ playerUtil.initCharacterV2 = function(opts) {
     };
     return character;
 }
-
+var defaultZX = function(level) {
+    console.log(level);
+    var i = [], c = 0;
+    if(level< 25) {
+        
+    }else if(level < 55) {
+        c = parseInt((level-25)/5)+3;
+    }else{
+        c = 9;
+    }
+    return {
+        i: i,
+        c: c
+    };
+}
 playerUtil.getCharacter = function(opts) {
     var skills = new Skills(opts);
     var character = {
-        ZX: JSON.parse(opts.replies.ZX || "{\"i\":[],\"c\":3}"),
+        ZX: opts.replies.ZX ? JSON.parse(opts.replies.ZX) : defaultZX(opts.level) ,
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
         cId: opts.cId,

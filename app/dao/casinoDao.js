@@ -332,7 +332,7 @@ var gamblingGameCurrency = 2;
 var riskGameCurrency = 5;
 casinoDao.gambling = function(data, player, callback) {
 	//加了几次注
-	var num = data.num || 0;
+	var allMoney = data.money ;
 	var lock = data.lock || false;
 	redis.command(function(client) {
 		casinoDao.getCasino(data.Key, function(err, res){
@@ -345,6 +345,7 @@ casinoDao.gambling = function(data, player, callback) {
 			];
 			var gameCurrency = 0;
 			casino.gamblingNum--;
+			var num = (allMoney/(casino.items.allPrice)-1)*5;
 			if(casino.gamblingNum < 0) {
 				//需要钱？
 				gameCurrency-=casino.gamblingNum*2;
@@ -356,7 +357,8 @@ casinoDao.gambling = function(data, player, callback) {
 			console.log(casino);
 			
 			if(num> 0) {
-				var money = (0.2*num)* casino.items.allPrice;
+				//var money = (0.2*num)* casino.items.allPrice;
+				var money = allMoney-casino.items.allPrice;
 				if(player.money < money) {
 					return callback("you money not enough");
 				}
@@ -435,6 +437,7 @@ casinoDao.gambling = function(data, player, callback) {
 			cbResult.casino = casino;
 			cbResult.gold = player.gameCurrency;
 			cbResult.changeItems = changeItems;
+			console.log(array);
 			client.multi(array).exec(function(err, res) {
 				redis.release(client);
 				callback(err, cbResult);
