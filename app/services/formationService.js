@@ -6,9 +6,22 @@
  * Description: arenaService
  */
 var formationDao = require('../dao/formationDao');
+var Formation = require('../domain/formation');
 
 var formationService = module.exports;
 
-formationService.change = function() {
+formationService.changeFormation = function(array, player, formation, cb) {
 
+}
+
+formationService.createNewFormation = function(formationInfo, serverId, registerType, loginName, characterId, character) {
+    formationInfo.serverId = serverId;
+    formationInfo.registerType = registerType;
+    formationInfo.loginName = loginName;
+    formationInfo.characterId = characterId;
+    formationInfo.cId = character.cId;
+    formationInfo.formation = character.formation;
+    formationInfo.tacticals = character.tacticals;
+    var formation = new Formation(formationInfo);
+    return formation;
 }

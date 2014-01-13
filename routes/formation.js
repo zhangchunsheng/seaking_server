@@ -35,7 +35,17 @@ exports.change = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
-    if(!formation && Object.prototype.toString.call(formation) !== '[object Array]') {
+    if(!formation) {
+        data = {
+            code: consts.MESSAGE.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    try {
+        formation = JSON.parse(formation);
+    } catch(e) {
         data = {
             code: consts.MESSAGE.ARGUMENT_EXCEPTION
         };
@@ -44,9 +54,18 @@ exports.change = function(req, res) {
     }
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        //需要验证是否有该角色存在
-        player.formation = JSON.parse(formation);
-        playerService.changeFormation(player, function(err, reply) {
+        //验证formation
+        var result = player.formationEntity.checkFormation(player, formation);
+        if(result == 0) {
+            data = {
+                code: consts.MESSAGE.ARGUMENT_EXCEPTION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var array = [];
+        formationService.changeFormation(array, player, formation, function(err, reply) {
             var status = {
                 code: consts.MESSAGE.RES
             };
@@ -88,14 +107,18 @@ exports.forteDefense = function(req, res) {
 
 /**
  * 设置阵法
+ * @param req
+ * @param res
  */
-exports.setTactical = function() {
+exports.setTactical = function(req, res) {
 
 }
 
 /**
  * 升级阵法
+ * @param req
+ * @param res
  */
-exports.upgrade = function() {
+exports.upgrade = function(req, res) {
 
 }

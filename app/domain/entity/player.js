@@ -80,6 +80,7 @@ var Player = function(opts) {
     this.ghostEntity = opts.ghostEntity;
     this.skillsEntity = opts.skillsEntity;
     this.miscsEntity = opts.miscsEntity;
+    this.formationEntity = opts.formationEntity;
 
     this.friends = opts.friends || [];
 
@@ -1665,8 +1666,8 @@ Player.prototype.strip = function() {
         currentSkills: this.currentSkills,
         allSkills: this.allSkills,
         buffs: this.buffs,
-        formation: this.formation,
-        tacticals: this.tacticals,
+        formation: this.formationEntity.getInfo().formation,
+        tacticals: this.formationEntity.getInfo().tacticals,
         partners: this.getPartners(),
         gift: this.gift,
         friends: this.friends,
@@ -1841,8 +1842,8 @@ Player.prototype.toJSON = function() {
         currentSkills: this.currentSkills,
         allSkills: this.allSkills,
         buffs: this.buffs,
-        formation: this.formation,
-        tacticals: this.tacticals,
+        formation: this.formationEntity.getInfo().formation,
+        tacticals: this.formationEntity.getInfo().tacticals,
         partners: this.getPartners(),
         gift: this.gift,
         friends: this.friends,
@@ -1890,8 +1891,8 @@ Player.prototype.getBaseInfo = function() {
         currentSkills: this.currentSkills,
         allSkills: this.allSkills,
         buffs: this.buffs,
-        formation: this.formation,
-        tacticals: this.tacticals,
+        formation: this.formationEntity.getInfo().formation,
+        tacticals: this.formationEntity.getInfo().tacticals,
         gift: this.gift,
         friends: this.friends,
         ghost: this.ghost,

@@ -17,11 +17,12 @@ var consts = require('../consts/consts');
  * @api public
  */
 var Formation = function(opts) {
-    this.id = opts.taskId;
     this.playerId = opts.characterId;
     this.serverId = opts.serverId;
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
+    this.characterId = opts.characterId;
+    this.cId = opts.cId;
 
     this.formation = opts.formation;
     this.lastFormation = opts.lastFormation;
@@ -44,4 +45,44 @@ Formation.prototype.initFormation = function() {
 Formation.prototype.initTacticals = function() {
     var tacticals = [{"id":"F101","level":1,"active":1}];
     return tacticals;
+}
+
+Formation.prototype.checkFormation = function(player, formation) {
+    var result = 0;
+    var player_formation = player.formation.formation;
+    var players = [];
+    players.push(player.id);
+    for(var i = 0 ; i < player.partners.length ; i++) {
+        players.push(player.partners[i].id);
+    }
+    var flag = false;
+    var playerId = "";
+    var players_args = [];//判断playerId唯一
+    for(var i in player_formation) {
+        flag = false;
+        if(typeof formation[i] == "undefined") {
+            result = 0;
+            return result;
+        }
+        playerId = formation[i];
+        if(playerId == null)
+            continue;
+
+    }
+    //判断是否存在playerId
+    return result;
+}
+
+Formation.prototype.strip = function() {
+    return {
+        formation: this.formation,
+        tacticals: this.tacticals
+    }
+}
+
+Formation.prototype.getInfo = function() {
+    return {
+        formation: this.formation,
+        tacticals: this.tacticals
+    }
 }
