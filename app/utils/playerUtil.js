@@ -89,7 +89,7 @@ playerUtil.initCharacter = function(opts) {
         },
         currentSkills: skills.currentSkills,
         allSkills: skills.allSkills,
-        formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
+        formation: playerUtil.initFormation(opts),
         partners: [],
         miscs: [],
         gift: [],
@@ -108,6 +108,11 @@ playerUtil.initGameCurrency = function() {
 
 playerUtil.initMoney = function() {
     return 1000000;
+}
+
+playerUtil.initFormation = function(opts) {
+    var formation = {formation:{1:{playerId:"S" + opts.serverId + "C" + opts.characterId}},tactical:{id:"F101",level:1}};
+    return formation;
 }
 
 playerUtil.initGhost = function(dataType) {
@@ -288,7 +293,7 @@ playerUtil.initCharacterV2 = function(opts) {
         },*/
         currentSkills: skills.currentSkills,
         allSkills: skills.allSkills,
-        formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
+        formation: playerUtil.initFormation(opts),
         partners: [],
         miscs: [],
         gift: [],
@@ -348,7 +353,7 @@ playerUtil.getCharacter = function(opts) {
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
-        formation: JSON.parse(opts.replies.formation).formation,
+        formation: JSON.parse(opts.replies.formation),
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
         miscs: JSON.parse(opts.replies.miscs || '{"miscs":[]}').miscs,
@@ -411,7 +416,7 @@ playerUtil.getPKCharacter = function(opts) {
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
-        formation: JSON.parse(opts.replies.formation).formation,
+        formation: JSON.parse(opts.replies.formation),
         partners: JSON.parse(opts.replies.partners).partners,
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
         ghostNum: opts.replies.ghostNum || 0,

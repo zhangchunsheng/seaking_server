@@ -63,7 +63,7 @@
             "activeSkills": [],
             "passiveSkills": []
         },
-        "formation": [{"cId":"H1101"},{"cId":"H1102"},{"cId":"H1103"},null,null,null,null],
+        "formation": {"formation":{"1":{"playerId":"S1C1"}},"tactical":{"id":"F101","level":1}},
         "partners": [{"cId": "H1102"},{"cId": "H1103"}],
         "gift": [],
         "curTasks": {
