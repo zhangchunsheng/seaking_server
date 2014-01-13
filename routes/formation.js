@@ -11,6 +11,7 @@ var playerService = require('../app/services/playerService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
+var dataApi = require('../app/utils/dataApi');
 
 exports.index = function(req, res) {
     res.send("index");
@@ -169,7 +170,76 @@ exports.forteDefense = function(req, res) {
  * @param res
  */
 exports.setTactical = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , tacticalId = msg.tacticalId;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+
+    if(utils.empty(tacticalId)) {
+        data = {
+            code: consts.MESSAGE.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    if(tacticalId.indexOf("F") != 0) {
+        data = {
+            code: consts.MESSAGE.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var tactical =  dataApi.formations.findById(tacticalId);
+    if(!tactical) {
+        data = {
+            code: Code.FORMATION.WRONG_TACTICALID
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        //验证tacticalId
+        var result = player.formationEntity.checkTacticalId(player, tacticalId);
+        if(result == 0) {
+            data = {
+                code: Code.FORMATION.NO_TACTICAL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        if(result == 2) {
+            data = {
+                code: Code.OK,
+                tacticalId: tacticalId
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var array = [];
+        formationService.setTactical(array, player, tacticalId, function(err, reply) {
+            //更新任务
+            player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});
+
+            data = {
+                code: consts.MESSAGE.RES,
+                tacticalId: tacticalId
+            };
+            utils.send(msg, res, data);
+        });
+    });
 }
 
 /**
@@ -178,5 +248,38 @@ exports.setTactical = function(req, res) {
  * @param res
  */
 exports.upgradeTactical = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , tacticalId = msg.tacticalId;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        //验证tacticalId
+        var result = player.formationEntity.hasTacticalId(player, tacticalId);
+        if(result == 0) {
+            data = {
+                code: Code.FORMATION.NO_TACTICAL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var array = [];
+        formationService.upgradeTactical(array, player, tacticalId, function(err, reply) {
+            data = {
+                code: consts.MESSAGE.RES,
+                level: reply
+            };
+            utils.send(msg, res, data);
+        });
+    });
 }

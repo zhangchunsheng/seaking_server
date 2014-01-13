@@ -96,6 +96,48 @@ Formation.prototype.checkFormation = function(player, formation) {
     return result;
 }
 
+/**
+ * checkTacticalId
+ * @param player
+ * @param tacticalId
+ * @returns {number}
+ */
+Formation.prototype.checkTacticalId = function(player, tacticalId) {
+    var result = 0;
+
+    var tacticals = this.tacticals;
+    for(var i = 0 ; i < tacticals.length ; i++) {
+        if(tacticalId == tacticals[i].id) {
+            if(tacticals[i].active == 1) {
+                result = 2;
+            } else {
+                result = 1;
+            }
+            break;
+        }
+    }
+    return result;
+}
+
+/**
+ *
+ * @param player
+ * @param tacticalId
+ * @returns {number}
+ */
+Formation.prototype.hasTacticalId = function(player, tacticalId) {
+    var result = 0;
+
+    var tacticals = this.tacticals;
+    for(var i = 0 ; i < tacticals.length ; i++) {
+        if(tacticalId == tacticals[i].id) {
+            result = 1;
+            break;
+        }
+    }
+    return result;
+}
+
 Formation.prototype.strip = function() {
     return {
         formation: this.formation,
