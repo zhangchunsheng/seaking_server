@@ -64,12 +64,12 @@ Formation.prototype.checkFormation = function(player, formation) {
             return result;
         }
         playerId = formation[i];
-        if(playerId == null)
+        if(playerId == null || playerId == "")
             continue;
-        if(typeof players_args["playerId"] == "undefined") {
-            players_args["playerId"] = 1;
+        if(typeof players_args[formation[i]] == "undefined") {
+            players_args[formation[i]] = 1;
         } else {
-            players_args["playerId"]++;
+            players_args[formation[i]]++;
             result = 0;
             return result;
         }

@@ -24,7 +24,8 @@ var formationService = module.exports;
 formationService.changeFormation = function(array, player, formation, cb) {
     var new_formation = {};
     for(var i in player.formationEntity.formation.formation) {
-        new_formation[i] = formation[i];
+        new_formation[i] = {};
+        new_formation[i].playerId = formation[i];
     }
     player.formationEntity.formation.formation = new_formation;
 
