@@ -79,6 +79,8 @@ Formation.prototype.checkFormation = function(player, formation) {
     for(var i in player_formation) {
         flag = false;
         playerId = formation[i];
+        if(playerId == null || playerId == "")
+            continue;
         for(var j = 0 ; j < players.length ; j++) {
             if(playerId == players[j]) {
                 flag = true;
