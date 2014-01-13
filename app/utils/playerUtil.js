@@ -21,6 +21,7 @@ var aptitudeService = require('../services/character/aptitudeService');
 var ghostService = require('../services/character/ghostService');
 var skillService = require('../services/skillService');
 var miscsService = require('../services/character/miscsService');
+var formationService = require('../services/formationService');
 var Tasks = require('../domain/tasks');
 
 var playerUtil = module.exports;
@@ -89,7 +90,8 @@ playerUtil.initCharacter = function(opts) {
         },
         currentSkills: skills.currentSkills,
         allSkills: skills.allSkills,
-        formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
+        formation: playerUtil.initFormation(opts),
+        tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
         miscs: [],
         gift: [],
@@ -108,6 +110,23 @@ playerUtil.initGameCurrency = function() {
 
 playerUtil.initMoney = function() {
     return 1000000;
+}
+
+playerUtil.initFormation = function(opts) {
+    var formation = {formation:{1:{playerId:"S" + opts.serverId + "C" + opts.characterId}},tactical:{id:"F101",level:1}};
+    return formation;
+}
+
+playerUtil.initTacticals = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var tacticals = {"tacticals":[{"id":"F101","level":1,"active":1}]};
+
+    if(dataType == "string") {
+        tacticals = JSON.stringify(tacticals);
+    }
+    return tacticals;
 }
 
 playerUtil.initGhost = function(dataType) {
@@ -288,7 +307,8 @@ playerUtil.initCharacterV2 = function(opts) {
         },*/
         currentSkills: skills.currentSkills,
         allSkills: skills.allSkills,
-        formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
+        formation: playerUtil.initFormation(opts),
+        tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
         miscs: [],
         gift: [],
@@ -362,7 +382,8 @@ playerUtil.getCharacter = function(opts) {
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
-        formation: JSON.parse(opts.replies.formation).formation,
+        formation: JSON.parse(opts.replies.formation),
+        tacticals: JSON.parse(opts.replies.tacticals || playerUtil.initTacticals("string")).tacticals,
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
         miscs: JSON.parse(opts.replies.miscs || '{"miscs":[]}').miscs,
@@ -425,7 +446,8 @@ playerUtil.getPKCharacter = function(opts) {
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
-        formation: JSON.parse(opts.replies.formation).formation,
+        formation: JSON.parse(opts.replies.formation),
+        tacticals: JSON.parse(opts.replies.tacticals || playerUtil.initTacticals("string")).tacticals,
         partners: JSON.parse(opts.replies.partners).partners,
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
         ghostNum: opts.replies.ghostNum || 0,
@@ -475,6 +497,7 @@ playerUtil.getPlayer = function(character) {
         currentSkills: character.currentSkills || {},
         allSkills: character.allSkills || {},
         formation: character.formation,
+        tacticals: character.tacticals,
         partners: character.partners,
         allPartners: character.allPartners,
         miscs: character.miscs,
@@ -527,6 +550,7 @@ playerUtil.getPlayerV2 = function(character) {
         currentSkills: character.currentSkills || {},
         allSkills: character.allSkills || {},
         formation: character.formation,
+        tacticals: character.tacticals,
         partners: character.partners,
         allPartners: character.allPartners,
         miscs: character.miscs,
@@ -560,6 +584,7 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
     var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
     var miscs = miscsService.createNewMiscs({}, serverId, registerType, loginName, characterId, character);
+    var formation = formationService.createNewFormation({}, serverId, registerType, loginName, characterId, character)
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
@@ -567,6 +592,7 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     character.ghostEntity = ghost;
     character.skillsEntity = skills;
     character.miscsEntity = miscs;
+    character.formationEntity = formation;
 };
 
 /**
@@ -586,6 +612,8 @@ playerUtil.createPKEntity = function(player, serverId, registerType, loginName, 
     player.ghostEntity = ghost;
     var skills = skillService.createNewSkills(player.currentSkills, serverId, registerType, loginName, characterId, player);
     player.skillsEntity = skills;
+    var formation = formationService.createNewFormation({}, serverId, registerType, loginName, characterId, player);
+    player.formationEntity = formation;
 };
 
 /**

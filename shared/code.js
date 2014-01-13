@@ -117,5 +117,10 @@ module.exports = {
         LACK_UPGRADEMATERIAL: 1827,
         LACK_UPGRADELEVEL: 1828,
         LACK_UPGRADEMONEY: 1829
+    },
+
+    FORMATION: {
+        WRONG_TACTICALID: 1860,
+        NO_TACTICAL: 1861
     }
 };

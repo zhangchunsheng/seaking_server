@@ -151,12 +151,6 @@ dbUtil.getFieldValue = function(field, object) {
                     value: JSON.stringify(object[field][o1])
                 });
             }
-        } else if(field == "formation") {
-            obj[field] = object[field];
-            array.push({
-                field: field,
-                value: JSON.stringify(obj)
-            });
         } else {
             array.push({
                 field: field,
