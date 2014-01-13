@@ -93,7 +93,36 @@ exports.setDefault = function(req, res) {
  * @param res
  */
 exports.forteAttack = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var formation = {
+            1: "S1C1",
+            2: "S1C1P4"
+        };
+        var array = [];
+        formationService.changeFormation(array, player, formation, function(err, reply) {
+            //更新任务
+            player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});
+
+            data = {
+                code: consts.MESSAGE.RES,
+                formation: player.formationEntity.formation.formation
+            };
+            utils.send(msg, res, data);
+        });
+    });
 }
 
 /**
@@ -102,7 +131,36 @@ exports.forteAttack = function(req, res) {
  * @param res
  */
 exports.forteDefense = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var formation = {
+            1: "S1C1",
+            2: "S1C1P4"
+        };
+        var array = [];
+        formationService.changeFormation(array, player, formation, function(err, reply) {
+            //更新任务
+            player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});
+
+            data = {
+                code: consts.MESSAGE.RES,
+                formation: player.formationEntity.formation.formation
+            };
+            utils.send(msg, res, data);
+        });
+    });
 }
 
 /**
@@ -119,6 +177,6 @@ exports.setTactical = function(req, res) {
  * @param req
  * @param res
  */
-exports.upgrade = function(req, res) {
+exports.upgradeTactical = function(req, res) {
 
 }

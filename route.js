@@ -84,7 +84,7 @@ module.exports = function (app) {
     app.get('/formation/forteAttack', authRequired, formation.forteAttack);
     app.get('/formation/forteDefense', authRequired, formation.forteDefense);
     app.get('/formation/setTactical', authRequired, formation.setTactical);
-    app.get('/formation/upgrade', authRequired, formation.upgrade);
+    app.get('/formation/upgradeTactical', authRequired, formation.upgradeTactical);
 
     app.get('/friend/get', authRequired, friend.get);
     app.get('/friend/add', authRequired, friend.add);
