@@ -66,13 +66,13 @@ exports.change = function(req, res) {
 
         var array = [];
         formationService.changeFormation(array, player, formation, function(err, reply) {
-            var status = {
-                code: consts.MESSAGE.RES
-            };
-
+            //更新任务
             player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});
 
-            data = status;
+            data = {
+                code: consts.MESSAGE.RES,
+                formation: player.formationEntity.formation.formation
+            };
             utils.send(msg, res, data);
         });
     });

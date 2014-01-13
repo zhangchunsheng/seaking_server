@@ -49,17 +49,16 @@ Formation.prototype.initTacticals = function() {
 
 Formation.prototype.checkFormation = function(player, formation) {
     var result = 0;
-    var player_formation = player.formation.formation;
+
+    var player_formation = this.formation.formation;
     var players = [];
     players.push(player.id);
     for(var i = 0 ; i < player.partners.length ; i++) {
         players.push(player.partners[i].id);
     }
-    var flag = false;
     var playerId = "";
-    var players_args = [];//判断playerId唯一
+    var players_args = {};//判断playerId唯一
     for(var i in player_formation) {
-        flag = false;
         if(typeof formation[i] == "undefined") {
             result = 0;
             return result;
@@ -67,9 +66,31 @@ Formation.prototype.checkFormation = function(player, formation) {
         playerId = formation[i];
         if(playerId == null)
             continue;
-
+        if(typeof players_args["playerId"] == "undefined") {
+            players_args["playerId"] = 1;
+        } else {
+            players_args["playerId"]++;
+            result = 0;
+            return result;
+        }
     }
     //判断是否存在playerId
+    var flag = false;
+    for(var i in player_formation) {
+        flag = false;
+        playerId = formation[i];
+        for(var j = 0 ; j < players.length ; j++) {
+            if(playerId == players[j]) {
+                flag = true;
+                break;
+            }
+        }
+        if(!flag) {
+            result = 0;
+            return result;
+        }
+    }
+    result = 1;
     return result;
 }
 
