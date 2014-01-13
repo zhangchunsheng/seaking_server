@@ -63,8 +63,10 @@ module.exports = function (app) {
     app.get('/battle/battle2', battle.battle2);
 
     //赌场
-    app.get('/casino/getItems', authRequired, casino.getItems);
+    app.get('/casino/get', authRequired, casino.get);
+    app.get('/casino/refresh', authRequired, casino.refresh);
     app.get('/casino/gambling', authRequired, casino.gambling);
+    app.get("/casino/gmRepair", authRequired, casino.gmRepair);
 
     //装备
     app.get('/equip/wearWeapon', authRequired, equip.wearWeapon);
@@ -101,15 +103,18 @@ module.exports = function (app) {
     app.get("/mail/_Set", authRequired, mail._Set);
 
     app.get("/astrology/main", authRequired, astrology.main);
-    app.get("/astrology/random", authRequired, astrology.random);
-    app.get("/astrology/buy", authRequired, astrology.buy);
-    app.get("/astrology/sell", authRequired, astrology.sell);
-    app.get("/astrology/load", authRequired, astrology.load);
+    app.get("/astrology/summon", authRequired, astrology.random);
+    app.get("/astrology/summonTo3", authRequired, astrology.buy);
+    app.get("/astrology/sellAllCi", authRequired, astrology.sell);
+    app.get("/astrology/equip", authRequired, astrology.load);
+    app.get("/astrology/unEquip", authRequired, astrology.unLoad);
     app.get("/astrology/test", authRequired, astrology.test);
-    //app.get("/astrology/pickUp", authRequired, astrology.pickUp);
-    app.get("/astrology/pickUpAll", authRequired, astrology.pickUpAll);
-    //app.get("/astrology/exchange", authRequired, astrology.exchange);
-    //app.get("/astrology/merger", authRequired, astrology.merger);
+    app.get("/astrology/cos", authRequired, astrology.pickUp);
+    app.get("/astrology/unlock", authRequired, astrology.unlock);
+    app.get("/astrology/collectAllCi", authRequired, astrology.pickUpAll);
+    app.get("/astrology/convert", authRequired, astrology.exchange);
+    app.get("/astrology/synthAllBi", authRequired, astrology.merger);
+    app.get("/astrology/gmRepair", authRequired, astrology.gmRepair);
 
     app.get("/package/_Set", authRequired, package._Set);
     app.get('/package/_AddItem', authRequired, package.addItem);
