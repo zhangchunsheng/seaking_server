@@ -413,7 +413,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 itemInfo = dataApi.weapons.findById(item.itemId);
                 break;
             case PackageType.DIAMOND:
-                itemInfo = dataApi.item.findById(item.itemId);
+                itemInfo = dataApi.diamonds.findById(item.itemId);
                 break;
             case PackageType.ITEMS:
                 itemInfo = dataApi.item.findById(item.itemId);

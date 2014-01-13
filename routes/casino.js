@@ -125,13 +125,17 @@ var callbackGambling = function(result) {
             delete value.probability;
         }
     });
+    var _items = [];
+    for(var i = 0, len = _data.index; i<len;i++) {
+        _items.push(_data.items.items[i]);
+    }
     return {
        allPrice: _data.items.allPrice,
-       items: _data.items.items,
+       items: _items,
        refreshNum: _data.refreshNum,
        riskNum: _data.riskNum,
        gamblingNum: _data.gamblingNum < 0? 0: _data.gamblingNum,
-       gold : result.gold,
+       gameCurrency : result.gold,
        result : result.result,
        changeItems: result.changeItems
     };
