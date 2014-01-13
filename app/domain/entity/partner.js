@@ -35,6 +35,7 @@ Partner.prototype.update = function(field, value) {
  */
 Partner.prototype.strip = function() {
     return {
+        ZX:this.ZX,
         id: this.id,
         entityId: this.entityId,
         nickname: this.nickname,
@@ -59,7 +60,8 @@ Partner.prototype.strip = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         equipments: this.equipmentsEntity.getInfo(),
-        skills: this.skills,
+        //skills: this.skills,
+        currentSkills: this.currentSkills,
         buffs: this.buffs,
         ghost: this.ghostEntity.getInfo(),
         aptitude: this.aptitudeEntity.getInfo()
@@ -92,7 +94,8 @@ Partner.prototype.toJSON = function() {
         block: this.block,//格挡
         counter: this.counter,//反击
         equipments: this.equipmentsEntity.getInfo(),
-        skills: this.skills,
+        //skills: this.skills,
+        currentSkills: this.currentSkills,
         buffs: this.buffs,
         ghost: this.ghostEntity.getInfo(),
         aptitude: this.aptitudeEntity.getInfo()

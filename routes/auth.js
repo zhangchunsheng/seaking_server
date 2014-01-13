@@ -33,6 +33,12 @@ exports.auth = function(req, res) {
     var msg = req.query;
 
     var token = msg.token;
+    utils.addOrigin(res, req);
+    if(utils.empty(token)) {
+        data = {code: Code.ENTRY.FA_TOKEN_ILLEGAL};
+        utils.send(msg, res, data);
+        return;
+    }
     var userInfo = tokenService.parse(token, sessionToken.secret);
     var data = {};
     if(!userInfo) {
@@ -49,9 +55,8 @@ exports.auth = function(req, res) {
 
     userInfo.serverId = region.serverId;
 
-    utils.addOrigin(res, req);
     userService.getCharactersByLoginName(userInfo.serverId, userInfo.registerType, userInfo.loginName, function(err, results) {
-        console.log(results);
+        //console.log(results);
         if(err || !results) {
             data = {
                 code: Code.FAIL

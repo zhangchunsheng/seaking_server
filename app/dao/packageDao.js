@@ -76,7 +76,7 @@ packageDao.destroy = function(characterId, cb) {
 
 };
 
-packageDao.createNewPackage = function(packageInfo, serverId, registerType, loginName, characterId) {
+packageDao.createNewPackage = function(packageInfo, serverId, registerType, loginName, characterId, character) {
     packageInfo.serverId = serverId;
     packageInfo.registerType = registerType;
     packageInfo.loginName = loginName;
@@ -92,6 +92,8 @@ packageDao.getType = function(item) {
         type = PackageType.WEAPONS;
     } else if(itemId.indexOf("E") != -1) {
         type = PackageType.EQUIPMENTS;
+    } else if(itemId.indexOf("B") != -1) {
+        type = PackageType.DIAMOND;
     } else if(itemId.indexOf("D") != -1) {
         type = PackageType.ITEMS;
     }

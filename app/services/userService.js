@@ -66,6 +66,10 @@ userService.update = function(array, cb) {
     userDao.update(array, cb);
 }
 
+userService.upgrade = function(player, columns, cb) {
+    userDao.upgrade(player, columns, cb);
+}
+
 userService.updatePlayerAttribute = function(player, cb) {
     userDao.updatePlayerAttribute(player, cb);
 }

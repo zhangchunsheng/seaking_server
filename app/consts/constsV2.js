@@ -132,6 +132,7 @@ module.exports = {
         EQUIPMENT: 5,
         TO_LEVEL: 6,
         UPGRADE_EQUIPMENT: 7,
+        FORGEUPGRADE_EQUIPMENT: 12,
         BUY_ITEM: 8,
         CONSUMER_GAMECURRENCY: 9,
         LEARN_SKILL: 10,
@@ -146,7 +147,8 @@ module.exports = {
     PackageType: {
         WEAPONS: "weapons",
         EQUIPMENTS: "equipments",
-        ITEMS: "items"
+        ITEMS: "items",
+        DIAMOND: "diamond"
     },
 
     EqType: {
@@ -160,6 +162,18 @@ module.exports = {
         SHOES: 'shoes',//鞋
         RING: 'ring'//戒指
     },
+
+    EqDict: [
+        'weapon',//武器
+        'necklace',//项链
+        'helmet',//头盔
+        'armor' ,//护甲
+        'belt',//腰带
+        'legguard',//护腿
+        'amulet',//护符
+        'shoes',//鞋
+        'ring'//戒指
+    ],
 
     MailType: {
         SYSTEM: 1,
@@ -443,7 +457,8 @@ module.exports = {
         PROMOTEHP: "18",
         ADDDODGE: "19",
         ICE: "20",
-        SILENCE: "21"
+        SILENCE: "21",
+        AWAKEN_ENHANCE_TRIGGERSKILL: "22"
     },
 
     buffCategory: {
@@ -452,7 +467,8 @@ module.exports = {
         AFTER_ATTACK: 3,
         AFTER_DEFENSE: 4,
         ROUND: 5,
-        ATTACKING: 6
+        ATTACKING: 6,
+        AWAKEN: 7
     },
 
     characterFightStatus: {
@@ -486,6 +502,25 @@ module.exports = {
         DEATH: 9,
         GETDAMAGE: 10,
         AWAKEN: 11
+    },
+
+    /**
+     * 1触发技能
+     * 2觉醒技能
+     * 3先手技能
+     * 4主属性强化
+     * 5此属性强化
+     * 6技能强化
+     * 7其他
+     */
+    onsetType: {
+        TRIGGER_SKILL: 1,
+        AWAKEN_SKILL: 2,
+        SENTE_SKILL: 3,
+        MAINATTRIMPROVE_SKILL: 4,
+        SECONDORYATTRIMPROVE_SKILL: 5,
+        SKILLIMPROVE_SKILL: 6,
+        OTHER: 7
     },
 
     correspondingEffect_attr: {

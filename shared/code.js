@@ -45,7 +45,13 @@ module.exports = {
         NO_WEAPON: 1221,
         WRONG_WEAPON: 1222,
         NO_UPGRADE: 1223,
-        NOMORE_LEVEL: 1224
+        NOMORE_LEVEL: 1224,
+        NOT_OWNER_EQUIPMENT: 1225,
+        NO_FORGEDATA: 1226,
+        FORGEUPGRADE_TOP_LEVEL: 1227,
+        LACK_UPGRADEMATERIAL: 1228,
+        WRONG_CELLID: 1229,
+        NOT_SAME_ATTRID: 1230
     },
 
     SHOP: {
@@ -53,7 +59,8 @@ module.exports = {
         NOT_EXIST_ITEM: 1102,
         NOT_EXIST_NPCSHOP: 1103,
         NOT_ENOUGHT_GAMECURRENCY: 1104,
-        WRONG_MONEY_TYPE: 1105
+        WRONG_MONEY_TYPE: 1105,
+        NOT_EXIST_PRICE: 1106
     },
 
     FRIEND: {
@@ -79,7 +86,9 @@ module.exports = {
     },
 
     AREA: {
-        WRONG_CURRENTSCENE: 1701
+        WRONG_CURRENTSCENE: 1701,
+        WRONG_AREA: 1702,
+        NOMORE_DATA: 1703
     },
 
     CHARACTER: {
@@ -103,6 +112,10 @@ module.exports = {
         TOP_LEVEL: 1822,
         NEED_REQUIREMENT: 1823,
         NO_REACH_SKILL: 1824,
-        NO_SKILL: 1825
+        NO_SKILL: 1825,
+        WRONG_TYPE: 1826,
+        LACK_UPGRADEMATERIAL: 1827,
+        LACK_UPGRADELEVEL: 1828,
+        LACK_UPGRADEMONEY: 1829
     }
 };

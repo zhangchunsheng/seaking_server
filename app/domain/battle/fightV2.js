@@ -718,9 +718,10 @@ Fight.createTestPlayer = function(opts) {
 
     var skills = {};
     var skillId = "";
-    for(var i = 0 ; i < opts.skills.length ; i++) {
-        skillId = dataApi.skillsV2.findById(opts.skills[i]).skillId;
-        skills[i + 1] = new SkillV2({
+    for(var i in opts.skills) {
+        //skillId = dataApi.skillsV2.findByMId(opts.skills[i]).skillId;
+        skillId = opts.skills[i];
+        skills[i] = new SkillV2({
             id: opts.skills[i],
             skillId: skillId,
             level: 1
@@ -756,6 +757,8 @@ Fight.createTestPlayer = function(opts) {
         block: formulaV2.calculateBlock(hero.block, level),
         counter: formulaV2.calculateCounter(hero.counter, level),
         level: level,
+        ghost: {level:0},
+        aptitude: {1:{"level":0,"count":50}},
         skills: skills
     };
     data.fightValue = {};

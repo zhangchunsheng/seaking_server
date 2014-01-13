@@ -12,3 +12,16 @@ var buffUtil = module.exports;
 buffUtil.getInitBuff = function() {
     return [];
 }
+
+buffUtil.getBuff = function(buffId, buffs) {
+    for(var i = 0 ; i < buffs.length ; i++) {
+        if(buffs[i].buffId == buffId) {
+            return buffs[i];
+        }
+    }
+    return {};
+}
+
+buffUtil.calculateValue = function(buffId, buffs) {
+
+}

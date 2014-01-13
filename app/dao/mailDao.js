@@ -18,7 +18,7 @@ var mailDao = module.exports;
 
 
 mailDao.new = function(msg, callback) {
-	async.parallel([
+	async.series([
 		function(cb) {
 			mailDao.setTo(msg, cb);
 		},
@@ -83,7 +83,6 @@ mailDao.send = function(msg, callback) {
 	var array=[["select", redisConfig.database.SEAKING_REDIS_DB]];
 	array.push(["lpush", fromBox, getString(smail)]);
 	array.push(["lpush", toBox, getString(rmail)]);
-	logger.info(array);
 	redis.command(function(client){
 		client.multi(array).exec(function(err, res) {
 			redis.release(client);
@@ -108,7 +107,6 @@ mailDao.getAll = function(msg, callback) {
 		});
 		
 	}else{
-
 		redis.command(function(client){
 			mailDao.get(client, msg , function(err, r) {
 				if(err){redis.release(client);callback(err, null);return;}
@@ -127,6 +125,7 @@ mailDao.getAll = function(msg, callback) {
 
 var thresholds = 40;
 mailDao.get = function(client, msg, callback, mode){
+	console.log("mailId:" , msg.mailId);
 	var box = msg.box;
 	var array = [["select", redisConfig.database.SEAKING_REDIS_DB]];
 	array.push(["llen", box]);
@@ -144,7 +143,7 @@ mailDao.get = function(client, msg, callback, mode){
 		}
 		if(msg[property] == first[property]) {
 			callback(null, {index:0, length:length, data: first});return;//mode or add
-		} else if(  msg[property]  > first[property]  ) {
+		} else if(msg[property].length > first[property].length || (msg[property].length == first[property].length && msg[property]  > first[property] ) ) {
 			//callback("not find", null);
 			if(mode){callback(null,null);return;}//mode
 			callback("not find", null);return;	
@@ -152,17 +151,15 @@ mailDao.get = function(client, msg, callback, mode){
 			if(mode){ callback(null, {index: 1,length:length, data: null});return;}
 			callback(null, null);return;
 		}
-
 		if(msg[property] == last[property]) {
 			callback(null, {index:-1, length:length, data: last});return;//mode or add
-		} else if( msg[property] < last[property]  ) {
+		} else if(msg[property].length < last[property].length || ( msg[property].length == last[property].length && msg[property] < last[property] ) ) {
 			if(mode){callback(null,{index:length, data:null, length:length});return;}
 			callback(null,null);return;//mode
 		} else if( length == 2 ) {
 			if(mode){ callback(null, {index: 1,length:length, data: null});return;}
 			callback(null, null);return;
 		}
-
 		if(length > thresholds) {
 			//mode
 			var find = function(start, end) {
@@ -196,10 +193,10 @@ mailDao.get = function(client, msg, callback, mode){
  						return null;
  					}
  					var m = Math.ceil((start+end)/2);
- 					var property = getJson(res[m])[property];
- 					if(property > msg[property]) {
+ 					var _property = getJson(res[m])[property];
+ 					if(_property > msg[property]) {
  						return find(m, end);
- 					}else if(property < msg[property]) {
+ 					}else if(_property < msg[property]) {
  						return find(start, m);
  					}else{
  						return m;
@@ -209,6 +206,8 @@ mailDao.get = function(client, msg, callback, mode){
  				if(m==null){
  					callback("not find", null);return;
  				}
+ 				//console.log(msg[property]);
+ 				//console.log(JSON.parse(res[m]).time);
  				callback(null, {index: m, data: res[m], length: length});
 			});
 		}

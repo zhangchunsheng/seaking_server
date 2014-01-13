@@ -23,6 +23,7 @@ var routes = require('./routes')
     , partner = require('./routes/partner')
     , aptitude = require('./routes/character/aptitude')
     , ghost = require('./routes/character/ghost')
+    , misc = require('./routes/character/misc')
     , resource = require('./routes/resource')
     , shop = require('./routes/shop')
     , skill = require('./routes/skill')
@@ -47,6 +48,7 @@ module.exports = function (app) {
 
     app.get('/area/getAreaInfo', area.getAreaInfo);
     app.get('/area/getAreaPlayers', area.getAreaPlayers);
+    app.get('/area/getSceneData', area.getSceneData);
 
     // 竞技场
     app.get('/arena/pk', authRequired, arena.pk);
@@ -61,8 +63,10 @@ module.exports = function (app) {
     app.get('/battle/battle2', battle.battle2);
 
     //赌场
-    app.get('/casino/getItems', authRequired, casino.getItems);
+    app.get('/casino/get', authRequired, casino.get);
+    app.get('/casino/refresh', authRequired, casino.refresh);
     app.get('/casino/gambling', authRequired, casino.gambling);
+    app.get("/casino/gmRepair", authRequired, casino.gmRepair);
 
     //装备
     app.get('/equip/wearWeapon', authRequired, equip.wearWeapon);
@@ -71,6 +75,9 @@ module.exports = function (app) {
     app.get('/equip/unEquip', authRequired, equip.unEquip);
     app.get('/equip/upgrade', authRequired, equip.upgrade);
     app.get('/equip/forgeUpgrade', authRequired, equip.forgeUpgrade);
+    app.get('/equip/inlay', authRequired, equip.inlay);
+    app.get('/equip/unInlay', authRequired, equip.unInlay);
+    app.get('/equip/changeDiamond', authRequired, equip.changeDiamond);
 
     app.get('/formation/change', authRequired, formation.change);
 
@@ -78,6 +85,7 @@ module.exports = function (app) {
     app.get('/friend/add', authRequired, friend.add);
     app.get('/friend/addByName', authRequired, friend.addByName);
     app.get('/friend/remove', authRequired, friend.remove);
+
 
     app.get('/guide/get', authRequired, guide.get);
     app.get('/guide/save', authRequired, guide.save);
@@ -95,10 +103,18 @@ module.exports = function (app) {
     app.get("/mail/_Set", authRequired, mail._Set);
 
     app.get("/astrology/main", authRequired, astrology.main);
-    app.get("/astrology/use", authRequired, astrology.use);
-    app.get("/astrology/buy", authRequired, astrology.goldbuy);
-    app.get("/astrology/clean", authRequired, astrology.clean);
-    app.get("/astrology/pickUp", authRequired, astrology.pickUpAll);
+    app.get("/astrology/summon", authRequired, astrology.random);
+    app.get("/astrology/summonTo3", authRequired, astrology.buy);
+    app.get("/astrology/sellAllCi", authRequired, astrology.sell);
+    app.get("/astrology/equip", authRequired, astrology.load);
+    app.get("/astrology/unEquip", authRequired, astrology.unLoad);
+    app.get("/astrology/test", authRequired, astrology.test);
+    app.get("/astrology/cos", authRequired, astrology.pickUp);
+    app.get("/astrology/unlock", authRequired, astrology.unlock);
+    app.get("/astrology/collectAllCi", authRequired, astrology.pickUpAll);
+    app.get("/astrology/convert", authRequired, astrology.exchange);
+    app.get("/astrology/synthAllBi", authRequired, astrology.merger);
+    app.get("/astrology/gmRepair", authRequired, astrology.gmRepair);
 
     app.get("/package/_Set", authRequired, package._Set);
     app.get('/package/_AddItem', authRequired, package.addItem);
@@ -107,6 +123,7 @@ module.exports = function (app) {
     app.get('/package/throwItem', authRequired, package.discardItem);
     app.get('/package/sellItem', authRequired, package.sellItem);
     app.get('/package/userItem', authRequired, package.userItem);
+    app.get("/package/unlock", authRequired, package.unlock);
 
     app.get('/player/enterScene', authRequired, player.enterScene);
     app.get('/player/changeAndGetSceneData', authRequired, player.changeAndGetSceneData);
@@ -116,6 +133,7 @@ module.exports = function (app) {
     app.get('/player/changeView', authRequired, player.changeView);
     app.get('/player/changeArea', authRequired, player.changeArea);
     app.get('/player/npcTalk', authRequired, player.npcTalk);
+    app.get('/player/getPlayerInfo', authRequired, player.getPlayerInfo);
 
     //技能
     app.get('/player/learnSkill', authRequired, skill.learnSkill);
@@ -127,13 +145,17 @@ module.exports = function (app) {
     app.get('/skill/useSkill', authRequired, skill.useSkill);
     app.get('/skill/forgetSkill', authRequired, skill.forgetSkill);
     app.get('/skill/getAllSkill', authRequired, skill.getAllSkill);
+    app.get('/skill/learnAndUpgradeSkill', authRequired, skill.learnAndUpgradeSkill);
 
     app.get('/partner/getPartner', authRequired, partner.getPartner);
     app.get('/partner/gotoStage', authRequired, partner.gotoStage);
     app.get('/partner/leaveTeam', authRequired, partner.leaveTeam);
 
     app.get('/aptitude/upgrade', authRequired, aptitude.upgrade);
+    app.get('/aptitude/checkFreeTime', authRequired, aptitude.checkFreeTime);
     app.get('/ghost/upgrade', authRequired, ghost.upgrade);
+
+    app.get('/misc/getMiscs', authRequired, misc.getMiscs);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 

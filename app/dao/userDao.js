@@ -18,6 +18,7 @@ var induDao = require('./induDao');
 var taskDao = require('./taskDao');
 var partnerDao = require('./partnerDao');
 var playerDao = require('./playerDao');
+var friendDao = require('./friendDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
@@ -124,7 +125,7 @@ userDao.updateRoleData = function(player, serverId, registerType, loginName, cb)
     userDao.getUserInfo(serverId, registerType, loginName, function(err, reply) {
         var date = new Date();
 
-        var updateRoleDate = new date.getTime();
+        var updateRoleDate = date.getTime();
         if(typeof reply.updateRoleDate != "undefined")
             updateRoleDate = reply.updateRoleDate;
 
@@ -354,18 +355,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
         }).hexists(key, "characters", function(err, reply) {
             if(reply == 0) {
                 userDao.getCharacterId(client, function(err, characterId) {
-                    var level = 1;
-                    var date = new Date();
-                    var curTasks = {
-                        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
-                        currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
-                        currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
-                        currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
-                    };
-                    var skills = new Skills();
-                    skills.initSkills(cId);
-                    var package = packageUtil.initPackage(cId);
-                    var character = playerUtil.initCharacter({
+                    var character = playerUtil.initCharacterV2({
                         cId: cId,
                         serverId: serverId,
                         characterId: characterId,
@@ -373,11 +363,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         registerType: registerType,
                         loginName: loginName,
                         nickname: nickname,
-                        isRandom: isRandom,
-                        level: level,
-                        package: package,
-                        skills: skills,
-                        curTasks: curTasks
+                        isRandom: isRandom
                     });
 
                     //client.hset(key, "characters", characterId);
@@ -394,7 +380,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
                         cId: cId,
                         characterId: characterId,
                         nickname: nickname,
-                        level: level
+                        level: character.level
                     }
                     ucenter.addPlayer(data);
 
@@ -425,7 +411,7 @@ userDao.createCharacter = function(serverId, userId, registerType, loginName, cI
 
                         var player = playerUtil.getPlayer(character);
                         //createEPTInfo(player, serverId, registerType, loginName, character.characterId);
-                        playerUtil.createEntity(character, serverId, registerType, loginName, characterId);
+                        playerUtil.createEntity(player, serverId, registerType, loginName, character.characterId);
                         redis.release(client);
                         utils.invokeCallback(cb, null, player);
                     });
@@ -554,6 +540,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                         level: level,
                         replies: replies
                     });
+
                     var taskInfo = {};
                     for(var o in character.curTasks) {
                         if(o == "currentDayTask") {
@@ -571,21 +558,29 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
 
                     async.parallel([
                         function(callback) {
+                           
                             partnerDao.getAllPartner(client, character.partners, serverId, registerType, loginName, characterId, function(err, partners) {
                                 if(!!err || !partners) {
                                     console.log('Get partners for partnerDao failed! ' + err);
                                 }
+                                
                                 callback(err, partners);
                             });
                         }
                     ],
                     function(err, results) {
+
                         var partners = results[0];
                         character.partners = partners;
+                            
                         var player = playerUtil.getPlayer(character);
+                        var fKey = dbUtil.getFriendKey(serverId, registerType, loginName, characterId);
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
+                            friendDao.getFriends(fKey, function(err, reply) {
+                                player.friends = reply;
+                                utils.invokeCallback(cb, null, player);
+                            });
                             redis.release(client);
-                            utils.invokeCallback(cb, null, player);
                         });
                     });
                 });
@@ -634,7 +629,6 @@ userDao.getPlayerById = function(playerId, cb) {
                         level: level,
                         replies: replies
                     });
-
                     async.parallel([
                         function(callback) {
                             partnerDao.getAllPartner(client, character.partners, character.serverId, character.registerType, character.loginName, characterId, function(err, partners) {

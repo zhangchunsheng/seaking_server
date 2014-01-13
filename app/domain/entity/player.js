@@ -11,6 +11,7 @@
 var util = require('util');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
+var formulaV2 = require('../../consts/formulaV2');
 var consts = require('../../consts/consts');
 var EntityType = require('../../consts/consts').EntityType;
 var TaskType = require('../../consts/consts').TaskType;
@@ -37,6 +38,7 @@ var skillUtil = require('../../utils/skillUtil');
  */
 var Player = function(opts) {
     Character.call(this, opts);
+    this.ZX = opts.ZX;
     this.id = opts.id;
     this.type = EntityType.PLAYER;
     this.userId = opts.userId;
@@ -46,6 +48,7 @@ var Player = function(opts) {
     this.equipments = opts.equipments;
     this.package = opts.package;
     this.formation = opts.formation;
+    this.tacticals = opts.tacticals;
     this.partners = opts.partners;
     this.allPartners = opts.allPartners;
     this.gift = opts.gift;
@@ -53,7 +56,7 @@ var Player = function(opts) {
     var heros = dataApi.heros.data;
     //this.nextLevelExp = formula.calculateAccumulated_xp(heros[this.cId]["xpNeeded"], heros[this.cId]["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
     this.nextLevelExp = opts.nextLevelExp;
-    this.herosData = dataApi.herosV2.findById(this.kindId) || {};//heros
+    this.herosData = dataApi.herosV2.findById(this.cId) || {};//heros
     this.curTasks = opts.curTasks;
     this.range = opts.range || 2;
 
@@ -64,14 +67,21 @@ var Player = function(opts) {
     this.sid = opts.serverId;
     this.regionId = opts.serverId;
 
-    this.money = parseInt(opts.money);
+    this.money = parseInt(opts.money || 0);
     this.gameCurrency = parseInt(opts.gameCurrency);
+
+    this.miscs = opts.miscs || [];
+    this.soulPackage = opts.soulPackage;
 
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
     this.aptitudeEntity = opts.aptitudeEntity;
     this.ghostEntity = opts.ghostEntity;
+    this.skillsEntity = opts.skillsEntity;
+    this.miscsEntity = opts.miscsEntity;
+
+    this.friends = opts.friends || [];
 
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
@@ -93,7 +103,7 @@ var Player = function(opts) {
         counter: this.counter
     };
 
-    this.initSkills();
+    this.initSkillsV2();
     this.updateRestoreAngerSpeed();
 };
 
@@ -156,6 +166,7 @@ Player.prototype._upgrade = function() {
     var hero = dataApi.heros.findById(this.cId);
     var upgradeColumn = {
         level: level,
+        experience: this.experience,
         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
@@ -175,9 +186,69 @@ Player.prototype._upgrade = function() {
     return upgradeColumn;
 };
 
+Player.prototype._upgradeV2 = function() {
+    this.level += 1;
+    var level = this.level;
+    var hero = dataApi.herosV2.findById(this.cId);
+    var upgradeColumn = {
+        level: level,
+        experience: this.experience,
+        needExp: formulaV2.calculateXpNeeded(level + 1),
+        accumulated_xp: formulaV2.calculateAccumulated_xp(level),
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level)
+    }
+    this.setNextLevelExpV2();
+    return upgradeColumn;
+};
+
+Player.prototype.calculatorUpgrade = function(experience) {
+    this.level = formulaV2.calculateLevel(experience);
+    var level = this.level;
+    var hero = dataApi.herosV2.findById(this.cId);
+    var upgradeColumn = {
+        level: level,
+        experience: experience,
+        needExp: formulaV2.calculateXpNeeded(level + 1),
+        accumulated_xp: formulaV2.calculateAccumulated_xp(level),
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level)
+    }
+    this.setNextLevelExpV2();
+    this.equipmentsEntity.upgradeInlayCell(this);
+    return upgradeColumn;
+};
+
 Player.prototype.setNextLevelExp = function() {
     var hero = dataApi.heros.findById(this.cId);
     this.nextLevelExp = formula.calculateAccumulated_xp(hero["xpNeeded"], hero["levelFillRate"], this.level + 1);//hero.xpNeeded, hero.levelFillRate, level
+}
+
+Player.prototype.setNextLevelExpV2 = function() {
+    var hero = dataApi.herosV2.findById(this.cId);
+    this.nextLevelExp = formulaV2.calculateXpNeeded(this.level + 1);
 }
 
 Player.prototype.getUpgradeInfo = function() {
@@ -290,6 +361,13 @@ Player.prototype.initSkills = function() {
         }
     }
     this.updateSkillBuffs();
+};
+
+/**
+ * 初始化技能
+ */
+Player.prototype.initSkillsV2 = function() {
+
 };
 
 /**
@@ -876,16 +954,19 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
     //var epType = utils.getEqType(item.itemId);
     var epType = utils.getEqTypeV2(item.itemId);
     var curEquipment = this.equipmentsEntity.get(epType);
-    this.equipmentsEntity.equip(epType, {
+    this.equipmentsEntity.equip(this, epType, {
         epid: item.itemId,
-        level: item.level
+        level: item.level,
+        forgeLevel: item.forgeLevel,
+        inlay: item.inlay
     });
     if (curEquipment.epid != 0) {
         index = player.packageEntity.addItem(player, pkgType, {
             itemId: curEquipment.epid,
             itemNum: 1,
             level: curEquipment.level,
-            forgeLevel: curEquipment.forgeLevel || 0
+            forgeLevel: curEquipment.forgeLevel || 0,
+            inlay: curEquipment.inlay
         }, pIndex).index;
     } else {
         //player.packageEntity.removeItem(pkgType, pIndex);
@@ -894,6 +975,53 @@ Player.prototype.equip = function(pkgType, item, pIndex, player) {
     //this.updateAttribute();
     return index;
 };
+
+/**
+ * 镶嵌
+ * @param pkgType
+ * @param item
+ * @param index
+ * @param player
+ * @param type
+ * @param cellId
+ * @returns {number}
+ */
+Player.prototype.inlay = function(pkgType, item, pIndex, player, type, cellId) {
+    var index = 0;
+    var curDiamond = this.equipmentsEntity.getDiamond(type, cellId);
+    this.equipmentsEntity.inlay(type, cellId, {
+        diamondId: item.itemId
+    });
+    if (curDiamond != "" && curDiamond != 0) {
+        index = player.packageEntity.addItem(player, pkgType, {
+            itemId: curDiamond,
+            itemNum: 1
+        }, pIndex);
+        if(index == null) {
+            index = [];
+        } else {
+            index = index.index;
+        }
+    } else {
+        //player.packageEntity.removeItem(pkgType, pIndex);
+        player.packageEntity.removeItem(pIndex, 1);
+    }
+    //this.updateAttribute();
+    return index;
+}
+
+/**
+ * 镶嵌
+ * @param pkgType
+ * @param player
+ * @param type
+ * @param packageDiamonds 包裹中物品
+ * @param needPutIntoPackageDiamonds 放入包括物品
+ * @param newDiamonds
+ */
+Player.prototype.changeEquipDiamonds = function(pkgType, player, type, packageDiamonds, needPutIntoPackageDiamonds, newDiamonds) {
+    this.equipmentsEntity.changeEquipDiamonds(type, newDiamonds);
+}
 
 Player.prototype.buyItem = function(type, item, costMoney) {
     var packageChange = this.packageEntity.addItemWithNoType(this, item);
@@ -924,6 +1052,11 @@ Player.prototype.unEquip = function(type) {
     //this.updateAttribute();
 };
 
+Player.prototype.unInlay = function(type, cellId) {
+    this.equipmentsEntity.unInlay(type, cellId);
+    //this.updateAttribute();
+};
+
 /**
  * Use Item
  *
@@ -936,7 +1069,8 @@ Player.prototype.useItem = function(type, index) {
     if (!item || !item.itemId.match(/D/)) {
         return false;
     }
-    this.packageEntity.removeItem(type, index);
+    //this.packageEntity.removeItem(type, index);
+    this.packageEntity.removeItem(index, 1);
     return true;
 };
 
@@ -1080,6 +1214,77 @@ Player.prototype.learnSkill = function(skillId, callback) {
     });
 };
 
+Player.prototype.learnAndUpgradeSkill = function(player, type, skillId, required, callback) {
+    var currentSkills = this.currentSkills;
+    if(typeof currentSkills[type] == "undefined" || currentSkills[type].skillId == 0) {
+        this.learnSkillV2(player, type, skillId, required, callback);
+    } else {
+        this.upgradeSkillV2(player, type, skillId, required, callback);
+    }
+};
+
+Player.prototype.forgeSkill = function(player, type, skillId, callback) {
+    var currentSkills = this.currentSkills;
+    currentSkills[type] = {
+        skillId: 0,
+        level: 0
+    };
+    var allSkills = this.allSkills;
+    var flag = false;
+    for(var i = 0 ; i < allSkills.length ; i++) {
+        if(allSkills[i].skillId == skillId) {
+            flag = true;
+            break;
+        }
+    }
+    if(!flag) {
+        allSkills.push({
+            skillId: skillId,
+            level: 1
+        });
+    }
+
+    var array = [];
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+        array.push(["hset", key, "allSkills", JSON.stringify({
+            allSkills: allSkills
+        })]);
+    }
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, 0);
+    });
+};
+
+Player.prototype.learnSkillV2 = function(player, type, skillId, required, callback) {
+    var currentSkills = this.currentSkills;
+    var level = 1;
+    currentSkills[type] = {
+        skillId: skillId,
+        level: level
+    };
+
+    var array = [];
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    }
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, level);
+    });
+};
+
 /**
  * Upgrade the existing skill.
  *
@@ -1117,6 +1322,25 @@ Player.prototype.upgradeSkill = function(skillId, callback) {
     array.push(["hset", key, type, JSON.stringify(skills)]);
     userDao.update(array, function(err, repy) {
         utils.invokeCallback(callback, null, nextSkillId);
+    });
+};
+
+Player.prototype.upgradeSkillV2 = function(player, type, skillId, required, callback) {
+    var currentSkills = this.currentSkills;
+    currentSkills[type].level++;
+
+    var array = [];
+    if(this.id.indexOf("P") > 0) {
+        var characterId = utils.getRealCharacterId(player.id);
+        var partnerId = utils.getRealPartnerId(this.id);
+        var key = dbUtil.getPartnerKey(this.serverId, this.registerType, this.loginName, characterId, partnerId);
+    } else {
+        var characterId = utils.getRealCharacterId(this.id);
+        var key = dbUtil.getPlayerKey(this.serverId, this.registerType, this.loginName, characterId);
+    }
+    array.push(["hset", key, "currentSkills", JSON.stringify(currentSkills)]);
+    userDao.update(array, function(err, repy) {
+        utils.invokeCallback(callback, null, currentSkills[type].level);
     });
 };
 
@@ -1195,6 +1419,78 @@ Player.prototype.checkRequirement = function(skillData) {
     if(count == requirement.length)
         status = 1;
     return status;
+}
+
+/**
+ * materials,player level limit,money
+ * @param upgradeSkillRequired [{"materials":"D10030113|1","level":"1","money":"1000"},{"materials":"D10030114|1","level":"10","money":"10000"},{"materials":"D10030108|5","level":"20","money":"20000"},{"materials":"D10030106|10","level":"30","money":"50000"}],[{"materials":"D10030112|2"}]
+ */
+Player.prototype.checkUpgradeSkillRequired = function(player, type, upgradeSkillRequired) {
+    var required = {};
+    var skillLevel = this.currentSkills[type].level;//level 0 0-1
+    if(skillLevel == 0) {
+        var money = 1000;
+        required.packageInfo = [];
+    } else {
+        var requirement = upgradeSkillRequired[skillLevel - 1];
+        var materials = requirement.materials;
+        var level = requirement.level;
+        var money = requirement.money;
+
+        // check materials
+        var array = materials.split("|");
+        var itemId = array[0];
+        var itemNum = array[1];
+        var flag = [];
+        materials = [{
+            itemId: itemId,
+            itemNum: itemNum
+        }];
+        flag = player.packageEntity.checkMaterial(materials);
+        if(flag.length != materials.length) {
+            return -1;
+        }
+        required.packageInfo = flag;
+        // check level
+        if(level > this.level) {
+            return -2;
+        }
+        required.level = level;
+    }
+
+    // check money
+    if(money > player.money) {
+        return -3;
+    }
+    required.money = money;
+    return required;
+}
+
+Player.prototype.checkForgetSkillRequired = function(player, type, forgetSkillRequired) {
+    var required = {};
+    var requirement = forgetSkillRequired;
+    var materials = [];
+    var array;
+    var itemId;
+    var itemNum;
+    var flag = [];
+    for(var i = 0 ; i < requirement.length ; i++) {
+        array = requirement[i].materials.split("|");
+        itemId = array[0];
+        itemNum = array[1];
+        materials.push({
+            itemId: itemId,
+            itemNum: itemNum
+        });
+    }
+
+    // check materials
+    flag = player.packageEntity.checkMaterial(materials);
+    if(flag.length != materials.length) {
+        return 0;
+    }
+    required.packageInfo = flag;
+    return required;
 }
 
 // Emit the event 'save'.
@@ -1330,6 +1626,7 @@ Player.prototype.logTaskData = function(type) {
 //Convert player' state to json and return
 Player.prototype.strip = function() {
     return {
+        ZX: this.ZX,
         id: this.id,
         entityId: this.entityId,
         nickname: this.nickname,
@@ -1364,11 +1661,15 @@ Player.prototype.strip = function() {
         curTasks: this.curTasksEntity.getInfo(),
         equipments: this.equipmentsEntity.getInfo(),
         package: this.packageEntity.getInfo(),
-        skills: this.skills,
+        //skills: this.skills,
+        currentSkills: this.currentSkills,
+        allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
+        tacticals: this.tacticals,
         partners: this.getPartners(),
         gift: this.gift,
+        friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
         aptitude: this.aptitudeEntity.getInfo()
@@ -1536,14 +1837,19 @@ Player.prototype.toJSON = function() {
         curTasks: this.curTasksEntity.getInfo(),
         equipments: this.equipmentsEntity.getInfo(),
         package: this.packageEntity.getInfo(),
-        skills: this.skills,
+        //skills: this.skills,
+        currentSkills: this.currentSkills,
+        allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
+        tacticals: this.tacticals,
         partners: this.getPartners(),
         gift: this.gift,
+        friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
-        aptitude: this.aptitudeEntity.getInfo()
+        aptitude: this.aptitudeEntity.getInfo(),
+        ZX: this.ZX
     };
 };
 
@@ -1580,12 +1886,16 @@ Player.prototype.getBaseInfo = function() {
         critDamage: this.critDamage,
         block: this.block,//格挡
         counter: this.counter,//反击
-        skills: this.skills,
+        //skills: this.skills,
+        currentSkills: this.currentSkills,
+        allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
+        tacticals: this.tacticals,
         gift: this.gift,
-        ghost: this.ghostEntity.getInfo(),
+        friends: this.friends,
+        ghost: this.ghost,
         ghostNum: this.ghostNum,
-        aptitude: this.aptitudeEntity.getInfo()
+        aptitude: this.aptitude
     };
 };

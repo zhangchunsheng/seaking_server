@@ -385,11 +385,56 @@ utils.addOrigin = function(res, req) {
     }
 }
 
+/**
+ * getCategoryHeroId
+ * @param cId
+ * @returns {string}
+ */
 utils.getCategoryHeroId = function(cId) {
     var heroId;
-    heroId = dataApi.herosV2.findById(cId).heroId
+    heroId = dataApi.herosV2.findById(cId).heroId;
     heroId = heroId.substr(0, 2) + 0 + heroId.substr(3);
     return heroId;
+}
+
+/**
+ *
+ * @param weaponId
+ */
+utils.getHeroIdByWeaponId = function(weaponId) {
+    var heroId;
+    heroId = "H" + weaponId.substr(4);
+    return heroId;
+}
+
+utils.getFormByEquipmentId = function(equipmentId) {
+    var form;
+    form = equipmentId.substr(4, 1);
+    return form;
+}
+
+utils.checkOwnerEquipment = function(player, equipmentId) {
+    var flag = false;
+    if(equipmentId.indexOf("W") >= 0) {
+        var heroId = utils.getCategoryHeroId(player.cId);
+        var thatHeroId = utils.getHeroIdByWeaponId(equipmentId);
+        if(heroId == thatHeroId) {
+            flag = true;
+        } else {
+            flag = false;
+        }
+    } else if(equipmentId.indexOf("E") >= 0) {
+        var form = parseInt(player.herosData.form);
+        var thatForm = parseInt(utils.getFormByEquipmentId(equipmentId));
+        if(form == thatForm) {
+            flag = true;
+        } else {
+            flag = false;
+        }
+    } else {
+        flag = false;
+    }
+    return flag;
 }
 
 /**
@@ -400,4 +445,32 @@ utils.getDate = function(time) {
     var date = new Date();
     date.setTime(time);
     return utils.getDaytime(date);
+}
+
+/**
+ * 检查装备位置
+ * @param type
+ */
+utils.checkEquipmentPositionType = function(type) {
+    var dict = consts.EqDict;
+    for(var i = 0 ; i < dict.length ; i++) {
+        if(type == dict[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+utils.getPageInfo = function(pageInfo, entities) {
+    var currentPage = pageInfo.currentPage || 1;
+    var perPage = pageInfo.perPage || 20;
+    var allPage = Math.ceil(entities.length / perPage);
+    pageInfo.allPage = allPage;
+    if(currentPage < 1) {
+        currentPage = 1;
+    }
+    if(currentPage > allPage) {
+        currentPage = allPage;
+    }
+    return pageInfo;
 }

@@ -7,8 +7,11 @@
  */
 var dataApi = require('./dataApi');
 var Player = require('../domain/entity/player');
+var Skills = require('../domain/skill/skills');
 var utils = require("./utils");
 var buffUtil = require("./buffUtil");
+var equipmentUtil = require("./equipmentUtil");
+var packageUtil = require("./packageUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
 var equipmentsDao = require('../dao/equipmentsDao');
@@ -16,12 +19,32 @@ var taskDao = require('../dao/taskDao');
 var packageDao = require('../dao/packageDao');
 var aptitudeService = require('../services/character/aptitudeService');
 var ghostService = require('../services/character/ghostService');
+var skillService = require('../services/skillService');
+var miscsService = require('../services/character/miscsService');
 var Tasks = require('../domain/tasks');
 
 var playerUtil = module.exports;
 
 playerUtil.initCharacter = function(opts) {
+    var level = 1;
+    var date = new Date();
+
     var hero = dataApi.heros.findById(opts.cId);
+
+    var curTasks = {
+        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
+        currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
+    };
+
+    var skills = new Skills(opts);
+    //skills.initSkills(opts.cId);
+    skills.initSkillsV2(opts.cId);
+
+    //var package = packageUtil.initPackage(opts.cId);
+    var package = packageUtil.initPackageV2(opts.cId);
+
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -35,42 +58,46 @@ playerUtil.initCharacter = function(opts) {
         currentScene: "city01",
         x: 1000,
         y: 100,
-        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
-        level: opts.level,
-        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, opts.level + 1),
-        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
+        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
+        level: level,
+        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
+        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         photo: '',
         buffs: buffUtil.getInitBuff(),
-        hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), opts.level),
-        maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), opts.level),
+        hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
+        maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
         anger: 0,
-        attack: formula.calculateAttack(parseInt(hero.attack), parseInt(hero.attLevelUpRate), opts.level),
-        defense: formula.calculateDefense(parseInt(hero.defense), parseInt(hero.defLevelUpRate), opts.level),
-        focus: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), opts.level),
-        sunderArmor: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), opts.level),
-        speedLevel: formula.calculateSpeedLevel(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), opts.level),
-        speed: formula.calculateSpeed(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), opts.level),
-        dodge: formula.calculateDodge(parseInt(hero.dodge), parseInt(hero.dodgeMaxIncrement), opts.level),
-        criticalHit: formula.calculateCriticalHit(parseInt(hero.criticalHit), parseInt(hero.critHitMaxIncrement), opts.level),
-        critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), opts.level),
-        block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), opts.level),
-        counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), opts.level),
+        attack: formula.calculateAttack(parseInt(hero.attack), parseInt(hero.attLevelUpRate), level),
+        defense: formula.calculateDefense(parseInt(hero.defense), parseInt(hero.defLevelUpRate), level),
+        focus: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), level),
+        sunderArmor: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), level),
+        speedLevel: formula.calculateSpeedLevel(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
+        speed: formula.calculateSpeed(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
+        dodge: formula.calculateDodge(parseInt(hero.dodge), parseInt(hero.dodgeMaxIncrement), level),
+        criticalHit: formula.calculateCriticalHit(parseInt(hero.criticalHit), parseInt(hero.critHitMaxIncrement), level),
+        critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), level),
+        block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), level),
+        counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), level),
         gameCurrency: playerUtil.initGameCurrency(),
         money: playerUtil.initMoney(),
         equipments: playerUtil.initEquipments(),
-        package: opts.package,
+        package: package,
         skills: {
-            currentSkill: opts.skills.currentSkill,
-            activeSkills: opts.skills.activeSkills,
-            passiveSkills: opts.skills.passiveSkills
+            currentSkill: skills.currentSkill,
+            activeSkills: skills.activeSkills,
+            passiveSkills: skills.passiveSkills
         },
-        formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
+        currentSkills: skills.currentSkills,
+        allSkills: skills.allSkills,
+        formation: playerUtil.initFormation(opts),
+        tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
+        miscs: [],
         gift: [],
         ghost: playerUtil.initGhost(),
         ghostNum: playerUtil.initGhostNum(),
         aptitude: playerUtil.initAptitude(opts.cId),
-        curTasks: opts.curTasks,
+        curTasks: curTasks,
         currentIndu: {"induId":0}
     };
     return character;
@@ -84,13 +111,30 @@ playerUtil.initMoney = function() {
     return 1000000;
 }
 
+playerUtil.initFormation = function(opts) {
+    var formation = {formation:{1:{playerId:"S" + opts.serverId + "C" + opts.characterId}},tactical:{id:"F101",level:1}};
+    return formation;
+}
+
+playerUtil.initTacticals = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var tacticals = {"tacticals":[{"id":"F101","level":1,"active":1}]};
+
+    if(dataType == "string") {
+        tacticals = JSON.stringify(tacticals);
+    }
+    return tacticals;
+}
+
 playerUtil.initGhost = function(dataType) {
     if(typeof dataType == "undefined")
         dataType = "json";
 
     var data = {"level":0};
 
-    if(dataType = "string") {
+    if(dataType == "string") {
         data = JSON.stringify(data);
     }
     return data;
@@ -123,6 +167,16 @@ playerUtil.initAptitude = function(cId, dataType) {
     return data;
 }
 
+playerUtil.initAstrology =function(dataType) {
+    var data = {
+
+    }
+    if(dataType == "string") {
+        data = JSON.stringify(data);
+    }
+    return data;
+}
+
 playerUtil.initEquipments = function(dataType) {
     if(typeof dataType == "undefined")
         dataType = "json";
@@ -131,59 +185,83 @@ playerUtil.initEquipments = function(dataType) {
         weapon: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//武器
 
         necklace: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//项链
         helmet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//头盔
         armor: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护甲
         belt: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//腰带
         legguard: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护腿
         amulet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护符
         shoes: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//鞋
         ring: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         }//戒指
     };
 
-    if(dataType = "string") {
+    if(dataType == "string") {
         data = JSON.stringify(data);
     }
     return data;
 }
 
 playerUtil.initCharacterV2 = function(opts) {
+    var level = 1;
+    var date = new Date();
+
     var hero = dataApi.herosV2.findById(opts.cId);
+
+    var curTasks = {
+        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
+        currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
+    };
+
+    var skills = new Skills(opts);
+    skills.initSkillsV2(opts.cId);
+
+    var package = packageUtil.initPackageV2(opts.cId);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -197,49 +275,55 @@ playerUtil.initCharacterV2 = function(opts) {
         currentScene: "city01",
         x: 1000,
         y: 100,
-        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
-        level: opts.level,
-        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, opts.level + 1),
-        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
+        experience: formulaV2.calculateAccumulated_xp(level),
+        level: level,
+        needExp: formulaV2.calculateXpNeeded(level + 1),
+        accumulated_xp: formulaV2.calculateAccumulated_xp(level),
         photo: '',
         buffs: buffUtil.getInitBuff(),
-        hp: formulaV2.calculateHp(hero.hp, hero.addHp, opts.level),
-        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, opts.level),
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
         anger: 0,
-        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, opts.level),
-        defense: formulaV2.calculateDefense(hero.defense, opts.level),
-        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, opts.level),
-        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, opts.level),
-        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, opts.level),
-        speed: formulaV2.calculateSpeed(hero.speed, opts.level),
-        dodge: formulaV2.calculateDodge(hero.dodge, opts.level),
-        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, opts.level),
-        critDamage: formulaV2.calculateCritDamage(hero.attack, opts.level),
-        block: formulaV2.calculateBlock(hero.block, opts.level),
-        counter: formulaV2.calculateCounter(hero.counter, opts.level),
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level),
         gameCurrency: playerUtil.initGameCurrency(),
         money: playerUtil.initMoney(),
         equipments: playerUtil.initEquipments(),
-        package: opts.package,
-        skills: {
-            currentSkill: opts.skills.currentSkill,
-            activeSkills: opts.skills.activeSkills,
-            passiveSkills: opts.skills.passiveSkills
-        },
-        formation: [{playerId:"S" + opts.serverId + "C" + opts.characterId},null,null,null,null,null,null],
+        package: package,
+        /*skills: {
+            currentSkill: skills.currentSkill,
+            activeSkills: skills.activeSkills,
+            passiveSkills: skills.passiveSkills
+        },*/
+        currentSkills: skills.currentSkills,
+        allSkills: skills.allSkills,
+        formation: playerUtil.initFormation(opts),
+        tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
+        miscs: [],
         gift: [],
         ghost: playerUtil.initGhost(),
         ghostNum: playerUtil.initGhostNum(),
         aptitude: playerUtil.initAptitude(opts.cId),
-        curTasks: opts.curTasks,
+        curTasks: curTasks,
         currentIndu: {"induId":0}
     };
     return character;
 }
 
 playerUtil.getCharacter = function(opts) {
+    var skills = new Skills(opts);
     var character = {
+        ZX: JSON.parse(opts.replies.ZX || "{\"i\":[],\"c\":3}"),
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
         cId: opts.cId,
@@ -276,14 +360,18 @@ playerUtil.getCharacter = function(opts) {
         money: parseInt(opts.replies.money),
         equipments: JSON.parse(opts.replies.equipments),
         package: JSON.parse(opts.replies.package),
-        skills: {
+        /*skills: {
             currentSkill: JSON.parse(opts.replies.currentSkill),
             activeSkills: JSON.parse(opts.replies.activeSkills),
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
-        },
-        formation: JSON.parse(opts.replies.formation).formation,
+        },*/
+        currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
+        formation: JSON.parse(opts.replies.formation),
+        tacticals: JSON.parse(opts.replies.tacticals || playerUtil.initTacticals("string")).tacticals,
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
+        miscs: JSON.parse(opts.replies.miscs || '{"miscs":[]}').miscs,
         gift: JSON.parse(opts.replies.gift).gift,
         curTasks: {
             currentMainTask: JSON.parse(opts.replies.currentMainTask),
@@ -300,6 +388,7 @@ playerUtil.getCharacter = function(opts) {
 }
 
 playerUtil.getPKCharacter = function(opts) {
+    var skills = new Skills(opts);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -335,12 +424,15 @@ playerUtil.getPKCharacter = function(opts) {
         gameCurrency: parseInt(opts.replies.gameCurrency),
         money: parseInt(opts.replies.money),
         equipments: JSON.parse(opts.replies.equipments),
-        skills: {
+        /*skills: {
             currentSkill: JSON.parse(opts.replies.currentSkill),
             activeSkills: JSON.parse(opts.replies.activeSkills),
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
-        },
-        formation: JSON.parse(opts.replies.formation).formation,
+        },*/
+        currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
+        formation: JSON.parse(opts.replies.formation),
+        tacticals: JSON.parse(opts.replies.tacticals || playerUtil.initTacticals("string")).tacticals,
         partners: JSON.parse(opts.replies.partners).partners,
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
         ghostNum: opts.replies.ghostNum || 0,
@@ -351,6 +443,7 @@ playerUtil.getPKCharacter = function(opts) {
 
 playerUtil.getPlayer = function(character) {
     var player = new Player({
+        ZX: character.ZX,
         userId: character.userId,
         serverId: character.serverId,
         registerType: character.registerType,
@@ -385,10 +478,14 @@ playerUtil.getPlayer = function(character) {
         equipments: character.equipments,
         curTasks: character.curTasks,
         package: character.package,
-        skills: character.skills,
+        skills: character.skills || {},
+        currentSkills: character.currentSkills || {},
+        allSkills: character.allSkills || {},
         formation: character.formation,
+        tacticals: character.tacticals,
         partners: character.partners,
         allPartners: character.allPartners,
+        miscs: character.miscs,
         gift: character.gift,
         ghost: character.ghost,
         ghostNum: character.ghostNum,
@@ -434,10 +531,14 @@ playerUtil.getPlayerV2 = function(character) {
         equipments: character.equipments,
         curTasks: character.curTasks,
         package: character.package,
-        skills: character.skills,
+        skills: character.skills || {},
+        currentSkills: character.currentSkills || {},
+        allSkills: character.allSkills || {},
         formation: character.formation,
+        tacticals: character.tacticals,
         partners: character.partners,
         allPartners: character.allPartners,
+        miscs: character.miscs,
         gift: character.gift,
         ghost: character.ghost,
         ghostNum: character.ghostNum,
@@ -456,21 +557,25 @@ playerUtil.getPlayerV2 = function(character) {
  * @param characterId
  */
 playerUtil.createEntity = function(character, serverId, registerType, loginName, characterId) {
-    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId);
-    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId);
+    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId, character);
+    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId, character);
     var curTasks = new Tasks({
-        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks),
-        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks)
+        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks, character)
     });
-    var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId);
-    var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId);
+    var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId, character);
+    var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
+    var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
+    var miscs = miscsService.createNewMiscs({}, serverId, registerType, loginName, characterId, character);
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
     character.aptitudeEntity = aptitude;
     character.ghostEntity = ghost;
+    character.skillsEntity = skills;
+    character.miscsEntity = miscs;
 };
 
 /**
@@ -482,12 +587,14 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
  * @param characterId
  */
 playerUtil.createPKEntity = function(player, serverId, registerType, loginName, characterId) {
-    var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
+    var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId, player);
     player.equipmentsEntity = equipments;
-    var aptitude = aptitudeService.createNewAptitude(player.aptitude, serverId, registerType, loginName, characterId);
+    var aptitude = aptitudeService.createNewAptitude(player.aptitude, serverId, registerType, loginName, characterId, player);
     player.aptitudeEntity = aptitude;
-    var ghost = ghostService.createNewGhost(player.ghost, serverId, registerType, loginName, characterId);
+    var ghost = ghostService.createNewGhost(player.ghost, serverId, registerType, loginName, characterId, player);
     player.ghostEntity = ghost;
+    var skills = skillService.createNewSkills(player.currentSkills, serverId, registerType, loginName, characterId, player);
+    player.skillsEntity = skills;
 };
 
 /**
@@ -499,13 +606,13 @@ playerUtil.createPKEntity = function(player, serverId, registerType, loginName, 
  * @param characterId
  */
 playerUtil.createEPTInfo = function(character, serverId, registerType, loginName, characterId) {
-    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId);
-    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId);
+    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId, character);
+    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId, character);
     var curTasks = new Tasks({
-        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks),
-        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks)
+        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks, character)
     });
     character.packageEntity = package;
     character.equipmentsEntity = equipments;

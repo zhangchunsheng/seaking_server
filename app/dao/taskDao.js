@@ -186,7 +186,7 @@ taskDao.destroy = function(characterId, cb) {
  * @param {Object} taskInfo
  * @return {Object} task
  */
-taskDao.createNewTask = function(taskInfo, serverId, registerType, loginName, characterId, curTasks) {
+taskDao.createNewTask = function(taskInfo, serverId, registerType, loginName, characterId, curTasks, character) {
     taskInfo.serverId = serverId;
     taskInfo.registerType = registerType;
     taskInfo.loginName = loginName;

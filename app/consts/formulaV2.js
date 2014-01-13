@@ -92,6 +92,50 @@ formula.calCounterDamage = function(attack, defense) {
     return damage;
 }
 
+formula.calculateLevel = function(experience) {
+    if(experience <= 0) {
+        experience = 1000;
+    }
+    var a = 1;
+    var b = 1;
+    var c = -(2 * experience / 1000);
+
+    var delt;
+    var x1;
+    var x2;
+    var level = 0;
+
+    delt = b * b - 4 * a * c;
+    if(delt > 0) {
+        x1 = ((-b) + Math.sqrt(delt)) / (2 * a);
+        x2 = ((-b) - Math.sqrt(delt)) / (2 * a);
+        if(x1 > 0) {
+            level = x1;
+        } else if(x2 > 0) {
+            level = x2;
+        }
+    } else if(delt == 0) {
+        level = Math.floor((-b) / (2 * a));
+    } else if(delt < 0) {
+        level = 1;
+    }
+    return Math.floor(level);
+}
+
+formula.calculateXpNeeded = function(level) {
+    var xpNeeded = level * 1000;
+    return Math.floor(xpNeeded);
+}
+
+formula.calculateAccumulated_xp = function(level) {
+    var accumulated_xp = 0;
+    for(var i = 0 ; i < level ; i++) {
+        accumulated_xp += ((i + 1) * 1000);
+    }
+
+    return Math.floor(accumulated_xp);
+}
+
 /**
  * format time
  * @param date
@@ -128,26 +172,6 @@ formula.calculateAddUp = function(value, rate, level) {
 formula.calculateValue = function(value, rate, level) {
     var number = value + rate * level;
     return number;
-}
-
-formula.calculateXpNeeded = function(value, rate, level) {
-    var xpNeeded = value - rate;
-    /*for(var i = 0 ; i < level ; i++) {
-     xpNeeded += rate * (i + 1);
-     }*/
-    xpNeeded += level * (rate + rate * level) / 2;
-    return Math.floor(xpNeeded);
-}
-
-formula.calculateAccumulated_xp = function(value, rate, level) {
-    var xpNeeded = value - rate;
-    var accumulated_xp = 0;
-    for(var i = 0 ; i < level ; i++) {
-        xpNeeded += rate * (i + 1);
-        accumulated_xp += xpNeeded;
-    }
-
-    return Math.floor(accumulated_xp);
 }
 
 /**

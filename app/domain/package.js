@@ -5,7 +5,7 @@ var Persistent = require('./persistent');
 var PackageType = require('../consts/consts').PackageType;
 var consts = require('../consts/consts');
 var utils = require("../utils/utils");
-
+var dataApi = require("../utils/dataApi");
 var packageStart = 0;
 var Package = function(opts){
 	Persistent.call(this, opts);
@@ -35,6 +35,9 @@ Package.prototype.getItemType = function(item) {
         break;
         case "T":
             return PackageType.Task;
+        break;
+        case "B":
+            return PackageType.DIAMOND;
         break;
     }
 }
@@ -66,7 +69,6 @@ Package.prototype.checkItem = function(index, itemId) {
 
 Package.prototype.removeItem = function(index, itemNum) {
     var item =  this.items[index];
-    item.itemNum -= itemNum;
     item.itemNum = item.itemNum - itemNum;
     if(item.itemNum <= 0) {
         delete this.items[index];
@@ -74,17 +76,19 @@ Package.prototype.removeItem = function(index, itemNum) {
     this.save();
     return item;
 }
-
+Package.prototype.unlock = function(end) {
+    this.itemCount = end;
+}
 Package.prototype.hasItem = function(_item) {
 	var flag = [];
 	var num = _item.itemNum;
-	for(var i = packageStart, l= this.itemCount+packageStart; i < l; i++ ) {
-		if( this.items[i] && this.itesm[i].itemId == _item.itemId){
+	for(var i = packageStart, l = this.itemCount + packageStart; i < l; i++ ) {
+		if(this.items[i] && this.items[i].itemId == _item.itemId) {
 			var item = this.items[i];
-			if(num > item.itemNum){
+			if(num > item.itemNum) {
 				num = num - item.itemNum;
 				flag.push(item);
-			}else{
+			} else {
 				flag.push({
 					itemId: item.itemId,
 					itemNum: num,
@@ -100,18 +104,166 @@ Package.prototype.hasItem = function(_item) {
 	return null;
 }
 
+/**
+ * 检索材料
+ * @param materials []
+ * @returns {*}
+ */
+Package.prototype.checkMaterial = function(materials) {
+    var flag = [];
+    var items = [];
+    var material;
+    var num;
+    var item;
+    for(var i = 0 ; i < materials.length ; i++) {
+        material = materials[i];
+        num = material.itemNum;
+        items = [];
+        for(var j = packageStart, l = this.itemCount + packageStart ; j < l ; j++ ) {
+            if(this.items[j] && this.items[j].itemId == material.itemId) {
+                item = this.items[j];
+                if(num > item.itemNum) {
+                    num = num - item.itemNum;
+                    items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: item.itemNum
+                    });
+                } else {
+                    items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: num
+                    });
+                    num = 0;
+                }
+                if(num == 0) {
+                    break;
+                }
+            }
+        }
+        if(num == 0) {
+            flag.push(items);
+        } else {
+            return [];
+        }
+    }
+    if(flag.length == materials.length) {
+        return flag;
+    } else {
+        return [];
+    }
+}
+
+/**
+ * 检索物品
+ * @param items
+ * @returns {Array}
+ */
+Package.prototype.checkItems = function(items) {
+    var flag = [];
+    var _items = [];
+    var _item;
+    var num;
+    var item;
+    for(var i = 0 ; i < items.length ; i++) {
+        _item = items[i];
+        num = _item.itemNum;
+        _items = [];
+        for(var j = packageStart, l = this.itemCount + packageStart ; j < l ; j++ ) {
+            if(this.items[j] && this.items[j].itemId == _item.itemId) {
+                item = this.items[j];
+                if(num > item.itemNum) {
+                    num = num - item.itemNum;
+                    _items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: item.itemNum
+                    });
+                } else {
+                    _items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: num
+                    });
+                    num = 0;
+                }
+                if(num == 0) {
+                    break;
+                }
+            }
+        }
+        if(num == 0) {
+            flag.push(_items);
+        } else {
+            return [];
+        }
+    }
+    if(flag.length == items.length) {
+        return flag;
+    } else {
+        return [];
+    }
+}
+
+/**
+ *
+ * @param needChangedDiamonds
+ */
+Package.prototype.checkDiamonds = function(needChangedDiamonds) {
+    return this.checkItems(needChangedDiamonds);
+}
+
 Package.prototype.addItemWithNoType = function(player, item) {
 	var type = "";
     if(item.itemId.indexOf("W") >= 0) {
         type = PackageType.WEAPONS;
     } else if(item.itemId.indexOf("E") >= 0) {
         type = PackageType.EQUIPMENTS;
+    } else if(item.itemId.indexOf("B") >= 0) {
+        type = PackageType.DIAMOND;
     } else {
         type = PackageType.ITEMS;
     }
     return this.addItem(player, type, item);
 }
 
+function sort1(array, max) {
+    for(var i =array.length-1;i> 0;i--) {
+        for(var l = 0,len = i;l<len;l++) {
+            if(array[l].itemId < array[l+1].itemId ){
+                var t = array[l];
+                array[l] = array[l+1];
+                array[l+1] = t;
+            }else if(array[l].itemId == array[l+1].itemId){
+                array[l].itemNum  =(array[l].itemNum-0) + (array[l+1].itemNum -0);
+                if(max) {
+                   if(array[l].itemNum > max) {
+                    array[l+1].itemNum = array[l].itemNum - max;
+                    array[l].itemNum  = max;
+                    
+                    }else {
+                        array[l+1].itemNum= 0;
+                    } 
+                }else {
+                    var itemInfo = dataApi.item.findById(array[l].itemId);
+                    var _max = itemInfo.pileNum - 0 ||99;
+                    if(array[l].itemNum > _max) {
+                        array[l+1].itemNum = array[l].itemNum - _max;
+                        array[l].itemNum  = _max;
+                    
+                    }else {
+                        array[l+1].itemNum= 0;
+                    } 
+                }
+                
+            }
+        }
+    }
+    return array;
+} ;
+
+var sort
 
 Package.prototype.arrange = function(callback) {
     var items = this.items;
@@ -119,7 +271,8 @@ Package.prototype.arrange = function(callback) {
         , Es = []
         , Ws = []
         , Ds = []
-        , Ts = [];
+        , Ts = []
+        , Bs = [];
     for(var i = packageStart,l = this.itemCount + packageStart; i < l ;i++) {
         if(items[i]){
             var item = items[i];
@@ -140,45 +293,90 @@ Package.prototype.arrange = function(callback) {
                 case "T":
                     Ts.push(item);
                     break;
+                case "B":
+                    Bs.push(item);
             }
         }
     }
-    var sortFun = function(a, b) {
+    var sortFun1 = function(a, b) {
         if(a.itemId > b.itemId) {
             return 1;
         } else if(a.itemId < b.itemId) {
             return -1;
         } else {
-            if(a.level == b.level) {
-                if((a.itemId.substring(0, 1) == "C" || a.itemId.substring(0, 1) == "D")) {
-                    var all =  a.itemNum + b.itemNum;
-                    if(all > 99) {
-                        a.itemNum = 99;
-                        b.itemNum = all - 99;
-                    } else {
-                        a.itemNum = all;
-                        b.itemNum = 0;
+            if(a.level) {
+                if(a.level == b.level) {
+                    if(a.itemNum) {
+                        if(a.itemNum != 0 && b.itemNum != 0) {
+                            var all =  (a.itemNum - 0) + (b.itemNum -0);
+                            var itemInfo = dataApi.item.findById(a.itemId);
+                            itemInfo.pileNum = itemInfo.pileNum || 99;
+                            if(all > itemInfo.pileNum) {
+                                a.itemNum = itemInfo.pileNum;
+                                b.itemNum = all - itemInfo.pileNum;
+                            } else {
+                                a.itemNum = all;
+                                b.itemNum = 0;
+                            }
+                            return 0;
+                        } else if(a.itemNum == 0){
+                            return -1;
+                        }else if(b.itemNum == 0) {
+                            return 1;
+                        }                       
                     }
-                    return 0;
+                    
+                
                 } else {
-                    return 0;
+                    if(a.level > b.level) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
                 }
-            } else {
-                if(a.level > b.level) {
-                    return 1;
-                } else {
-                    return -1;
+            }else {
+                if(a.itemNum ) {
+
                 }
             }
+            
         }
     };
-    Cs.sort(sortFun);
-    Es.sort(sortFun);
-    Ws.sort(sortFun);
-    Ds.sort(sortFun);
-    Ts.sort(sortFun);
+    var sortFun2 = function(a, b) {
+        if(a.itemId) {
+            if( a.itemId > b.itemId) {
+                return 1;
+            } else if( a.itemId < b.itemId) {
+                return -1;
+            } else if( a.itemId == b.itemId){
+                if(a.level) {
+                    if(a.level >= b.level) {
+                        return 1;                        
+                    }else if(a.level < b.level) {
+                        return -1;
+                    }
+                }
+                return 0;
+            }
+        }else {
+            console.log(a);
+            return -1;
+        }
+    }
+    Cs = sort1(Cs);
+    Es.sort(sortFun2);
+    Ws.sort(sortFun2);
+    Ds = sort1(Ds);
+    Ts = sort1(Ts);
+    Bs = sort1(Bs);
+    /*Cs.sort(sortFun1);
+    Es.sort(sortFun2);
+    Ws.sort(sortFun2);
+    Ds.sort(sortFun1);
+    Ts.sort(sortFun1);
+    Bs.sort(sortFun1);*/
     var all = [];
-    all = all.concat(Cs, Es, Ws, Ds, Ts);
+    all = all.concat(Cs, Es, Ws, Ds, Ts, Bs);
 
     var json = arrayToJson(all);
     console.log(json);
@@ -193,7 +391,7 @@ Package.prototype.arrange = function(callback) {
 var arrayToJson = function(array) {
     var json = {};
     var n = packageStart;
-    for(var i=0,l = array.length;i < l;i++){
+    for(var i = 0,l = array.length ; i < l ; i++) {
         if(array[i] && array[i].itemNum != 0){
             json[n] = array[i];
             n++;
@@ -203,15 +401,41 @@ var arrayToJson = function(array) {
 }
 
 Package.prototype.addItem = function(player, type, item, rIndex) {
+    var itemInfo = {};
+    if(type.pileNum) {
+        itemInfo = type;
+    } else {
+        switch(type) {
+            case PackageType.EQUIPMENTS:
+                itemInfo = dataApi.equipments.findById(item.itemId);
+                break;
+            case PackageType.WEAPONS:
+                itemInfo = dataApi.weapons.findById(item.itemId);
+                break;
+            case PackageType.DIAMOND:
+                itemInfo = dataApi.diamonds.findById(item.itemId);
+                break;
+            case PackageType.ITEMS:
+                itemInfo = dataApi.item.findById(item.itemId);
+                break;
+            default:
+                itemInfo.pileNum = 99;
+        }
+        console.log("###itemInfo:",itemInfo);
+    }
     var changes = [];
     var _items = utils.clone(item);
-    if (!item || !item.itemId || !item.itemId.match(/W|E|D/)) {
+    if (!item || !item.itemId || !item.itemId.match(/W|E|D|B/)) {
         //返回{}并没有返回null 容易判断
         return null;
     }
     if(rIndex) {
         if(this.items[rIndex]) {
-            delete this.items[rIndex];
+            var _item =  this.items[rIndex];
+            _item.itemNum = _item.itemNum - 1;
+            if(_item.itemNum <= 0) {
+                delete this.items[rIndex];
+            }
         }
     }
     var items = this;
@@ -224,7 +448,31 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
                     level: item.level,
-                    forgeLevel: item.forgeLevel
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
+                };
+                changes = [{
+                    index: i,
+                    item: items.items[i]
+                }];
+                break;
+            }
+        }
+        if(!flag)
+            return {
+                index: []
+            };
+    } else if(!itemInfo.pileNum || itemInfo.pileNum == 1) {
+        var flag = false;
+        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+            if (!items.items[i]) {
+                flag = true;
+                items.items[i] = {
+                    itemId: item.itemId,
+                    itemNum: item.itemNum,
+                    level: item.level,
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
                 };
                 changes = [{
                     index: i,
@@ -239,18 +487,18 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             };
     } else {
          for(var i in items.items) {
-            if(items.items[i].itemId == item.itemId && items.items[i].itemNum < 99) {
+            if(items.items[i].itemId == item.itemId && items.items[i].itemNum < itemInfo.pileNum) {
                 _items.itemNum += this.items[i].itemNum;
                 var mitem = items.items[i];
-                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > 99 ) {
-                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - 99;
-                    mitem.itemNum = 99;
+                if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > itemInfo.pileNum) {
+                    item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - itemInfo.pileNum;
+                    mitem.itemNum = itemInfo.pileNum;
                     changes.push({
                         index: i,
                         item: mitem
                     });
 
-                } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) <= 99) {
+                } else if(parseInt(mitem.itemNum) + parseInt(item.itemNum) <= itemInfo.pileNum) {
                     mitem.itemNum = parseInt(mitem.itemNum) + parseInt(item.itemNum);
                     item.itemNum = 0 ;
                     changes.push({
@@ -273,22 +521,21 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
                 if(spaceCount == -1) {
                     return null;
                 }
-                if(item.itemNum > 99) {
+                if(item.itemNum > itemInfo.pileNum) {
                     // 一定小于99个所以直接添加就好了，传入数值最大99
                     items.items[spaceCount] = {
                         itemId: item.itemId,
-                        itemNum: 99,
+                        itemNum: itemInfo.pileNum,
                         level: item.level
                     };
                     changes.push({
                         index: spaceCount,
                         item: items.items[spaceCount]
                     });
-                    item.itemNum -= 99;
+                    item.itemNum -= itemInfo.pileNum;
 
                     return run();
                 }
-                console.log(item.itemNum);
                 items.items[spaceCount] = {
                     itemId: item.itemId,
                     itemNum: item.itemNum,
@@ -316,6 +563,65 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             r.task = task;
         }
         return r;
+}
+
+/**
+ * 添加武器装备
+ * @param player
+ * @param type
+ * @param item
+ * @param rIndex
+ * @returns {*}
+ */
+Package.prototype.addEquipment = function(player, type, item, rIndex) {
+    var changes = [];
+    var _items = utils.clone(item);
+    if (!item || !item.itemId || !item.itemId.match(/W|E/)) {
+        //返回{}并没有返回null 容易判断
+        return null;
+    }
+    if(rIndex) {
+        if(this.items[rIndex]) {
+            var _item =  this.items[rIndex];
+            _item.itemNum = _item.itemNum - 1;
+            if(_item.itemNum <= 0) {
+                delete this.items[rIndex];
+            }
+        }
+    }
+    var items = this;
+    if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
+        var flag = false;
+        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+            if (!items.items[i]) {
+                flag = true;
+                items.items[i] = {
+                    itemId: item.itemId,
+                    itemNum: item.itemNum,
+                    level: item.level,
+                    forgeLevel: item.forgeLevel || 0,
+                    inlay: item.inlay || {count:6,diamonds:{}}
+                };
+                changes = [{
+                    index: i,
+                    item: items.items[i]
+                }];
+                break;
+            }
+        }
+        if(!flag)
+            return {
+                index: []
+            };
+    }
+    var task;
+    var r = {index: changes};
+    if(changes.length > 0) {
+        this.save();
+        task = player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+        r.task = task;
+    }
+    return r;
 }
 
 Package.prototype.strip = function() {

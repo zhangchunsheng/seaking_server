@@ -22,7 +22,6 @@ ghostService.upgrade = function(array, mainPlayer, player, cb) {
     if(player.id.indexOf("P") >= 0) {
         var partnerId = utils.getRealPartnerId(player.id);
         key = dbUtil.getPartnerKey(player.sid, player.registerType, player.loginName, characterId, partnerId);
-        console.log(key);
     }
     var field = "ghost";
     var ghost = player.ghost;
@@ -33,11 +32,12 @@ ghostService.upgrade = function(array, mainPlayer, player, cb) {
     });
 }
 
-ghostService.createNewGhost = function(ghostInfo, serverId, registerType, loginName, characterId) {
+ghostService.createNewGhost = function(ghostInfo, serverId, registerType, loginName, characterId, character) {
     ghostInfo.serverId = serverId;
     ghostInfo.registerType = registerType;
     ghostInfo.loginName = loginName;
     ghostInfo.characterId = characterId;
+    ghostInfo.cId = character.cId;
     var ghost = new Ghost(ghostInfo);
     return ghost;
 }

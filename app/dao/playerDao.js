@@ -99,6 +99,8 @@ playerDao.updatePlayerAndPartnersInfo = function(player, opts, cb) {
         }
     }
     player.ghostNum += parseInt(opts.ghost);
+    if(player.ghostNum >= 99999)
+        player.ghostNum = 99999;
     playerDao.updateAllPlayers(player, "hp", "ghostNum", cb);
 };
 

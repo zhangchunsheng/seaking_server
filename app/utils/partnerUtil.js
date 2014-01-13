@@ -7,8 +7,10 @@
  */
 var dataApi = require('./dataApi');
 var Player = require('../domain/entity/player');
+var Skills = require('../domain/skill/skills');
 var utils = require("./utils");
 var buffUtil = require("./buffUtil");
+var equipmentUtil = require("./equipmentUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
 
@@ -26,6 +28,13 @@ partnerUtil.getPartner = function(playerId, player) {
 
 partnerUtil.initPartner = function(opts) {
     var hero = dataApi.heros.findById(opts.cId);
+
+    var partner = dataApi.partners.findById(opts.cId);
+    var level = partner.level;
+    var skills = new Skills(opts);
+    //skills.initSkills(opts.cId);
+    skills.initSkillsV2(opts.cId);
+
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -37,30 +46,32 @@ partnerUtil.initPartner = function(opts) {
         loginName: opts.loginName,
         nickname: hero.name,
         buffs: buffUtil.getInitBuff(),
-        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
-        level: opts.level,
-        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, opts.level + 1),
-        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
+        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
+        level: level,
+        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
+        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         photo: '',
-        hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), opts.level),
-        maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), opts.level),
+        hp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
+        maxHp: formula.calculateHp(parseInt(hero.hp), parseInt(hero.hpFillRate), level),
         anger: 0,
-        attack: formula.calculateAttack(parseInt(hero.attack), parseInt(hero.attLevelUpRate), opts.level),
-        defense: formula.calculateDefense(parseInt(hero.defense), parseInt(hero.defLevelUpRate), opts.level),
-        focus: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), opts.level),
-        speedLevel: formula.calculateSpeedLevel(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), opts.level),
-        speed: formula.calculateSpeed(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), opts.level),
-        dodge: formula.calculateDodge(parseInt(hero.dodge), parseInt(hero.dodgeMaxIncrement), opts.level),
-        criticalHit: formula.calculateCriticalHit(parseInt(hero.criticalHit), parseInt(hero.critHitMaxIncrement), opts.level),
-        critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), opts.level),
-        block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), opts.level),
-        counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), opts.level),
+        attack: formula.calculateAttack(parseInt(hero.attack), parseInt(hero.attLevelUpRate), level),
+        defense: formula.calculateDefense(parseInt(hero.defense), parseInt(hero.defLevelUpRate), level),
+        focus: formula.calculateFocus(parseInt(hero.focus), parseInt(hero.focusMaxIncrement), level),
+        speedLevel: formula.calculateSpeedLevel(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
+        speed: formula.calculateSpeed(parseInt(hero.speedLevel), parseInt(hero.speedMaxIncrement), level),
+        dodge: formula.calculateDodge(parseInt(hero.dodge), parseInt(hero.dodgeMaxIncrement), level),
+        criticalHit: formula.calculateCriticalHit(parseInt(hero.criticalHit), parseInt(hero.critHitMaxIncrement), level),
+        critDamage: formula.calculateCritDamage(parseInt(hero.critDamage), parseInt(hero.critDamageMaxIncrement), level),
+        block: formula.calculateBlock(parseInt(hero.block), parseInt(hero.blockMaxIncrement), level),
+        counter: formula.calculateCounter(parseInt(hero.counter), parseInt(hero.counterMaxIncrement), level),
         equipments: partnerUtil.initEquipments(),
         skills: {
-            currentSkill: opts.skills.currentSkill,
-            activeSkills: opts.skills.activeSkills,
-            passiveSkills: opts.skills.passiveSkills
+            currentSkill: skills.currentSkill,
+            activeSkills: skills.activeSkills,
+            passiveSkills: skills.passiveSkills
         },
+        currentSkills: skills.currentSkills,
+        allSkills: skills.allSkills,
         ghost: partnerUtil.initGhost(),
         aptitude: partnerUtil.initAptitude(opts.cId)
     };
@@ -73,7 +84,7 @@ partnerUtil.initGhost = function(dataType) {
 
     var data = {"level":0};
 
-    if(dataType = "string") {
+    if(dataType == "string") {
         data = JSON.stringify(data);
     }
     return data;
@@ -110,59 +121,74 @@ partnerUtil.initEquipments = function(dataType) {
         weapon: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//武器
 
         necklace: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//项链
         helmet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//头盔
         armor: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护甲
         belt: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//腰带
         legguard: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护腿
         amulet: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//护符
         shoes: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         },//鞋
         ring: {
             epid: 0,
             level: 0,
-            forgeLevel: 0
+            forgeLevel: 0,
+            inlay: equipmentUtil.initInlay()
         }//戒指
     };
 
-    if(dataType = "string") {
+    if(dataType == "string") {
         data = JSON.stringify(data);
     }
     return data;
 }
 
 partnerUtil.initPartnerV2 = function(opts) {
-    var hero = dataApi.heros.findById(opts.cId);
+    var hero = dataApi.herosV2.findById(opts.cId);
+
+    var partner = dataApi.partners.findById(opts.cId);
+    var level = partner.level;
+    var skills = new Skills(opts);
+    skills.initSkillsV2(opts.cId);
+
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -174,31 +200,33 @@ partnerUtil.initPartnerV2 = function(opts) {
         loginName: opts.loginName,
         nickname: hero.name,
         buffs: buffUtil.getInitBuff(),
-        experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
-        level: opts.level,
-        needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, opts.level + 1),
-        accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, opts.level),
+        experience: formulaV2.calculateAccumulated_xp(level),
+        level: level,
+        needExp: formulaV2.calculateXpNeeded(level + 1),
+        accumulated_xp: formulaV2.calculateAccumulated_xp(level),
         photo: '',
-        hp: formulaV2.calculateHp(hero.hp, hero.addHp, opts.level),
-        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, opts.level),
+        hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
+        maxHp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
         anger: 0,
-        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, opts.level),
-        defense: formulaV2.calculateDefense(hero.defense, opts.level),
-        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, opts.level),
-        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, opts.level),
-        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, opts.level),
-        speed: formulaV2.calculateSpeed(hero.speed, opts.level),
-        dodge: formulaV2.calculateDodge(hero.dodge, opts.level),
-        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, opts.level),
-        critDamage: formulaV2.calculateCritDamage(hero.attack, opts.level),
-        block: formulaV2.calculateBlock(hero.block, opts.level),
-        counter: formulaV2.calculateCounter(hero.counter, opts.level),
+        attack: formulaV2.calculateAttack(hero.attack, hero.addAttack, level),
+        defense: formulaV2.calculateDefense(hero.defense, level),
+        focus: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        sunderArmor: formulaV2.calculateSunderArmor(hero.sunderArmor, level),
+        speedLevel: formulaV2.calculateSpeedLevel(hero.speed, level),
+        speed: formulaV2.calculateSpeed(hero.speed, level),
+        dodge: formulaV2.calculateDodge(hero.dodge, level),
+        criticalHit: formulaV2.calculateCriticalHit(hero.criticalHit, level),
+        critDamage: formulaV2.calculateCritDamage(hero.attack, level),
+        block: formulaV2.calculateBlock(hero.block, level),
+        counter: formulaV2.calculateCounter(hero.counter, level),
         equipments: partnerUtil.initEquipments(),
-        skills: {
-            currentSkill: opts.skills.currentSkill,
-            activeSkills: opts.skills.activeSkills,
-            passiveSkills: opts.skills.passiveSkills
-        },
+        /*skills: {
+            currentSkill: skills.currentSkill,
+            activeSkills: skills.activeSkills,
+            passiveSkills: skills.passiveSkills
+        },*/
+        currentSkills: skills.currentSkills,
+        allSkills: skills.allSkills,
         ghost: partnerUtil.initGhost(),
         aptitude: partnerUtil.initAptitude(opts.cId)
     };
@@ -206,7 +234,9 @@ partnerUtil.initPartnerV2 = function(opts) {
 }
 
 partnerUtil.getPlayer = function(opts) {
+    var skills = new Skills(opts);
     var character = {
+        ZX: JSON.parse(opts.replies.ZX || "{\"i\":[],\"c\":3}"),
         id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
         kindId: opts.cId,
@@ -235,11 +265,13 @@ partnerUtil.getPlayer = function(opts) {
         block: parseFloat(opts.replies.block),
         counter: parseFloat(opts.replies.counter),
         equipments: JSON.parse(opts.replies.equipments),
-        skills: {
+        /*skills: {
             currentSkill: opts.replies.currentSkill ? JSON.parse(opts.replies.currentSkill) : {},
             activeSkills: JSON.parse(opts.replies.activeSkills),
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
-        },
+        },*/
+        currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         buffs: opts.replies.buffs ? JSON.parse(opts.replies.buffs).buffs : buffUtil.getInitBuff(),
         ghost: JSON.parse(opts.replies.ghost || partnerUtil.initGhost("string")),
         aptitude: JSON.parse(opts.replies.aptitude || partnerUtil.initAptitude(opts.cId, "string"))

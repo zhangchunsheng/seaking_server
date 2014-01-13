@@ -67,3 +67,35 @@ exports.change = function(req, res) {
 exports.setDefault = function(req, res) {
 
 }
+
+/**
+ * 最强攻击阵型
+ * @param req
+ * @param res
+ */
+exports.forteAttack = function(req, res) {
+
+}
+
+/**
+ * 最强防御阵型
+ * @param req
+ * @param res
+ */
+exports.forteDefense = function(req, res) {
+
+}
+
+/**
+ * 设置阵法
+ */
+exports.setTactical = function() {
+
+}
+
+/**
+ * 升级阵法
+ */
+exports.upgrade = function() {
+
+}
