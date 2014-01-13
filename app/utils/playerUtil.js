@@ -90,6 +90,7 @@ playerUtil.initCharacter = function(opts) {
         currentSkills: skills.currentSkills,
         allSkills: skills.allSkills,
         formation: playerUtil.initFormation(opts),
+        tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
         miscs: [],
         gift: [],
@@ -113,6 +114,18 @@ playerUtil.initMoney = function() {
 playerUtil.initFormation = function(opts) {
     var formation = {formation:{1:{playerId:"S" + opts.serverId + "C" + opts.characterId}},tactical:{id:"F101",level:1}};
     return formation;
+}
+
+playerUtil.initTacticals = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var tacticals = {"tacticals":[{"id":"F101","level":1,"active":1}]};
+
+    if(dataType == "string") {
+        tacticals = JSON.stringify(tacticals);
+    }
+    return tacticals;
 }
 
 playerUtil.initGhost = function(dataType) {
@@ -294,6 +307,7 @@ playerUtil.initCharacterV2 = function(opts) {
         currentSkills: skills.currentSkills,
         allSkills: skills.allSkills,
         formation: playerUtil.initFormation(opts),
+        tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
         miscs: [],
         gift: [],
@@ -354,6 +368,7 @@ playerUtil.getCharacter = function(opts) {
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         formation: JSON.parse(opts.replies.formation),
+        tacticals: JSON.parse(opts.replies.tacticals || playerUtil.initTacticals("string")).tacticals,
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
         miscs: JSON.parse(opts.replies.miscs || '{"miscs":[]}').miscs,
@@ -417,6 +432,7 @@ playerUtil.getPKCharacter = function(opts) {
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         formation: JSON.parse(opts.replies.formation),
+        tacticals: JSON.parse(opts.replies.tacticals || playerUtil.initTacticals("string")).tacticals,
         partners: JSON.parse(opts.replies.partners).partners,
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
         ghostNum: opts.replies.ghostNum || 0,
@@ -466,6 +482,7 @@ playerUtil.getPlayer = function(character) {
         currentSkills: character.currentSkills || {},
         allSkills: character.allSkills || {},
         formation: character.formation,
+        tacticals: character.tacticals,
         partners: character.partners,
         allPartners: character.allPartners,
         miscs: character.miscs,
@@ -518,6 +535,7 @@ playerUtil.getPlayerV2 = function(character) {
         currentSkills: character.currentSkills || {},
         allSkills: character.allSkills || {},
         formation: character.formation,
+        tacticals: character.tacticals,
         partners: character.partners,
         allPartners: character.allPartners,
         miscs: character.miscs,

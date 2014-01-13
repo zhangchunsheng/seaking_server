@@ -23,9 +23,10 @@ var Formation = function(opts) {
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
 
-    this.tacticalId = opts.tacticalId;
     this.formation = opts.formation;
     this.lastFormation = opts.lastFormation;
+
+    this.tacticals = opts.tacticals;//阵法列表
 };
 util.inherits(Formation, Persistent);
 
@@ -34,3 +35,13 @@ util.inherits(Formation, Persistent);
  */
 
 module.exports = Formation;
+
+Formation.prototype.initFormation = function() {
+    var formation = {formation:{1:{playerId:"S" + this.serverId + "C" + this.characterId}},tactical:{id:"F101",level:1}};
+    return formation;
+}
+
+Formation.prototype.initTacticals = function() {
+    var tacticals = [{"id":"F101","level":1,"active":1}];
+    return tacticals;
+}

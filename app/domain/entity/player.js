@@ -48,6 +48,7 @@ var Player = function(opts) {
     this.equipments = opts.equipments;
     this.package = opts.package;
     this.formation = opts.formation;
+    this.tacticals = opts.tacticals;
     this.partners = opts.partners;
     this.allPartners = opts.allPartners;
     this.gift = opts.gift;
@@ -1665,6 +1666,7 @@ Player.prototype.strip = function() {
         allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
+        tacticals: this.tacticals,
         partners: this.getPartners(),
         gift: this.gift,
         friends: this.friends,
@@ -1840,6 +1842,7 @@ Player.prototype.toJSON = function() {
         allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
+        tacticals: this.tacticals,
         partners: this.getPartners(),
         gift: this.gift,
         friends: this.friends,
@@ -1888,6 +1891,7 @@ Player.prototype.getBaseInfo = function() {
         allSkills: this.allSkills,
         buffs: this.buffs,
         formation: this.formation,
+        tacticals: this.tacticals,
         gift: this.gift,
         friends: this.friends,
         ghost: this.ghost,
