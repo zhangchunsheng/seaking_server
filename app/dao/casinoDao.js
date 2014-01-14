@@ -329,6 +329,15 @@ var gamblingGameCurrency = 2;
 		
 	});
 }*/
+var findNull = function(items, count) {
+	var nulls = [];
+	for(var i = 0, len = count; i < len ; i++ ) {
+		if(!items[i]) {
+			nulls.push(i);
+		}
+	}
+	return nulls;
+}
 var riskGameCurrency = 5;
 casinoDao.gambling = function(data, player, callback) {
 	//加了几次注
@@ -354,7 +363,10 @@ casinoDao.gambling = function(data, player, callback) {
 			if(lock) {
 				gameCurrency += riskGameCurrency;
 			}
-			console.log(casino);
+			var nulls = findNull(player.packageEntity.items, player.packageEntity.itemCount);
+			if(nulls.length == 0) {
+				return callback("bag is fulled");
+			}
 			
 			if(num> 0) {
 				//var money = (0.2*num)* casino.items.allPrice;
@@ -390,7 +402,11 @@ casinoDao.gambling = function(data, player, callback) {
 					itemNum: item.itemNum || 1
 				};
 				//var index = player.packageEntity.add(_item);
-				var _changeItems = player.packageEntity.addItemWithNoType(player, _item).index;
+				var addResult = player.packageEntity.addItemWithNoType(player, _item);
+				if(!addResult) {
+					redis.release(client);return callback("bag is fulled");					
+				}
+				var _changeItems = addResult.index;
 				console.log(_changeItems);
 				for(var i = 0, len = _changeItems.length; i < len ;i++) {
 					var _item = _changeItems[i];
