@@ -166,7 +166,7 @@ exports.setDefault = function(req, res) {
 
             data = {
                 code: consts.MESSAGE.RES,
-                formation: player.formationEntity.formation.formation
+                formation: player.formationEntity.formation
             };
             utils.send(msg, res, data);
         });
@@ -202,7 +202,7 @@ exports.resetFormation = function(req, res) {
 
             data = {
                 code: consts.MESSAGE.RES,
-                formation: player.formationEntity.formation.formation
+                formation: player.formationEntity.formation
             };
             utils.send(msg, res, data);
         });
