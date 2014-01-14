@@ -628,6 +628,9 @@ astrologyDao.merger = function(data, player, callback) {
 			items.sort(sortFunc);
 			var mainIndex = 0;
 			var main = items[mainIndex];
+			if(!main) {
+				return callback("bag is null");
+			}
 			cleanArray(items);
 			
 			while(items.length > _items.length + 1){
