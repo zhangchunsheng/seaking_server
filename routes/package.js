@@ -701,10 +701,10 @@ exports.unlock = function(req, res) {
          var costMoney = 0, costGameCurrency =0;
          if(end < 32) {
             costMoney = (32 - items.itemCount)*(2000*(items.itemCount+1-16)+2000*(end-16))/2;
-         } else if(end <= 48 &&end >= 32 && items.itemCount <= 32 ) {
+         } else if(end <= 64 &&end >= 32 && items.itemCount <= 32 ) {
             costMoney = (32 - items.itemCount) * (2000*(items.itemCount -16 +1)+2000*(32-16))/2;
             costGameCurrency = (end - 32)*((end-32)+1)/2;
-         }else if(items.itemCount >= 32 && end <= 48 ){
+         }else if(items.itemCount >= 32 && end <= 64 ){
              costGameCurrency = (end-items.itemCount)*((end-32)+(items.itemCount-32+1))/2;
          }else{
             return utils.send(msg, res, {
