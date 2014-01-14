@@ -493,13 +493,13 @@ userDao.getCharacterAllInfo = function (serverId, registerType, loginName, chara
  * @param characterId
  */
 function createEPTInfo(character, serverId, registerType, loginName, characterId) {
-    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId);
-    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId);
+    var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId, character);
+    var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId, character);
     var curTasks = new Tasks({
-        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks),
-        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks),
-        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks)
+        currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks, character),
+        currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks, character)
     });
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
@@ -644,7 +644,7 @@ userDao.getPlayerById = function(playerId, cb) {
                         var partners = results[0];
                         var player = new Opponent(character);
                         player.partners = partners;
-                        //var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId);
+                        //var equipments = equipmentsDao.createNewEquipment(player.equipments, serverId, registerType, loginName, characterId, character);
                         //player.equipmentsEntity = equipments;
                         playerUtil.createPKEntity(player, serverId, registerType, loginName, characterId);
                         userDao.updateRoleData(player, serverId, registerType, loginName, function(err, reply) {

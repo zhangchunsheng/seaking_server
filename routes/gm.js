@@ -176,6 +176,78 @@ exports.updateMoney = function(req, res) {
 }
 
 /**
+ * 更新金币
+ * @param req
+ * @param res
+ */
+exports.updateGold = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var gameCurrency = msg.gameCurrency;
+    var nickname = msg.nickname;
+    var serverId = region.serverId;
+
+    if(typeof gameCurrency == "undefined" || gameCurrency == "" || gameCurrency == 0) {
+        data = {
+            code: Code.FAIL
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    if(typeof nickname == "undefined" || nickname == "" || nickname == 0) {
+        data = {
+            code: Code.FAIL
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var data = {};
+    userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
+        if(err || reply == null) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var registerType = 0;
+        var loginName = "";
+        var characterId = 0;
+
+        var array = reply.split("_");
+        registerType = array[1].replace("T", "");
+        loginName = array[2];
+        characterId = array[3].replace("C", "");
+
+        userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
+            character.updateGameCurrency(gameCurrency);
+
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(character, callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    code: Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        });
+    });
+}
+
+/**
  * 更新经验
  * @param req
  * @param res
