@@ -45,6 +45,101 @@ formationService.changeFormation = function(array, player, formation, cb) {
     });
 }
 
+formationService.resetFormation = function(array, player, formation, cb) {
+    player.formationEntity.formation = formation;
+
+    var tacticalId = player.formationEntity.formation.tactical.id;
+    var tactical = {};
+    var tacticals = player.formationEntity.tacticals;
+    for(var i = 0 ; i < tacticals.length ; i++) {
+        if(tacticals[i].active == 1) {
+            delete tacticals[i].active;
+        }
+    }
+    for(var i = 0 ; i < tacticals.length ; i++) {
+        if(tacticals[i].id == tacticalId) {
+            tacticals[i].active = 1;
+            tactical = {
+                id: tacticals[i].id,
+                level: tacticals[i].level
+            }
+        }
+    }
+    player.formationEntity.formation.tactical = tactical;
+
+    var characterId = utils.getRealCharacterId(player.id);
+    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+
+    var field = "formation";
+    var formation = player.formationEntity.formation;
+    var value = JSON.stringify(formation);
+    array.push(["hset", key, field, value]);
+
+    field = "tacticals";
+    value = JSON.stringify({
+        tacticals: tacticals
+    });
+    array.push(["hset", key, field, value]);
+    redisService.setData(array, function(err, reply) {
+        utils.invokeCallback(cb, err, player.formationEntity.formation);
+    });
+}
+
+formationService.setDefault = function(array, player, formation, tacticalId, cb) {
+    var new_formation = {};
+    for(var i in player.formationEntity.formation.formation) {
+        new_formation[i] = {};
+        if(formation[i] == null || formation[i] == "") {
+            new_formation[i] = null;
+        } else {
+            new_formation[i].playerId = formation[i];
+        }
+    }
+    player.formationEntity.formation.formation = new_formation;
+
+    var tactical = {};
+    var tacticals = player.formationEntity.tacticals;
+    for(var i = 0 ; i < tacticals.length ; i++) {
+        if(tacticals[i].active == 1) {
+            delete tacticals[i].active;
+        }
+    }
+    for(var i = 0 ; i < tacticals.length ; i++) {
+        if(tacticals[i].id == tacticalId) {
+            tacticals[i].active = 1;
+            tactical = {
+                id: tacticals[i].id,
+                level: tacticals[i].level
+            }
+        }
+    }
+    player.formationEntity.formation.tactical = tactical;
+
+    player.formationEntity.lastFormation = player.formationEntity.formation;
+
+    var characterId = utils.getRealCharacterId(player.id);
+    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+
+    var field = "formation";
+    var formation = player.formationEntity.formation;
+    var value = JSON.stringify(formation);
+    array.push(["hset", key, field, value]);
+
+    field = "lastFormation";
+    var lastFormation = player.formationEntity.lastFormation;
+    value = JSON.stringify(lastFormation);
+    array.push(["hset", key, field, value]);
+
+    field = "tacticals";
+    value = JSON.stringify({
+        tacticals: tacticals
+    });
+    array.push(["hset", key, field, value]);
+    redisService.setData(array, function(err, reply) {
+        utils.invokeCallback(cb, err, player.formationEntity.formation);
+    });
+}
+
 /**
  * setTactical
  * @param array
@@ -129,6 +224,7 @@ formationService.createNewFormation = function(formationInfo, serverId, register
     formationInfo.characterId = characterId;
     formationInfo.cId = character.cId;
     formationInfo.formation = character.formation;
+    formationInfo.lastFormation = character.lastFormation;
     formationInfo.tacticals = character.tacticals;
     var formation = new Formation(formationInfo);
     return formation;
