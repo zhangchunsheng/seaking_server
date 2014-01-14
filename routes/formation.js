@@ -92,7 +92,8 @@ exports.setDefault = function(req, res) {
         , serverId = session.serverId
         , registerType = session.registerType
         , loginName = session.loginName
-        , formation = msg.formation;
+        , formation = msg.formation
+        , tacticalId = msg.tacticalId;
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
@@ -101,6 +102,29 @@ exports.setDefault = function(req, res) {
     if(!formation) {
         data = {
             code: consts.MESSAGE.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    if(utils.empty(tacticalId)) {
+        data = {
+            code: consts.MESSAGE.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    if(tacticalId.indexOf("F") != 0) {
+        data = {
+            code: consts.MESSAGE.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var tactical =  dataApi.formations.findById(tacticalId);
+    if(!tactical) {
+        data = {
+            code: Code.FORMATION.WRONG_TACTICALID
         };
         utils.send(msg, res, data);
         return;
@@ -126,9 +150,17 @@ exports.setDefault = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
+        result = player.formationEntity.checkTacticalId(player, tacticalId);
+        if(result == 0) {
+            data = {
+                code: Code.FORMATION.NO_TACTICAL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
 
         var array = [];
-        formationService.changeFormation(array, player, formation, function(err, reply) {
+        formationService.setDefault(array, player, formation, tacticalId, function(err, reply) {
             //更新任务
             player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});
 
@@ -153,44 +185,18 @@ exports.resetFormation = function(req, res) {
     var uid = session.uid
         , serverId = session.serverId
         , registerType = session.registerType
-        , loginName = session.loginName
-        , formation = msg.formation;
+        , loginName = session.loginName;
 
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
-    if(!formation) {
-        data = {
-            code: consts.MESSAGE.ARGUMENT_EXCEPTION
-        };
-        utils.send(msg, res, data);
-        return;
-    }
-
-    try {
-        formation = JSON.parse(formation);
-    } catch(e) {
-        data = {
-            code: consts.MESSAGE.ARGUMENT_EXCEPTION
-        };
-        utils.send(msg, res, data);
-        return;
-    }
 
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        //验证formation
-        var result = player.formationEntity.checkFormation(player, formation);
-        if(result == 0) {
-            data = {
-                code: consts.MESSAGE.ARGUMENT_EXCEPTION
-            };
-            utils.send(msg, res, data);
-            return;
-        }
-
         var array = [];
-        formationService.changeFormation(array, player, formation, function(err, reply) {
+        var formation = player.formationEntity.lastFormation;
+
+        formationService.resetFormation(array, player, formation, function(err, reply) {
             //更新任务
             player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});
 
@@ -345,9 +351,6 @@ exports.setTactical = function(req, res) {
 
         var array = [];
         formationService.setTactical(array, player, tacticalId, function(err, reply) {
-            //更新任务
-            player.updateTaskRecord(consts.TaskGoalType.CHANGE_FORMATION, {});
-
             data = {
                 code: consts.MESSAGE.RES,
                 tacticalId: tacticalId
