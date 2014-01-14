@@ -14,7 +14,6 @@ var formula = require('../../consts/formula');
 var formulaV2 = require('../../consts/formulaV2');
 var consts = require('../../consts/consts');
 var EntityType = require('../../consts/consts').EntityType;
-var TaskType = require('../../consts/consts').TaskType;
 var TaskStatus = require('../../consts/consts').TaskStatus;
 var Character = require('./character');
 var userDao = require('../../dao/userDao');
@@ -1544,7 +1543,7 @@ Player.prototype.getNextTask = function(type, task) {
         "startTime": date.getTime()
     };
     var characterId = utils.getRealCharacterId(this.id);
-    task = taskDao.createNewTask(task, this.sid, this.registerType, this.loginName, characterId);
+    task = taskDao.createNewTask(task, this.sid, this.registerType, this.loginName, characterId, this);
     this.curTasksEntity[type] = task;
     return true;
 }
@@ -1697,6 +1696,7 @@ Player.prototype.updateColumn = function() {
         columns : {
             experience: this.experience,
             money: this.money,
+            gameCurrency: this.gameCurrency,
             hp: this.hp,
             buffs: this.buffs
         }
@@ -1765,13 +1765,24 @@ Player.prototype.resetTask = function(type, taskId) {
 }
 
 /**
- * 更新金币
+ * 更新money
  * @param money
  */
 Player.prototype.updateMoney = function(money) {
     this.money += parseInt(money);
     if(this.money < 0)
         this.money = 0;
+    this.save();
+};
+
+/**
+ * 更新gameCurrency
+ * @param gameCurrency
+ */
+Player.prototype.updateGameCurrency = function(gameCurrency) {
+    this.gameCurrency += parseInt(gameCurrency);
+    if(this.gameCurrency < 0)
+        this.gameCurrency = 0;
     this.save();
 };
 
