@@ -624,6 +624,10 @@ Package.prototype.addEquipment = function(player, type, item, rIndex) {
     return r;
 }
 
+Package.prototype.clearPackage = function() {
+    this.items = {};
+}
+
 Package.prototype.strip = function() {
     var characterId = this.playerId.substr(this.playerId.indexOf("C") + 1);
     //this.updateId();

@@ -9,6 +9,7 @@ var gmService = require('../app/services/gmService');
 var userService = require('../app/services/userService');
 var taskService = require('../app/services/taskService');
 var equipmentsService = require('../app/services/equipmentsService');
+var packageService = require('../app/services/packageService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -220,6 +221,60 @@ exports.updateExp = function(req, res) {
                 data = {
                     code: Code.OK,
                     exp: exp
+                };
+                utils.send(msg, res, data);
+            });
+        });
+    });
+}
+
+/**
+ * clearPackage
+ * @param req
+ * @param res
+ */
+exports.clearPackage = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var nickname = msg.nickname;
+    var serverId = region.serverId;
+
+    if(typeof nickname == "undefined" || nickname == "" || nickname == 0) {
+        data = {
+            code: Code.FAIL
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var data = {};
+    userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
+        if(err) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+        }
+
+        var registerType = 0;
+        var loginName = "";
+        var characterId = 0;
+
+        var array = reply.split("_");
+        registerType = array[1].replace("T", "");
+        loginName = array[2];
+        characterId = array[3].replace("C", "");
+
+        userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
+            character.packageEntity.clearPackage();
+            async.parallel([
+                function(callback) {
+                    packageService.update(character.packageEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    code: Code.OK
                 };
                 utils.send(msg, res, data);
             });

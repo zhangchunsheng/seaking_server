@@ -176,6 +176,7 @@ module.exports = function (app) {
     app.get('/gm/resetTask', gm.resetTask);
     app.get('/gm/updateMoney', gm.updateMoney);
     app.get('/gm/updateExp', gm.updateExp);
+    app.get("/gm/clearPackage", gm.clearPackage);
 
     app.get('/message/addMessage', authRequired, message.addMessage);
     app.get('/message/getMessage', authRequired, message.getMessage);

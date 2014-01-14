@@ -599,6 +599,30 @@ Fight.prototype.getEnemyIndex = function(formationId, monsters, count) {
     return null;
 }
 
+Fight.prototype.getEnemyIndexV2 = function(formationId, monsters, count) {
+    var monsterIndex = 0;
+    if(!count) {
+        count = 1;
+    } else {
+        count++;
+    }
+    if(monsters[formationId] && !monsters[formationId].died) {
+        monsterIndex = formationId;
+        return monsterIndex;
+    } else {
+        formationId++;
+        if(count <= 7) {
+            if(formationId == 8) {
+                formationId = 1;
+            }
+            return this.getEnemyIndexV2(formationId, monsters, count);
+        } else {
+            return null;
+        }
+    }
+    return null;
+}
+
 Fight.createCharacter = function(opts) {
     var heros = dataApi.heros.data;
     var hero = heros[opts.id];
