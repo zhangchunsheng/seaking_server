@@ -62,7 +62,14 @@ exports.resetTask = function(req, res) {
 
     var data = {};
     userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {//S1_T2_w106451_C10212
-        if(err) {
+        if(err || reply == null) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
             data = {
                 code: Code.FAIL
             };
@@ -127,11 +134,19 @@ exports.updateMoney = function(req, res) {
 
     var data = {};
     userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
-        if(err) {
+        if(err || reply == null) {
             data = {
                 code: Code.FAIL
             };
             utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
         }
 
         var registerType = 0;
@@ -191,11 +206,19 @@ exports.updateExp = function(req, res) {
 
     var data = {};
     userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
-        if(err) {
+        if(err || reply == null) {
             data = {
                 code: Code.FAIL
             };
             utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
         }
 
         var registerType = 0;
@@ -250,11 +273,19 @@ exports.clearPackage = function(req, res) {
 
     var data = {};
     userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
-        if(err) {
+        if(err || reply == null) {
             data = {
                 code: Code.FAIL
             };
             utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
         }
 
         var registerType = 0;
