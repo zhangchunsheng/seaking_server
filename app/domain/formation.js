@@ -141,6 +141,7 @@ Formation.prototype.hasTacticalId = function(player, tacticalId) {
 Formation.prototype.strip = function() {
     return {
         formation: this.formation,
+        lastFormation: this.lastFormation,
         tacticals: this.tacticals
     }
 }
@@ -148,6 +149,7 @@ Formation.prototype.strip = function() {
 Formation.prototype.getInfo = function() {
     return {
         formation: this.formation,
+        lastFormation: this.lastFormation,
         tacticals: this.tacticals
     }
 }

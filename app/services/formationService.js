@@ -129,6 +129,7 @@ formationService.createNewFormation = function(formationInfo, serverId, register
     formationInfo.characterId = characterId;
     formationInfo.cId = character.cId;
     formationInfo.formation = character.formation;
+    formationInfo.lastFormation = character.lastFormation;
     formationInfo.tacticals = character.tacticals;
     var formation = new Formation(formationInfo);
     return formation;
