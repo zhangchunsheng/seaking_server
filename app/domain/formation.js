@@ -8,6 +8,7 @@
 var util = require('util');
 var Persistent = require('./persistent');
 var consts = require('../consts/consts');
+var dataApi = require('../utils/dataApi');
 
 /**
  * Initialize a new 'Formation' with the given 'opts'.
@@ -152,4 +153,49 @@ Formation.prototype.getInfo = function() {
         lastFormation: this.lastFormation,
         tacticals: this.tacticals
     }
+}
+
+/**
+ *
+ * @returns {{f: {}, t: {}}}
+ */
+Formation.prototype.getAbbreviation = function() {
+    var abbreviation = {
+        f: {},
+        t: {}
+    };
+    abbreviation.f.s = this.formation.tactical.id;
+    abbreviation.f.f = [];
+    var formation = this.formation.formation;
+    for(var i = 1 ; i <= 7 ; i++) {
+        if(typeof formation[i] != "undefined") {
+            if(formation[i] == null) {
+                abbreviation.f.f.push('e');
+            } else {
+                abbreviation.f.f.push(formation[i].playerId);
+            }
+        } else {
+            abbreviation.f.f.push(0);
+        }
+    }
+    var tacticals = this.tacticals;
+    var allTacticals = dataApi.formations.all();
+    var tacticalId = "";
+    var level = 0;
+    var flag = false;
+    for(var i in allTacticals) {
+        flag = false;
+        for(var j = 0 ; j < tacticals.length ; j++) {
+            tacticalId = tacticals[j].id;
+            level = tacticals[j].level;
+            if(allTacticals[i].id == tacticals[j].id) {
+                flag = true;
+                abbreviation.t[tacticalId] = level;
+            }
+        }
+        if(!flag) {
+            abbreviation.t[allTacticals[i].id] = 0;
+        }
+    }
+    return abbreviation;
 }
