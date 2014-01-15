@@ -72,7 +72,8 @@ exports.change = function(req, res) {
 
             data = {
                 code: consts.MESSAGE.RES,
-                formation: player.formationEntity.formation.formation
+                //formation: player.formationEntity.formation.formation
+                formation: player.formationEntity.getAbbreviation().f.f
             };
             utils.send(msg, res, data);
         });
@@ -166,7 +167,8 @@ exports.setDefault = function(req, res) {
 
             data = {
                 code: consts.MESSAGE.RES,
-                formation: player.formationEntity.formation
+                //formation: player.formationEntity.formation
+                f: player.formationEntity.getAbbreviation().f
             };
             utils.send(msg, res, data);
         });
@@ -202,7 +204,8 @@ exports.resetFormation = function(req, res) {
 
             data = {
                 code: consts.MESSAGE.RES,
-                formation: player.formationEntity.formation
+                //formation: player.formationEntity.formation
+                f: player.formationEntity.getAbbreviation().f
             };
             utils.send(msg, res, data);
         });
@@ -240,7 +243,8 @@ exports.forteAttack = function(req, res) {
 
             data = {
                 code: consts.MESSAGE.RES,
-                formation: player.formationEntity.formation.formation
+                //formation: player.formationEntity.formation.formation
+                formation: player.formationEntity.getAbbreviation().f.f
             };
             utils.send(msg, res, data);
         });
@@ -278,7 +282,8 @@ exports.forteDefense = function(req, res) {
 
             data = {
                 code: consts.MESSAGE.RES,
-                formation: player.formationEntity.formation.formation
+                //formation: player.formationEntity.formation.formation
+                formation: player.formationEntity.getAbbreviation().f.f
             };
             utils.send(msg, res, data);
         });
