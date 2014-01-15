@@ -615,8 +615,11 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
     var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
     var miscs = miscsService.createNewMiscs({}, serverId, registerType, loginName, characterId, character);
-    var formation = formationService.createNewFormation({}, serverId, registerType, loginName, characterId, character)
-    var pushMessage = messageService.createNewPushMessage({}, serverId, registerType, loginName, characterId, character)
+    var formation = formationService.createNewFormation({}, serverId, registerType, loginName, characterId, character);
+    var pushMessage = messageService.createNewPushMessage({}, serverId, registerType, loginName, characterId, character);
+    pushMessage.on("modifyData", function() {
+
+    });
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};

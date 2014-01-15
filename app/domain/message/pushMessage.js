@@ -26,19 +26,34 @@ var PushMessage = function(opts) {
     this.cId = opts.cId;
 
     this.pushMessage = opts.pushMessage;
+    this.data = [];
+
+    this.update();
 };
 util.inherits(PushMessage, Persistent);
 
 module.exports = PushMessage;
 
-PushMessage.prototype.strip = function() {
-
+PushMessage.prototype.update = function() {
+    for(var i = 0 ; i < this.pushMessage.length ; i++) {
+        var message = {};
+        for(var j in this.pushMessage[i]) {
+            message[j] = this.pushMessage[i][j];
+        }
+        this.data.push(message);
+    }
 }
 
-PushMessage.prototype.getInfo = function() {
+PushMessage.prototype.modifyData = function(message) {
+    this.emit('modifyData');
+}
+
+PushMessage.prototype.strip = function() {
     var pushMessage = [];
 
     for(var i = 0 ; i < this.pushMessage.length ; i++) {
+        if(this.pushMessage[i].num == 0)
+            continue;
         pushMessage.push({
             type: this.pushMessage[i].type,
             message: this.pushMessage[i].message,
@@ -46,4 +61,25 @@ PushMessage.prototype.getInfo = function() {
         });
     }
     return pushMessage;
+}
+
+PushMessage.prototype.getInfo = function() {
+    var pushMessage = [];
+
+    for(var i = 0 ; i < this.pushMessage.length ; i++) {
+        if(this.pushMessage[i].num == 0)
+            continue;
+        pushMessage.push({
+            type: this.pushMessage[i].type,
+            message: this.pushMessage[i].message,
+            num: this.pushMessage[i].num
+        });
+    }
+    return pushMessage;
+}
+
+PushMessage.prototype.getUpdateInfo = function() {
+    return {
+        pushMessage: this.pushMessage
+    };
 }

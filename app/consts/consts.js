@@ -100,6 +100,11 @@ module.exports = {
     },
 
     pushMessageType: {
+        UPGRADE: 1,
+        FORMATION_UNLOCK: 2
+    },
+
+    publishMessageType: {
         ARENA_PK: 1,
         TIP_MESSAGE: 2
     },

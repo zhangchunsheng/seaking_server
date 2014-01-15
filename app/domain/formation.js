@@ -139,6 +139,57 @@ Formation.prototype.hasTacticalId = function(player, tacticalId) {
     return result;
 }
 
+/**
+ * checkUnlock
+ * @param player
+ * @returns {number}
+ */
+Formation.prototype.checkUnlock = function(player, formationId) {
+    var result = 0;
+
+    var formation = this.formation.formation;
+    if(typeof formation[formationId] != "undefined") {
+        result = -2;
+        return result;
+    }
+
+    var count = this.getPositionCount(player.level);
+    var formation_count = 0;
+    for(var i in formation) {
+        formation_count++;
+    }
+    if(formation_count == 7) {
+        result = -1;
+        return result;
+    }
+    if(count == formation_count) {
+        result = 0;
+    } else if(count > formation_count) {
+        result = count - formation_count;
+    }
+    return result;
+}
+
+/**
+ * getCellCount
+ * @param level
+ * @returns {number}
+ */
+Formation.prototype.getPositionCount = function(level) {
+    var count = 1;
+    if(level >= 10) {
+        count++;
+        var num = (level - 10) % 5;
+        if(num == 0) {
+            count += ((level - 10) / 5);
+        }
+    }
+    if(count > 7) {
+        count = 7;
+    }
+    return count;
+}
+
 Formation.prototype.strip = function() {
     return {
         formation: this.formation,

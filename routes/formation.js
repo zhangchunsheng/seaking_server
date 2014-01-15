@@ -213,6 +213,74 @@ exports.resetFormation = function(req, res) {
 }
 
 /**
+ * 开锁
+ * @param req
+ * @param res
+ */
+exports.unlock = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName
+        , formationId = msg.formationId;
+
+    var mtype = msg.mtype;// 金币类型 1 - 金币 2 - 元宝
+    if(utils.empty(mtype)) {
+        mtype = 0;
+    }
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+    if(formationId < 1 || formationId > 7) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var array = [];
+        var result = player.formationEntity.checkUnlock(player, formationId);
+        if(result == 0) {
+            data = {
+                code: Code.FORMATION.NOT_ENOUGH_LEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(result == -1) {
+            data = {
+                code: Code.FORMATION.NOMORE_POSITION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(result == -2) {
+            data = {
+                code: Code.FORMATION.EXISTS_POSITION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        formationService.unlock(array, player, result, formationId, function(err, reply) {
+            data = {
+                code: consts.MESSAGE.RES,
+                //formation: player.formationEntity.formation
+                pushMessage: reply
+            };
+            utils.send(msg, res, data);
+        });
+    });
+}
+
+/**
  * 最强攻击阵型
  * @param req
  * @param res

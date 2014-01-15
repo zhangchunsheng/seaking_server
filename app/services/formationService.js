@@ -9,8 +9,10 @@ var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
 var dataApi = require('../utils/dataApi');
 var redisService = require('./redisService');
+var messageService = require('./messageService');
 var formationDao = require('../dao/formationDao');
 var Formation = require('../domain/formation');
+var consts = require('../consts/consts');
 
 var formationService = module.exports;
 
@@ -214,6 +216,37 @@ formationService.upgradeTactical = function(array, player, tacticalId, cb) {
     array.push(["hset", key, field, value]);
     redisService.setData(array, function(err, reply) {
         utils.invokeCallback(cb, err, level);
+    });
+}
+
+/**
+ * unlock
+ * @param array
+ * @param player
+ * @param formationId
+ * @param cb
+ */
+formationService.unlock = function(array, player, unlockNum, formationId, cb) {
+    var formation = player.formationEntity.formation.formation;
+    formation[formationId] = null;
+
+    var characterId = utils.getRealCharacterId(player.id);
+    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+
+    var field = "formation";
+    var formation = player.formationEntity.formation;
+    var value = JSON.stringify(formation);
+    array.push(["hset", key, field, value]);
+
+    var message = {
+        type: consts.pushMessageType.FORMATION_UNLOCK,
+        num: unlockNum - 1,
+        message: ''
+    };
+    messageService.updatePushMessage(array, player, key, message);
+
+    redisService.setData(array, function(err, reply) {
+        utils.invokeCallback(cb, err, message);
     });
 }
 
