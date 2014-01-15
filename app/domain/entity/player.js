@@ -81,12 +81,14 @@ var Player = function(opts) {
     this.skillsEntity = opts.skillsEntity;
     this.miscsEntity = opts.miscsEntity;
     this.formationEntity = opts.formationEntity;
+    this.pushMessageEntity = opts.pushMessageEntity;
 
     this.friends = opts.friends || [];
 
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
     this.pushMessage = opts.pushMessage || [];
+    this.pushOnceMessage = opts.pushOnceMessage || [];
 
     this.fightValue = {
         attackType: this.attackType,
@@ -1672,6 +1674,7 @@ Player.prototype.strip = function() {
         formations: this.formationEntity.getAbbreviation(),
         partners: this.getPartners(),
         gift: this.gift,
+        pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
@@ -1862,6 +1865,7 @@ Player.prototype.toJSON = function() {
         formations: this.formationEntity.getAbbreviation(),
         partners: this.getPartners(),
         gift: this.gift,
+        pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
@@ -1912,6 +1916,7 @@ Player.prototype.getBaseInfo = function() {
         //tacticals: this.formationEntity.getInfo().tacticals,
         formations: this.formationEntity.getAbbreviation(),
         gift: this.gift,
+        pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
         ghost: this.ghost,
         ghostNum: this.ghostNum,

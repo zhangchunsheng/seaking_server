@@ -22,6 +22,8 @@ var Message = function(opts) {
     this.type = opts.type;
     this.num = opts.num;
     this.message = opts.message;
+    this.date = opts.date;
+    this.pushDate = opts.pushDate;
 };
 util.inherits(Message, Persistent);
 

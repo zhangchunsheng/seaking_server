@@ -22,6 +22,7 @@ var ghostService = require('../services/character/ghostService');
 var skillService = require('../services/skillService');
 var miscsService = require('../services/character/miscsService');
 var formationService = require('../services/formationService');
+var messageService = require('../services/messageService');
 var Tasks = require('../domain/tasks');
 
 var playerUtil = module.exports;
@@ -96,6 +97,7 @@ playerUtil.initCharacter = function(opts) {
         partners: [],
         miscs: [],
         gift: [],
+        pushMessage: playerUtil.initPushMessage(),
         ghost: playerUtil.initGhost(),
         ghostNum: playerUtil.initGhostNum(),
         aptitude: playerUtil.initAptitude(opts.cId),
@@ -135,6 +137,18 @@ playerUtil.initTacticals = function(dataType) {
         tacticals = JSON.stringify(tacticals);
     }
     return tacticals;
+}
+
+playerUtil.initPushMessage = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var pushMessage = {"pushMessage":[]};
+
+    if(dataType == "string") {
+        pushMessage = JSON.stringify(pushMessage);
+    }
+    return pushMessage;
 }
 
 playerUtil.initGhost = function(dataType) {
@@ -321,6 +335,7 @@ playerUtil.initCharacterV2 = function(opts) {
         partners: [],
         miscs: [],
         gift: [],
+        pushMessage: playerUtil.initPushMessage(),
         ghost: playerUtil.initGhost(),
         ghostNum: playerUtil.initGhostNum(),
         aptitude: playerUtil.initAptitude(opts.cId),
@@ -398,6 +413,7 @@ playerUtil.getCharacter = function(opts) {
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
         miscs: JSON.parse(opts.replies.miscs || '{"miscs":[]}').miscs,
         gift: JSON.parse(opts.replies.gift).gift,
+        pushMessage: JSON.parse(opts.replies.pushMessage || playerUtil.initPushMessage("string")).pushMessage,
         curTasks: {
             currentMainTask: JSON.parse(opts.replies.currentMainTask),
             currentBranchTask: JSON.parse(opts.replies.currentBranchTask),
@@ -514,6 +530,7 @@ playerUtil.getPlayer = function(character) {
         allPartners: character.allPartners,
         miscs: character.miscs,
         gift: character.gift,
+        pushMessage: character.pushMessage,
         ghost: character.ghost,
         ghostNum: character.ghostNum,
         aptitude: character.aptitude,
@@ -568,6 +585,7 @@ playerUtil.getPlayerV2 = function(character) {
         allPartners: character.allPartners,
         miscs: character.miscs,
         gift: character.gift,
+        pushMessage: character.pushMessage,
         ghost: character.ghost,
         ghostNum: character.ghostNum,
         aptitude: character.aptitude,
@@ -598,6 +616,7 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
     var miscs = miscsService.createNewMiscs({}, serverId, registerType, loginName, characterId, character);
     var formation = formationService.createNewFormation({}, serverId, registerType, loginName, characterId, character)
+    var pushMessage = messageService.createNewPushMessage({}, serverId, registerType, loginName, characterId, character)
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
@@ -606,6 +625,7 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     character.skillsEntity = skills;
     character.miscsEntity = miscs;
     character.formationEntity = formation;
+    character.pushMessageEntity = pushMessage;
 };
 
 /**

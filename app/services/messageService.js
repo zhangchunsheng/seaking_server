@@ -6,6 +6,7 @@
  * Description: messageService
  */
 var messageDao = require('../dao/messageDao');
+var PushMessage = require('../domain/message/pushMessage');
 
 var messageService = module.exports;
 
@@ -55,4 +56,15 @@ messageService.publishMessage = function(message, cb) {
 
 messageService.addBothBattleReport = function(character, opponent, owner_battleReport, opponent_battleReport, cb) {
     messageDao.addBothBattleReport(character, opponent, owner_battleReport, opponent_battleReport, cb);
+}
+
+messageService.createNewPushMessage = function(pushMessageInfo, serverId, registerType, loginName, characterId, character) {
+    pushMessageInfo.serverId = serverId;
+    pushMessageInfo.registerType = registerType;
+    pushMessageInfo.loginName = loginName;
+    pushMessageInfo.characterId = characterId;
+    pushMessageInfo.cId = character.cId;
+    pushMessageInfo.pushMessage = character.pushMessage;
+    var pushMessage = new PushMessage(pushMessageInfo);
+    return pushMessage;
 }
