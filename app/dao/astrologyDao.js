@@ -300,7 +300,7 @@ astrologyDao.pickUpAll = function(Key , callback) {
 			}
 			//var badItems = [];
 			//var goodItems = [];
-			var hasGood = false;
+			var isFull = 0;
 			/*var snum = astrologyDao.maxItems - astrology.items.length  ;
 			for(var i = 0,l = astrology.cacheItems.length; i < l;i++) {
 				var item = astrology.cacheItems[i];
@@ -328,7 +328,7 @@ astrologyDao.pickUpAll = function(Key , callback) {
 
 					}else{
 						if(nullNum <= 0) {
-							hasGood = true;
+							isFull = 1;
 							break;
 						}else{
 							item.level = item.level || 1;
@@ -342,21 +342,14 @@ astrologyDao.pickUpAll = function(Key , callback) {
 				}
 			}
 			cleanArray(astrology.cacheItems);
-			var data = {};
-			/*if(goodItems.length > 0 ) {
-				data.isfull = 1;
-			}*/
-			if(hasGood) {
-				data.isfull = 1;
-			}
-			data.astrology = astrology;
+			
 			var array = [
 				["select", redisConfig.database.SEAKING_REDIS_DB],
 				["hset", Key, "astrology", JSON.stringify(astrology)]
 			];
 			client.multi(array).exec(function(err, res) {
 				redis.release(client);
-				callback(err, {astrology: astrology});
+				callback(err, {astrology: astrology, isFull: isFull});
 			});
 		});
 	});

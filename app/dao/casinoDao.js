@@ -342,7 +342,8 @@ var riskGameCurrency = 5;
 casinoDao.gambling = function(data, player, callback) {
 	//加了几次注
 	var allMoney = data.money ;
-	var lock = data.lock || false;
+	var lock = data.lock || 0;
+	console.log("lock:",lock);
 	redis.command(function(client) {
 		casinoDao.getCasino(data.Key, function(err, res){
 			if(err){redis.release(client);return callback(err);}
@@ -427,7 +428,7 @@ casinoDao.gambling = function(data, player, callback) {
 			}else{
 				var item = items.pop();
 				run(item);
-				if(lock) {
+				if(lock != 0 ) {
 					casino.index--;
 					if(casino.index == 0) {
 						refreshRun();			

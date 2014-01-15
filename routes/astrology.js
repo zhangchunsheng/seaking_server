@@ -190,7 +190,8 @@ astrology.pickUpAll = function(req, res) {
 	    		code: Code.OK,
 	    		data: {
                     ci: ci,
-                    bi: r.astrology.items
+                    bi: r.astrology.items,
+                    f: r.isFull
                 }
 	    	});
 	    });
