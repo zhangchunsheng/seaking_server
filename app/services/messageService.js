@@ -89,7 +89,9 @@ messageService.updatePushMessage = function(array, player, key, message) {
             });
         }
     }
-    var value = JSON.stringify(pushMessage);
+    var value = JSON.stringify({
+        pushMessage: pushMessage
+    });
     array.push(["hset", key, field, value]);
     return array;
 }
