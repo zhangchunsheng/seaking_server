@@ -236,6 +236,13 @@ exports.unlock = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
 
     var data = {};
+    if(!utils.validIntNum(formationId)) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
     if(formationId < 1 || formationId > 7) {
         data = {
             code: Code.ARGUMENT_EXCEPTION
