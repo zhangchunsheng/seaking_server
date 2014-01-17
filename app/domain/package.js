@@ -90,15 +90,16 @@ Package.prototype.hasItem = function(_item) {
 				flag.push(item);
 			} else {
 				flag.push({
-					itemId: item.itemId,
-					itemNum: num,
-					level: item.level
+                    index: i,
+                    item:{
+                        itemId: item.itemId,
+                        itemNum: num,
+                        level: item.level        
+                    }
 				});
 				num = 0;
+                return flag;
 			}			
-			if(num == 0) {
-				return flag;
-			}
 		}
 	}
 	return null;

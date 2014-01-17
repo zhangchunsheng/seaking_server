@@ -97,6 +97,13 @@ exports.auth = function(req, res) {
                 connectSid: connectSid
             };
             userInfo.playerId = results[0].id;
+            /*var log4js = require("log4js");
+            log4js.configure({appenders:[{type: "file", filename:"auth.log",category:["auth"]}]})
+            var mlog = log4js.getLogger("auth");
+            mlog.info(JSON.stringify(data));*/
+            //data = require("lz-string").compressToBase64(JSON.stringify(data));
+            //data = require("lz-string").compressToUTF16(JSON.stringify(data));
+            //res.send(data);
             utils.send(msg, res, data);
         }
         session.setSession(req, res, userInfo);

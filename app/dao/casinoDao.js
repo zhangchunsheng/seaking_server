@@ -343,7 +343,6 @@ casinoDao.gambling = function(data, player, callback) {
 	//加了几次注
 	var allMoney = data.money ;
 	var lock = data.lock || 0;
-	console.log("lock:",lock);
 	redis.command(function(client) {
 		casinoDao.getCasino(data.Key, function(err, res){
 			if(err){redis.release(client);return callback(err);}

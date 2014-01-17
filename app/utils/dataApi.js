@@ -35,6 +35,7 @@ var astrology = require("../../config/data/astrology");
 var weapons = require("../../config/data/weapons");
 var astrologyRandom = require("../../config/data/astrologyRandom");
 var astrologyExchange = require("../../config/data/astrologyExchange");
+var cliffordRandom = require("../../config/data/cliffordRandom");
 /**
  * Data model `new Data()`
  *
@@ -180,5 +181,6 @@ module.exports = {
     astrology : new Data(astrology),
     astrologyRandom: new Data(astrologyRandom),
     weapons : new Data(weapons),
-    astrologyExchange: new Data(astrologyExchange)
+    astrologyExchange: new Data(astrologyExchange),
+    cliffordRandom: new Data(cliffordRandom)
 };

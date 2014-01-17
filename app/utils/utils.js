@@ -328,7 +328,7 @@ utils.getUserInfo = function(msg, req, res) {
  */
 utils.send = function(msg, res, data) {
     if(typeof msg.jsoncallback == "undefined") {
-        res.send(data);
+        res.send(JSON.stringify(data));
     } else {
         res.send(msg.jsoncallback + "(" + JSON.stringify(data) + ")");
     }

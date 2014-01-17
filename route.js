@@ -32,7 +32,7 @@ var routes = require('./routes')
     , message = require('./routes/message')
     , authRequired = require('./middlewares/auth_required')
     , astrology = require("./routes/astrology")
-    //, clifford = require("./routes/clifford");
+    , clifford = require("./routes/clifford");
 
 module.exports = function (app) {
     app.get('/', authRequired, routes.index);
@@ -69,7 +69,9 @@ module.exports = function (app) {
     app.get('/casino/gambling', authRequired, casino.gambling);
     app.get("/casino/gmRepair", authRequired, casino.gmRepair);
 
-   // app.get("/clifford/test", authRequired, clifford.test);
+    app.get("/clifford/do", authRequired, clifford.do);
+    app.get("/clifford/test", authRequired, clifford.test);
+    app.get("/clifford/gmAdd", authRequired, clifford.gmAdd);
 
     //装备
     app.get('/equip/wearWeapon', authRequired, equip.wearWeapon);
