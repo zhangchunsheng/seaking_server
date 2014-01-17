@@ -121,6 +121,9 @@ module.exports = {
 
     FORMATION: {
         WRONG_TACTICALID: 1860,
-        NO_TACTICAL: 1861
+        NO_TACTICAL: 1861,
+        NOT_ENOUGH_LEVEL: 1862,
+        NOMORE_POSITION: 1863,
+        EXISTS_POSITION: 1864
     }
 };

@@ -6,6 +6,7 @@
  * Description: messageService
  */
 var messageDao = require('../dao/messageDao');
+var PushMessage = require('../domain/message/pushMessage');
 
 var messageService = module.exports;
 
@@ -55,4 +56,53 @@ messageService.publishMessage = function(message, cb) {
 
 messageService.addBothBattleReport = function(character, opponent, owner_battleReport, opponent_battleReport, cb) {
     messageDao.addBothBattleReport(character, opponent, owner_battleReport, opponent_battleReport, cb);
+}
+
+messageService.updatePushMessage = function(array, player, key, message) {
+    var field = "pushMessage";
+    var pushMessage = player.pushMessageEntity.pushMessage;
+    var flag = false;
+    var date = new Date();
+    for(var i = 0 ; i < pushMessage.length ; i++) {
+        if(pushMessage[i].type == message.type) {
+            flag = true;
+            if(message.num == 0) {
+                //pushMessage.splice(i, 1);
+                pushMessage[i].num = message.num;
+                pushMessage[i].message = message.message;
+                pushMessage[i].pushDate = date.getTime();
+            } else {
+                pushMessage[i].num = message.num;
+                pushMessage[i].message = message.message;
+                pushMessage[i].pushDate = date.getTime();
+            }
+        }
+    }
+    if(!flag) {
+        if(message.num != 0) {
+            pushMessage.push({
+                type: message.type,
+                message: message.message,
+                num: message.num,
+                date: date.getTime(),
+                pushDate: date.getTime()
+            });
+        }
+    }
+    var value = JSON.stringify({
+        pushMessage: pushMessage
+    });
+    array.push(["hset", key, field, value]);
+    return array;
+}
+
+messageService.createNewPushMessage = function(pushMessageInfo, serverId, registerType, loginName, characterId, character) {
+    pushMessageInfo.serverId = serverId;
+    pushMessageInfo.registerType = registerType;
+    pushMessageInfo.loginName = loginName;
+    pushMessageInfo.characterId = characterId;
+    pushMessageInfo.cId = character.cId;
+    pushMessageInfo.pushMessage = character.pushMessage;
+    var pushMessage = new PushMessage(pushMessageInfo);
+    return pushMessage;
 }

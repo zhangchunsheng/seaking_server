@@ -265,7 +265,7 @@ exports.publishMessage = function(req, res) {
 
     var date = new Date();
     var message = {
-        type: consts.pushMessageType.TIP_MESSAGE,
+        type: consts.publishMessageType.TIP_MESSAGE,
         message: "html5战胜了，获得奖励",
         date: date.getTime()
     };

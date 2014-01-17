@@ -94,6 +94,14 @@ utils.validPassword = function(password) {
     };
 }
 
+utils.validIntNum = function(num) {
+    var reg = new RegExp("^[1-9][0-9]*$");
+    if(!reg.test(num)) {
+        return false;
+    }
+    return true;
+}
+
 /**
  * random
  * @param lower

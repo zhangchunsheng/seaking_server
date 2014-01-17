@@ -8,6 +8,7 @@
 var util = require('util');
 var Persistent = require('./persistent');
 var consts = require('../consts/consts');
+var dataApi = require('../utils/dataApi');
 
 /**
  * Initialize a new 'Formation' with the given 'opts'.
@@ -138,6 +139,57 @@ Formation.prototype.hasTacticalId = function(player, tacticalId) {
     return result;
 }
 
+/**
+ * checkUnlock
+ * @param player
+ * @returns {number}
+ */
+Formation.prototype.checkUnlock = function(player, formationId) {
+    var result = 0;
+
+    var formation = this.formation.formation;
+    if(typeof formation[formationId] != "undefined") {
+        result = -2;
+        return result;
+    }
+
+    var count = this.getPositionCount(player.level);
+    var formation_count = 0;
+    for(var i in formation) {
+        formation_count++;
+    }
+    if(formation_count == 7) {
+        result = -1;
+        return result;
+    }
+    if(count == formation_count) {
+        result = 0;
+    } else if(count > formation_count) {
+        result = count - formation_count;
+    }
+    return result;
+}
+
+/**
+ * getCellCount
+ * @param level
+ * @returns {number}
+ */
+Formation.prototype.getPositionCount = function(level) {
+    var count = 1;
+    if(level >= 10) {
+        count++;
+        var num = (level - 10) % 5;
+        if(num == 0) {
+            count += ((level - 10) / 5);
+        }
+    }
+    if(count > 7) {
+        count = 7;
+    }
+    return count;
+}
+
 Formation.prototype.strip = function() {
     return {
         formation: this.formation,
@@ -152,4 +204,49 @@ Formation.prototype.getInfo = function() {
         lastFormation: this.lastFormation,
         tacticals: this.tacticals
     }
+}
+
+/**
+ *
+ * @returns {{f: {}, t: {}}}
+ */
+Formation.prototype.getAbbreviation = function() {
+    var abbreviation = {
+        f: {},
+        t: {}
+    };
+    abbreviation.f.s = this.formation.tactical.id;
+    abbreviation.f.f = [];
+    var formation = this.formation.formation;
+    for(var i = 1 ; i <= 7 ; i++) {
+        if(typeof formation[i] != "undefined") {
+            if(formation[i] == null) {
+                abbreviation.f.f.push('e');
+            } else {
+                abbreviation.f.f.push(formation[i].playerId);
+            }
+        } else {
+            abbreviation.f.f.push(0);
+        }
+    }
+    var tacticals = this.tacticals;
+    var allTacticals = dataApi.formations.all();
+    var tacticalId = "";
+    var level = 0;
+    var flag = false;
+    for(var i in allTacticals) {
+        flag = false;
+        for(var j = 0 ; j < tacticals.length ; j++) {
+            tacticalId = tacticals[j].id;
+            level = tacticals[j].level;
+            if(allTacticals[i].id == tacticals[j].id) {
+                flag = true;
+                abbreviation.t[tacticalId] = level;
+            }
+        }
+        if(!flag) {
+            abbreviation.t[allTacticals[i].id] = 0;
+        }
+    }
+    return abbreviation;
 }
