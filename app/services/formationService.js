@@ -10,6 +10,7 @@ var dbUtil = require('../utils/dbUtil');
 var dataApi = require('../utils/dataApi');
 var redisService = require('./redisService');
 var messageService = require('./messageService');
+var userService = require('./userService');
 var formationDao = require('../dao/formationDao');
 var Formation = require('../domain/formation');
 var consts = require('../consts/consts');
@@ -244,6 +245,10 @@ formationService.unlock = function(array, player, unlockNum, formationId, cb) {
         message: ''
     };
     messageService.updatePushMessage(array, player, key, message);
+
+    if(unlockNum == 0) {
+        userService.getUpdateArray(array, player, key, ["gameCurrency"]);
+    }
 
     redisService.setData(array, function(err, reply) {
         utils.invokeCallback(cb, err, message);
