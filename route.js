@@ -86,6 +86,7 @@ module.exports = function (app) {
 
     app.get('/formation/change', authRequired, formation.change);
     app.get('/formation/setDefault', authRequired, formation.setDefault);
+    app.get('/formation/save', authRequired, formation.setDefault);
     app.get('/formation/resetFormation', authRequired, formation.resetFormation);
     app.get('/formation/forteAttack', authRequired, formation.forteAttack);
     app.get('/formation/forteDefense', authRequired, formation.forteDefense);
