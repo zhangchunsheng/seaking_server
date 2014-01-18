@@ -406,7 +406,7 @@ playerUtil.getCharacter = function(opts) {
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
-        formation: JSON.parse(opts.replies.formation),
+        formation: JSON.parse(opts.replies.formation || playerUtil.initFormation(opts, "string")),
         lastFormation: JSON.parse(opts.replies.lastFormation || playerUtil.initFormation(opts, "string")),
         tacticals: JSON.parse(opts.replies.tacticals || playerUtil.initTacticals("string")).tacticals,
         partners: JSON.parse(opts.replies.partners).partners,
@@ -472,7 +472,7 @@ playerUtil.getPKCharacter = function(opts) {
         },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
-        formation: JSON.parse(opts.replies.formation),
+        formation: JSON.parse(opts.replies.formation || playerUtil.initFormation(opts, "string")),
         lastFormation: JSON.parse(opts.replies.lastFormation || playerUtil.initFormation(opts, "string")),
         tacticals: JSON.parse(opts.replies.tacticals || playerUtil.initTacticals("string")).tacticals,
         partners: JSON.parse(opts.replies.partners).partners,
