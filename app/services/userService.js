@@ -74,8 +74,28 @@ userService.updatePlayerAttribute = function(player, cb) {
     userDao.updatePlayerAttribute(player, cb);
 }
 
-userService.getUpdateArray = function() {
-
+userService.getUpdateArray = function(array, player, key, columns) {
+    var obj = {};
+    var o = "";
+    for(var i = 0 ; i < columns.length ; i++) {
+        obj = {};
+        o = columns[i];
+        if(typeof player[o] == "object") {
+            if(Object.prototype.toString.call(player[o]) === '[object Array]') {
+                obj[o] = player[o];
+                array.push(["hset", key, o, JSON.stringify(obj)]);
+            } else if(o == "skills" || o == "curTasks") {
+                for(var o1 in player[o]) {
+                    array.push(["hset", key, o1, JSON.stringify(player[o][o1])]);
+                }
+            } else {
+                array.push(["hset", key, o, JSON.stringify(player[o])]);
+            }
+        } else {
+            array.push(["hset", key, o, player[o]]);
+        }
+    }
+    return array;
 }
 
 userService.getCharacterInfoByNickname = function(serverId, nickname, cb) {

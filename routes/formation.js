@@ -154,7 +154,7 @@ exports.setDefault = function(req, res) {
         result = player.formationEntity.checkTacticalId(player, tacticalId);
         if(result == 0) {
             data = {
-                code: Code.FORMATION.NO_TACTICAL
+                code: Code.FORMATION.NOOPEN_TACTICAL
             };
             utils.send(msg, res, data);
             return;
@@ -225,11 +225,14 @@ exports.unlock = function(req, res) {
         , serverId = session.serverId
         , registerType = session.registerType
         , loginName = session.loginName
-        , formationId = msg.formationId;
+        , formationId = msg.positionId;
 
     var mtype = msg.mtype;// 金币类型 1 - 金币 2 - 元宝
     if(utils.empty(mtype)) {
         mtype = 0;
+    }
+    if(utils.empty(formationId)) {
+        formationId = msg.formationId;
     }
 
     var playerId = session.playerId;
@@ -254,13 +257,6 @@ exports.unlock = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var array = [];
         var result = player.formationEntity.checkUnlock(player, formationId);
-        if(result == 0) {
-            data = {
-                code: Code.FORMATION.NOT_ENOUGH_LEVEL
-            };
-            utils.send(msg, res, data);
-            return;
-        }
         if(result == -1) {
             data = {
                 code: Code.FORMATION.NOMORE_POSITION
@@ -275,15 +271,51 @@ exports.unlock = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
+        var gameCurrency = player.gameCurrency;
+        if(result == 0) {//元宝
+            if(mtype == 2) {
+                if(gameCurrency >= 20) {
+                    gameCurrency -= 20;
+                    player.gameCurrency = gameCurrency;
 
-        formationService.unlock(array, player, result, formationId, function(err, reply) {
-            data = {
-                code: consts.MESSAGE.RES,
-                //formation: player.formationEntity.formation
-                pushMessage: reply
-            };
-            utils.send(msg, res, data);
-        });
+                    formationService.unlock(array, player, result, formationId, function(err, reply) {
+                        data = {
+                            code: consts.MESSAGE.RES,
+                            mtype: mtype,
+                            gameCurrency: player.gameCurrency,
+                            //formation: player.formationEntity.formation
+                            pushMessage: reply
+                        };
+                        utils.send(msg, res, data);
+                    });
+                } else {
+                    data = {
+                        code: Code.SHOP.NOT_ENOUGHT_GAMECURRENCY
+                    };
+                    utils.send(msg, res, data);
+                    return;
+                }
+            } else {
+                data = {
+                    code: Code.FORMATION.NOT_ENOUGH_LEVEL
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        } else {
+            if(mtype == 2) {
+                mtype = 0;
+            }
+            formationService.unlock(array, player, result, formationId, function(err, reply) {
+                data = {
+                    code: consts.MESSAGE.RES,
+                    mtype: mtype,
+                    //formation: player.formationEntity.formation
+                    pushMessage: reply
+                };
+                utils.send(msg, res, data);
+            });
+        }
     });
 }
 
@@ -414,7 +446,7 @@ exports.setTactical = function(req, res) {
         var result = player.formationEntity.checkTacticalId(player, tacticalId);
         if(result == 0) {
             data = {
-                code: Code.FORMATION.NO_TACTICAL
+                code: Code.FORMATION.NOOPEN_TACTICAL
             };
             utils.send(msg, res, data);
             return;
@@ -465,7 +497,7 @@ exports.upgradeTactical = function(req, res) {
         var result = player.formationEntity.hasTacticalId(player, tacticalId);
         if(result == 0) {
             data = {
-                code: Code.FORMATION.NO_TACTICAL
+                code: Code.FORMATION.NOOPEN_TACTICAL
             };
             utils.send(msg, res, data);
             return;

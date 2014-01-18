@@ -1,4 +1,3 @@
-
 var redis = require('../dao/redis/redis')
     , redisConfig = require('../../shared/config/redis');
 var dataApi = require('../utils/dataApi');
@@ -551,60 +550,7 @@ exports.gmAdd = function(data, player, callback) {
 	});
 }
 exports.test = function(data, player, callback) {
-	redis.command(function(client) {
-		var setArray = [
-			["select", redisConfig.database.SEAKING_REDIS_DB]
-		];
-		/*
-		data.Key = "S1_T1_html5_C1";
-		var p = {
-			maxHp: 597,
-			defense: 750,
-			attack: 134,
-			sunderArmor: 150,
-			speed: 88.49557522123895,
-			criticalHit: 0,
-			block: 0,
-			dodge: 0,
-			counter: 0
-		}
-		*/
-		/*
-			data.Key = "S1_T1_html5_C1_P4";
-			var p = {
-				maxHp: 9580,
-				defense: 194,
-				attack: 1550,
-				sunderArmor: 0,
-				speed: 3.125,
-				criticalHit: 6.3,
-				block: 4.05,
-				dodge: 4.05,
-				counter: 6.3	
-			}
-		*/
-		var info = randomPlayer(data, player);
-		var p = player;
-		if(info) {
-			p = info.player;
-			data.Key = info.Key;
-		}
-		//console.log(p.id);
-		setArray.push(["hset", data.Key, "maxHp", p.maxHp]);
-		setArray.push(["hset", data.Key, "defense", p.defense]);
-		setArray.push(["hset", data.Key, "attack", p.attack]);
-		setArray.push(["hset", data.Key, "sunderArmor", p.sunderArmor]);
-		setArray.push(["hset", data.Key, "speed", p.speed])
-		setArray.push(["hset", data.Key, "criticalHit", p.criticalHit])
-		setArray.push(["hset", data.Key, "block", p.block])
-		setArray.push(["hset", data.Key, "dodge", p.dodge])
-		setArray.push(["hset", data.Key, "counter", p.counter]);
-		console.log(setArray);
-		throw new Error("...");
-		client.multi(setArray).exec(function(err) {
-			callback(err, {data: "ok"});
-		});
-	});
+	
 
 
 }
