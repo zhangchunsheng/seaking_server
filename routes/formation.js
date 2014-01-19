@@ -8,6 +8,7 @@
 var formationService = require('../app/services/formationService');
 var userService = require('../app/services/userService');
 var playerService = require('../app/services/playerService');
+var packageService = require('../app/services/packageService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -492,6 +493,16 @@ exports.upgradeTactical = function(req, res) {
 
     var data = {};
 
+    var tactical = dataApi.formations.findById(tacticalId);
+
+    if(utils.empty(tactical)) {
+        data = {
+            code: Code.FORMATION.NO_TACTICAL_DATA
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         //验证tacticalId
         var result = player.formationEntity.hasTacticalId(player, tacticalId);
@@ -503,11 +514,55 @@ exports.upgradeTactical = function(req, res) {
             return;
         }
 
+        var level = player.formationEntity.getTacticalLevel(tacticalId);
+        var upgradeMaterial = tactical.upgradeMaterial;
+
+        var status = player.formationEntity.checkUpgradeTacticalRequired(player, level, upgradeMaterial);
+        if(status == -1) {
+            data = {
+                code: Code.FORMATION.LACK_UPGRADEMATERIAL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(status == -3) {
+            data = {
+                code: Code.FORMATION.LACK_UPGRADEMONEY
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        //packageInfo
+        var packageInfo = status.packageInfo;
+        var packageIndex = [];
+        var item;
+        for(var i = 0 ; i < packageInfo.length ; i++) {
+            for(var j = 0 ; j < packageInfo[i].length ; j++) {
+                item = player.packageEntity.removeItem(packageInfo[i][j].index, packageInfo[i][j].itemNum);
+                packageIndex.push({
+                    index: packageInfo[i][j].index,
+                    itemId: item.itemId,
+                    itemNum: item.itemNum
+                });
+            }
+        }
+        if(packageIndex.length == 0) {
+            packageIndex = 0;
+        }
+
+        var money = status.money;
+        player.money = player.money - money;
+
         var array = [];
+        userService.getUpdatePlayerAttributeArray(array, player);
+        packageService.getUpdateArray(array, player.packageEntity.strip());
         formationService.upgradeTactical(array, player, tacticalId, function(err, reply) {
             data = {
                 code: consts.MESSAGE.RES,
-                level: reply
+                level: reply,
+                packageIndex: packageIndex,
+                money: player.money
             };
             utils.send(msg, res, data);
         });

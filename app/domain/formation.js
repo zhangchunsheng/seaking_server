@@ -171,6 +171,81 @@ Formation.prototype.checkUnlock = function(player, formationId) {
 }
 
 /**
+ *
+ * 升级所需金钱，每升级一次翻倍
+ * 材料1数量每升级一次翻倍
+ * 材料2数量始终固定
+ * @param player
+ * @param level
+ * @param upgradeMaterial
+ */
+Formation.prototype.checkUpgradeTacticalRequired = function(player, level, upgradeMaterial) {
+    var required = {};
+
+    var money = 0;
+    if(level == 0) {
+        money = upgradeMaterial[0] * 1;
+    } else {
+        money = upgradeMaterial[0] * (level * 2);
+    }
+    var materials = [];
+
+    materials.push(upgradeMaterial[1]);
+    materials.push(upgradeMaterial[2]);
+
+    // check materials
+    var array = [];
+    var itemId = "";
+    var itemNum = 0;
+    var flag = [];
+    var items = [];
+    required.packageInfo = [];
+    for(var i = 0 ; i < materials.length ; i++) {
+        if(materials[i].indexOf("|") > 0) {
+            array = materials[i].split("|");
+            itemId = array[0];
+            itemNum = array[1];
+            if(level == 0) {
+                itemNum = itemNum * 1;
+            } else {
+                itemNum = itemNum * (level * 2);
+            }
+        } else {
+            itemId = materials[i];
+            itemNum = 1;
+        }
+
+        items.push({
+            itemId: itemId,
+            itemNum: itemNum
+        });
+    }
+    flag = player.packageEntity.checkMaterial(items);
+    if(flag.length != items.length) {
+        return -1;
+    }
+    required.packageInfo = flag;
+
+    // check money
+    if(money > player.money) {
+        return -3;
+    }
+    required.money = money;
+    return required;
+}
+
+Formation.prototype.getTacticalLevel = function(tacticalId) {
+    var level = 0;
+    var tacticals = this.tacticals;
+    for(var i = 0 ; i < tacticals.length ; i++) {
+        if(tacticals[i].id == tacticalId) {
+            level = tacticals[i].level;
+        }
+    }
+    return level;
+}
+
+/**
  * getCellCount
  * @param level
  * @returns {number}
