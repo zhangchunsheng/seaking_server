@@ -184,14 +184,15 @@ Formation.prototype.checkUpgradeTacticalRequired = function(player, level, upgra
 
     var money = 0;
     if(level == 0) {
-        money = upgradeMaterial[0] * 1;
+        money = upgradeMaterial[0][0] * 1;
     } else {
-        money = upgradeMaterial[0] * (level * 2);
+        money = upgradeMaterial[0][0] * (level * 2);
     }
     var materials = [];
 
-    materials.push(upgradeMaterial[1]);
-    materials.push(upgradeMaterial[2]);
+    materials.push(upgradeMaterial[0][1]);
+    materials.push(upgradeMaterial[0][2]);
+    console.log(upgradeMaterial);
 
     // check materials
     var array = [];
