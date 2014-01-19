@@ -192,7 +192,6 @@ Formation.prototype.checkUpgradeTacticalRequired = function(player, level, upgra
 
     materials.push(upgradeMaterial[0][1]);
     materials.push(upgradeMaterial[0][2]);
-    console.log(upgradeMaterial);
 
     // check materials
     var array = [];
