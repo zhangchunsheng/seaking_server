@@ -7,6 +7,7 @@
  */
 var packageDao = require('../dao/packageDao');
 var utils = require('../utils/utils');
+var dbUtil = require('../utils/dbUtil');
 
 var packageService = module.exports;
 
@@ -42,6 +43,11 @@ packageService.update = function(val, cb) {
     packageDao.update(val, cb);
 }
 
-packageService.getUpdateArray = function() {
-
+packageService.getUpdateArray = function(array, val) {
+    var key = dbUtil.getPlayerKey(val.serverId, val.registerType, val.loginName, val.characterId);
+    var value = {
+        itemCount: val.itemCount,
+        items:val.items
+    };
+    array.push(["hset", key, "package", JSON.stringify(value)]);
 }

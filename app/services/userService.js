@@ -7,6 +7,7 @@
  */
 var userDao = require('../dao/userDao');
 var utils = require('../utils/utils');
+var dbUtil = require('../utils/dbUtil');
 var eventManager = require('../domain/event/eventManager');
 
 var userService = module.exports;
@@ -100,4 +101,20 @@ userService.getUpdateArray = function(array, player, key, columns) {
 
 userService.getCharacterInfoByNickname = function(serverId, nickname, cb) {
     userDao.getCharacterInfoByNickname(serverId, nickname, cb);
+}
+
+/**
+ * getUpdatePlayerAttributeArray
+ * @param array
+ * @param player
+ */
+userService.getUpdatePlayerAttributeArray = function(array, player) {
+    var column = player.updateColumn().columns;
+
+    var characterId = utils.getRealCharacterId(player.id);
+    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+
+    for(var o in column) {
+        dbUtil.getCommand(array, key, o, player);
+    }
 }

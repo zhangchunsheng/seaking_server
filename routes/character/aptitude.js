@@ -338,3 +338,124 @@ exports.checkFreeTime = function(req, res) {
         utils.send(msg, res, data);
     });
 }
+
+/**
+ * checkAllFreeTime
+ * @param req
+ * @param res
+ */
+exports.checkAllFreeTime = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var mtype = msg.mtype;// 金币类型 1 - 金币 2 - 元宝
+    if(utils.empty(mtype)) {
+        mtype = 0;
+    }
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var data = {};
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var array = [];
+
+        var character = player;
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var players = [];
+        players.push(character);
+        for(var i = 0 ; i < character.partners.length ; i++) {
+            players.push(character.partners[i]);
+        }
+
+        var playersData = {};
+        var aptitude;
+        var date = new Date();
+        var upgradeDate;
+        var time = 0;
+
+        var type = 0;
+
+        for(var i = 0 ; i < players.length ; i++) {
+            aptitude = players[i].aptitude;
+            if(utils.empty(aptitude)) {
+                playersData[players[i].id] = null;
+                continue;
+            }
+
+            // check upgradeDate
+            upgradeDate = aptitude.upgradeDate || 1;
+            time = date.getTime();
+            if(time < upgradeDate) {
+                playersData[players[i].id] = null
+                continue;
+            }
+
+            var freeTimes = {};
+            var costInfos = {};
+            var freeTime = 0;
+            var costInfo = {};
+            for(var j = 1 ; j <= 9 ; j++) {
+                type = j;
+                if(typeof aptitude[type] != "object" || typeof aptitude[type].count == "undefined") {
+                    continue;
+                }
+                aptitude[type].count = parseInt(aptitude[type].count);
+                aptitude.count = parseInt(aptitude.count);
+
+                freeTime = 0;
+                costInfo = {};
+                if(aptitude[type].count <= 0) {// top level
+                    freeTime = -1;
+                    costInfo = {};
+                } else {
+                    if(utils.getDate(time) == utils.getDate(upgradeDate)) {
+                        freeTime = 0;
+                    } else {
+                        freeTime = 1;
+                    }
+                    costInfo[consts.MONEY_TYPE.GOLDEN] = 0;
+                    costInfo[consts.MONEY_TYPE.GAME_CURRENCY] = 0;
+                    if(utils.getDate(time) == utils.getDate(upgradeDate)) {
+                        // check money gamecurrency
+                        freeTime = 0;
+
+                        var money = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.money;
+                        costInfo[consts.MONEY_TYPE.GOLDEN] = money;
+
+                        var gameCurrency = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.gameCurrency;
+                        costInfo[consts.MONEY_TYPE.GAME_CURRENCY] = gameCurrency;
+                    } else {
+                        freeTime = 1;
+                    }
+                }
+
+                freeTimes[j] = freeTime;
+                costInfos[j] = costInfo;
+            }
+            playersData[players[i].id] = {
+                freeTimes: freeTimes,
+                costInfos: costInfos
+            }
+        }
+
+        data = {
+            code: Code.OK,
+            players: playersData
+        };
+        utils.send(msg, res, data);
+    });
+}

@@ -119,7 +119,7 @@ playerUtil.initFormation = function(opts, dataType) {
     if(typeof dataType == "undefined")
         dataType = "json";
 
-    var formation = {formation:{4:{playerId:"S" + opts.serverId + "C" + opts.characterId}},tactical:{id:"F101",level:1}};
+    var formation = {formation:{4:{playerId:"S" + opts.serverId + "C" + opts.characterId}},tactical:{id:"F101",level:0}};
 
     if(dataType == "string") {
         formation = JSON.stringify(formation);
@@ -131,7 +131,22 @@ playerUtil.initTacticals = function(dataType) {
     if(typeof dataType == "undefined")
         dataType = "json";
 
-    var tacticals = {"tacticals":[{"id":"F101","level":1,"active":1}]};
+    var tacticalsData = dataApi.formations.all();
+    var data = [];
+
+    for(var i in tacticalsData) {
+        var tactical = {
+            id: tacticalsData[i].id,
+            level: 0
+        };
+        if(tacticalsData[i].id == "F101") {
+            tactical.active = 1;
+        }
+        data.push(tactical);
+    }
+    var tacticals = {
+        "tacticals": data
+    };
 
     if(dataType == "string") {
         tacticals = JSON.stringify(tacticals);
