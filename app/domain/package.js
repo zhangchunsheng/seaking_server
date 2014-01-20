@@ -247,7 +247,15 @@ function sort1(array, max) {
                         array[l+1].itemNum= 0;
                     } 
                 }else {
-                    var itemInfo = dataApi.item.findById(array[l].itemId);
+                    console.log(array[l]);
+                    var  itemInfo;
+                    if(array[l].itemId.indexOf("D") >= 0) {
+                        itemInfo = dataApi.item.findById(array[l].itemId);
+                    }else if(array[l].itemId.indexOf("B") >= 0) {
+                        itemInfo = dataApi.diamonds.findById(array[l].itemId);
+                    } 
+                    console.log("itemIn",itemInfo);
+                    if(!itemInfo){itemInfo.pileNum = 99;}
                     var _max = itemInfo.pileNum - 0 ||99;
                     if(array[l].itemNum > _max) {
                         array[l+1].itemNum = array[l].itemNum - _max;
