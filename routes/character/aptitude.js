@@ -408,47 +408,29 @@ exports.checkAllFreeTime = function(req, res) {
             var costInfos = {};
             var freeTime = 0;
             var costInfo = {};
-            for(var j = 1 ; j <= 9 ; j++) {
-                type = j;
-                if(typeof aptitude[type] != "object" || typeof aptitude[type].count == "undefined") {
-                    continue;
-                }
-                aptitude[type].count = parseInt(aptitude[type].count);
-                aptitude.count = parseInt(aptitude.count);
 
+            if(utils.getDate(time) == utils.getDate(upgradeDate)) {
                 freeTime = 0;
-                costInfo = {};
-                if(aptitude[type].count <= 0) {// top level
-                    freeTime = -1;
-                    costInfo = {};
-                } else {
-                    if(utils.getDate(time) == utils.getDate(upgradeDate)) {
-                        freeTime = 0;
-                    } else {
-                        freeTime = 1;
-                    }
-                    costInfo[consts.MONEY_TYPE.GOLDEN] = 0;
-                    costInfo[consts.MONEY_TYPE.GAME_CURRENCY] = 0;
-                    if(utils.getDate(time) == utils.getDate(upgradeDate)) {
-                        // check money gamecurrency
-                        freeTime = 0;
-
-                        var money = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.money;
-                        costInfo[consts.MONEY_TYPE.GOLDEN] = money;
-
-                        var gameCurrency = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.gameCurrency;
-                        costInfo[consts.MONEY_TYPE.GAME_CURRENCY] = gameCurrency;
-                    } else {
-                        freeTime = 1;
-                    }
-                }
-
-                freeTimes[j] = freeTime;
-                costInfos[j] = costInfo;
+            } else {
+                freeTime = 1;
             }
+
+            costInfo[consts.MONEY_TYPE.GOLDEN] = 0;
+            costInfo[consts.MONEY_TYPE.GAME_CURRENCY] = 0;
+            if(utils.getDate(time) == utils.getDate(upgradeDate)) {
+                // check money gamecurrency
+                var money = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.money;
+                costInfo[consts.MONEY_TYPE.GOLDEN] = money;
+
+                var gameCurrency = parseInt(aptitude.upgradeTimeOneDay) * consts.upgradeApititude.gameCurrency;
+                costInfo[consts.MONEY_TYPE.GAME_CURRENCY] = gameCurrency;
+            } else {
+
+            }
+
             playersData[players[i].id] = {
-                freeTimes: freeTimes,
-                costInfos: costInfos
+                freeTimes: freeTime,
+                costInfos: costInfo
             }
         }
 
