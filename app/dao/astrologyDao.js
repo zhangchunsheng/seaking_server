@@ -95,7 +95,7 @@ astrologyDao.main = function(player, callback) {
 }
 
 astrologyDao.maxCacheItems = 14;
-astrologyDao.maxItems = 48;
+astrologyDao.maxItems = 64;
 astrologyDao.getUseMoney = function(index) {
 	switch(index) {
 		case 0:
@@ -295,9 +295,6 @@ astrologyDao.pickUpAll = function(Key , callback) {
 			if(err){redis.release(client);callback(err);return;}
 			if(!res){redis.release(client);callback("Operator error");return;}
 			var astrology = JSON.parse(res);
-			if(astrology.items.length >= astrologyDao.maxItems) {
-				redis.release(client);callback("items is full");return;
-			}
 			//var badItems = [];
 			//var goodItems = [];
 			var isFull = 0;

@@ -205,8 +205,9 @@ exports.sellItem = function(req, res) {
             itemInfo = dataApi.weapons.findById(itemId);
         } else if(itemId.indexOf("B") >= 0) {
             type = PackageType.DIAMOND;
-            itemInfo = dataApi.item.findById(itemId);
+            itemInfo = dataApi.diamonds.findById(itemId);
         }
+        
         if(!itemInfo) {
             data = {
                 code:Code.PACKAGE.NOT_EXIST_ITEM
@@ -214,13 +215,15 @@ exports.sellItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        if(itemInfo.canSell) {
+        
+        /*if(!itemInfo.canSell) {
             data = {
-                code:Code.FAIL
+                code:Code.FAIL,
+                err: "不能卖"
             };
             utils.send(msg, res, data);
             return;
-        }
+        }*/
         if(typeof itemInfo.price == "undefined") {
             data = {
                 code: Code.SHOP.NOT_EXIST_PRICE
