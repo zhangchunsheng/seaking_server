@@ -166,6 +166,7 @@ module.exports = function (app) {
 
     app.get('/aptitude/upgrade', authRequired, aptitude.upgrade);
     app.get('/aptitude/checkFreeTime', authRequired, aptitude.checkFreeTime);
+    app.get('/aptitude/checkAllFreeTime', authRequired, aptitude.checkAllFreeTime);
     app.get('/ghost/upgrade', authRequired, ghost.upgrade);
 
     app.get('/misc/getMiscs', authRequired, misc.getMiscs);
