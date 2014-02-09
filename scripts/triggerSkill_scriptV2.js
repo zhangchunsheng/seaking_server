@@ -73,7 +73,8 @@ var triggerSkill_script = {
         } else if(attackSide == constsV2.characterFightType.DEFENSE) {
             player = defense;
         }
-        if(player.fightValue.hp < player.maxHp * 0.3) {
+
+        if(player.fightValue.hp < player.maxHp * 0.5) {
             return true;
         } else {
             return false;
