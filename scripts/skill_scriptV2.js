@@ -34,27 +34,27 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.ADDSUNDERARMOR) {//加破甲
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.POISON) {
+    } else if(buffType == constsV2.buffTypeV2.POISON) {//施毒
         buffCategory = constsV2.buffCategory.ROUND;
-    } else if(buffType == constsV2.buffTypeV2.ADDHP) {
+    } else if(buffType == constsV2.buffTypeV2.ADDHP) {//加血
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.REDUCEATTACK_ADDSUNDERARMOR) {
+    } else if(buffType == constsV2.buffTypeV2.REDUCEATTACK_ADDSUNDERARMOR) {//减伤
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.EXTRATARGET) {
+    } else if(buffType == constsV2.buffTypeV2.EXTRATARGET) {//额外目标
         buffCategory = constsV2.buffCategory.ATTACKING;
-    } else if(buffType == constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE_AND_ADDHP) {
+    } else if(buffType == constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE_AND_ADDHP) {//范围伤害并加血
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.PARALLELDAMAGE) {
+    } else if(buffType == constsV2.buffTypeV2.PARALLELDAMAGE) {//溅射
         buffCategory = constsV2.buffCategory.ATTACKING;
     } else if(buffType == constsV2.buffTypeV2.RECOVERYHP) {
         buffCategory = constsV2.buffCategory.ATTACKING;
-    } else if(buffType == constsV2.buffTypeV2.PROMOTEHP) {
+    } else if(buffType == constsV2.buffTypeV2.PROMOTEHP) {//提升血量
         buffCategory = constsV2.buffCategory.ATTACKING;
     } else if(buffType == constsV2.buffTypeV2.ADDDODGE) {
         buffCategory = constsV2.buffCategory.DEFENSE;
-    } else if(buffType == constsV2.buffTypeV2.ICE) {
+    } else if(buffType == constsV2.buffTypeV2.ICE) {//冰冻
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.SILENCE) {
+    } else if(buffType == constsV2.buffTypeV2.SILENCE) {//沉默
         buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
@@ -205,8 +205,44 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于30%之后，会产生一个持久性的护盾，该护盾使受到的攻击伤害减免25%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill102201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
+        var buffs = player.buffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == this.skillId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.25
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 每次被攻击，则使下次受到的攻击伤害减免10%，无限叠加，直到下次发起攻击

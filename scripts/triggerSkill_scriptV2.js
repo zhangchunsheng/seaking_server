@@ -11,6 +11,9 @@ var utils = require('../app/utils/utils');
 var fightUtil = require('../app/utils/fightUtil');
 var constsV2 = require('../app/consts/constsV2');
 
+/**
+ * 触发技能
+ */
 var triggerSkill_script = {
     "skill101101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
