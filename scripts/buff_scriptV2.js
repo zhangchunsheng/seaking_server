@@ -75,9 +75,7 @@ var buff_script = {
      */
     "buff103201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var random = utils.random(1, 100);
-        console.log("tttttttttttt");
         if(random >= 1 && random <= 50) {
-            console.log("tttttttttttt");
             return 1;
         } else {
             return 0;
@@ -91,8 +89,30 @@ var buff_script = {
         defenseFightTeam.removeBuff(this);
         return -1;
     },
+    /**
+     * 生命值进入低于15%的状态，立即对己方施放一个可以抵挡3次任何攻击的护盾
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff104201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(this.buffData.value > 0) {
+            this.buffData.value--;
+        }
+        if(this.buffData.value <= 0) {
+            defenseFightTeam.removeBuff(this);
+        }
+        return 1;
     },
     "buff105101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.addDefense += this.buffData.value;

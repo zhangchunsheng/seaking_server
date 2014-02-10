@@ -361,8 +361,46 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 生命值进入低于15%的状态，立即对己方施放一个可以抵挡3次任何攻击的护盾
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill104201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var team;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            team = attackFightTeam;
+            playerData = attackData;
+        } else {
+            team = defenseFightTeam;
+            playerData = defenseData;
+        }
 
+        var buffs = team.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 3
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+        team.addBuff(buff);
+        return 100;
     },
     /**
      * 战斗中的每次被攻击，都能为自己提供额外2%的护甲，该效果无限叠加

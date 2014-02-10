@@ -583,7 +583,7 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {
         var skillBuffs = defense.getSkillBuffs();
-        var teamBuffs = defenseFightTeam.getSkillBuffs();
+        var teamBuffs = defenseFightTeam.getSkillBuffs();//护盾
         var buffs = skillBuffs;
         for(var i = 0 , l = teamBuffs.length ; i < l ; i++) {
             buffs.push(teamBuffs[i]);
