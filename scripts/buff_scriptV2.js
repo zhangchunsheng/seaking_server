@@ -58,8 +58,30 @@ var buff_script = {
         defense.fight.reduceDamage += this.buffData.value;
         return 0;
     },
+    /**
+     * 生命值低于20%之后，攻击该单位的目标有50%的几率被冻结一回合
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "buff103201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var random = utils.random(1, 100);
+        console.log("tttttttttttt");
+        if(random >= 1 && random <= 50) {
+            console.log("tttttttttttt");
+            return 1;
+        } else {
+            return 0;
+        }
     },
     /**
      * 抵消伤害

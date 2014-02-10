@@ -463,7 +463,8 @@ module.exports = {
         ADDDODGE: "19",
         ICE: "20",
         SILENCE: "21",
-        AWAKEN_ENHANCE_TRIGGERSKILL: "22"
+        AWAKEN_ENHANCE_TRIGGERSKILL: "22",
+        FREEZE: "23"
     },
 
     buffCategory: {
