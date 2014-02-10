@@ -24,3 +24,12 @@ var async = require('async');
 exports.index = function(req, res) {
 
 }
+
+/**
+ * 人物抽取
+ * @param req
+ * @param res
+ */
+exports.extraction = function(req, res) {
+
+}

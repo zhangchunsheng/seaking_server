@@ -72,6 +72,7 @@ var Player = function(opts) {
 
     this.miscs = opts.miscs || [];
     this.soulPackage = opts.soulPackage;
+    this.altar = opts.altar;
 
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
@@ -1673,6 +1674,9 @@ Player.prototype.strip = function() {
         //tacticals: this.formationEntity.getInfo().tacticals,
         formations: this.formationEntity.getAbbreviation(),
         partners: this.getPartners(),
+        miscs: this.miscsEntity.getInfo(),
+        soulPackage: this.soulPackage,
+        altar: this.altar,
         gift: this.gift,
         pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
@@ -1864,6 +1868,9 @@ Player.prototype.toJSON = function() {
         //tacticals: this.formationEntity.getInfo().tacticals,
         formations: this.formationEntity.getAbbreviation(),
         partners: this.getPartners(),
+        miscs: this.miscsEntity.getInfo(),
+        soulPackage: this.soulPackage,
+        altar: this.altar,
         gift: this.gift,
         pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,

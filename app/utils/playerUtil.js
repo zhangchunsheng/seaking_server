@@ -96,6 +96,8 @@ playerUtil.initCharacter = function(opts) {
         tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
         miscs: [],
+        soulPackage: playerUtil.initSoulPackage(),
+        altar: playerUtil.initAltar(),
         gift: [],
         pushMessage: playerUtil.initPushMessage(),
         ghost: playerUtil.initGhost(),
@@ -164,6 +166,30 @@ playerUtil.initPushMessage = function(dataType) {
         pushMessage = JSON.stringify(pushMessage);
     }
     return pushMessage;
+}
+
+playerUtil.initSoulPackage = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var soulPackage = {"itemCount": 64, "items": {}};
+
+    if(dataType == "string") {
+        soulPackage = JSON.stringify(soulPackage);
+    }
+    return soulPackage;
+}
+
+playerUtil.initAltar = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var altar = {"loyalty": 0};
+
+    if(dataType == "string") {
+        altar = JSON.stringify(altar);
+    }
+    return altar;
 }
 
 playerUtil.initGhost = function(dataType) {
@@ -349,6 +375,8 @@ playerUtil.initCharacterV2 = function(opts) {
         tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
         miscs: [],
+        soulPackage: playerUtil.initSoulPackage(),
+        altar: playerUtil.initAltar(),
         gift: [],
         pushMessage: playerUtil.initPushMessage(),
         ghost: playerUtil.initGhost(),
@@ -427,6 +455,8 @@ playerUtil.getCharacter = function(opts) {
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
         miscs: JSON.parse(opts.replies.miscs || '{"miscs":[]}').miscs,
+        soulPackage: JSON.parse(opts.replies.soulPackage || playerUtil.initSoulPackage("string")),
+        altar: JSON.parse(opts.replies.altar || playerUtil.initAltar("string")),
         gift: JSON.parse(opts.replies.gift).gift,
         pushMessage: JSON.parse(opts.replies.pushMessage || playerUtil.initPushMessage("string")).pushMessage,
         curTasks: {
@@ -544,6 +574,8 @@ playerUtil.getPlayer = function(character) {
         partners: character.partners,
         allPartners: character.allPartners,
         miscs: character.miscs,
+        soulPackage: character.soulPackage,
+        altar: character.altar,
         gift: character.gift,
         pushMessage: character.pushMessage,
         ghost: character.ghost,
@@ -599,6 +631,8 @@ playerUtil.getPlayerV2 = function(character) {
         partners: character.partners,
         allPartners: character.allPartners,
         miscs: character.miscs,
+        soulPackage: character.soulPackage,
+        altar: character.altar,
         gift: character.gift,
         pushMessage: character.pushMessage,
         ghost: character.ghost,
