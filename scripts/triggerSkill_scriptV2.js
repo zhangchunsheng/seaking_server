@@ -174,7 +174,7 @@ var triggerSkill_script = {
             player = defense;
         }
 
-        if(player.fightValue.hp < player.maxHp * 0.5) {
+        if(player.fightValue.hp < player.maxHp * 0.2) {
             return true;
         } else {
             return false;
