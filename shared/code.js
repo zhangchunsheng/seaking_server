@@ -128,5 +128,9 @@ module.exports = {
         NO_TACTICAL_DATA: 1865,
         LACK_UPGRADEMATERIAL: 1866,
         LACK_UPGRADEMONEY: 1867
+    },
+
+    ALTAR: {
+        IN_REFRIGERATION: 1900
     }
 };

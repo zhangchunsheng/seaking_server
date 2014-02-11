@@ -101,7 +101,7 @@ BasePackage.prototype.hasItem = function(_item) {
     return null;
 }
 
-BasePackage.prototype.addItem = function(player, type, item, rIndex) {
+BasePackage.prototype.addItem = function(player, item, rIndex) {
     var changes = [];
     var _items = utils.clone(item);
     if (!item || !item.itemId || !item.itemId.match(/H/)) {
@@ -127,7 +127,7 @@ BasePackage.prototype.addItem = function(player, type, item, rIndex) {
             items.items[i] = {
                 itemId: item.itemId,
                 itemNum: item.itemNum,
-                level: item.level
+                level: item.level || 1
             };
             changes = [{
                 index: i,

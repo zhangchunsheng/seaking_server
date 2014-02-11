@@ -185,7 +185,7 @@ playerUtil.initAltar = function(dataType) {
     if(typeof dataType == "undefined")
         dataType = "json";
 
-    var altar = {"loyalty": 0};
+    var altar = {"loyalty": 0, "extractionTimes":{"1":{"lastExtractionTime":0},"2":{"lastExtractionTime":0},"3":{"lastExtractionTime":0}}};
 
     if(dataType == "string") {
         altar = JSON.stringify(altar);
