@@ -21,6 +21,7 @@ var aptitudeService = require('../services/character/aptitudeService');
 var ghostService = require('../services/character/ghostService');
 var skillService = require('../services/skillService');
 var miscsService = require('../services/character/miscsService');
+var soulPackageService = require('../services/character/soulPackageService');
 var formationService = require('../services/formationService');
 var messageService = require('../services/messageService');
 var Tasks = require('../domain/tasks');
@@ -664,6 +665,7 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
     var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
     var miscs = miscsService.createNewMiscs({}, serverId, registerType, loginName, characterId, character);
+    var soulPackage = soulPackageService.createNewSoulPackage({}, serverId, registerType, loginName, characterId, character);
     var formation = formationService.createNewFormation({}, serverId, registerType, loginName, characterId, character);
     var pushMessage = messageService.createNewPushMessage({}, serverId, registerType, loginName, characterId, character);
     pushMessage.on("modifyData", function() {
@@ -676,6 +678,7 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     character.ghostEntity = ghost;
     character.skillsEntity = skills;
     character.miscsEntity = miscs;
+    character.soulPackageEntity = soulPackage;
     character.formationEntity = formation;
     character.pushMessageEntity = pushMessage;
 };
