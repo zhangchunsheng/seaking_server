@@ -142,6 +142,7 @@ exports.extraction = function(req, res) {
         redisService.setData(array, function(err, reply) {
             data = {
                 code: Code.OK,
+                lastExtractionTime: time,
                 type: type,
                 cId: cId,
                 packageIndex: packageIndex,
