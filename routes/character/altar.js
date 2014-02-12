@@ -167,6 +167,7 @@ exports.extraction = function(req, res) {
             data = {
                 code: Code.OK,
                 lastExtractionTime: time,
+                leftTime: Math.round((refrigerationTime - pastTime) / 1000),
                 type: type,
                 cId: cId,
                 packageIndex: packageIndex,
