@@ -465,7 +465,8 @@ module.exports = {
         SILENCE: "21",//沉默
         AWAKEN_ENHANCE_TRIGGERSKILL: "22",//唤醒触发技能
         FREEZE: "23",//冻结
-        TURN_DAMAGE: "24"//反伤
+        TURN_DAMAGE: "24",//反伤
+        ADDBLOCK: "25"
     },
 
     buffCategory: {

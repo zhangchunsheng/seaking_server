@@ -330,7 +330,7 @@ Fight.prototype.attack = function(battleData, players, index) {
         if(dataType != 1) {// 普通攻击
             defenseType = defense.useSkillBuffs(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
-            if(defenseType == 0) {
+            if(typeof defenseType == "undefined" || defenseType == 0) {
                 // 计算战斗
                 attackData.attack = attack.fightValue.attack;
                 defenseData.defense = defense.fightValue.defense;
@@ -357,8 +357,10 @@ Fight.prototype.attack = function(battleData, players, index) {
                     isCriticalHit = true;
                     damageType = consts.damageType.criticalHit;
                 } else if(random > criticalHit && random <= num1) {
+                    defense.fight.isBlock = true;
                     isBlock = true;
                 } else if(random > num1 && random <= num2) {
+                    defense.fight.isDodge = true;
                     isDodge = true;
                 } else {
                     isCommandAttack = true;
