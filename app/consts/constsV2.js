@@ -442,29 +442,30 @@ module.exports = {
     },
 
     buffTypeV2: {
-        SHIELDS: "1",
-        EXTRAARMOR: "2",
-        BLOCK: "3",
-        DODGE: "4",
-        ASYLUM: "5",
-        ADDMAXHP: "6",
-        REDUCE_SCOPE_DAMAGE: "7",
-        CHANGETO_SCOPE_DAMAGE: "8",
-        ADDATTACK: "9",
-        ADDSUNDERARMOR: "10",
-        POISON: "11",
-        ADDHP: "12",
-        REDUCEATTACK_ADDSUNDERARMOR: "13",
-        EXTRATARGET: "14",
-        CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15",
-        PARALLELDAMAGE: "16",
-        RECOVERYHP: "17",
-        PROMOTEHP: "18",
-        ADDDODGE: "19",
-        ICE: "20",
-        SILENCE: "21",
-        AWAKEN_ENHANCE_TRIGGERSKILL: "22",
-        FREEZE: "23"
+        SHIELDS: "1",//护盾
+        EXTRAARMOR: "2",//额外护甲
+        BLOCK: "3",//格挡
+        DODGE: "4",//闪避
+        ASYLUM: "5",//庇护
+        ADDMAXHP: "6",//增加血量上限
+        REDUCE_SCOPE_DAMAGE: "7",//减范围伤害
+        CHANGETO_SCOPE_DAMAGE: "8",//改变为范围伤害
+        ADDATTACK: "9",//加攻击力
+        ADDSUNDERARMOR: "10",//加护甲
+        POISON: "11",//施毒
+        ADDHP: "12",//加血
+        REDUCEATTACK_ADDSUNDERARMOR: "13",//减攻击力加护甲
+        EXTRATARGET: "14",//额外目标
+        CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15",//改变为范围伤害并且加血
+        PARALLELDAMAGE: "16",//溅射
+        RECOVERYHP: "17",//恢复血量
+        PROMOTEHP: "18",//提升血量
+        ADDDODGE: "19",//加闪避
+        ICE: "20",//冰冻
+        SILENCE: "21",//沉默
+        AWAKEN_ENHANCE_TRIGGERSKILL: "22",//唤醒触发技能
+        FREEZE: "23",//冻结
+        TURN_DAMAGE: "24"//反伤
     },
 
     buffCategory: {

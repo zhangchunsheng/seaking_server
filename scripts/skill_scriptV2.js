@@ -507,8 +507,53 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于10%之后，攻击他的单位受到100%的反伤
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill106201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;//必须是防守方
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            return 0;
+        }
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffs[i].buffData.value / 100);
+                fightUtil.checkDied(attack, attackData);
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 100
+        };
+        attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffData.value / 100);
+        fightUtil.checkDied(attack, attackData);
+        var buff = getSkillBuff(constsV2.buffTypeV2.TURN_DAMAGE, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 一次性受到的攻击超过生命值的20%，则可以格挡下次攻击
