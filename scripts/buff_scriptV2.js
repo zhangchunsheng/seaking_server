@@ -158,6 +158,25 @@ var buff_script = {
         return 0;
     },
     "buff108201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        if(this.buffData.value <= 0) {
+            return 0;
+        }
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
+
+        if(this.buffData.value > 0) {
+            this.buffData.value--;
+        }
+        player.fightValue.hp = 1;
+        player.died = playerData.died = false;
+        player.costTime = player.fight.costTime;
         return 0;
     },
     "buff109101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {

@@ -466,7 +466,8 @@ module.exports = {
         AWAKEN_ENHANCE_TRIGGERSKILL: "22",//唤醒触发技能
         FREEZE: "23",//冻结
         TURN_DAMAGE: "24",//反伤
-        ADDBLOCK: "25"
+        ADDBLOCK: "25",
+        KING_WILL: "26"//君王意志
     },
 
     buffCategory: {
@@ -476,7 +477,8 @@ module.exports = {
         AFTER_DEFENSE: 4,
         ROUND: 5,
         ATTACKING: 6,
-        AWAKEN: 7
+        AWAKEN: 7,
+        AFTER_DIE: 8
     },
 
     characterFightStatus: {
@@ -486,11 +488,7 @@ module.exports = {
 
     characterFightType: {
         ATTACK: 1,
-        DEFENSE: 2,
-        AFTER_ATTACK: 3,
-        AFTER_DEFENSE: 4,
-        ROUND: 5,
-        ATTACKING: 6
+        DEFENSE: 2
     },
 
     attackType: {

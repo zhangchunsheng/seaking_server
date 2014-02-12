@@ -319,7 +319,7 @@ Fight.prototype.attack = function(battleData, players, index) {
     defense.updateBuff(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
     // 使用技能
-    dataType = attack.useSkillBuffs(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+    dataType = attack.useSkillBuffs(consts.characterFightType.ATTACK, consts.buffCategory.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
     if(dataType == 0) {
         // 触发主动攻击技能
         triggerCondition = {
@@ -328,7 +328,7 @@ Fight.prototype.attack = function(battleData, players, index) {
         dataType = attack.triggerSkill(consts.characterFightType.ATTACK, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
         if(dataType != 1) {// 普通攻击
-            defenseType = defense.useSkillBuffs(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+            defenseType = defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
             if(typeof defenseType == "undefined" || defenseType == 0) {
                 // 计算战斗
@@ -483,7 +483,11 @@ Fight.prototype.attack = function(battleData, players, index) {
                     fightUtil.updateDefenseData(defense, defenseData);
                     fightUtil.checkDied(defense, defenseData);
 
-                    defense.useSkillBuffs(consts.characterFightType.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+                    defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
+                    if(defense.died) {
+                        defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DIE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+                    }
 
                     // 守方
                     // 增加怒气
@@ -507,7 +511,7 @@ Fight.prototype.attack = function(battleData, players, index) {
                     };
                     fightUtil.changeTargetState(target, defenseData);
                     data.target.push(target);
-                    attack.useSkillBuffs(consts.characterFightType.ATTACKING, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+                    attack.useSkillBuffs(consts.characterFightType.ATTACK, consts.buffCategory.ATTACKING, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
                 }
             }
         }

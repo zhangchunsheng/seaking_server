@@ -62,6 +62,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.ADDBLOCK) {
         buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.KING_WILL) {
+        buffCategory = constsV2.buffCategory.AFTER_DIE;
     }
     return buffCategory;
 }
@@ -669,8 +671,46 @@ var skill_script = {
         teammate.addBuff(buff);
         return 100;
     },
+    /**
+     * 承受到致命伤害时，不会死亡同时也会免疫治疗效果，持续3次被攻击
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill108201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 3
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.KING_WILL, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 在战斗中，每次承受攻击，提升5%的生命上限
