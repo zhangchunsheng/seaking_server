@@ -73,7 +73,17 @@ exports.extraction = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
+
+        var miscs = character.miscsEntity;
+        var soulPackage = character.soulPackageEntity;
         //判断背包已满
+        if(soulPackage.isFull()) {
+            data = {
+                code: Code.ALTAR.FULL_SOULPACKAGE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
 
         var costMoney = altarData.extractionCost;
         if(costMoney > character.money) {
@@ -98,12 +108,23 @@ exports.extraction = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
+
         if(pastTime < refrigerationTime) {
-            data = {
-                code: Code.ALTAR.IN_REFRIGERATION
-            };
-            utils.send(msg, res, data);
-            return;
+            // （当前剩余冷却时间/总冷却时间）*（10/35/90）元宝
+            // check gameCurrency
+            var costGameCurrency = [10, 35, 90];
+            var gameCurrency = Math.round(((refrigerationTime - pastTime) / refrigerationTime) * costGameCurrency[parseInt(altarId) - 1]);
+            if(player.gameCurrency >= gameCurrency) {
+                player.gameCurrency -= gameCurrency;
+            } else {
+                data = {
+                    code: Code.ALTAR.IN_REFRIGERATION
+                };
+                utils.send(msg, res, data);
+                return;
+            }
+        } else {
+
         }
 
         player.money = player.money - costMoney;
@@ -119,8 +140,6 @@ exports.extraction = function(req, res) {
         }
         var cId = heroRandom.cId;
         var type = 1;//1 - 实体 2 - 魂魄
-        var miscs = character.miscsEntity;
-        var soulPackage = character.soulPackageEntity;
 
         type = miscs.checkHero(cId);
         var packageIndex = [];
@@ -134,6 +153,11 @@ exports.extraction = function(req, res) {
             packageIndex = soulPackage.addItem(player, item);
             packageIndex = packageIndex.index;
         }
+
+        //更新侠义值
+        var loyalty = altarData.loyalty;
+        altar.loyalty += loyalty;
+
         userService.getUpdatePlayerAttributeArray(array, player);
         altarService.getUpdateArray(array, player);
         miscsService.getUpdateArray(array, player);

@@ -131,6 +131,7 @@ module.exports = {
     },
 
     ALTAR: {
-        IN_REFRIGERATION: 1900
+        IN_REFRIGERATION: 1900,
+        FULL_SOULPACKAGE: 1901
     }
 };

@@ -13,8 +13,6 @@ var buff = require('../buff');
 var Persistent = require('../persistent');
 var utils = require('../../utils/utils');
 
-var packageStart = 0;
-
 /**
  *
  * @param opts
@@ -29,6 +27,7 @@ var BasePackage = function(opts) {
     this.cId = opts.cId;
     this.items = opts.items;
     this.itemCount = opts.itemCount || 12;
+    this.indexStart = 0;
 };
 
 util.inherits(BasePackage, Persistent);
@@ -78,7 +77,7 @@ BasePackage.prototype.unlock = function(end) {
 BasePackage.prototype.hasItem = function(_item) {
     var flag = [];
     var num = _item.itemNum;
-    for(var i = packageStart, l = this.itemCount + packageStart; i < l; i++ ) {
+    for(var i = this.indexStart, l = this.itemCount + this.indexStart; i < l; i++ ) {
         if(this.items[i] && this.items[i].itemId == _item.itemId) {
             var item = this.items[i];
             if(num > item.itemNum) {
@@ -121,7 +120,7 @@ BasePackage.prototype.addItem = function(player, item, rIndex) {
     var items = this;
 
     var flag = false;
-    for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+    for (var i = this.indexStart; i < items.itemCount + this.indexStart; i++) {
         if (!items.items[i]) {
             flag = true;
             items.items[i] = {

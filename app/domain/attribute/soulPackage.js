@@ -14,8 +14,6 @@ var Persistent = require('../persistent');
 var utils = require('../../utils/utils');
 var BasePackage = require('../package/basePackage');
 
-var packageStart = 0;
-
 /**
  *
  * @param opts
@@ -30,6 +28,7 @@ var SoulPackage = function(opts) {
     this.cId = opts.cId;
     this.items = opts.items;
     this.itemCount = opts.itemCount || 12;
+    this.indexStart = 0;
 };
 
 util.inherits(SoulPackage, BasePackage);
@@ -38,4 +37,18 @@ module.exports = SoulPackage;
 
 SoulPackage.create = function(opts) {
 
+}
+
+SoulPackage.prototype.isFull = function() {
+    var count = 0;
+    for(var i = this.indexStart, l = this.itemCount + this.indexStart; i < l; i++ ) {
+        if(this.items[i]) {
+            count++;
+        }
+    }
+    if(this.itemCount == count) {
+        return true;
+    } else {
+        return false;
+    }
 }
