@@ -52,3 +52,51 @@ SoulPackage.prototype.isFull = function() {
         return false;
     }
 }
+
+SoulPackage.prototype.addItem = function(player, item, rIndex) {
+    var changes = [];
+    var _items = utils.clone(item);
+    if (!item || !item.itemId || !item.itemId.match(/H/)) {
+        return {
+            index: []
+        };
+    }
+    if(rIndex) {
+        if(this.items[rIndex]) {
+            var _item =  this.items[rIndex];
+            _item.itemNum = _item.itemNum - 1;
+            if(_item.itemNum <= 0) {
+                delete this.items[rIndex];
+            }
+        }
+    }
+    var items = this;
+
+    var flag = false;
+    for (var i = this.indexStart; i < items.itemCount + this.indexStart; i++) {
+        if (!items.items[i]) {
+            flag = true;
+            items.items[i] = {
+                itemId: item.itemId,
+                itemNum: item.itemNum,
+                level: item.level || 1,
+                starLevel: 0
+            };
+            changes = [{
+                index: i,
+                item: items.items[i]
+            }];
+            break;
+        }
+    }
+    if(!flag)
+        return {
+            index: []
+        };
+
+    var r = {index: changes};
+    if(changes.length > 0) {
+        this.save();
+    }
+    return r;
+}
