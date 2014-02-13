@@ -24,3 +24,12 @@ var async = require('async');
 exports.index = function(req, res) {
 
 }
+
+/**
+ * 融合
+ * @param req
+ * @param res
+ */
+exports.fusion = function(req, res) {
+
+}

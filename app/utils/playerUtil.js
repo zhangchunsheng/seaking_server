@@ -63,8 +63,6 @@ playerUtil.initCharacter = function(opts) {
         y: 100,
         experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         level: level,
-        trait: hero.trait,
-        starLevel: 0,
         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         photo: '',
