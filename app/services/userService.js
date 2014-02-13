@@ -118,3 +118,16 @@ userService.getUpdatePlayerAttributeArray = function(array, player) {
         dbUtil.getCommand(array, key, o, player);
     }
 }
+
+/**
+ * getUpdatePlayerArray
+ * @param array
+ * @param player
+ * @param columns
+ */
+userService.getUpdatePlayerArray = function(array, player, columns) {
+    var characterId = utils.getRealCharacterId(player.id);
+    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+
+    userService.getUpdateArray(array, player, key, columns);
+}

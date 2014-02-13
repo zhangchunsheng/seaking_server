@@ -100,6 +100,57 @@ BasePackage.prototype.hasItem = function(_item) {
     return null;
 }
 
+/**
+ * 检索物品
+ * @param items
+ * @returns {Array}
+ */
+BasePackage.prototype.checkItems = function(items) {
+    var flag = [];
+    var _items = [];
+    var _item;
+    var num;
+    var item;
+    for(var i = 0 ; i < items.length ; i++) {
+        _item = items[i];
+        num = _item.itemNum;
+        _items = [];
+        for(var j = this.indexStart, l = this.itemCount + this.indexStart ; j < l ; j++ ) {
+            if(this.items[j] && this.items[j].itemId == _item.itemId) {
+                item = this.items[j];
+                if(num > item.itemNum) {
+                    num = num - item.itemNum;
+                    _items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: item.itemNum
+                    });
+                } else {
+                    _items.push({
+                        index: j,
+                        itemId: item.itemId,
+                        itemNum: num
+                    });
+                    num = 0;
+                }
+                if(num == 0) {
+                    break;
+                }
+            }
+        }
+        if(num == 0) {
+            flag.push(_items);
+        } else {
+            return [];
+        }
+    }
+    if(flag.length == items.length) {
+        return flag;
+    } else {
+        return [];
+    }
+}
+
 BasePackage.prototype.addItem = function(player, item, rIndex) {
     var changes = [];
     var _items = utils.clone(item);

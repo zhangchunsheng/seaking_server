@@ -133,5 +133,10 @@ module.exports = {
     ALTAR: {
         IN_REFRIGERATION: 1900,
         FULL_SOULPACKAGE: 1901
+    },
+
+    SOUL: {
+        NOT_SAME_TRAIT: 1920,
+        MAX_STARLEVEL: 1921
     }
 };

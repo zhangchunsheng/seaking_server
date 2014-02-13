@@ -344,6 +344,7 @@ playerUtil.initCharacterV2 = function(opts) {
         level: level,
         trait: hero.trait,
         starLevel: 0,
+        starLevelExperience: 0,
         needExp: formulaV2.calculateXpNeeded(level + 1),
         accumulated_xp: formulaV2.calculateAccumulated_xp(level),
         photo: '',
@@ -428,6 +429,7 @@ playerUtil.getCharacter = function(opts) {
         level: parseInt(opts.level),
         trait: parseInt(opts.replies.trait || hero.trait),
         starLevel: parseInt(opts.replies.starLevel || 0),
+        starLevelExperience: parseInt(opts.replies.starLevelExperience || 0),
         needExp: parseInt(opts.replies.needExp),
         accumulated_xp: parseInt(opts.replies.accumulated_xp),
         photo: opts.replies.photo,
@@ -501,6 +503,7 @@ playerUtil.getPKCharacter = function(opts) {
         level: parseInt(opts.level),
         trait: parseInt(opts.replies.trait || hero.trait),
         starLevel: parseInt(opts.replies.starLevel || 0),
+        starLevelExperience: parseInt(opts.replies.starLevelExperience || 0),
         needExp: parseInt(opts.replies.needExp),
         accumulated_xp: parseInt(opts.replies.accumulated_xp),
         photo: opts.replies.photo,
@@ -557,6 +560,7 @@ playerUtil.getPlayer = function(character) {
         level: character.level,
         trait: character.trait,
         starLevel: character.starLevel,
+        starLevelExperience: character.starLevelExperience,
         experience: character.experience,
         buffs: character.buffs,
         hp: character.hp,
@@ -616,6 +620,7 @@ playerUtil.getPlayerV2 = function(character) {
         level: character.level,
         trait: character.trait,
         starLevel: character.starLevel,
+        starLevelExperience: character.starLevelExperience,
         experience: character.experience,
         buffs: character.buffs,
         hp: character.hp,
@@ -738,4 +743,19 @@ playerUtil.createEPTInfo = function(character, serverId, registerType, loginName
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
+}
+
+/**
+ * getAccumulationStarLevelNeedExp
+ * @param player
+ */
+playerUtil.getAccumulationStarLevelNeedExp = function(player) {
+    var num = player.starLevel;
+    var soulFusionId = "";
+    var upgradeStarNeedExp = 0;
+    for(var i = 0 ; i <= num ; i++) {
+        soulFusionId = "" + player.trait + num;
+        upgradeStarNeedExp += dataApi.soulFusion.findById(soulFusionId).upgradeStarNeedExp;
+    }
+    return upgradeStarNeedExp;
 }

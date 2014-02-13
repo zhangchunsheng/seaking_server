@@ -34,6 +34,7 @@ var Character = function(opts) {
     this.died = false;
     this.trait = opts.trait;
     this.starLevel = opts.starLevel;
+    this.starLevelExperience = opts.starLevelExperience;
     this.heroType = opts.heroType;//英雄类型
     this.sunderArmor = opts.sunderArmor;//破甲
     this.hp = parseInt(opts.hp);
