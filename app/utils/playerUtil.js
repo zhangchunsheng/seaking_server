@@ -408,7 +408,7 @@ var defaultZX = function(level) {
     };
 }
 playerUtil.getCharacter = function(opts) {
-    var hero = dataApi.heros.findById(opts.cId);
+    var hero = dataApi.herosV2.findById(opts.cId);
 
     var skills = new Skills(opts);
     var character = {
@@ -483,6 +483,8 @@ playerUtil.getCharacter = function(opts) {
 }
 
 playerUtil.getPKCharacter = function(opts) {
+    var hero = dataApi.herosV2.findById(opts.cId);
+
     var skills = new Skills(opts);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
