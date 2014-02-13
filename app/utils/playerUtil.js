@@ -63,6 +63,7 @@ playerUtil.initCharacter = function(opts) {
         y: 100,
         experience: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
         level: level,
+        trait: hero.trait,
         starLevel: 0,
         needExp: formula.calculateXpNeeded(hero.xpNeeded, hero.levelFillRate, level + 1),
         accumulated_xp: formula.calculateAccumulated_xp(hero.xpNeeded, hero.levelFillRate, level),
@@ -343,6 +344,7 @@ playerUtil.initCharacterV2 = function(opts) {
         y: 100,
         experience: formulaV2.calculateAccumulated_xp(level),
         level: level,
+        trait: hero.trait,
         starLevel: 0,
         needExp: formulaV2.calculateXpNeeded(level + 1),
         accumulated_xp: formulaV2.calculateAccumulated_xp(level),
@@ -406,6 +408,8 @@ var defaultZX = function(level) {
     };
 }
 playerUtil.getCharacter = function(opts) {
+    var hero = dataApi.heros.findById(opts.cId);
+
     var skills = new Skills(opts);
     var character = {
         ZX: opts.replies.ZX ? JSON.parse(opts.replies.ZX) : defaultZX(opts.level) ,
@@ -424,7 +428,8 @@ playerUtil.getCharacter = function(opts) {
         experience: parseInt(opts.replies.experience),
         buffs: JSON.parse(opts.replies.buffs).buffs,
         level: parseInt(opts.level),
-        starLevel: parseInt(opts.starLevel || 0),
+        trait: parseInt(opts.replies.trait || hero.trait),
+        starLevel: parseInt(opts.replies.starLevel || 0),
         needExp: parseInt(opts.replies.needExp),
         accumulated_xp: parseInt(opts.replies.accumulated_xp),
         photo: opts.replies.photo,
@@ -494,7 +499,8 @@ playerUtil.getPKCharacter = function(opts) {
         experience: parseInt(opts.replies.experience),
         buffs: JSON.parse(opts.replies.buffs).buffs,
         level: parseInt(opts.level),
-        starLevel: parseInt(opts.starLevel || 0),
+        trait: parseInt(opts.replies.trait || hero.trait),
+        starLevel: parseInt(opts.replies.starLevel || 0),
         needExp: parseInt(opts.replies.needExp),
         accumulated_xp: parseInt(opts.replies.accumulated_xp),
         photo: opts.replies.photo,
@@ -549,6 +555,7 @@ playerUtil.getPlayer = function(character) {
         y: character.y,
         nickname: character.nickname,
         level: character.level,
+        trait: character.trait,
         starLevel: character.starLevel,
         experience: character.experience,
         buffs: character.buffs,
@@ -607,6 +614,7 @@ playerUtil.getPlayerV2 = function(character) {
         y: character.y,
         nickname: character.nickname,
         level: character.level,
+        trait: character.trait,
         starLevel: character.starLevel,
         experience: character.experience,
         buffs: character.buffs,
