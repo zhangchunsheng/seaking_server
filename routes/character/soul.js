@@ -16,6 +16,7 @@ var redisService = require('../../app/services/redisService');
 var Code = require('../../shared/code');
 var utils = require('../../app/utils/utils');
 var playerUtil = require('../../app/utils/playerUtil');
+var partnerUtil = require('../../app/utils/partnerUtil');
 var consts = require('../../app/consts/consts');
 var EntityType = require('../../app/consts/consts').EntityType;
 var dataApi = require('../../app/utils/dataApi');
@@ -40,6 +41,31 @@ exports.fusion = function(req, res) {
         , serverId = session.serverId
         , registerType = session.registerType
         , loginName = session.loginName;
+
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
+    if(isSelf) {
+        if(playerId != session.playerId) {
+            data = {
+                code: Code.ARGUMENT_EXCEPTION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+    }
+
+    var characterId = utils.getRealCharacterId(playerId);
 
     var souls = msg.souls;// 魂魄 H1101,H1101
     var data = {};
@@ -75,14 +101,15 @@ exports.fusion = function(req, res) {
     }
     var starLevel = 0;
 
-    var playerId = session.playerId;
-    var characterId = utils.getRealCharacterId(playerId);
-
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var array = [];
 
         var character;
-        character = player;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
 
         if(character == null) {
             data = {
@@ -93,7 +120,7 @@ exports.fusion = function(req, res) {
         }
 
         //check trait
-        var trait = player.trait;
+        var trait = character.trait;
         for(var i = 0 ; i < souls.length ; i++) {
             flag = false;
             soulId = souls[i];
@@ -111,17 +138,17 @@ exports.fusion = function(req, res) {
         }
 
         //check experience
-        if(player.trait <= player.starLevel) {
+        if(character.trait <= character.starLevel) {
             data = {
                 code: Code.SOUL.MAX_STARLEVEL
             };
             utils.send(msg, res, data);
             return;
         }
-        var starLevelExperience = player.starLevelExperience;
+        var starLevelExperience = character.starLevelExperience;
         var needSouls = [];
         var soulFusionId = "";
-        var upgradeStarNeedExp = playerUtil.getAccumulationStarLevelNeedExp(player);//累加的经验值
+        var upgradeStarNeedExp = playerUtil.getAccumulationStarLevelNeedExp(character);//累加的经验值
         var experience = 0;//传入的经验值
         for(var i = 0 ; i < souls.length ; i++) {
             soulId = souls[i];
@@ -132,13 +159,13 @@ exports.fusion = function(req, res) {
 
         var _starLevelExperience = experience + starLevelExperience;//新的经验值
         if(_starLevelExperience >= upgradeStarNeedExp) {
-            player.starLevel++;
+            character.starLevel++;
         }
-        player.starLevelExperience = _starLevelExperience;
+        character.starLevelExperience = _starLevelExperience;
         needSouls = souls;
 
         // check soulPackage
-        var soulPackage = character.soulPackageEntity;
+        var soulPackage = player.soulPackageEntity;
         var items = [];
         var index = -1;
         for(var i = 0 ; i < needSouls.length ; i++) {
@@ -181,14 +208,14 @@ exports.fusion = function(req, res) {
             }
         }
 
-        userService.getUpdatePlayerArray(array, player, ["starLevel", "starLevelExperience"]);
+        userService.getUpdatePlayerArray(array, player, character, ["starLevel", "starLevelExperience"]);
         soulPackageService.getUpdateArray(array, player);
 
         redisService.setData(array, function(err, reply) {
             data = {
                 code: Code.OK,
-                starLevel: player.starLevel,
-                starLevelExperience: player.starLevelExperience,
+                starLevel: character.starLevel,
+                starLevelExperience: character.starLevelExperience,
                 packageIndex: packageIndex
             };
             utils.send(msg, res, data);

@@ -125,9 +125,15 @@ userService.getUpdatePlayerAttributeArray = function(array, player) {
  * @param player
  * @param columns
  */
-userService.getUpdatePlayerArray = function(array, player, columns) {
-    var characterId = utils.getRealCharacterId(player.id);
-    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+userService.getUpdatePlayerArray = function(array, mainPlayer, player, columns) {
+    var key = "";
+    var characterId = utils.getRealCharacterId(mainPlayer.id);
+    if(player.id.indexOf("P") >= 0) {
+        var partnerId = utils.getRealPartnerId(player.id);
+        key = dbUtil.getPartnerKey(player.sid, player.registerType, player.loginName, characterId, partnerId);
+    } else {
+        key = dbUtil.getPlayerKey(mainPlayer.sid, mainPlayer.registerType, mainPlayer.loginName, characterId);
+    }
 
     userService.getUpdateArray(array, player, key, columns);
 }
