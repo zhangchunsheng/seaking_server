@@ -3,7 +3,7 @@
  * Version: 1.0
  * Author: Peter Zhang
  * Date: 2013-12-16
- * Description: aptitude
+ * Description: ghost
  */
 var util = require('util');
 var dataApi = require('../../utils/dataApi');

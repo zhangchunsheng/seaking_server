@@ -9,6 +9,7 @@ var utils = require('../../utils/utils');
 var dbUtil = require('../../utils/dbUtil');
 var redisService = require('../redisService');
 var altarDao = require('../../dao/character/altarDao');
+var Altar = require('../../domain/attribute/altar');
 
 var altarService = module.exports;
 
@@ -23,4 +24,16 @@ altarService.getUpdateArray = function(array, player) {
     var altar = player.altar;
 
     array.push(["hset", key, "altar", JSON.stringify(altar)]);
+}
+
+altarService.createNewAltar = function(altarInfo, serverId, registerType, loginName, characterId, character) {
+    altarInfo.serverId = serverId;
+    altarInfo.registerType = registerType;
+    altarInfo.loginName = loginName;
+    altarInfo.characterId = characterId;
+    altarInfo.cId = character.cId;
+    altarInfo.loyalty = character.altar.loyalty;
+    altarInfo.extractionTimes = character.altar.extractionTimes;
+    var altar = new Altar(altarInfo);
+    return altar;
 }

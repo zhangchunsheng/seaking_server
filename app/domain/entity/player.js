@@ -79,6 +79,7 @@ var Player = function(opts) {
     this.packageEntity = opts.packageEntity;
     this.aptitudeEntity = opts.aptitudeEntity;
     this.ghostEntity = opts.ghostEntity;
+    this.altarEntity = opts.altarEntity;
     this.skillsEntity = opts.skillsEntity;
     this.miscsEntity = opts.miscsEntity;
     this.soulPackageEntity = opts.soulPackageEntity;
@@ -1680,7 +1681,7 @@ Player.prototype.strip = function() {
         partners: this.getPartners(),
         miscs: this.miscsEntity.getInfo(),
         soulPackage: this.soulPackageEntity.getInfo(),
-        altar: this.altar,
+        altar: this.altarEntity.getInfo(),
         gift: this.gift,
         pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
@@ -1877,7 +1878,7 @@ Player.prototype.toJSON = function() {
         partners: this.getPartners(),
         miscs: this.miscsEntity.getInfo(),
         soulPackage: this.soulPackageEntity.getInfo(),
-        altar: this.altar,
+        altar: this.altarEntity.getInfo(),
         gift: this.gift,
         pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
