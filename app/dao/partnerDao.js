@@ -157,7 +157,7 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                     });
                 } else {
                     partnerDao.getPartnerId(client, function(err, partnerId) {
-                        var character = partnerUtil.initPartner({
+                        var character = partnerUtil.initPartnerV2({
                             cId: cId,
                             serverId: serverId,
                             characterId: characterId,

@@ -53,11 +53,13 @@ fightUtil.reduceHp = function(attack_formation, defense_formation, attack, defen
             }
             defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
         }
+
+        defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
+        //触发觉醒技能
         var awakenCondition = {
             type: consts.skillTriggerConditionType.AWAKEN
         };
         defense.awakenSkill(consts.characterFightType.DEFENSE, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
-        defense.fightValue.hp = Math.ceil(defense.fightValue.hp - defenseData.reduceBlood);
     }
 }
 
@@ -124,10 +126,10 @@ fightUtil.updateDefenseData = function(defense, defenseData) {
 fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var player;
     var team;
-    if(fightType == consts.characterFightType.ATTACK || fightType == consts.characterFightType.AFTER_ATTACK || fightType == consts.characterFightType.ATTACKING) {
+    if(fightType == consts.characterFightType.ATTACK) {
         player = attack;
         team = attackFightTeam;
-    } else if(fightType == consts.characterFightType.DEFENSE || fightType == consts.characterFightType.AFTER_DEFENSE) {
+    } else if(fightType == consts.characterFightType.DEFENSE) {
         player = defense;
         team = defenseFightTeam;
     }
@@ -157,27 +159,6 @@ fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType,
 }
 
 /**
- * getBuffCategory
- * @param fightType
- * @returns {*}
- */
-fightUtil.getBuffCategory = function(fightType) {
-    if(fightType == consts.characterFightType.ATTACK) {
-        return consts.buffCategory.ATTACK;
-    } else if(fightType == consts.characterFightType.DEFENSE) {
-        return consts.buffCategory.DEFENSE;
-    } else if(fightType == consts.characterFightType.AFTER_ATTACK) {
-        return consts.buffCategory.AFTER_ATTACK;
-    } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
-        return consts.buffCategory.AFTER_DEFENSE;
-    } else if(fightType == consts.characterFightType.ROUND) {
-        return consts.buffCategory.ROUND;
-    } else if(fightType == consts.characterFightType.ATTACKING) {
-        return consts.buffCategory.ATTACKING;
-    }
-}
-
-/**
  * checkDied
  * @param player
  * @param data
@@ -186,6 +167,7 @@ fightUtil.checkDied = function(player, data) {
     if(player.fightValue.hp <= 0) {
         player.fightValue.hp = 0;
         player.died = data.died = true;
+        player.fight.costTime = player.costTime;
         player.costTime = 10000;
     }
 }
@@ -430,7 +412,7 @@ fightUtil.attack = function(opts, attackSide, attack_formation, defense_formatio
         return;
     var triggerCondition = {};
     
-    defense.useSkillBuffs(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
     // 计算战斗
     defenseData.defense = defense.fightValue.defense;
@@ -564,7 +546,7 @@ fightUtil.attack = function(opts, attackSide, attack_formation, defense_formatio
         fightUtil.updateDefenseData(defense, defenseData);
         fightUtil.checkDied(defense, defenseData);
 
-        defense.useSkillBuffs(consts.characterFightType.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         // 守方
         // 增加怒气
@@ -635,7 +617,7 @@ fightUtil.calculateDamage = function(opts, attackSide, attack_formation, defense
         return;
     var triggerCondition = {};
 
-    defense.useSkillBuffs(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
     // 计算战斗
     defenseData.defense = defense.fightValue.defense;
@@ -767,7 +749,7 @@ fightUtil.calculateDamage = function(opts, attackSide, attack_formation, defense
 
         fightUtil.updateDefenseData(defense, defenseData);
 
-        defense.useSkillBuffs(consts.characterFightType.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         // 守方
         // 增加怒气
@@ -892,7 +874,7 @@ fightUtil.getTeammateWithLessHp = function(player, teams) {
  * @param defenseData
  */
 fightUtil.recoverHp = function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-    attack.useSkillBuffs(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    attack.useSkillBuffs(consts.characterFightType.ATTACK, consts.buffCategory.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
     fightData.targetType = consts.effectTargetType.OWNER;
     var teammate = fightUtil.getTeammateWithLessHp(attack, attacks);

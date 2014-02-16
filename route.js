@@ -24,6 +24,8 @@ var routes = require('./routes')
     , aptitude = require('./routes/character/aptitude')
     , ghost = require('./routes/character/ghost')
     , misc = require('./routes/character/misc')
+    , altar = require('./routes/character/altar')
+    , soul = require('./routes/character/soul')
     , resource = require('./routes/resource')
     , shop = require('./routes/shop')
     , skill = require('./routes/skill')
@@ -172,6 +174,8 @@ module.exports = function (app) {
     app.get('/ghost/upgrade', authRequired, ghost.upgrade);
 
     app.get('/misc/getMiscs', authRequired, misc.getMiscs);
+    app.get('/altar/extraction', authRequired, altar.extraction);
+    app.get('/soul/fusion', authRequired, soul.fusion);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 

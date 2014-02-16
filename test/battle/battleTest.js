@@ -32,7 +32,7 @@ describe('battle test', function() {
             level: '1',
             formationId: 1,
             skillId1: "",
-            skillId2: "SK101201",
+            skillId2: "SK102201",
             skillId3: 0
         }];
         var opponent_heros = [{

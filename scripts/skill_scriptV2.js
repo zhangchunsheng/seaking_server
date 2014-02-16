@@ -34,28 +34,36 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.ADDSUNDERARMOR) {//加破甲
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.POISON) {
+    } else if(buffType == constsV2.buffTypeV2.POISON) {//施毒
         buffCategory = constsV2.buffCategory.ROUND;
-    } else if(buffType == constsV2.buffTypeV2.ADDHP) {
+    } else if(buffType == constsV2.buffTypeV2.ADDHP) {//加血
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.REDUCEATTACK_ADDSUNDERARMOR) {
+    } else if(buffType == constsV2.buffTypeV2.REDUCEATTACK_ADDSUNDERARMOR) {//减伤
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.EXTRATARGET) {
+    } else if(buffType == constsV2.buffTypeV2.EXTRATARGET) {//额外目标
         buffCategory = constsV2.buffCategory.ATTACKING;
-    } else if(buffType == constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE_AND_ADDHP) {
+    } else if(buffType == constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE_AND_ADDHP) {//范围伤害并加血
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.PARALLELDAMAGE) {
+    } else if(buffType == constsV2.buffTypeV2.PARALLELDAMAGE) {//溅射
         buffCategory = constsV2.buffCategory.ATTACKING;
     } else if(buffType == constsV2.buffTypeV2.RECOVERYHP) {
         buffCategory = constsV2.buffCategory.ATTACKING;
-    } else if(buffType == constsV2.buffTypeV2.PROMOTEHP) {
+    } else if(buffType == constsV2.buffTypeV2.PROMOTEHP) {//提升血量
         buffCategory = constsV2.buffCategory.ATTACKING;
     } else if(buffType == constsV2.buffTypeV2.ADDDODGE) {
         buffCategory = constsV2.buffCategory.DEFENSE;
-    } else if(buffType == constsV2.buffTypeV2.ICE) {
+    } else if(buffType == constsV2.buffTypeV2.ICE) {//冰冻
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.SILENCE) {
+    } else if(buffType == constsV2.buffTypeV2.SILENCE) {//沉默
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.FREEZE) {//冻结
+        buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.TURN_DAMAGE) {
+        buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.ADDBLOCK) {
+        buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.KING_WILL) {
+        buffCategory = constsV2.buffCategory.AFTER_DIE;
     }
     return buffCategory;
 }
@@ -118,8 +126,9 @@ var skill_script = {
                 value = value * enhanceBuff.buffData.value;
             }
 
+            var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
-                if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffId == buffId) {
                     buffs[i].value = value;
                     return 100;
                 }
@@ -162,8 +171,9 @@ var skill_script = {
             playerData = defenseData;
         }
         var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 0;
             }
         }
@@ -193,8 +203,9 @@ var skill_script = {
      */
     "skill102101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = defense.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 0;
             }
         }
@@ -205,8 +216,46 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于30%之后，会产生一个持久性的护盾，该护盾使受到的攻击伤害减免25%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill102201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.25
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 每次被攻击，则使下次受到的攻击伤害减免10%，无限叠加，直到下次发起攻击
@@ -226,8 +275,9 @@ var skill_script = {
      */
     "skill103101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = defense.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 buffs[i].buffData.value += 0.1;
                 return 100;
             }
@@ -239,8 +289,46 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于20%之后，攻击该单位的目标有50%的几率被冻结一回合
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill103201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.25
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.FREEZE, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 攻击有50%的几率释放一个护盾，该护盾可以抵消一次己方任何单位受到的指向性攻击
@@ -262,8 +350,9 @@ var skill_script = {
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 50) {
             var buffs = attack.buffs;
+            var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
-                if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffId == buffId) {
                     return 100;
                 }
             }
@@ -278,8 +367,46 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 生命值进入低于15%的状态，立即对己方施放一个可以抵挡3次任何攻击的护盾
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill104201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var team;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            team = attackFightTeam;
+            playerData = attackData;
+        } else {
+            team = defenseFightTeam;
+            playerData = defenseData;
+        }
 
+        var buffs = team.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 3
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+        team.addBuff(buff);
+        return 100;
     },
     /**
      * 战斗中的每次被攻击，都能为自己提供额外2%的护甲，该效果无限叠加
@@ -299,8 +426,9 @@ var skill_script = {
      */
     "skill105101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = defense.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 buffs[i].buffData.value += 0.2;
                 return 100;
             }
@@ -312,8 +440,47 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值进入低于20%的状态，立即消耗所有的额外的护甲，给自己加为对应点数*10的生命值（只能触发一次）
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill105201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 10
+        };
+        player.fightValue.hp += player.fightValue.sunderArmor * buffData.value;
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDHP, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 反击或者闪避之后，下次被攻击必然会格挡
@@ -333,8 +500,9 @@ var skill_script = {
      */
     "skill106101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = defense.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -345,8 +513,53 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于10%之后，攻击他的单位受到100%的反伤
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill106201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;//必须是防守方
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            return 0;
+        }
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffs[i].buffData.value / 100);
+                fightUtil.checkDied(attack, attackData);
+                return 100;
+            }
+        }
+        var buffData = {
+            value: 100
+        };
+        attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffData.value / 100);
+        fightUtil.checkDied(attack, attackData);
+        var buff = getSkillBuff(constsV2.buffTypeV2.TURN_DAMAGE, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 一次性受到的攻击超过生命值的20%，则可以格挡下次攻击
@@ -369,8 +582,9 @@ var skill_script = {
         if(defenseData.reduceBlood < defense.maxHp * 0.2) {
             return;
         }
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -381,8 +595,48 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于40%，格挡系数变为0.6
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "skill107201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.6
+        };
+        player.fightValue.block = buffData.value * 100;
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDBLOCK, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 主动攻击时，随机给己方一个单位添加庇护状态，该状态可以使此单位下次受到的伤害转移给双星少主
@@ -404,8 +658,9 @@ var skill_script = {
         var teammate = null;
         teammate = fightUtil.getRandomTeammate(this, attack, attacks);
         var buffs = teammate.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -416,8 +671,46 @@ var skill_script = {
         teammate.addBuff(buff);
         return 100;
     },
+    /**
+     * 承受到致命伤害时，不会死亡同时也会免疫治疗效果，持续3次被攻击
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill108201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 3
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.KING_WILL, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 在战斗中，每次承受攻击，提升5%的生命上限
@@ -437,8 +730,9 @@ var skill_script = {
      */
     "skill109101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = defense.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -471,8 +765,9 @@ var skill_script = {
      */
     "skill110101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = defense.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -506,8 +801,9 @@ var skill_script = {
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 25) {
             var buffs = attack.buffs;
+            var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
-                if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffId == buffId) {
                     return 100;
                 }
             }
@@ -545,8 +841,9 @@ var skill_script = {
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 75) {
             var buffs = defense.buffs;
+            var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
-                if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffId == buffId) {
                     return 100;
                 }
             }
@@ -583,8 +880,9 @@ var skill_script = {
      */
     "skill203101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 if(buffs[i].buffData.playerId == defense.id) {
                     buffs[i].buffData.value += 0.05;
                 } else {
@@ -628,8 +926,9 @@ var skill_script = {
      */
     "skill204101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 buffs[i].buffData.value += 0.04;
                 return 100;
             }
@@ -665,8 +964,9 @@ var skill_script = {
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 90) {
             var buffs = attack.buffs;
+            var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
-                if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffId == buffId) {
                     return 100;
                 }
             }
@@ -702,8 +1002,9 @@ var skill_script = {
      */
     "skill206101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -737,8 +1038,9 @@ var skill_script = {
      */
     "skill207101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -770,8 +1072,9 @@ var skill_script = {
      */
     "skill208101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -803,8 +1106,9 @@ var skill_script = {
      */
     "skill209101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -837,8 +1141,9 @@ var skill_script = {
      */
     "skill210101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -870,8 +1175,9 @@ var skill_script = {
      */
     "skill211101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 buffs[i].buffData.value += 0.05;
                 return 100;
             }
@@ -905,8 +1211,9 @@ var skill_script = {
      */
     "skill301101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -940,8 +1247,9 @@ var skill_script = {
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 75) {
             var buffs = attack.buffs;
+            var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
-                if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffId == buffId) {
                     return 100;
                 }
             }
@@ -978,8 +1286,9 @@ var skill_script = {
      */
     "skill303101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -1013,8 +1322,9 @@ var skill_script = {
     "skill304101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var buffs = attack.buffs;
         var value;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 if(buffs[i].count >= 10) {
                     value = 0.01;
                     fightUtil.updatePlayermateBuff(attacks, buffs[i].buffId, value);
@@ -1088,8 +1398,9 @@ var skill_script = {
         var player;
         player = fightUtil.getRandomPlayer(null, defenses);
         var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
         for(var i = 0, l = buffs.length ; i < l ; i++) {
-            if(buffs[i].buffId == this.skillId) {
+            if(buffs[i].buffId == buffId) {
                 return 100;
             }
         }
@@ -1119,8 +1430,9 @@ var skill_script = {
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 30) {
             var buffs = defense.buffs;
+            var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
-                if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffId == buffId) {
                     return 100;
                 }
             }
@@ -1158,8 +1470,9 @@ var skill_script = {
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 30) {
             var buffs = defense.buffs;
+            var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
-                if(buffs[i].buffId == this.skillId) {
+                if(buffs[i].buffId == buffId) {
                     return 100;
                 }
             }

@@ -73,14 +73,17 @@ var Player = function(opts) {
 
     this.miscs = opts.miscs || [];
     this.soulPackage = opts.soulPackage;
+    this.altar = opts.altar;
 
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
     this.aptitudeEntity = opts.aptitudeEntity;
     this.ghostEntity = opts.ghostEntity;
+    this.altarEntity = opts.altarEntity;
     this.skillsEntity = opts.skillsEntity;
     this.miscsEntity = opts.miscsEntity;
+    this.soulPackageEntity = opts.soulPackageEntity;
     this.formationEntity = opts.formationEntity;
     this.pushMessageEntity = opts.pushMessageEntity;
 
@@ -1645,6 +1648,9 @@ Player.prototype.strip = function() {
         maxHp: this.maxHp,
         anger: this.anger,
         level: this.level,
+        trait: this.trait,
+        starLevel: this.starLevel,
+        starLevelExperience: this.starLevelExperience,
         experience: this.experience,
         attack: this.attack,
         defense: this.defense,
@@ -1675,6 +1681,9 @@ Player.prototype.strip = function() {
         //tacticals: this.formationEntity.getInfo().tacticals,
         formations: this.formationEntity.getAbbreviation(),
         partners: this.getPartners(),
+        miscs: this.miscsEntity.getInfo(),
+        soulPackage: this.soulPackageEntity.getInfo(),
+        altar: this.altarEntity.getInfo(),
         gift: this.gift,
         pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
@@ -1836,6 +1845,9 @@ Player.prototype.toJSON = function() {
         maxHp: this.maxHp,
         anger: this.anger,
         level: this.level,
+        trait: this.trait,
+        starLevel: this.starLevel,
+        starLevelExperience: this.starLevelExperience,
         experience: this.experience,
         attack: this.attack,
         defense: this.defense,
@@ -1866,6 +1878,9 @@ Player.prototype.toJSON = function() {
         //tacticals: this.formationEntity.getInfo().tacticals,
         formations: this.formationEntity.getAbbreviation(),
         partners: this.getPartners(),
+        miscs: this.miscsEntity.getInfo(),
+        soulPackage: this.soulPackageEntity.getInfo(),
+        altar: this.altarEntity.getInfo(),
         gift: this.gift,
         pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
@@ -1891,6 +1906,9 @@ Player.prototype.getBaseInfo = function() {
         maxHp: this.maxHp,
         anger: this.anger,
         level: this.level,
+        trait: this.trait,
+        starLevel: this.starLevel,
+        starLevelExperience: this.starLevelExperience,
         experience: this.experience,
         attack: this.attack,
         defense: this.defense,
@@ -1916,9 +1934,9 @@ Player.prototype.getBaseInfo = function() {
         //formation: this.formationEntity.getInfo().formation,
         //lastFormation: this.formationEntity.getInfo().lastFormation,
         //tacticals: this.formationEntity.getInfo().tacticals,
-        formations: this.formationEntity.getAbbreviation(),
+        formations: this.formations,
         gift: this.gift,
-        pushMessage: this.pushMessageEntity.getInfo(),
+        pushMessage: this.pushMessage,
         friends: this.friends,
         ghost: this.ghost,
         ghostNum: this.ghostNum,

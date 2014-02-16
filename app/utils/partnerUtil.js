@@ -202,6 +202,9 @@ partnerUtil.initPartnerV2 = function(opts) {
         buffs: buffUtil.getInitBuff(),
         experience: formulaV2.calculateAccumulated_xp(level),
         level: level,
+        trait: hero.trait,
+        starLevel: 0,
+        starLevelExperience: 0,
         needExp: formulaV2.calculateXpNeeded(level + 1),
         accumulated_xp: formulaV2.calculateAccumulated_xp(level),
         photo: '',
@@ -247,6 +250,8 @@ var defaultZX = function(level) {
     };
 }
 partnerUtil.getPlayer = function(opts) {
+    var hero = dataApi.herosV2.findById(opts.cId);
+
     var skills = new Skills(opts);
     var character = {
         ZX: opts.replies.ZX ? JSON.parse(opts.replies.ZX) : defaultZX(opts.level),
@@ -261,6 +266,9 @@ partnerUtil.getPlayer = function(opts) {
         nickname: opts.replies.nickname,
         experience: parseInt(opts.replies.experience),
         level: opts.level,
+        trait: parseInt(opts.replies.trait || hero.trait),
+        starLevel: parseInt(opts.replies.starLevel || 0),
+        starLevelExperience: parseInt(opts.replies.starLevelExperience || 0),
         needExp: parseInt(opts.replies.needExp),
         accumulated_xp: parseInt(opts.replies.accumulated_xp),
         photo: opts.replies.photo,

@@ -33,6 +33,27 @@ util.inherits(Miscs, Persistent);
 
 module.exports = Miscs;
 
+Miscs.prototype.checkHero = function(cId) {
+    var type = 1;//1 - 实体 2 - 魂魄
+    var miscs = this.miscs;
+    for(var i = 0 ; i < miscs.length ; i++) {
+        if(miscs[i].cId == cId) {
+            type = 2;
+            break;
+        }
+    }
+    return type;
+}
+
+Miscs.prototype.setHero = function(cId) {
+    var miscs = this.miscs;
+    var time = (new Date()).getTime();
+    miscs.push({
+        cId: cId,
+        getTime: time
+    });
+}
+
 Miscs.prototype.strip = function() {
     var data = [];
     for(var i = 0 ; i < this.miscs.length ; i++) {

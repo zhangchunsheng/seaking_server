@@ -128,5 +128,15 @@ module.exports = {
         NO_TACTICAL_DATA: 1865,
         LACK_UPGRADEMATERIAL: 1866,
         LACK_UPGRADEMONEY: 1867
+    },
+
+    ALTAR: {
+        IN_REFRIGERATION: 1900,
+        FULL_SOULPACKAGE: 1901
+    },
+
+    SOUL: {
+        NOT_SAME_TRAIT: 1920,
+        MAX_STARLEVEL: 1921
     }
 };

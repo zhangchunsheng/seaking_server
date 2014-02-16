@@ -19,8 +19,10 @@ var taskDao = require('../dao/taskDao');
 var packageDao = require('../dao/packageDao');
 var aptitudeService = require('../services/character/aptitudeService');
 var ghostService = require('../services/character/ghostService');
+var altarService = require('../services/character/altarService');
 var skillService = require('../services/skillService');
 var miscsService = require('../services/character/miscsService');
+var soulPackageService = require('../services/character/soulPackageService');
 var formationService = require('../services/formationService');
 var messageService = require('../services/messageService');
 var Tasks = require('../domain/tasks');
@@ -96,6 +98,8 @@ playerUtil.initCharacter = function(opts) {
         tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
         miscs: [],
+        soulPackage: playerUtil.initSoulPackage(),
+        altar: playerUtil.initAltar(),
         gift: [],
         pushMessage: playerUtil.initPushMessage(),
         ghost: playerUtil.initGhost(),
@@ -164,6 +168,30 @@ playerUtil.initPushMessage = function(dataType) {
         pushMessage = JSON.stringify(pushMessage);
     }
     return pushMessage;
+}
+
+playerUtil.initSoulPackage = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var soulPackage = {"itemCount": 64, "items": {}};
+
+    if(dataType == "string") {
+        soulPackage = JSON.stringify(soulPackage);
+    }
+    return soulPackage;
+}
+
+playerUtil.initAltar = function(dataType) {
+    if(typeof dataType == "undefined")
+        dataType = "json";
+
+    var altar = {"loyalty": 0, "extractionTimes":{"1":{"lastExtractionTime":0},"2":{"lastExtractionTime":0},"3":{"lastExtractionTime":0}}};
+
+    if(dataType == "string") {
+        altar = JSON.stringify(altar);
+    }
+    return altar;
 }
 
 playerUtil.initGhost = function(dataType) {
@@ -315,6 +343,9 @@ playerUtil.initCharacterV2 = function(opts) {
         y: 100,
         experience: formulaV2.calculateAccumulated_xp(level),
         level: level,
+        trait: hero.trait,
+        starLevel: 0,
+        starLevelExperience: 0,
         needExp: formulaV2.calculateXpNeeded(level + 1),
         accumulated_xp: formulaV2.calculateAccumulated_xp(level),
         photo: '',
@@ -349,6 +380,8 @@ playerUtil.initCharacterV2 = function(opts) {
         tacticals: playerUtil.initTacticals().tacticals,
         partners: [],
         miscs: [],
+        soulPackage: playerUtil.initSoulPackage(),
+        altar: playerUtil.initAltar(),
         gift: [],
         pushMessage: playerUtil.initPushMessage(),
         ghost: playerUtil.initGhost(),
@@ -374,6 +407,8 @@ var defaultZX = function(level) {
     };
 }
 playerUtil.getCharacter = function(opts) {
+    var hero = dataApi.herosV2.findById(opts.cId);
+
     var skills = new Skills(opts);
     var character = {
         pets: opts.replies.pets ? JSON.parse(opts.replies.pets) : [],
@@ -393,6 +428,9 @@ playerUtil.getCharacter = function(opts) {
         experience: parseInt(opts.replies.experience),
         buffs: JSON.parse(opts.replies.buffs).buffs,
         level: parseInt(opts.level),
+        trait: parseInt(opts.replies.trait || hero.trait),
+        starLevel: parseInt(opts.replies.starLevel || 0),
+        starLevelExperience: parseInt(opts.replies.starLevelExperience || 0),
         needExp: parseInt(opts.replies.needExp),
         accumulated_xp: parseInt(opts.replies.accumulated_xp),
         photo: opts.replies.photo,
@@ -427,6 +465,8 @@ playerUtil.getCharacter = function(opts) {
         partners: JSON.parse(opts.replies.partners).partners,
         allPartners: JSON.parse(opts.replies.partners).allPartners || [],
         miscs: JSON.parse(opts.replies.miscs || '{"miscs":[]}').miscs,
+        soulPackage: JSON.parse(opts.replies.soulPackage || playerUtil.initSoulPackage("string")),
+        altar: JSON.parse(opts.replies.altar || playerUtil.initAltar("string")),
         gift: JSON.parse(opts.replies.gift).gift,
         pushMessage: JSON.parse(opts.replies.pushMessage || playerUtil.initPushMessage("string")).pushMessage,
         curTasks: {
@@ -444,6 +484,8 @@ playerUtil.getCharacter = function(opts) {
 }
 
 playerUtil.getPKCharacter = function(opts) {
+    var hero = dataApi.herosV2.findById(opts.cId);
+
     var skills = new Skills(opts);
     var character = {
         id: "S" + opts.serverId + "C" + opts.characterId,
@@ -460,6 +502,9 @@ playerUtil.getPKCharacter = function(opts) {
         experience: parseInt(opts.replies.experience),
         buffs: JSON.parse(opts.replies.buffs).buffs,
         level: parseInt(opts.level),
+        trait: parseInt(opts.replies.trait || hero.trait),
+        starLevel: parseInt(opts.replies.starLevel || 0),
+        starLevelExperience: parseInt(opts.replies.starLevelExperience || 0),
         needExp: parseInt(opts.replies.needExp),
         accumulated_xp: parseInt(opts.replies.accumulated_xp),
         photo: opts.replies.photo,
@@ -515,6 +560,9 @@ playerUtil.getPlayer = function(character) {
         y: character.y,
         nickname: character.nickname,
         level: character.level,
+        trait: character.trait,
+        starLevel: character.starLevel,
+        starLevelExperience: character.starLevelExperience,
         experience: character.experience,
         buffs: character.buffs,
         hp: character.hp,
@@ -545,6 +593,8 @@ playerUtil.getPlayer = function(character) {
         partners: character.partners,
         allPartners: character.allPartners,
         miscs: character.miscs,
+        soulPackage: character.soulPackage,
+        altar: character.altar,
         gift: character.gift,
         pushMessage: character.pushMessage,
         ghost: character.ghost,
@@ -570,6 +620,9 @@ playerUtil.getPlayerV2 = function(character) {
         y: character.y,
         nickname: character.nickname,
         level: character.level,
+        trait: character.trait,
+        starLevel: character.starLevel,
+        starLevelExperience: character.starLevelExperience,
         experience: character.experience,
         buffs: character.buffs,
         hp: character.hp,
@@ -600,6 +653,8 @@ playerUtil.getPlayerV2 = function(character) {
         partners: character.partners,
         allPartners: character.allPartners,
         miscs: character.miscs,
+        soulPackage: character.soulPackage,
+        altar: character.altar,
         gift: character.gift,
         pushMessage: character.pushMessage,
         ghost: character.ghost,
@@ -629,8 +684,10 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     });
     var aptitude = aptitudeService.createNewAptitude(character.aptitude, serverId, registerType, loginName, characterId, character);
     var ghost = ghostService.createNewGhost(character.ghost, serverId, registerType, loginName, characterId, character);
+    var altar = altarService.createNewAltar({}, serverId, registerType, loginName, characterId, character);
     var skills = skillService.createNewSkills(character.currentSkills, serverId, registerType, loginName, characterId, character);
     var miscs = miscsService.createNewMiscs({}, serverId, registerType, loginName, characterId, character);
+    var soulPackage = soulPackageService.createNewSoulPackage({}, serverId, registerType, loginName, characterId, character);
     var formation = formationService.createNewFormation({}, serverId, registerType, loginName, characterId, character);
     var pushMessage = messageService.createNewPushMessage({}, serverId, registerType, loginName, characterId, character);
     pushMessage.on("modifyData", function() {
@@ -641,8 +698,10 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     character.curTasksEntity = curTasks || {};
     character.aptitudeEntity = aptitude;
     character.ghostEntity = ghost;
+    character.altarEntity = altar;
     character.skillsEntity = skills;
     character.miscsEntity = miscs;
+    character.soulPackageEntity = soulPackage;
     character.formationEntity = formation;
     character.pushMessageEntity = pushMessage;
 };
@@ -688,4 +747,19 @@ playerUtil.createEPTInfo = function(character, serverId, registerType, loginName
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
+}
+
+/**
+ * getAccumulationStarLevelNeedExp
+ * @param player
+ */
+playerUtil.getAccumulationStarLevelNeedExp = function(player) {
+    var num = player.starLevel;
+    var soulFusionId = "";
+    var upgradeStarNeedExp = 0;
+    for(var i = 0 ; i <= num ; i++) {
+        soulFusionId = "" + player.trait + num;
+        upgradeStarNeedExp += dataApi.soulFusion.findById(soulFusionId).upgradeStarNeedExp;
+    }
+    return upgradeStarNeedExp;
 }

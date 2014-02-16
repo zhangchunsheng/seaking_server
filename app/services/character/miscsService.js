@@ -13,6 +13,17 @@ var Miscs = require('../../domain/attribute/miscs');
 
 var miscsService = module.exports;
 
+miscsService.getUpdateArray = function(array, player) {
+    var characterId = utils.getRealCharacterId(player.id);
+    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+
+    var miscs = player.miscsEntity.miscs;
+    var value = {
+        miscs: miscs
+    };
+    array.push(["hset", key, "miscs", JSON.stringify(value)]);
+}
+
 miscsService.createNewMiscs = function(miscsInfo, serverId, registerType, loginName, characterId, character) {
     miscsInfo.serverId = serverId;
     miscsInfo.registerType = registerType;
