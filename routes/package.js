@@ -691,7 +691,7 @@ exports.unlock = function(req, res) {
         , serverId = session.serverId
         , registerType = session.registerType
         , loginName = session.loginName;
-    if(end <= 0) {
+    if(!end || end <= 0) {
         return utils.send(msg, res , {
             code: Code.FAIL,
             err: "参数有点问题"

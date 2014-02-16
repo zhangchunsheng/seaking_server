@@ -32,7 +32,8 @@ var routes = require('./routes')
     , message = require('./routes/message')
     , authRequired = require('./middlewares/auth_required')
     , astrology = require("./routes/astrology")
-    , clifford = require("./routes/clifford");
+    , clifford = require("./routes/clifford")
+    , pet = require("./routes/pet");
 
 module.exports = function (app) {
     app.get('/', authRequired, routes.index);
@@ -127,6 +128,7 @@ module.exports = function (app) {
     app.get("/astrology/collectAllCi", authRequired, astrology.pickUpAll);
     app.get("/astrology/convert", authRequired, astrology.exchange);
     app.get("/astrology/synthAllBi", authRequired, astrology.merger);
+    app.get("/astrology/synth", authRequired, astrology.onceMerger);
     app.get("/astrology/gmRepair", authRequired, astrology.gmRepair);
 
     app.get("/package/_Set", authRequired, package._Set);
@@ -196,4 +198,16 @@ module.exports = function (app) {
     app.get('/message/getBattleReport', authRequired, message.getBattleReport);
     app.get('/message/removeBattleReport', authRequired, message.removeBattleReport);
     app.get('/message/publishMessage', message.publishMessage);
+
+    app.get("/pet/gmUpgrade", authRequired, pet.gmUpgrade);
+    app.get("/pet/gmAdd", authRequired, pet.gmAdd);
+    app.get("/pet/gmAddUpgradeItem", authRequired, pet.gmAddUpgradeItem);
+    app.get("/pet/gmAddFeedItem", authRequired, pet.gmAddFeedItem);
+    app.get("/pet/setName", authRequired, pet.setName);
+    app.get("/pet/upgradeSkill", authRequired, pet.upgradeSkill);
+    app.get("/pet/play", authRequired, pet.play);
+    app.get("/pet/feed", authRequired, pet.feed);
+    app.get("/pet/usePet", authRequired, pet.usePet);
+    app.get("/pet/release", authRequired, pet.release);
+    app.get("/pet/update", authRequired, pet.update);
 }

@@ -36,6 +36,11 @@ var weapons = require("../../config/data/weapons");
 var astrologyRandom = require("../../config/data/astrologyRandom");
 var astrologyExchange = require("../../config/data/astrologyExchange");
 var cliffordRandom = require("../../config/data/cliffordRandom");
+var pets = require("../../config/data/pets");
+var petsSkillsUpgrade = require("../../config/data/petsSkillsUpgrade");
+var petsUpgrade = require("../../config/data/petsUpgrade");
+var feedItem = require("../../config/data/feedItem");
+var petsRandom = require("../../config/data/petsRandom");
 /**
  * Data model `new Data()`
  *
@@ -182,5 +187,10 @@ module.exports = {
     astrologyRandom: new Data(astrologyRandom),
     weapons : new Data(weapons),
     astrologyExchange: new Data(astrologyExchange),
-    cliffordRandom: new Data(cliffordRandom)
+    cliffordRandom: new Data(cliffordRandom),
+    pets: new Data(pets),
+    petsUpgrade: new Data(petsUpgrade),
+    feedItem: new Data(feedItem),
+    petsRandom: new Data(petsRandom),
+    petsSkillsUpgrade: new Data(petsSkillsUpgrade)
 };

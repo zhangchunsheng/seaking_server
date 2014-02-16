@@ -68,7 +68,12 @@ Package.prototype.checkItem = function(index, itemId) {
 }
 
 Package.prototype.removeItem = function(index, itemNum) {
+    console.log(index);
     var item =  this.items[index];
+    console.log("item:",item);
+    if(item.itemNum < itemNum) {
+        return null;
+    }
     item.itemNum = item.itemNum - itemNum;
     if(item.itemNum <= 0) {
         delete this.items[index];
@@ -104,7 +109,20 @@ Package.prototype.hasItem = function(_item) {
 	}
 	return null;
 }
-
+Package.prototype.removeItems = function(items) {
+    var _items = [];
+    for(var i  = 0, l = items.length ; i < l; i++) {
+        for(var n = 0 , nl = items[n].length ; n < nl ; n++ ) {
+            var item = items[i][n];
+            var _item = this.removeItem(item.index, item.itemNum);
+            if(!_item){
+                return null;
+            }
+            _items.push(_item);
+        }
+    }
+    return _items;
+}
 /**
  * 检索材料
  * @param materials []
@@ -200,7 +218,7 @@ Package.prototype.checkItems = function(items) {
             return [];
         }
     }
-    if(flag.length == items.length) {
+    if(flag.length >= items.length) {
         return flag;
     } else {
         return [];
@@ -247,7 +265,6 @@ function sort1(array, max) {
                         array[l+1].itemNum= 0;
                     } 
                 }else {
-                    console.log(array[l]);
                     var  itemInfo;
                     if(array[l].itemId.indexOf("D") >= 0) {
                         itemInfo = dataApi.item.findById(array[l].itemId);
@@ -272,7 +289,6 @@ function sort1(array, max) {
     return array;
 } ;
 
-var sort
 
 Package.prototype.arrange = function(callback) {
     var items = this.items;
@@ -438,6 +454,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         //返回{}并没有返回null 容易判断
         return null;
     }
+
     if(rIndex) {
         if(this.items[rIndex]) {
             var _item =  this.items[rIndex];

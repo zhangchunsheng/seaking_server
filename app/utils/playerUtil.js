@@ -360,7 +360,6 @@ playerUtil.initCharacterV2 = function(opts) {
     return character;
 }
 var defaultZX = function(level) {
-    console.log(level);
     var i = [], c = 0;
     if(level< 25) {
         
@@ -377,6 +376,7 @@ var defaultZX = function(level) {
 playerUtil.getCharacter = function(opts) {
     var skills = new Skills(opts);
     var character = {
+        pets: opts.replies.pets ? JSON.parse(opts.replies.pets) : [],
         ZX: opts.replies.ZX ? JSON.parse(opts.replies.ZX) : defaultZX(opts.level) ,
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
@@ -500,6 +500,7 @@ playerUtil.getPKCharacter = function(opts) {
 
 playerUtil.getPlayer = function(character) {
     var player = new Player({
+        pets: character.pets,
         ZX: character.ZX,
         userId: character.userId,
         serverId: character.serverId,

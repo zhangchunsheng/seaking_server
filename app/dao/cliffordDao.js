@@ -558,16 +558,13 @@ exports.do2 = function(data, player,  callback) {
 	});
 }
 var randomPlayer = function(data, player) {
-	console.log("formation: ",player.formation);
 	var formation = [];
 	for(var i in player.formation.formation) {
 		if(player.formation.formation[i]){
 			formation.push(player.formation.formation[i]);
 		}
 	}
-	console.log("l: ",formation);
 	var index = parseInt(Math.random() * formation.length);
-	console.log(index);
 	var partnerId = formation[index].playerId;
 	if(partnerId == player.id) {
 		return null;
@@ -606,7 +603,7 @@ exports.gmAdd = function(data, player, callback) {
 			level: 1
 		});
 		var package = {
-			itemCount :player.packageEntity.itemsCount,
+			itemCount :player.packageEntity.itemCount,
 			items: player.packageEntity.items
 		}
 		console.log(index0);
@@ -615,6 +612,7 @@ exports.gmAdd = function(data, player, callback) {
 		setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
 		console.log(setArray);
 		client.multi(setArray).exec(function(err) {
+			redis.release(client);
 			callback(err, "fk");
 		});
 	});

@@ -13,6 +13,15 @@ var Token = require('../../shared/token')
 
 var utils = module.exports;
 
+utils.getDbKey = function(session) {
+    var playerId = session.playerId
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var characterId = utils.getRealCharacterId(playerId);
+    return 'S'+serverId+'_T'+ registerType+'_'+ loginName+'_C'+ characterId;
+}
 /**
  * Check and invoke callback function
  * @param cb
