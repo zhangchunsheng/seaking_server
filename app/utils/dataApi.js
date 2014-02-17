@@ -14,6 +14,7 @@ var tacticals = require('../../config/data/tacticals');
 var formations = require('../../config/data/formations');
 var aptitudes = require('../../config/data/aptitudes');
 var altars = require('../../config/data/altars');
+var altar_exchange = require('../../config/data/altar_exchange');
 var soulFusion = require('../../config/data/soulFusion');
 var item = require('../../config/data/item');
 var npc = require('../../config/data/npc');
@@ -170,6 +171,7 @@ module.exports = {
     formations: new Data(formations),
     aptitudes: new Data(aptitudes),
     altars: new Data(altars),
+    altar_exchange: new Data(altar_exchange),
     soulFusion: new Data(soulFusion),
     task: new Data(task),
     heros: new Data(heros),

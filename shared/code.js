@@ -132,7 +132,8 @@ module.exports = {
 
     ALTAR: {
         IN_REFRIGERATION: 1900,
-        FULL_SOULPACKAGE: 1901
+        FULL_SOULPACKAGE: 1901,
+        NOT_ENOUGH_LOYALTY: 1902
     },
 
     SOUL: {

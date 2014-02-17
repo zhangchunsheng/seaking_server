@@ -763,3 +763,36 @@ playerUtil.getAccumulationStarLevelNeedExp = function(player) {
     }
     return upgradeStarNeedExp;
 }
+
+/**
+ * calculatorStarLevel
+ * @param player
+ * @param starLevelExperience 新的经验值
+ */
+playerUtil.calculatorStarLevel = function(player, starLevelExperience) {
+    var trait = player.trait;
+    var starLevel = 0;
+    var soulFusionId = "";
+    var upgradeStarNeedExp = 0;
+
+    soulFusionId = "" + trait + starLevel;
+    upgradeStarNeedExp += dataApi.soulFusion.findById(soulFusionId).upgradeStarNeedExp;
+    if(starLevelExperience >= upgradeStarNeedExp) {
+        return playerUtil._calculatorStarLevel(trait, starLevel, upgradeStarNeedExp, starLevelExperience);
+    } else {
+        return starLevel;
+    }
+}
+
+playerUtil._calculatorStarLevel = function(trait, starLevel, upgradeStarNeedExp, starLevelExperience) {
+    var soulFusionId = "";
+
+    starLevel++;
+    soulFusionId = "" + trait + starLevel;
+    upgradeStarNeedExp += dataApi.soulFusion.findById(soulFusionId).upgradeStarNeedExp;
+    if(starLevel < trait && starLevelExperience >= upgradeStarNeedExp) {
+        return playerUtil._calculatorStarLevel(trait, starLevel, upgradeStarNeedExp, starLevelExperience);
+    } else {
+        return starLevel;
+    }
+}

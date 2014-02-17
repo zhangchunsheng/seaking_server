@@ -35,6 +35,10 @@ describe('utils test', function() {
         console.log(0 == "0");
         console.log(playerUtil.initTacticals());
         utils.getFormByEquipmentId("E10121").should.equal("2");
+
+        console.log(playerUtil.calculatorStarLevel({
+            trait: 3
+        }, 55));
     });
 
     it('fightData', function() {
