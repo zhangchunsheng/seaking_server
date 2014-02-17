@@ -78,7 +78,7 @@ exports.fusion = function(req, res) {
     }
 
     souls = souls.split(",");
-    if(souls.length > 6) {
+    if(souls.length < 1 || souls.length > 6) {
         data = {
             code: Code.ARGUMENT_EXCEPTION
         };
@@ -128,7 +128,7 @@ exports.fusion = function(req, res) {
 
         //check trait
         var trait = character.trait;
-        for(var i = 0 ; i < souls.length ; i++) {
+        /*for(var i = 0 ; i < souls.length ; i++) {
             flag = false;
             soulId = souls[i];
             hero = dataApi.herosV2.findById(soulId);
@@ -142,7 +142,7 @@ exports.fusion = function(req, res) {
                 utils.send(msg, res, data);
                 return;
             }
-        }
+        }*/
 
         //check experience
         if(character.trait <= character.starLevel) {
@@ -155,7 +155,6 @@ exports.fusion = function(req, res) {
         var starLevelExperience = character.starLevelExperience;
         var needSouls = [];
         var soulFusionId = "";
-        var upgradeStarNeedExp = playerUtil.getAccumulationStarLevelNeedExp(character);//累加的经验值
         var experience = 0;//传入的经验值
         for(var i = 0 ; i < souls.length ; i++) {
             soulId = souls[i];
@@ -165,9 +164,13 @@ exports.fusion = function(req, res) {
         }
 
         var _starLevelExperience = experience + starLevelExperience;//新的经验值
+
+        /*var upgradeStarNeedExp = playerUtil.getAccumulationStarLevelNeedExp(character);//累加的经验值
         if(_starLevelExperience >= upgradeStarNeedExp) {
             character.starLevel++;
-        }
+        }*/
+        character.starLevel = playerUtil.calculatorStarLevel(character, _starLevelExperience);
+
         character.starLevelExperience = _starLevelExperience;
         needSouls = souls;
 
