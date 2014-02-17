@@ -676,8 +676,6 @@ astrologyDao.onceMerger  = function(data, player, callback) {
 				["select", redisConfig.database.SEAKING_REDIS_DB],
 				["hset", data.Key, "astrology", JSON.stringify(astrology)]
 			];
-			console.log(array);
-			throw new Error("...");
 			client.multi(array).exec(function(err, res) {
 				redis.release(client);
 				callback(err, {gold: player.gameCurrency, money: player.money, ZX:player.ZX,astrology: astrology});

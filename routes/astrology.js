@@ -296,9 +296,9 @@ astrology.onceMerger = function(req, res) {
     console.log(playerId);
     var partnerId = msg.playerId;
     var characterId = utils.getRealCharacterId(playerId);
-     //userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
         msg.Key = picecBoxName(session);
-        astrologyDao.onceMerger(msg, function(err, result) {
+        astrologyDao.onceMerger(msg, player, function(err, result) {
             if(err) {return utils.send(msg, res, {code: Code.FAIL, err: err});}
             utils.send(msg, res, {
                 code: Code.OK,
@@ -307,7 +307,7 @@ astrology.onceMerger = function(req, res) {
                 }
             })
         });
-     //});
+     });
 }
 function picecBoxName(session) {
     var playerId = session.playerId
