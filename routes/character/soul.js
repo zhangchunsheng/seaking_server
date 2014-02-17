@@ -78,6 +78,13 @@ exports.fusion = function(req, res) {
     }
 
     souls = souls.split(",");
+    if(souls.length > 6) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
     var soulId;
     var hero;
     var flag = false;

@@ -95,6 +95,7 @@ exports.extraction = function(req, res) {
         }
 
         var altar = character.altar;//{"loyalty":"100","extractionTimes":{"1":{"lastExtractionTime":0},"2":{"lastExtractionTime":0},"3":{"lastExtractionTime":0}}}
+        altar.loyalty = parseInt(altar.loyalty);
         // check refrigerationTime
         var date = new Date();
         var lastExtractionTime = altar.extractionTimes[altarId].lastExtractionTime;
@@ -173,6 +174,114 @@ exports.extraction = function(req, res) {
                 packageIndex: packageIndex,
                 money: player.money,
                 gameCurrency: player.gameCurrency
+            };
+            utils.send(msg, res, data);
+        });
+    });
+}
+
+/**
+ * 兑换
+ * @param req
+ * @param res
+ */
+exports.exchange = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var heroId = msg.heroId;
+    var data = {};
+    if(utils.empty(heroId)) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var playerId = session.playerId;
+
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var altar_exchange = dataApi.altar_exchange.findById(heroId);
+    if(!altar_exchange) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var array = [];
+
+        var character;
+        character = player;
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var miscs = character.miscsEntity;
+        var soulPackage = character.soulPackageEntity;
+        //判断背包已满
+        if(soulPackage.isFull()) {
+            data = {
+                code: Code.ALTAR.FULL_SOULPACKAGE
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var altar = character.altar;//{"loyalty":"100","extractionTimes":{"1":{"lastExtractionTime":0},"2":{"lastExtractionTime":0},"3":{"lastExtractionTime":0}}}
+        var needLoyalty = altar_exchange.needLoyalty;
+        altar.loyalty = parseInt(altar.loyalty);
+        if(needLoyalty > altar.loyalty) {
+            data = {
+                code: Code.ALTAR.NOT_ENOUGH_LOYALTY
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        var cId = heroId;
+        var type = 1;//1 - 实体 2 - 魂魄
+
+        type = miscs.checkHero(cId);
+        var packageIndex = [];
+        if(type == 1) {
+            miscs.setHero(cId);
+        } else {
+            var item = {
+                itemId: cId,
+                itemNum: 1
+            }
+            packageIndex = soulPackage.addItem(player, item);
+            packageIndex = packageIndex.index;
+        }
+
+        //更新侠义值
+        altar.loyalty -= needLoyalty;
+
+        userService.getUpdatePlayerAttributeArray(array, player);
+        altarService.getUpdateArray(array, player);
+        miscsService.getUpdateArray(array, player);
+        soulPackageService.getUpdateArray(array, player);
+
+        redisService.setData(array, function(err, reply) {
+            data = {
+                code: Code.OK,
+                loyalty: altar.loyalty,
+                type: type,
+                cId: cId,
+                packageIndex: packageIndex
             };
             utils.send(msg, res, data);
         });
