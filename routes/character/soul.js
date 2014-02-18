@@ -366,8 +366,8 @@ exports.fusionWithPackageIndex = function(req, res) {
             item = player.soulPackageEntity.removeItem(items[i].index, items[i].itemNum);
             packageIndex.push({
                 index: items[i].index,
-                itemId: items.itemId,
-                itemNum: items.itemNum
+                itemId: item.itemId,
+                itemNum: item.itemNum
             });
         }
 
