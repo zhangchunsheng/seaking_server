@@ -158,17 +158,26 @@ exports.extraction = function(req, res) {
         //更新侠义值
         var loyalty = altarData.loyalty;
         altar.loyalty += loyalty;
+        if(altar.loyalty > 9999) {
+            altar.loyalty = 9999;
+        }
 
         userService.getUpdatePlayerAttributeArray(array, player);
         altarService.getUpdateArray(array, player);
         miscsService.getUpdateArray(array, player);
         soulPackageService.getUpdateArray(array, player);
 
+        var leftTime = Math.round((refrigerationTime - pastTime) / 1000);
+        if(leftTime < 0) {
+            leftTime = 0;
+        }
+
         redisService.setData(array, function(err, reply) {
             data = {
                 code: Code.OK,
+                loyalty: altar.loyalty,
                 lastExtractionTime: time,
-                leftTime: Math.round((refrigerationTime - pastTime) / 1000),
+                leftTime: leftTime,
                 type: type,
                 cId: cId,
                 packageIndex: packageIndex,
