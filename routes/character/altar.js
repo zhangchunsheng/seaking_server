@@ -167,6 +167,7 @@ exports.extraction = function(req, res) {
         miscsService.getUpdateArray(array, player);
         soulPackageService.getUpdateArray(array, player);
 
+        var pastTime = 0;
         var leftTime = Math.round((refrigerationTime - pastTime) / 1000);
         if(leftTime < 0) {
             leftTime = 0;
