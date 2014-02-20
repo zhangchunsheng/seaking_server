@@ -744,8 +744,52 @@ var skill_script = {
         defense.fight.addMaxHp = defense.maxHp * buff.buffData.value;
         return 100;
     },
+    /**
+     * 生命值进入低于基础生命值的30%的状态，瞬间提升基础生命值20%的生命上限
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill109201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.2
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDMAXHP, this, buffData);
+        player.addBuff(buff);
+
+        var addMaxHp = player.maxHp * buffData.value;
+        playerData.addMaxHp = addMaxHp;
+        player.fightValue.maxHp += addMaxHp;
+        player.fightValue.hp += addMaxHp;
+
+        return 100;
     },
     /**
      * 吸收所有的范围伤害，并且每次伤害不能超过生命值的25%
