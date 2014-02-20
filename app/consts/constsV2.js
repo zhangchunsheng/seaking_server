@@ -468,7 +468,8 @@ module.exports = {
         TURN_DAMAGE: "24",//反伤
         ADDBLOCK: "25",
         KING_WILL: "26",//君王意志
-        IGNORE_SKILL: "27"//忽视技能影响
+        IGNORE_SKILL: "27",//忽视技能影响
+        ADDDAMAGE: "28"//伤害提升
     },
 
     buffCategory: {

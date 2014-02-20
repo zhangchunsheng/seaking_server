@@ -71,6 +71,10 @@ formula.calDamage = function(attack, defense) {
          defense.fight.reduceDamageValue = damage * defense.fight.reduceDamageOverlay;
          damage = damage - defense.fight.reduceDamageValue;
          }*/
+
+        if(attack.fight.addDamage > 0) {
+            damage = damage + damage * attack.fight.addDamage;
+        }
     }
 
     if(damage <= 0) {

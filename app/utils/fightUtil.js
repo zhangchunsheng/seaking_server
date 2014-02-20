@@ -85,6 +85,9 @@ fightUtil.updateAttackData = function(attack, attackData) {
     if(attack.fight.silence) {
         attackData.silence = attack.fight.silence;
     }
+    if(attack.fight.addDamage > 0) {
+        attackData.addDamage = attack.fight.addDamage;
+    }
 }
 
 fightUtil.updateDefenseData = function(defense, defenseData) {
@@ -268,6 +271,9 @@ fightUtil.changeFightData = function(fightData, attackData) {
     }
     if(attackData.silence) {
         fightData.silence = attackData.silence;
+    }
+    if(attackData.addDamage) {
+        fightData.addDamage = attackData.addDamage;
     }
 }
 

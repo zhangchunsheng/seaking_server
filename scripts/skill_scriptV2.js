@@ -64,6 +64,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.KING_WILL) {
         buffCategory = constsV2.buffCategory.AFTER_DIE;
+    } else if(buffType == constsV2.buffTypeV2.ADDDAMAGE) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -903,8 +905,39 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 生命值低于40%之后，会触发上一个发动过觉醒技的英雄的觉醒技（没有上一个则继续等待）
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill201201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var playerFightTeam;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            playerFightTeam = attackFightTeam;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            playerFightTeam = defenseFightTeam;
+        }
 
+        //触发上一次团队中的觉醒技
+
+        return 100;
     },
     /**
      * 主动攻击有75%的几率给敌方一个单位附加毒状态，持续2回合。毒：治疗量减半
@@ -944,8 +977,48 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 生命值低于40%之后，伤害提升25%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "skill202201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.25
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDDAMAGE, this, buffData);
+        player.addBuff(buff);
+
+        return 100;
     },
     /**
      * 主动攻击同一目标时，每次攻击提升5%的攻击吸血
