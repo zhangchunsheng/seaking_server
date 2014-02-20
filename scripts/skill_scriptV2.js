@@ -822,8 +822,49 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于30%以后，不会再受到任何技能的影响
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill110201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.IGNORE_SKILL, this, buffData);
+        player.addBuff(buff);
+
+        player.fight.ignore_skill = true;
+
+        return 100;
     },
     /**
      * 主动攻击时，有25%的几率使下次攻击伤害提升25%

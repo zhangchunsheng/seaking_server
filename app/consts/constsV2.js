@@ -467,7 +467,8 @@ module.exports = {
         FREEZE: "23",//冻结
         TURN_DAMAGE: "24",//反伤
         ADDBLOCK: "25",
-        KING_WILL: "26"//君王意志
+        KING_WILL: "26",//君王意志
+        IGNORE_SKILL: "27"//忽视技能影响
     },
 
     buffCategory: {

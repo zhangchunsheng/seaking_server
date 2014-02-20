@@ -18,50 +18,90 @@ formula.calDamage = function(attack, defense) {
     var sunderArmor = attack.fightValue.sunderArmor;
     var attackValue = attack.fightValue.attack;
     var defenseValue = defense.fightValue.defense;
-    if(defense.fight.addDefense > 0) {// 增加护甲
-        defense.fight.addDefenseValue = defense.defense * defense.fight.addDefense;
-        defenseValue += defense.fight.addDefenseValue;
-    }
-    if(attack.fight.addSunderArmor > 0) {
-        attack.fight.addSunderArmorValue = attack.sunderArmor * attack.fight.addSunderArmor;
-        sunderArmor += attack.fight.addSunderArmorValue;
-    }
-    if(attack.fight.addAttack > 0) {
-        attack.fight.addAttackValue = attack.attack * attack.fight.addAttack;
-        attackValue += attack.fight.addAttackValue;
-    }
-    if(attack.fight.reduceAttack > 0) {
-        attack.fight.reduceAttackValue = attack.attack * attack.fight.reduceAttack;
-        attackValue -= attack.fight.reduceAttackValue;
+    if(defense.fight.ignore_skill) {//忽略技能
+        if(defense.fight.addDefense > 0) {// 增加护甲
+            defense.fight.addDefenseValue = defense.defense * defense.fight.addDefense;
+            //defenseValue += defense.fight.addDefenseValue;
+        }
+        if(attack.fight.addSunderArmor > 0) {
+            attack.fight.addSunderArmorValue = attack.sunderArmor * attack.fight.addSunderArmor;
+            //sunderArmor += attack.fight.addSunderArmorValue;
+        }
+        if(attack.fight.addAttack > 0) {
+            attack.fight.addAttackValue = attack.attack * attack.fight.addAttack;
+            //attackValue += attack.fight.addAttackValue;
+        }
+        if(attack.fight.reduceAttack > 0) {
+            attack.fight.reduceAttackValue = attack.attack * attack.fight.reduceAttack;
+            //attackValue -= attack.fight.reduceAttackValue;
+        }
+    } else {
+        if(defense.fight.addDefense > 0) {// 增加护甲
+            defense.fight.addDefenseValue = defense.defense * defense.fight.addDefense;
+            defenseValue += defense.fight.addDefenseValue;
+        }
+        if(attack.fight.addSunderArmor > 0) {
+            attack.fight.addSunderArmorValue = attack.sunderArmor * attack.fight.addSunderArmor;
+            sunderArmor += attack.fight.addSunderArmorValue;
+        }
+        if(attack.fight.addAttack > 0) {
+            attack.fight.addAttackValue = attack.attack * attack.fight.addAttack;
+            attackValue += attack.fight.addAttackValue;
+        }
+        if(attack.fight.reduceAttack > 0) {
+            attack.fight.reduceAttackValue = attack.attack * attack.fight.reduceAttack;
+            attackValue -= attack.fight.reduceAttackValue;
+        }
     }
     //var damage = (100 + sunderArmor) * attackValue / (100 + defenseValue);
     var sunderArmorValue = utils.random(0, sunderArmor);
     var damage = (attackValue + sunderArmorValue) * defense.fightValue.maxHp / (defenseValue + defense.fightValue.maxHp);
-    if(defense.fight.reduceDamage > 0) {// 减免伤害
-        defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
-        damage = damage - defense.fight.reduceDamageValue;
+
+    if(defense.fight.ignore_skill) {//忽略技能
+        if(defense.fight.reduceDamage > 0) {// 减免伤害
+            defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
+            //damage = damage - defense.fight.reduceDamageValue;
+        }
+    } else {
+        if(defense.fight.reduceDamage > 0) {// 减免伤害
+            defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
+            damage = damage - defense.fight.reduceDamageValue;
+        }
+        /*if(defense.fight.reduceDamageOverlay > 0) {// 减免伤害
+         defense.fight.reduceDamageValue = damage * defense.fight.reduceDamageOverlay;
+         damage = damage - defense.fight.reduceDamageValue;
+         }*/
     }
-    /*if(defense.fight.reduceDamageOverlay > 0) {// 减免伤害
-        defense.fight.reduceDamageValue = damage * defense.fight.reduceDamageOverlay;
-        damage = damage - defense.fight.reduceDamageValue;
-    }*/
+
     if(damage <= 0) {
         damage = 1;
     }
 
-    if(defense.fight.reduceDamageCounteract == -1) {
-        defense.fight.reduceDamageCounteract = 0;
-        defense.fight.reduceDamageValue = damage;
-        damage = 0;
-    }
-    if(attack.fight.addHp > 0) {
-        attack.fight.addHpValue = damage * attack.fight.addHp;
-        attack.fightValue.hp += attack.fight.addHpValue;
-        if(attack.fightValue.hp > attack.fightValue.maxHp) {
-            attack.fightValue.hp = attack.fightValue.maxHp;
+    if(defense.fight.ignore_skill) {//忽略技能
+        if(defense.fight.reduceDamageCounteract == -1) {
+            defense.fight.reduceDamageCounteract = 0;
+            defense.fight.reduceDamageValue = damage;
+            //damage = 0;
         }
-        attack.hp = attack.fightValue.hp;
+        if(attack.fight.addHp > 0) {
+            attack.fight.addHpValue = damage * attack.fight.addHp;
+        }
+    } else {
+        if(defense.fight.reduceDamageCounteract == -1) {
+            defense.fight.reduceDamageCounteract = 0;
+            defense.fight.reduceDamageValue = damage;
+            damage = 0;
+        }
+        if(attack.fight.addHp > 0) {
+            attack.fight.addHpValue = damage * attack.fight.addHp;
+            attack.fightValue.hp += attack.fight.addHpValue;
+            if(attack.fightValue.hp > attack.fightValue.maxHp) {
+                attack.fightValue.hp = attack.fightValue.maxHp;
+            }
+            attack.hp = attack.fightValue.hp;
+        }
     }
+
     return Math.ceil(damage);
 }
 

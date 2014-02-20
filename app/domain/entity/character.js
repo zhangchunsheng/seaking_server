@@ -138,7 +138,8 @@ var Character = function(opts) {
         addDodge: 0,
         addDodgeValue: 0,
         ice: false,
-        silence: false
+        silence: false,
+        ignore_skill: false
     };
 
     this.hasUpgrade = false;

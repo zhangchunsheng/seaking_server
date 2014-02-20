@@ -103,6 +103,9 @@ fightUtil.updateDefenseData = function(defense, defenseData) {
     if(defense.fight.addDodgeValue > 0) {
         defenseData.addDodge = defense.fight.addDodgeValue;
     }
+    if(defense.fight.ignore_skill) {
+        defenseData.ignore_skill = true;
+    }
 }
 
 /**
@@ -238,6 +241,9 @@ fightUtil.changeTargetState = function(target, defenseData) {
     }
     if(defenseData.awakeSkill) {
         target.awakeSkill = defenseData.awakeSkill;
+    }
+    if(defenseData.ignore_skill) {
+        target.ignoreSkill = defenseData.ignore_skill;
     }
 }
 
