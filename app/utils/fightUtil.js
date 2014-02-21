@@ -9,6 +9,7 @@ var consts = require('../consts/constsV2');
 var EntityType = require('../consts/consts').EntityType;
 var formulaV2 = require('../consts/formulaV2');
 var utils = require('./utils');
+var buffUtil = require('./buffUtil');
 var dataApi = require('./dataApi');
 var ghosts = require('../../config/data/ghosts');
 
@@ -538,17 +539,7 @@ fightUtil.attack = function(opts, attackSide, attack_formation, defense_formatio
         var counter = defense.fightValue.counter * 100;
         random = utils.random(1, 10000);
         if(random >= 1 && random <= counter) {// 反击
-            triggerCondition = {
-                type: consts.skillTriggerConditionType.COUNTER
-            }
-            defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
-
-            var damage = formulaV2.calCounterDamage(defense, attack);
-            defenseData.isCounter = true;
-            defenseData.counterValue = damage;//反击伤害
-            attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
-            attack.hp = attack.fightValue.hp;
-            fightUtil.checkDied(attack, attackData);
+            fightUtil.counter(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         }
 
         // 更新数据
@@ -608,7 +599,7 @@ fightUtil.hasSkill = function(skill, players) {
 }
 
 /**
- *
+ * calculateDamage 用于群体攻击
  * @param attackSide
  * @param attack_formation
  * @param defense_formation
@@ -743,17 +734,7 @@ fightUtil.calculateDamage = function(opts, attackSide, attack_formation, defense
         var counter = defense.fightValue.counter * 100;
         random = utils.random(1, 10000);
         if(random >= 1 && random <= counter) {// 反击
-            triggerCondition = {
-                type: consts.skillTriggerConditionType.COUNTER
-            }
-            defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
-
-            var damage = formulaV2.calCounterDamage(defense, attack);
-            defenseData.isCounter = true;
-            defenseData.counterValue = damage;//反击伤害
-            attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
-            attack.hp = attack.fightValue.hp;
-            fightUtil.checkDied(attack, attackData);
+            fightUtil.counter(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         }
 
         // 更新数据
@@ -1033,4 +1014,23 @@ fightUtil.getGhostData = function(cId) {
     var heroId = utils.getCategoryHeroId(cId);
     var ghostData = ghosts[heroId];
     return ghostData;
+}
+
+fightUtil.counter = function(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var triggerCondition = {
+        type: consts.skillTriggerConditionType.COUNTER
+    }
+    defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+    var buffs = defense.buffs;
+    if(buffUtil.hasKindBuff(consts.buffTypeV2.NODAMAGE_EXCEPT_ATTACK, buffs)) {
+        return;
+    }
+    var damage = formulaV2.calCounterDamage(defense, attack);
+    defenseData.isCounter = true;
+    defenseData.counterValue = damage;//反击伤害
+    attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
+    //反击触发觉醒技能
+    attack.hp = attack.fightValue.hp;
+    fightUtil.checkDied(attack, attackData);
 }

@@ -9,6 +9,7 @@ var Code = require('../../../shared/code');
 var async = require('async');
 var utils = require('../../utils/utils');
 var skillUtil = require('../../utils/skillUtil');
+var buffUtil = require('../../utils/buffUtil');
 var fightUtil = require('../../utils/fightUtil');
 var dataApi = require('../../utils/dataApi');
 var formula = require('../../consts/formula');
@@ -257,7 +258,7 @@ Fight.prototype.attack = function(battleData, players, index) {
 
     // 更新buff数据
     for(var i in owners) {
-        owners[i].calculateBuff();
+        owners[i].calculateBuff();// 重新计算数据
     }
     for(var i in monsters) {
         monsters[i].calculateBuff();
@@ -462,18 +463,7 @@ Fight.prototype.attack = function(battleData, players, index) {
                     var counter = defense.fightValue.counter * 100;
                     random = utils.random(1, 10000);
                     if(random >= 1 && random <= counter) {// 反击
-                        triggerCondition = {
-                            type: constsV2.skillTriggerConditionType.COUNTER
-                        }
-                        defense.triggerSkill(consts.characterFightType.DEFENSE, triggerCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
-
-                        var damage = formulaV2.calCounterDamage(defense, attack);
-                        defenseData.isCounter = true;
-                        defenseData.counterValue = damage;//反击伤害
-                        attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
-                        //反击触发觉醒技能
-                        attack.hp = attack.fightValue.hp;
-                        fightUtil.checkDied(attack, attackData);
+                        fightUtil.counter(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
                     }
 
                     // 更新数据

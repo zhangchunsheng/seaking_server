@@ -254,13 +254,13 @@ var buff_script = {
     },
     "buff207101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fightValue.attackType = constsV2.attackType.ALL;
-        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;//重新计算攻击力
 
         attackData.attack = attack.fightValue.attack;
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
-        var player = fightUtil.checkReduceScopeDamage(defenses);
+        var player = fightUtil.checkReduceScopeDamage(defenses);//减群体伤害
         var opts;
         if(player != null) {
             opts = {
