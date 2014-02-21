@@ -123,10 +123,10 @@ var skill_script = {
         if(random >= 1 && random <= 75) {
             var buffs = attack.buffs;
 
-            enhanceBuff = buffUtil.getBuff("101201", buffs);//skillId  SK101201
+            /*enhanceBuff = buffUtil.getBuff("101201", buffs);//skillId  SK101201
             if(typeof enhanceBuff.buffData != "undefined") {
                 value = value * enhanceBuff.buffData.value;
-            }
+            }*/
 
             var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
@@ -1063,8 +1063,47 @@ var skill_script = {
         attack.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于25%之后，免疫冻结效果
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill203201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.IMMUNE_FREEZE, this, buffData);
+        player.addBuff(buff);
+
+        return 100;
     },
     /**
      * 每次主动攻击，都为自己提供4%的幸运加成，效果无限叠加

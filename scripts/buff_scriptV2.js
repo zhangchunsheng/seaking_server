@@ -7,6 +7,7 @@
  */
 var utils = require('../app/utils/utils');
 var fightUtil = require('../app/utils/fightUtil');
+var buffUtil = require('../app/utils/buffUtil');
 var constsV2 = require('../app/consts/constsV2');
 
 var buff_script = {
@@ -74,6 +75,12 @@ var buff_script = {
      * @param defenseData
      */
     "buff103201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        //check immute_freeze
+        var buffs = defense.buffs;
+        var immuteFreezeBuff = buffUtil.getBuff("203201", buffs);//skillId  SK101201
+        if(typeof immuteFreezeBuff.buffData != "undefined") {
+            return 0;
+        }
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 50) {
             return 1;
