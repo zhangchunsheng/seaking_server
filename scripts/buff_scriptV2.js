@@ -7,6 +7,7 @@
  */
 var utils = require('../app/utils/utils');
 var fightUtil = require('../app/utils/fightUtil');
+var buffUtil = require('../app/utils/buffUtil');
 var constsV2 = require('../app/consts/constsV2');
 
 var buff_script = {
@@ -74,6 +75,12 @@ var buff_script = {
      * @param defenseData
      */
     "buff103201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        //check immute_freeze
+        var buffs = defense.buffs;
+        var immuteFreezeBuff = buffUtil.getBuff("203201", buffs);//skillId  SK101201
+        if(typeof immuteFreezeBuff.buffData != "undefined") {
+            return 0;
+        }
         var random = utils.random(1, 100);
         if(random >= 1 && random <= 50) {
             return 1;
@@ -212,6 +219,7 @@ var buff_script = {
         return 0;
     },
     "buff202201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        attack.fight.addDamage = this.buffData.value;
         return 0;
     },
     "buff203101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -246,13 +254,13 @@ var buff_script = {
     },
     "buff207101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fightValue.attackType = constsV2.attackType.ALL;
-        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;//重新计算攻击力
 
         attackData.attack = attack.fightValue.attack;
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
-        var player = fightUtil.checkReduceScopeDamage(defenses);
+        var player = fightUtil.checkReduceScopeDamage(defenses);//减群体伤害
         var opts;
         if(player != null) {
             opts = {

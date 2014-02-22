@@ -60,7 +60,11 @@ skillService.createNewSkills = function(skillInfo, serverId, registerType, login
     skillInfo.registerType = registerType;
     skillInfo.loginName = loginName;
     skillInfo.characterId = characterId;
+    skillInfo.currentSkills = character.currentSkills;
     skillInfo.allSkills = character.allSkills;
+    for(var i in character.currentSkills) {
+        skillInfo[i] = character.currentSkills[i];
+    }
     var skills = new Skills(skillInfo);
     return skills;
 }

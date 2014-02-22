@@ -48,7 +48,7 @@ Altar.prototype.getInfo = function() {
     var date = new Date();
     for(var i in extractionTimes) {
         pastTime = date.getTime() - extractionTimes[i].lastExtractionTime;
-        refrigerationTime = dataApi.altars.findById("1").refrigerationTime * 60 * 60 * 1000;
+        refrigerationTime = dataApi.altars.findById(i).refrigerationTime * 60 * 60 * 1000;
         extractionTimes[i].leftTime = Math.round((refrigerationTime - pastTime) / 1000);
         if(extractionTimes[i].leftTime < 0) {
             extractionTimes[i].leftTime = 0;

@@ -111,6 +111,8 @@ var Character = function(opts) {
         6: null
     };
 
+    this.fightTeam = {};
+
     this.fight = {
         fightStatus: consts.characterFightStatus.COMMON,
         reduceDamage: 0,//减免伤害
@@ -138,7 +140,9 @@ var Character = function(opts) {
         addDodge: 0,
         addDodgeValue: 0,
         ice: false,
-        silence: false
+        silence: false,
+        ignore_skill: false,
+        addDamage: 0
     };
 
     this.hasUpgrade = false;

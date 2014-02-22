@@ -100,3 +100,19 @@ SoulPackage.prototype.addItem = function(player, item, rIndex) {
     }
     return r;
 }
+
+SoulPackage.prototype.checkItemsWithPackageIndex = function(indexs) {
+    var items = [];
+    for(var i = 0 ; i < indexs.length ; i++) {
+        if (!this.items[indexs[i]]) {
+            return items;
+        } else {
+            items.push({
+                index: indexs[i],
+                itemId: this.items[indexs[i]].itemId,
+                itemNum: this.items[indexs[i]].itemNum
+            });
+        }
+    }
+    return items;
+}

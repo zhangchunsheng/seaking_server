@@ -178,7 +178,8 @@ module.exports = function (app) {
     app.get('/misc/getMiscs', authRequired, misc.getMiscs);
     app.get('/altar/extraction', authRequired, altar.extraction);
     app.get('/altar/exchange', authRequired, altar.exchange);
-    app.get('/soul/fusion', authRequired, soul.fusion);
+    app.get('/soul/fusion', authRequired, soul.fusionWithPackageIndex);
+    app.get('/soul/fusionWithHeroId', authRequired, soul.fusion);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 

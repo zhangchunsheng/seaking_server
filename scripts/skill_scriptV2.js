@@ -64,6 +64,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.KING_WILL) {
         buffCategory = constsV2.buffCategory.AFTER_DIE;
+    } else if(buffType == constsV2.buffTypeV2.ADDDAMAGE) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -121,10 +123,10 @@ var skill_script = {
         if(random >= 1 && random <= 75) {
             var buffs = attack.buffs;
 
-            enhanceBuff = buffUtil.getBuff("101201", buffs);//skillId  SK101201
+            /*enhanceBuff = buffUtil.getBuff("101201", buffs);//skillId  SK101201
             if(typeof enhanceBuff.buffData != "undefined") {
                 value = value * enhanceBuff.buffData.value;
-            }
+            }*/
 
             var buffId = this.skillId.replace("SK", "");
             for(var i = 0, l = buffs.length ; i < l ; i++) {
@@ -744,8 +746,52 @@ var skill_script = {
         defense.fight.addMaxHp = defense.maxHp * buff.buffData.value;
         return 100;
     },
+    /**
+     * 生命值进入低于基础生命值的30%的状态，瞬间提升基础生命值20%的生命上限
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill109201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.2
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDMAXHP, this, buffData);
+        player.addBuff(buff);
+
+        var addMaxHp = player.maxHp * buffData.value;
+        playerData.addMaxHp = addMaxHp;
+        player.fightValue.maxHp += addMaxHp;
+        player.fightValue.hp += addMaxHp;
+
+        return 100;
     },
     /**
      * 吸收所有的范围伤害，并且每次伤害不能超过生命值的25%
@@ -778,8 +824,49 @@ var skill_script = {
         defense.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于30%以后，不会再受到任何技能的影响
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill110201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.IGNORE_SKILL, this, buffData);
+        player.addBuff(buff);
+
+        player.fight.ignore_skill = true;
+
+        return 100;
     },
     /**
      * 主动攻击时，有25%的几率使下次攻击伤害提升25%
@@ -818,8 +905,39 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 生命值低于40%之后，会触发上一个发动过觉醒技的英雄的觉醒技（没有上一个则继续等待）
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill201201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var playerFightTeam;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            playerFightTeam = attackFightTeam;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            playerFightTeam = defenseFightTeam;
+        }
 
+        //触发上一次团队中的觉醒技
+
+        return 100;
     },
     /**
      * 主动攻击有75%的几率给敌方一个单位附加毒状态，持续2回合。毒：治疗量减半
@@ -859,8 +977,48 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 生命值低于40%之后，伤害提升25%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "skill202201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.25
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDDAMAGE, this, buffData);
+        player.addBuff(buff);
+
+        return 100;
     },
     /**
      * 主动攻击同一目标时，每次攻击提升5%的攻击吸血
@@ -905,8 +1063,47 @@ var skill_script = {
         attack.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值低于25%之后，免疫冻结效果
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill203201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.IMMUNE_FREEZE, this, buffData);
+        player.addBuff(buff);
+
+        return 100;
     },
     /**
      * 每次主动攻击，都为自己提供4%的幸运加成，效果无限叠加
@@ -941,8 +1138,47 @@ var skill_script = {
         attack.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值进入20%的状态瞬间，消耗所有额外的幸运加成，给自己回复对应点数*5的生命值
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill204201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 5
+        };
+        player.fightValue.hp += player.fightValue.sunderArmor * buffData.value;
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDHP, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 主动攻击有90%的几率是幸运翻倍，作用一次
@@ -981,8 +1217,46 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 生命值低于20%以后，不承受主动攻击之外的任何伤害
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill205201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.NODAMAGE_EXCEPT_ATTACK, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 每次攻击攻击力降低10%，幸运提高10%

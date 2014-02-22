@@ -89,7 +89,7 @@ Buff.prototype.baseInfo = function() {
     }
 }
 
-Buff.prototype.invokeScript = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+Buff.prototype.invokeScript = function(attackSide, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var array = [];
     array.push(attackSide);
     array.push(attack_formation);

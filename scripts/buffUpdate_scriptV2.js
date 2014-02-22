@@ -150,7 +150,7 @@ var buffUpdate_script = {
         if(attackSide == constsV2.characterFightType.ATTACK) {
             if(attack.fightValue.attackType == constsV2.attackType.ALL) {
                 attack.fightValue.attackType = constsV2.attackType.SINGLE;
-                attack.fightValue.attack = Math.ceil(attack.fightValue.attack / this.buffData.value);
+                attack.fightValue.attack = Math.ceil(attack.fightValue.attack / this.buffData.value);// 重新计算攻击力
                 attack.removeBuff(this);
             }
         }

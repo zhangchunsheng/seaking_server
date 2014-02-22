@@ -467,7 +467,11 @@ module.exports = {
         FREEZE: "23",//冻结
         TURN_DAMAGE: "24",//反伤
         ADDBLOCK: "25",
-        KING_WILL: "26"//君王意志
+        KING_WILL: "26",//君王意志
+        IGNORE_SKILL: "27",//忽视技能影响
+        ADDDAMAGE: "28",//伤害提升
+        IMMUNE_FREEZE: "29",//免疫冻结
+        NODAMAGE_EXCEPT_ATTACK: "30"//不承受主动攻击之外的任何伤害
     },
 
     buffCategory: {

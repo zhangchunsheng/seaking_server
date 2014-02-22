@@ -232,3 +232,156 @@ exports.fusion = function(req, res) {
         });
     });
 }
+
+/**
+ * 融合
+ * @param req
+ * @param res
+ */
+exports.fusionWithPackageIndex = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = "";
+    var isSelf = true;
+
+    playerId = msg.playerId;
+
+    if(typeof playerId == "undefined" || playerId == "") {
+        playerId = session.playerId;
+    }
+
+    if(playerId.indexOf("P") > 0) {
+        isSelf = false;
+    }
+
+    if(isSelf) {
+        if(playerId != session.playerId) {
+            data = {
+                code: Code.ARGUMENT_EXCEPTION
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+    }
+
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var souls = msg.souls;// 魂魄所在背包中的位置 0,1
+    var data = {};
+    if(utils.empty(souls)) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    souls = souls.split(",");
+    if(souls.length < 1 || souls.length > 6) {
+        data = {
+            code: Code.ARGUMENT_EXCEPTION
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+    var soulId;
+    var hero;
+    var starLevel = 0;
+
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var array = [];
+
+        var character;
+        if(!isSelf) {
+            character = partnerUtil.getPartner(playerId, player);
+        } else {
+            character = player;
+        }
+
+        if(character == null) {
+            data = {
+                code: Code.ENTRY.NO_CHARACTER
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        //check trait
+        var trait = character.trait;
+
+        var needSouls = [];
+        needSouls = souls;
+
+        // check soulPackage
+        var soulPackage = player.soulPackageEntity;
+        var items = [];
+
+        items = soulPackage.checkItemsWithPackageIndex(needSouls);
+
+        if(items.length != needSouls.length) {
+            data = {
+                code: Code.PACKAGE.NOT_ENOUGH_ITEM
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        //check experience
+        if(character.trait <= character.starLevel) {
+            data = {
+                code: Code.SOUL.MAX_STARLEVEL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        var starLevelExperience = character.starLevelExperience;
+        var soulFusionId = "";
+        var experience = 0;//传入的经验值
+        for(var i = 0 ; i < items.length ; i++) {
+            soulId = items[i].itemId;
+            hero = dataApi.herosV2.findById(soulId);
+            soulFusionId = "" + hero.trait + starLevel;
+            experience += dataApi.soulFusion.findById(soulFusionId).experience;
+        }
+
+        var _starLevelExperience = experience + starLevelExperience;//新的经验值
+
+        /*var upgradeStarNeedExp = playerUtil.getAccumulationStarLevelNeedExp(character);//累加的经验值
+         if(_starLevelExperience >= upgradeStarNeedExp) {
+         character.starLevel++;
+         }*/
+        character.starLevel = playerUtil.calculatorStarLevel(character, _starLevelExperience);
+
+        character.starLevelExperience = _starLevelExperience;
+
+        var packageIndex = [];
+        var item;
+        for(var i = 0 ; i < items.length ; i++) {
+            item = player.soulPackageEntity.removeItem(items[i].index, items[i].itemNum);
+            packageIndex.push({
+                index: items[i].index,
+                itemId: item.itemId,
+                itemNum: item.itemNum
+            });
+        }
+
+        userService.getUpdatePlayerArray(array, player, character, ["starLevel", "starLevelExperience"]);
+        soulPackageService.getUpdateArray(array, player);
+
+        redisService.setData(array, function(err, reply) {
+            data = {
+                code: Code.OK,
+                starLevel: character.starLevel,
+                starLevelExperience: character.starLevelExperience,
+                packageIndex: packageIndex
+            };
+            utils.send(msg, res, data);
+        });
+    });
+}
