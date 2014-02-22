@@ -8,36 +8,10 @@ if(redisConfig[env]) {
 }
 
 
-var update = function(pets) {
-	var t = Date.now();
-	var house = 1000*60*60;
-	for(var i in pets) {
-		var pet = pets[i];
-		var houses = Math.floor((t - pet.updateTime  )/house);
-		pet.status[0] += houses*5;pet.status[0] = (pet.status[0] > 100?100:pet.status[0]);
-		pet.status[1] += houses*2;pet.status[1] = (pet.status[1] > 100?100:pet.status[1]);
-		pet.status[2] += houses*3;pet.status[2] = (pet.status[2] > 100?100:pet.status[2]);
-		pet.updateTime += houses*house;
-	}
-	return pets;
-}
-exports.update = function(data, player, callback) {
-	var pets = update(player.pets);
-	var setArray = [
-		["select", redisConfig.database.SEAKING_REDIS_DB]
-	];
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
-	redis.command(function(client) {
-		client.multi(setArray).exec(function(err, result) {
-			redis.release(client);
-			callback(err, {pets: pets});
-		});
-	});
-}
 exports.gmUpgrade = function(data, player, callback) {	
 	var pets = player.pets,
-		pet = pets[data.index],
-		upgradLevel = (data.uLevel-0) || 5;
+		pet = pets.get(data.index),
+		upgradLevel = (data.uLevel - 0) || 5;
 		console.log(player.pets);
 	if(!pet) {
 		return callback("The absence of pets");
@@ -46,7 +20,7 @@ exports.gmUpgrade = function(data, player, callback) {
 	var setArray =[
 		["select", redisConfig.database.SEAKING_REDIS_DB]
 	];
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
+	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err) {
 			redis.release(client);
@@ -54,63 +28,27 @@ exports.gmUpgrade = function(data, player, callback) {
 		});
 	});
 }
-exports.gmAddUpgradeItem = function(data, player, callback) {
-	var pets = player.pets,  pet = player.pets[data.index];
-	var skill = pet.skills[data.skill];
-	var petInfo = dataApi.petsUpgrade.findById(skill.skillId);
-	console.log("petInfo:",petInfo);
-	console.log("petLevel:", skill.level);
-	var p = petInfo["P"+skill.level];
-	
-	var setArray = [
-		["select", redisConfig.database.SEAKING_REDIS_DB]
-	];
-	var changeItems = [];
-	for(var i = 0 ;i < 3;i++){
-		var item = p["I"+i];
-		var changeItem = player.packageEntity.addItemWithNoType(player, item);
-		changeItems.push(changeItem);
-	}
-	var package = {
-		itemCount :player.packageEntity.itemCount,
-		items: player.packageEntity.items
-	}
-	console.log(JSON.stringify(changeItems));
-	//throw new Error("////");
-	//setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
-	setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
-	redis.command(function(client) {
-		client.multi(setArray).exec(function(err) {
-			redis.release(client);
-			callback(err, changeItems);
-		});
-	});
-}
+
 exports.gmAdd = function(data, player, callback) {
 	var pets  = player.pets;
 	var petInfo = dataApi.pets.findById(data.id);
-	var skills = [];
-	skills.push({skillId:petInfo["J0"], level:1});
-	for(var i = 1; i <6;i++) {
-		skills.push({skillId:petInfo["J"+i], level:0});
-	}
+	var upgradeInfo = dataApi.petsUpgrade.findById(data.id);
 	var pet = {
-		level : 0,
-		status : [100,100,100],
-		skills: skills,
+		level : 10,
+		status : [40,40,40],
+		skillLevels: [1,0,0,0,0,0],
 		name : petInfo.name,
 		id : data.id,
 		type : petInfo.type,
-		exp : 0,
+		exp : 250,
 		updateTime: Date.now(),
 		endTime: Date.now()
 	}
 	pets.push(pet);
-	console.log(JSON.stringify(pets));
 	var setArray =[
 		["select", redisConfig.database.SEAKING_REDIS_DB]
 	];
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
+	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err) {
 			redis.release(client);
@@ -121,65 +59,72 @@ exports.gmAdd = function(data, player, callback) {
 
 exports.setName = function(data, player, callback) {
 	var pets = player.pets,
-		pet = pets[data.index];
+		pet = pets.get(data.index);
 	if(!pet) {
 		return callback("The absence of pets");
 	}
 	pet.name  = data.name;
-	update(pets);
+	pets.update();
 	var setArray =[
 		["select", redisConfig.database.SEAKING_REDIS_DB]
 	];
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
+	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err, result) {
 			redis.release(client);
-			callback(err, {pets: pets});
+			callback(err, {pets: pets.pets});
 		});
 	});
 }
 
 exports.release = function(data, player, callback) {
 	var pets = player.pets,
-		pet = pets[data.index];
+		pet = pets.get(data.index);
 	if(!pet) {
 		return callback("The absence of pets");
 	}
 	if(data.index < 0 || data.index > pets.length) {
 		return callback("data is error!");
 	}
-	var _pet = pets.slice(0, data.index).concat(pets.slice((data.index-0)+1, pets.length));
+
+	pets = pets.remove(data.index);
 	var setArray = [
 		["select", redisConfig.database.SEAKING_REDIS_DB]
 	];
 	var petInfo = dataApi.pets.findById(pet.id);
-	player.money +=(petInfo.rM);
+	player.money +=(petInfo.releaseMoney);
 	var changeItems = [];
 	var tasks = [];
 	for(var i = 0 ; i <2 ; i++) {
-		if(petInfo["rI"+i] !== "" ) {
-			var splitResult = petInfo["rI"+i].split("|");
+		if(petInfo["releaseItem"+i] !== "" ) {
+			var splitResult = petInfo["releaseItem"+i].split("|");
 			var item = {
 				itemId : splitResult[0],
 				itemNum: (splitResult[1]-0) || 1,
 				level: 1
 			}
 			var changeItem = player.packageEntity.addItemWithNoType(player, item);
-			changeItems.push(changeItem.index);
+			//changeItems.push(changeItem.index);
+			if(changeItem == null || changeItem.index.length == 0 ) {
+				return callback("item package not enough");
+			}
+			changeItems = changeItems.concat(changeItem.index);
 			tasks.push(changeItems.task);
 		}
 	}
+
 	var package = {
 		itemCount :player.packageEntity.itemCount,
 		items: player.packageEntity.items
 	}
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(_pet)]);
+	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
 	setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err, result) {
 			redis.release(client);
 			callback(err, {
 				pet: pet,
+				pets: pets.pets,
 				money : player.money,
 				changeItems: changeItems
 			});
@@ -202,7 +147,8 @@ var hasPlayer = function(playerId, player) {
 
 exports.play = function(data, player, callback) {
 	var pets = player.pets,
-		pet = pets[data.index];
+		pet = pets.get(data.index);
+	pets.update();
 	if(!hasPlayer(data.playerId, player)) {
 		return callback("no have the player");
 	}
@@ -210,26 +156,21 @@ exports.play = function(data, player, callback) {
 		return callback("The absence of pets");
 	}
 	if(pet.playerId == data.playerId){
-		return callback(null, pet);
+		return callback(null, {
+			pets:pets
+		});
 	}
-	var _pet;
-	for(var i in pets) {
-		if(pets[i].playerId == data.playerId) {
-			pets[i].playerId = undefined;
-			_pet = pets[i];
-		}
-	}
+	var _pet = pets.finePlayerId(data.playerId);
 	pet.playerId = data.playerId;
-	update(pets);
 	var setArray = [
 		["select", redisConfig.database.SEAKING_REDIS_DB]
 	];
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
+	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err, result) {
 			redis.release(client);
 			callback(err, {
-				pets: pets
+				pets: pets.pets
 			});
 		});
 	});
@@ -271,11 +212,73 @@ exports.play = function(data, player, callback) {
 		});
 	});
 }*/
+exports.gmAddUpgradeItem2 = function(data, player, callback) {
+	var items = ["D10080101", "D10080102", "D10080103", "D10080104","D10080105","D10080106","D10080107","D10080108","D10080109","D10080110"];
+	for(var i in items) {
+		var item = {
+			itemId: items[i],
+			itemNum: 99,
+			level: 1
+		}
+		player.packageEntity.addItemWithNoType(player, item);
+	}
+	var setArray = [
+		["select", redisConfig.database.SEAKING_REDIS_DB]
+	];
+	var package = {
+		itemCount :player.packageEntity.itemCount,
+		items: player.packageEntity.items
+	}
+	setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
+	redis.command(function(client) {
+		client.multi(setArray).exec(function(err) {
+			redis.release(client);
+			callback(err, {});
+		});
+	});
+}
+exports.gmAddUpgradeItem = function(data, player, callback) {
+	var pets = player.pets,  pet = player.pets.get(data.index);
+	var petInfo = dataApi.pets.findById(pet.id); 
+	console.log(petInfo);
+	var skillLevel = data.skillLevel ||　pet.skillLevels[data.skillIndex];
+	var petSkillInfo = dataApi.petsSkillsUpgrade.findById(petInfo["skill"+data.skillIndex]);
+	console.log(petInfo["skill"+data.skillIndex]);
+	var p = petSkillInfo["upgrade"+skillLevel];
+	
+	var setArray = [
+		["select", redisConfig.database.SEAKING_REDIS_DB]
+	];
+	var changeItems = [];
+	for(var i = 0 ;i < 3;i++){
+		var item = p.items[i];
+		var changeItem = player.packageEntity.addItemWithNoType(player, item);
+		changeItems.push(changeItem);
+	}
+	var package = {
+		itemCount :player.packageEntity.itemCount,
+		items: player.packageEntity.items
+	}
+	console.log(JSON.stringify(changeItems));
+	//throw new Error("////");
+	//setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
+	setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
+	redis.command(function(client) {
+		client.multi(setArray).exec(function(err) {
+			redis.release(client);
+			callback(err, changeItems);
+		});
+	});
+}
 exports.upgradeSkill = function(data, player, callback) {
-	var pets = player.pets,  pet = player.pets[data.index];
-	var skill = pet.skills[data.skillIndex];
-	var petInfo = dataApi.petsSkillsUpgrade.findById(skill.skillId);
-	var p = petInfo["P"+skill.level];
+	var pets = player.pets,  pet = player.pets.get(data.index);
+	if(!pet) {
+		return callback("The absence of pets");
+	}
+	var petInfo = dataApi.pets.findById(pet.id); 
+	var skillLevel = pet.skillLevels[data.skillIndex];
+	var petSkillInfo = dataApi.petsSkillsUpgrade.findById(petInfo["skill"+data.skillIndex]);
+	var p = petSkillInfo["upgrade"+skillLevel];
 	if(!p) {
 		return callback("level full");
 	}
@@ -289,21 +292,24 @@ exports.upgradeSkill = function(data, player, callback) {
 		["select", redisConfig.database.SEAKING_REDIS_DB]
 	];
 	var items = (p.items);
-	var changeItems = [];
 	console.log(items);
 	var checkResult = player.packageEntity.checkItems(items);
-	if(!checkResult) {
+	console.log(checkResult);
+	if(!checkResult || checkResult.length == 0) {
 		return callback("item not enough");
 	}
-	var changeItems = player.packageEntity.removeItems(checkResult);
+	var changeItems = player.packageEntity._removeItems(checkResult);
+	if(!changeItems) {
+		return callback("item remove error");
+	}
 	console.log(changeItems);
-	skill.level++;
+	pet.skillLevels[data.skillIndex] = ++skillLevel;
 	var package = {
 		itemCount :player.packageEntity.itemCount,
 		items: player.packageEntity.items
-	}
+	};
 	player.money -= p.money;
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
+	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
 	setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
 	setArray.push(["hset", data.Key, "money", player.money]);
 	redis.command(function(client) {
@@ -311,6 +317,7 @@ exports.upgradeSkill = function(data, player, callback) {
 			redis.release(client);
 			callback(err, {
 				pet: pet,
+				pets: pets.pets,
 				changeItems: changeItems,
 				money: player.money
 			});
@@ -332,7 +339,11 @@ var randomItem = function(level) {
 
 }
 exports.usePet = function(data, player, callback) {
-	var pets = player.pets, pet = pets[data.index];
+	var pets = player.pets, pet = pets.get(data.index);
+	if(!pet) {
+		return callback("no pet");
+	}
+	var petInfo = dataApi.pets.findById(pet.id);
 	var getName = false;
 	if(pet.endTime > Date.now()){
 		return callback("Skills have not cooled");
@@ -346,13 +357,15 @@ exports.usePet = function(data, player, callback) {
 		["select", redisConfig.database.SEAKING_REDIS_DB]
 	];
 	var callResult = {};
-	var skill0 = pet.skills[0];
-	switch(skill0.skillId) {
+	var skill0 = petInfo.skill0;
+	var skill0Level = pet.skillLevels[0];
+	console.log(skill0Level);
+	switch(skill0) {
 		case "PK0101":
-			var item = randomItem(skill0.level);
+			var item = randomItem(skill0Level);
 			console.log(item);
 			var changeItem = player.packageEntity.addItemWithNoType(player, item);
-			callResult.changeItem = changeItem;
+			callResult.changeItems = changeItem.index;
 			var package = {
 				itemCount :player.packageEntity.itemCount,
 				items: player.packageEntity.items
@@ -360,14 +373,14 @@ exports.usePet = function(data, player, callback) {
 			setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
 		break;
 		case "PK0102":
-			var exp = Math.round((Math.random()*500 + 1000)*(pet.level || 1)*(skill0.level));
+			var exp = Math.round((Math.random()*500 + 1000)*(pet.level || 1)*(skill0Level));
 			player.experience += exp;
 			//需要判断经验是否可以升级
 			setArray.push(["hset", data.Key, "experience", player.experience]);
 			callResult.experience = player.experience;
 		break;
 		case "PK0103":
-			var money = Math.round((Math.random()*1500 + 500)*(pet.level || 1)*(skill0.level));
+			var money = Math.round((Math.random()*1500 + 500)*(pet.level || 1)*(skill0Level));
 			console.log(money);
 			player.money += money;
 			setArray.push(["hset", data.Key, "money", player.money]);
@@ -378,15 +391,16 @@ exports.usePet = function(data, player, callback) {
 			var skill = {
 				level: Math.round(Math.random()*4+1),
 			}
+			console.log(skill);
 			if(Math.random()*100 < 40){
-				var item = randomItem(skill.level);
+				var item = randomItem(skill0Level);
 				var changeItem = player.packageEntity.addItemWithNoType(player, item);
 				var package = {
 					itemCount :player.packageEntity.itemCount,
 					items: player.packageEntity.items
 				}
 				setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
-				callResult.changeItem = changeItem; 
+				callResult.changeItems = changeItem.index; 
 			}
 
 			var exp = Math.round((Math.random()*500 + 1000)*(pet.level || 1)*(skill.level)*0.4);
@@ -395,15 +409,16 @@ exports.usePet = function(data, player, callback) {
 			setArray.push(["hset", data.Key, "experience", player.experience]);
 			callResult.experience = player.experience;
 
-			var money = Math.round((Math.random()*1500 + 500)*(pet.level || 1)*(skill.level)*0.4);
+			var money = Math.round((Math.random()*1500 + 500)*(pet.level || 1)*(skill0Level)*0.4);
 			player.money += money;
 			setArray.push(["hset", data.Key, "money", player.money]);
 			callResult.money = player.money;
 		break;
 	}
-	var skill1 = pet.skills[1];
-	if(skill1.level > 0){
-		switch(skill1.skillId) {
+	var skill1 = petInfo.skill1;
+	var skill1Level = pet.skillLevels[1];
+	if(skill1Level > 0){
+		switch(skill1) {
 			case "PK0201":
 				if((Math.random()*100) < 40) {
 					//神秘副本
@@ -427,26 +442,31 @@ exports.usePet = function(data, player, callback) {
 		}
 	}
 	
-	var skill2 = pet.skills[2];
-	if(skill2.level > 0) {
-		switch(skill2.skillId) {
+	var skill2 = petInfo.skill2;
+	var skill2Level = pet.skillLevels[2];
+	if(skill2Level > 0) {
+		switch(skill2) {
 
 		}
 	}
 	var minutes = 60 * 1000;
+	pet.skillCDTime = minutes * (150 - pet.status[0]);
 	pet.endTime = Date.now() + minutes * (150 - pet.status[0]);
 	pet.exp += pet.status[2];
-	var upgradeInfo = dataApi.petsUpgrade.findById(pet.id);
-	var upgradeExp =  upgradeInfo.M * pet.level + upgradeInfo.P;
-	if(pet.exp >= upgradeExp) {
+	
+	//var upgradeExp =  upgradeInfo.M * pet.level + upgradeInfo.P;
+	if(pet.exp >= pet.nextExp) {
 		pet.level++;
-		pet.exp -= upgradeExp;
+		pet.exp -= pet.nextExp;
+		var upgradeInfo = dataApi.petsUpgrade.findById(pet.id);
+		pet.nextExp = upgradeInfo.M * pet.level+upgradeInfo.P;
 	}
 	for(var i = 0; i < 3; i++) {
 		pet.status[i] -= 20;
 	}
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
-	callResult.pets = pets;
+	callResult.pets = pets.update().pets;
+	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
+	console.log(callResult);
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err, result) {
 			if(!getName){
@@ -499,8 +519,11 @@ exports.gmAddFeedItem = function(data, player, callback) {
 
 exports.feed = function(data, player, callback) {
 	var itemInfo = dataApi.feedItem.findById(data.itemId);
-	var pets = player.pets, pet = pets[data.index];
-	update(pets);
+	var pets = player.pets, pet = pets.get(data.index);
+	if(!pet) {
+		return callback("The absence of pet");
+	}
+	pets.update();
 	pet.status[itemInfo.key] += itemInfo.value;pet.status[itemInfo.key] = (pet.status[itemInfo.key] > 100?100:pet.status[itemInfo.key]);
 	console.log(player.packageEntity);
 	var checkResult = player.packageEntity.hasItem({
@@ -510,11 +533,14 @@ exports.feed = function(data, player, callback) {
 	if(!checkResult) {
 		return callback("no item");
 	}
-	var changeItem = {};
+	var changeItems = [];
 	for(var i in checkResult) {
 		var item = checkResult[i];
 		var _item = player.packageEntity.removeItem(item.index, 1);
-		changeItem[item.index] = _item;
+		changeItems.push({
+			index: item.index,
+			item:_item
+		}); 
 	}
 	var setArray = [
 		["select", redisConfig.database.SEAKING_REDIS_DB]
@@ -525,13 +551,14 @@ exports.feed = function(data, player, callback) {
 		items: player.packageEntity.items
 	};
 	setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
-	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets)]);
+	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
+	console.log(changeItems);
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err, result) {
 			redis.release(client);
 			callback(err, {
-				pets:pets,
-				changeItem: changeItem
+				pets:pets.pets,
+				changeItems: changeItems
 			});
 		});
 	});

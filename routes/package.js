@@ -43,6 +43,38 @@ exports.test = function(req, res) {
 
     });
 }
+exports.clean = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        player.packageEntity.items={};
+        var data = {};
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            utils.send(msg, res, data);
+        });
+    });
+}
 /**
  * 添加物品
  * @param req

@@ -96,6 +96,7 @@ exports.auth = function(req, res) {
                 player: results[0].strip(),
                 connectSid: connectSid
             };
+            //
             userInfo.playerId = results[0].id;
             /*var log4js = require("log4js");
             log4js.configure({appenders:[{type: "file", filename:"auth.log",category:["auth"]}]})

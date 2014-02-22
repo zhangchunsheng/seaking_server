@@ -14,7 +14,7 @@ var Package = function(opts){
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
     this.items = opts.items;
-    this.itemCount = opts.itemCount || 12;
+    this.itemCount = (opts.itemCount - 0) || 12;
 }
 util.inherits(Package, Persistent);
 module.exports = Package;
@@ -109,10 +109,33 @@ Package.prototype.hasItem = function(_item) {
 	}
 	return null;
 }
+Package.prototype._removeItems = function(items, mode) {
+    var _items = [];
+    for(var i = 0, l = items.length; i < l ; i++) {
+        var a = [];
+        for(var n = 0, nl = items[i].length ; n < nl; n++) {
+            var item = items[i][n];
+            var _item = this.removeItem(item.index, item.itemNum);
+            if(!_item) {
+                return null;
+            }
+            a.push({
+                index: item.index,
+                item: _item
+            });
+        }
+        if(!mode) {
+            _items = _items.concat(a);
+        }else{
+            _items.push(a);
+        }
+    }
+    return _items;
+}
 Package.prototype.removeItems = function(items) {
     var _items = [];
     for(var i  = 0, l = items.length ; i < l; i++) {
-        for(var n = 0 , nl = items[n].length ; n < nl ; n++ ) {
+        for(var n = 0 , nl = items[i].length ; n < nl ; n++ ) {
             var item = items[i][n];
             var _item = this.removeItem(item.index, item.itemNum);
             if(!_item){
@@ -465,9 +488,10 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         }
     }
     var items = this;
+     console.log(items.itemCount  + packageStart);
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
         var flag = false;
-        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+        for (var i = packageStart; i < items.itemCount  + packageStart ; i++) {
             if (!items.items[i]) {
                 flag = true;
                 items.items[i] = {
@@ -490,7 +514,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             };
     } else if(!itemInfo.pileNum || itemInfo.pileNum == 1) {
         var flag = false;
-        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+        for (var i = packageStart; i < items.itemCount  + packageStart; i++) {
             if (!items.items[i]) {
                 flag = true;
                 items.items[i] = {

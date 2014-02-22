@@ -279,6 +279,59 @@ astrology.merger = function(req, res) {
         });
     });
 }
+
+astrology.onceMerger2 = function(req, res) {
+    var msg = req.query;
+    if(!msg.playerId) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no playerId"});
+    }
+    if(!msg.index) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no index"});
+    }
+    if(!msg.main) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no main"});
+    }
+    var partnerId = msg.playerId;
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+    var playerId = session.playerId;
+    
+    var partnerId = msg.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){
+        var character, Key;
+        if(partnerId && playerId != partnerId) {
+            character = partnerUtil.getPartner(partnerId, player);
+            _partnerId = utils.getRealPartnerId(partnerId);
+            Key = dbUtil.getPartnerKey(serverId, registerType, loginName, characterId, _partnerId);
+        }else {
+            character = player;
+            Key = picecBoxName(session);
+        }
+        msg.Key = picecBoxName(session);
+        msg.PKey = Key;
+        if(!character) {
+            return utils.send(msg, res ,{
+                code: Code.FAIL,
+                err: "not player"
+            });
+        }
+        astrologyDao.onceMerger2(msg, character, function(err, result) {
+            if(err) {return utils.send(msg, res, {code: Code.FAIL, err: err});}
+            utils.send(msg, res, {
+                code: Code.OK,
+                data: {
+                    bi: result.astrology.items,
+                    ZX: result.ZX
+                }
+            })
+        });
+    });
+}
+
 astrology.onceMerger = function(req, res) {
     var msg = req.query;
     if(!msg.main) {
@@ -287,13 +340,16 @@ astrology.onceMerger = function(req, res) {
     if(!msg.index) {
         return utils.send(msg, res, {code: Code.FAIL, err: "not index"});
     }
+    if(msg.main == msg.index) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "main must != index"})
+    }
     var session = req.session;
     var uid = session.uid
         , serverId = session.serverId
         , registerType = session.registerType
         , loginName = session.loginName;
     var playerId = session.playerId;
-    console.log(playerId);
+    
     var partnerId = msg.playerId;
     var characterId = utils.getRealCharacterId(playerId);
      userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player){

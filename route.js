@@ -131,6 +131,7 @@ module.exports = function (app) {
     app.get("/astrology/convert", authRequired, astrology.exchange);
     app.get("/astrology/synthAllBi", authRequired, astrology.merger);
     app.get("/astrology/synth", authRequired, astrology.onceMerger);
+    app.get("/astrology/synth2", authRequired, astrology.onceMerger2);
     app.get("/astrology/gmRepair", authRequired, astrology.gmRepair);
 
     app.get("/package/_Set", authRequired, package._Set);
@@ -141,6 +142,7 @@ module.exports = function (app) {
     app.get('/package/sellItem', authRequired, package.sellItem);
     app.get('/package/userItem', authRequired, package.userItem);
     app.get("/package/unlock", authRequired, package.unlock);
+    app.get("/package/gmClean", authRequired, package.clean);
 
     app.get('/player/enterScene', authRequired, player.enterScene);
     app.get('/player/changeAndGetSceneData', authRequired, player.changeAndGetSceneData);
@@ -207,6 +209,7 @@ module.exports = function (app) {
     app.get("/pet/gmUpgrade", authRequired, pet.gmUpgrade);
     app.get("/pet/gmAdd", authRequired, pet.gmAdd);
     app.get("/pet/gmAddUpgradeItem", authRequired, pet.gmAddUpgradeItem);
+    app.get("/pet/gmAddUpgradeItem2", authRequired, pet.gmAddUpgradeItem2);
     app.get("/pet/gmAddFeedItem", authRequired, pet.gmAddFeedItem);
     app.get("/pet/setName", authRequired, pet.setName);
     app.get("/pet/upgradeSkill", authRequired, pet.upgradeSkill);

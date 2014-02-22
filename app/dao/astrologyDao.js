@@ -570,7 +570,8 @@ var addExperience = function(item, experience , info) {
 	if(!info){
 		info =  getAstrologyInfo(item);
 	} 
-	var update = (Math.pow(2, item.level - 0)) * (info.experience - 0) ;
+	var update = (Math.pow(2, item.level - 1)) * (info.experience - 0) ;
+	item.level = item.level || 1;
 	item.exp = ( item.exp || 0 )+ experience;
 	console.log("update:", update);
 	if(item.exp > update) {
@@ -651,6 +652,42 @@ astrologyDao.merger = function(data, player, callback) {
 		});
 	});
 }
+astrologyDao.onceMerger2 = function(data, player, callback) {
+	var main = data.main;
+	var index = data.index;
+	var mainItem = player.ZX.i[main];
+	console.log("before ZX:", player.ZX);
+	if(!mainItem) {
+		return callback("not the mainItem");		
+	}
+	redis.command(function(client) {
+		astrologyDao.get(data.Key, function(err, res) {
+			if(err) {redis.release(client); callback(err);}
+			if(!res) {redis.release(client);callback("Operator error");return;}
+			var astrology = JSON.parse(res);
+			var items = astrology.items;
+			var otherItem = items[index];
+			if(!otherItem) {
+				return callback("not item");
+			}
+			var experience = getExperience(otherItem);
+			addExperience(mainItem, experience);
+			items[index]=null;
+			cleanArray(items);
+			var array = [
+				["select", redisConfig.database.SEAKING_REDIS_DB],
+				["hset", data.Key, "astrology", JSON.stringify(astrology)],
+				["hset", data.PKey, "ZX", JSON.stringify(player.ZX)]
+			];
+			console.log("after ZX:", player.ZX);
+			console.log(array);
+			client.multi(array).exec(function(err, res) {
+				redis.release(client);
+				callback(err, {gold: player.gameCurrency, money: player.money, ZX:player.ZX,astrology: astrology});
+			});
+		});
+	});
+}
 astrologyDao.onceMerger  = function(data, player, callback) {
 	var main = data.main
 		,index = data.index;
@@ -680,7 +717,7 @@ astrologyDao.onceMerger  = function(data, player, callback) {
 				redis.release(client);
 				callback(err, {gold: player.gameCurrency, money: player.money, ZX:player.ZX,astrology: astrology});
 			});
-		});
+		},client);
 	});
 }
 

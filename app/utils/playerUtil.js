@@ -406,12 +406,14 @@ var defaultZX = function(level) {
         c: c
     };
 }
+var Pets = require("../domain/pet").Pets;
 playerUtil.getCharacter = function(opts) {
     var hero = dataApi.herosV2.findById(opts.cId);
 
     var skills = new Skills(opts);
+    var pets = new Pets(opts.replies.pets).update();
     var character = {
-        pets: opts.replies.pets ? JSON.parse(opts.replies.pets) : [],
+        pets:  pets,
         ZX: opts.replies.ZX ? JSON.parse(opts.replies.ZX) : defaultZX(opts.level) ,
         id: "S" + opts.serverId + "C" + opts.characterId,
         characterId: "S" + opts.serverId + "C" + opts.characterId,
