@@ -466,12 +466,13 @@ module.exports = {
         AWAKEN_ENHANCE_TRIGGERSKILL: "22",//唤醒触发技能
         FREEZE: "23",//冻结
         TURN_DAMAGE: "24",//反伤
-        ADDBLOCK: "25",
+        ADDBLOCK: "25",//增加格挡
         KING_WILL: "26",//君王意志
         IGNORE_SKILL: "27",//忽视技能影响
         ADDDAMAGE: "28",//伤害提升
         IMMUNE_FREEZE: "29",//免疫冻结
-        NODAMAGE_EXCEPT_ATTACK: "30"//不承受主动攻击之外的任何伤害
+        NODAMAGE_EXCEPT_ATTACK: "30",//不承受主动攻击之外的任何伤害
+        EXCHANGE_HP_ATTACK: "31"//置换生命值和攻击力
     },
 
     buffCategory: {
