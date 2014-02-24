@@ -617,6 +617,18 @@ fightUtil.scopeDamage = function(attackSide, attack_formation, defense_formation
     //检查是否有抵消攻击护盾
     var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
     if(flag) {
+        for(var i in defenses) {
+            if(defenses[i].died)
+                continue;
+            var target = {
+                id: defenses[i].id,
+                fId: defenses[i].formationId,
+                hp: defenses[i].hp,
+                reduceBlood: 0,
+                buffs: defenses[i].getBuffs()
+            };
+            fightData.target.push(target);
+        }
         //更新防守buff
         fightUtil.removeOffsetShield(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         return;
