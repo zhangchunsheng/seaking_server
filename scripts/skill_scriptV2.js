@@ -66,12 +66,14 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.AFTER_DIE;
     } else if(buffType == constsV2.buffTypeV2.ADDDAMAGE) {
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.OFFSET_SHIELDS) {
+        buffCategory = constsV2.buffCategory.DEFENSE;
     }
     return buffCategory;
 }
 
 function getSkillBuff(buffType, skill, buffData) {
-    var effectId = "XG" + skill.skillId;
+    var effectId = "XG" + skill.skillId.replace("SK","");
     var buff = new BuffV2({
         buffId: skill.skillId.replace("SK", ""),
         useEffectId: effectId,
@@ -88,7 +90,7 @@ function getSkillBuff(buffType, skill, buffData) {
 }
 
 function getTeamSkillBuff(buffType, skill, buffData) {
-    var effectId = "XG" + skill.skillId;
+    var effectId = "XG" + skill.skillId.replace("SK","");
     var buff = new BuffV2({
         buffId: skill.skillId.replace("SK", ""),
         useEffectId: effectId,
@@ -362,7 +364,7 @@ var skill_script = {
                 value: -1
             };
             attackData.skillId = this.skillId;
-            var buff = getTeamSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+            var buff = getTeamSkillBuff(constsV2.buffTypeV2.OFFSET_SHIELDS, this, buffData);
             attackFightTeam.addBuff(buff);
             return 100;
         } else {
@@ -406,7 +408,7 @@ var skill_script = {
         var buffData = {
             value: 3
         };
-        var buff = getSkillBuff(constsV2.buffTypeV2.SHIELDS, this, buffData);
+        var buff = getSkillBuff(constsV2.buffTypeV2.OFFSET_SHIELDS, this, buffData);
         team.addBuff(buff);
         return 100;
     },
@@ -1392,7 +1394,29 @@ var skill_script = {
      * @param defenseData
      */
     "skill207201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.5
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE_THREETIME, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 每次主动攻击都会附带一个额外的随机目标，额外目标受到40%的伤害

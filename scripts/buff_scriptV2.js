@@ -253,6 +253,11 @@ var buff_script = {
         return 0;
     },
     "buff207101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        //如果存在觉醒技能,则优先使用觉醒技能
+        var buffs = attack.buffs;
+        if(buffUtil.hasBuff("207201", buffs)) {
+            return 0;
+        }
         attack.fightValue.attackType = constsV2.attackType.ALL;
         attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;//重新计算攻击力
 
@@ -260,6 +265,13 @@ var buff_script = {
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
+        //检查是否有抵消攻击护盾
+        var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
+        if(flag) {
+            //更新防守buff
+            fightUtil.removeOffsetShield(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            return 1;
+        }
         var player = fightUtil.checkReduceScopeDamage(defenses);//减群体伤害
         var opts;
         if(player != null) {
@@ -285,8 +297,32 @@ var buff_script = {
 
         return 1;
     },
+    /**
+     * 生命值低于40%以后，攻击减半，但是攻击全部变为群体攻击，并且每次攻击都分为3次进行
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff207201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        attack.fightValue.attackType = constsV2.attackType.ALL;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;//重新计算攻击力
+
+        attackData.attack = attack.fightValue.attack;
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OPPONENT;
+
+        fightUtil.scopeDamage(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        return 1;
     },
     "buff208101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var theTarget = fightData.target;
@@ -326,6 +362,13 @@ var buff_script = {
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
+        //检查是否有抵消攻击护盾
+        var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
+        if(flag) {
+            //更新防守buff
+            fightUtil.removeOffsetShield(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            return 1;
+        }
         var player = fightUtil.checkReduceScopeDamage(defenses);
         var opts = {};
         if(player != null) {

@@ -425,7 +425,7 @@ fightUtil.attack = function(opts, attackSide, attack_formation, defense_formatio
         return;
     var triggerCondition = {};
     
-    defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    defense.useSkillBuffsWithNoTeam(consts.characterFightType.DEFENSE, consts.buffCategory.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
     // 计算战斗
     defenseData.defense = defense.fightValue.defense;
@@ -549,7 +549,7 @@ fightUtil.attack = function(opts, attackSide, attack_formation, defense_formatio
         fightUtil.updateDefenseData(defense, defenseData);
         fightUtil.checkDied(defense, defenseData);
 
-        defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        defense.useSkillBuffsWithNoTeam(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         // 守方
         // 增加怒气
@@ -580,7 +580,7 @@ fightUtil.attack = function(opts, attackSide, attack_formation, defense_formatio
 }
 
 /**
- *
+ * hasSkill
  * @param skill
  * @param players
  * @returns {null}
@@ -596,6 +596,95 @@ fightUtil.hasSkill = function(skill, players) {
         }
     }
     return player;
+}
+
+/**
+ * 群体攻击
+ * @param attackSide
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param defense
+ * @param attacks
+ * @param defenses
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ * @param fightData
+ * @param attackData
+ * @param defenseData
+ */
+fightUtil.scopeDamage = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    //检查是否有抵消攻击护盾
+    var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
+    if(flag) {
+        //更新防守buff
+        fightUtil.removeOffsetShield(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        return;
+    }
+    var player = fightUtil.checkReduceScopeDamage(defenses);//减群体伤害
+    var opts;
+    if(player != null) {
+        opts = {
+            type: consts.buffTypeV2.REDUCE_SCOPE_DAMAGE,
+            player: player,
+            damage: 0,
+            damageInfo: []
+        };
+        for(var i in defenses) {
+            fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        }
+        fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+    } else {
+        opts = {
+            damage: 0,
+            damageInfo: []
+        };
+        for(var i in defenses) {
+            fightUtil.attack(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        }
+    }
+}
+
+/**
+ * 抵消群体伤害
+ * @param defenseFightTeam
+ */
+fightUtil.checkOffsetScopeDamage = function(defenseFightTeam) {
+    var buffType = consts.buffTypeV2.OFFSET_SHIELDS;
+    for(var i = 0 ; i < defenseFightTeam.buffs.length ; i++) {
+        if(defenseFightTeam.buffs[i].buffType == buffType) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * removeOffsetShield
+ * @param attackSide
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param defense
+ * @param attacks
+ * @param defenses
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ * @param fightData
+ * @param attackData
+ * @param defenseData
+ * @returns {number}
+ */
+fightUtil.removeOffsetShield = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var buffType = consts.buffTypeV2.OFFSET_SHIELDS;
+    var dataType = 0;
+    for(var i = 0 ; i < defenseFightTeam.buffs.length ; i++) {
+        if(defenseFightTeam.buffs[i].buffType == buffType) {
+            dataType = defenseFightTeam.buffs[i].invokeScript(attackSide, consts.buffCategory.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            break;
+        }
+    }
+    return dataType;
 }
 
 /**
@@ -620,7 +709,7 @@ fightUtil.calculateDamage = function(opts, attackSide, attack_formation, defense
         return;
     var triggerCondition = {};
 
-    defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    defense.useSkillBuffsWithNoTeam(consts.characterFightType.DEFENSE, consts.buffCategory.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
     // 计算战斗
     defenseData.defense = defense.fightValue.defense;
@@ -742,7 +831,7 @@ fightUtil.calculateDamage = function(opts, attackSide, attack_formation, defense
 
         fightUtil.updateDefenseData(defense, defenseData);
 
-        defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        defense.useSkillBuffsWithNoTeam(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         // 守方
         // 增加怒气

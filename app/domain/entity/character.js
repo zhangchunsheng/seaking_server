@@ -621,6 +621,54 @@ Character.prototype.useSkillBuffs = function(fightType, buffCategory, attack_for
     return dataType;
 }
 
+Character.prototype.useSkillBuffsWithNoTeam = function(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var dataTypes = [];
+    var dataType = 0;
+    if(buffCategory == consts.buffCategory.ATTACK) {
+        var skillBuffs = attack.getSkillBuffs();
+        var buffs = skillBuffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.ATTACK) {
+                dataType = buffs[i].invokeScript(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                dataTypes.push(dataType);
+            }
+        }
+        for(var i = 0 ; i < dataTypes.length ; i++) {
+            if(dataTypes[i] > 0) {
+                dataType = dataTypes[i];
+                break;
+            }
+        }
+    } else if(buffCategory == consts.buffCategory.DEFENSE) {
+        var skillBuffs = defense.getSkillBuffs();
+        var buffs = skillBuffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.DEFENSE) {
+                dataType = buffs[i].invokeScript(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                if(dataType == -1) {//不减血
+                    dataType = 0;
+                    dataTypes.push(dataType);
+                    break;
+                }
+                dataTypes.push(dataType);
+            }
+        }
+        for(var i = 0 ; i < dataTypes.length ; i++) {
+            if(dataTypes[i] > 0) {
+                dataType = dataTypes[i];
+                break;
+            }
+        }
+    } else if(buffCategory == consts.buffCategory.AFTER_DEFENSE) {
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    } else if(buffCategory == consts.buffCategory.ATTACKING) {
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    } else if(buffCategory == consts.buffCategory.AFTER_DIE) {
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    }
+    return dataType;
+}
+
 Character.prototype.useTeamSkillBuffs = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var dataTypes = [];
     var dataType = 0;

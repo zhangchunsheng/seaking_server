@@ -472,7 +472,10 @@ module.exports = {
         ADDDAMAGE: "28",//伤害提升
         IMMUNE_FREEZE: "29",//免疫冻结
         NODAMAGE_EXCEPT_ATTACK: "30",//不承受主动攻击之外的任何伤害
-        EXCHANGE_HP_ATTACK: "31"//置换生命值和攻击力
+        EXCHANGE_HP_ATTACK: "31",//置换生命值和攻击力
+        CHANGETO_SCOPE_DAMAGE_THREETIME: "32",//群体攻击
+        OFFSET_SHIELDS: "33",//抵消伤害护盾
+        CLEAR_AWAY: "34"//斩杀一个目标
     },
 
     buffCategory: {
