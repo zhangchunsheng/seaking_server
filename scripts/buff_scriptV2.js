@@ -531,7 +531,23 @@ var buff_script = {
         return 0;
     },
     "buff211201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= this.buffData.value) {
+            defense.fightValue.hp = defense.hp = 0;
+            var target = {
+                action: constsV2.defenseAction.beClearedAway,
+                id: defense.id,
+                fId: defense.formationId,
+                hp: defense.hp,
+                reduceBlood: defense.hp,
+                buffs: defense.getBuffs()
+            };
+            fightUtil.checkDied(defense, defenseData);
+            fightData.target.push(target);
+            return 1;
+        } else {
+            return 0;
+        }
     },
     "buff301101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var key = "attackTeam";

@@ -1712,7 +1712,29 @@ var skill_script = {
      * @param defenseData
      */
     "skill211201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 30
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.CLEAR_AWAY, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 每次攻击，用伤害的20%给己方随机目标回复生命
