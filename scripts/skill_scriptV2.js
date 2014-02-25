@@ -1474,7 +1474,32 @@ var skill_script = {
      * @param defenseData
      */
     "skill208201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.CLEAR_BAD_STATUS, this, buffData);
+        player.addBuff(buff);
+
+        //clear bad status
+        fightUtil.clearBadStatus(attack, attacks);
+        return 100;
     },
     /**
      * 主动攻击，会使下次的攻击变为全体攻击，并附加10%的吸血，但攻击力减半（一次单攻，之后群攻）

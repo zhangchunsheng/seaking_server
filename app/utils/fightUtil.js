@@ -997,6 +997,11 @@ fightUtil.recoverHp = function(attackSide, condition, attack_formation, defense_
     fightData.target.push(target);
 }
 
+/**
+ * getAttack
+ * @param attack
+ * @returns {*}
+ */
 fightUtil.getAttack = function(attack) {
     var attackValue = attack.fightValue.attack;
     if(attack.fight.addAttack > 0) {
@@ -1042,6 +1047,11 @@ fightUtil.updateRoundBuff = function(fightType, attack_formation, defense_format
     }
 }
 
+/**
+ * calculateHp
+ * @param player
+ * @param damage
+ */
 fightUtil.calculateHp = function(player, damage) {
     player.fightValue.hp = Math.ceil(player.fightValue.hp - damage);
     if(player.fightValue.hp < 0)
@@ -1061,6 +1071,12 @@ fightUtil.addHp = function(player, addHp) {
     player.hp = player.fightValue.hp;
 }
 
+/**
+ * getOtherPlayers
+ * @param player
+ * @param players
+ * @returns {Array}
+ */
 fightUtil.getOtherPlayers = function(player, players) {
     var results = [];
     for(var i in players) {
@@ -1073,6 +1089,11 @@ fightUtil.getOtherPlayers = function(player, players) {
     return results;
 }
 
+/**
+ * addPlayermateBuff
+ * @param attacks
+ * @param buff
+ */
 fightUtil.addPlayermateBuff = function(attacks, buff) {
     for(var i in attacks) {
         if(attacks[i].died) {
@@ -1082,6 +1103,12 @@ fightUtil.addPlayermateBuff = function(attacks, buff) {
     }
 }
 
+/**
+ * updatePlayermateBuff
+ * @param attacks
+ * @param buffId
+ * @param value
+ */
 fightUtil.updatePlayermateBuff = function(attacks, buffId, value) {
     var buffs;
     for(var i in attacks) {
@@ -1098,6 +1125,12 @@ fightUtil.updatePlayermateBuff = function(attacks, buffId, value) {
     }
 }
 
+/**
+ * updateDodge
+ * @param defense
+ * @param dodge
+ * @returns {*}
+ */
 fightUtil.updateDodge = function(defense, dodge) {
     if(defense.fight.addDodge > 0) {
         defense.fight.addDodgeValue = defense.fight.addDodge * 100;
@@ -1106,18 +1139,42 @@ fightUtil.updateDodge = function(defense, dodge) {
     return dodge;
 }
 
+/**
+ * getAptitudeData
+ * @param cId
+ * @returns {Obj|SkinCollection}
+ */
 fightUtil.getAptitudeData = function(cId) {
     var heroId = utils.getCategoryHeroId(cId);
     var aptitudeData = dataApi.aptitudes.findById(heroId);
     return aptitudeData;
 }
 
+/**
+ * getGhostData
+ * @param cId
+ * @returns {*}
+ */
 fightUtil.getGhostData = function(cId) {
     var heroId = utils.getCategoryHeroId(cId);
     var ghostData = ghosts[heroId];
     return ghostData;
 }
 
+/**
+ * counter
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param defense
+ * @param attacks
+ * @param defences
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ * @param fightData
+ * @param attackData
+ * @param defenseData
+ */
 fightUtil.counter = function(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var triggerCondition = {
         type: consts.skillTriggerConditionType.COUNTER
@@ -1135,4 +1192,13 @@ fightUtil.counter = function(attack_formation, defense_formation, attack, defens
     //反击触发觉醒技能
     attack.hp = attack.fightValue.hp;
     fightUtil.checkDied(attack, attackData);
+}
+
+/**
+ * clearBadStatus 清除不良效果
+ * @param player
+ * @param players
+ */
+fightUtil.clearBadStatus = function(player, players) {
+
 }

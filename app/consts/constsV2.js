@@ -475,7 +475,8 @@ module.exports = {
         EXCHANGE_HP_ATTACK: "31",//置换生命值和攻击力
         CHANGETO_SCOPE_DAMAGE_THREETIME: "32",//群体攻击
         OFFSET_SHIELDS: "33",//抵消伤害护盾
-        CLEAR_AWAY: "34"//斩杀一个目标
+        CLEAR_BAD_STATUS: "34",//清除不良状态
+        CLEAR_AWAY: "35"//斩杀一个目标
     },
 
     buffCategory: {
