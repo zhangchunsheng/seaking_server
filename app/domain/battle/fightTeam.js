@@ -54,6 +54,7 @@ FightTeam.prototype.removeBuff = function(buff) {
     for(var i = 0, l = this.buffs.length ; i < l ; i++) {
         if(this.buffs[i].buffId == buff.buffId) {
             this.buffs.splice(i, 1);
+            break;
         }
     }
 };

@@ -621,6 +621,7 @@ fightUtil.scopeDamage = function(attackSide, attack_formation, defense_formation
             if(defenses[i].died)
                 continue;
             var target = {
+                action: consts.defenseAction.offsetDamage,
                 id: defenses[i].id,
                 fId: defenses[i].formationId,
                 hp: defenses[i].hp,

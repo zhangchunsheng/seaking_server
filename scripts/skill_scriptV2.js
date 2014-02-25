@@ -66,6 +66,14 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.AFTER_DIE;
     } else if(buffType == constsV2.buffTypeV2.ADDDAMAGE) {
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.IMMUNE_FREEZE) {
+        //buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.NODAMAGE_EXCEPT_ATTACK) {
+        //buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.EXCHANGE_HP_ATTACK) {
+        //buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE_THREETIME) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.OFFSET_SHIELDS) {
         buffCategory = constsV2.buffCategory.DEFENSE;
     }

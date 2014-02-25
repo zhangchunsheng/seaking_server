@@ -272,6 +272,7 @@ var buff_script = {
                 if(defenses[i].died)
                     continue;
                 var target = {
+                    action: constsV2.defenseAction.offsetDamage,
                     id: defenses[i].id,
                     fId: defenses[i].formationId,
                     hp: defenses[i].hp,
@@ -381,6 +382,7 @@ var buff_script = {
                 if(defenses[i].died)
                     continue;
                 var target = {
+                    action: constsV2.defenseAction.offsetDamage,
                     id: defenses[i].id,
                     fId: defenses[i].formationId,
                     hp: defenses[i].hp,
