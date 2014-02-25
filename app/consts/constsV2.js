@@ -630,7 +630,8 @@ module.exports = {
         counter: 3,
         block: 4,
         addHp: 5,
-        offsetDamage: 6
+        offsetDamage: 6,
+        beClearedAway: 7
     },
 
     requirementType: {

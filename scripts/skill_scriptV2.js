@@ -76,6 +76,10 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.OFFSET_SHIELDS) {
         buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.CLEAR_BAD_STATUS) {
+        //buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.CLEAR_AWAY) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -490,6 +494,7 @@ var skill_script = {
             value: 10
         };
         player.fightValue.hp += player.fightValue.sunderArmor * buffData.value;
+        player.hp = player.fightValue.hp;
         var buff = getSkillBuff(constsV2.buffTypeV2.ADDHP, this, buffData);
         player.addBuff(buff);
         return 100;
@@ -568,6 +573,7 @@ var skill_script = {
             value: 100
         };
         attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffData.value / 100);
+        attack.hp = attack.fightValue.hp;
         fightUtil.checkDied(attack, attackData);
         var buff = getSkillBuff(constsV2.buffTypeV2.TURN_DAMAGE, this, buffData);
         player.addBuff(buff);
@@ -800,6 +806,8 @@ var skill_script = {
         playerData.addMaxHp = addMaxHp;
         player.fightValue.maxHp += addMaxHp;
         player.fightValue.hp += addMaxHp;
+
+        player.hp = player.fightValue.hp;
 
         return 100;
     },
@@ -1186,6 +1194,7 @@ var skill_script = {
             value: 5
         };
         player.fightValue.hp += player.fightValue.sunderArmor * buffData.value;
+        player.hp = player.fightValue.hp;
         var buff = getSkillBuff(constsV2.buffTypeV2.ADDHP, this, buffData);
         player.addBuff(buff);
         return 100;
@@ -1348,9 +1357,11 @@ var skill_script = {
         if(opponet != null) {
             player.fightValue.hp = opponet.fightValue.hp;
             player.fightValue.attack = opponet.fightValue.attack;
+            player.hp = player.fightValue.hp;
 
             opponet.fightValue.hp = hp;
             opponet.fightValue.attack = attack;
+            opponet.hp = opponet.fightValue.hp;
         }
         return 100;
     },
@@ -1550,7 +1561,29 @@ var skill_script = {
      * @param defenseData
      */
     "skill209201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.05
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.CLEAR_AWAY, this, buffData);
+        player.addBuff(buff);
+        return 100;
     },
     /**
      * 战斗中，攻击会附带20%的溅射伤害

@@ -169,10 +169,10 @@ var buffUpdate_script = {
             if(attack.fightValue.attackType == constsV2.attackType.ALL) {
                 attack.fightValue.attackType = constsV2.attackType.SINGLE;
                 attack.fightValue.attack = Math.ceil(attack.fightValue.attack / this.buffData.value);
-                attack.fight.addHp = 0;
-                attack.fight.addHpValue = 0;
-                attack.removeBuff(this);
             }
+            attack.fight.addHp = 0;
+            attack.fight.addHpValue = 0;
+            attack.removeBuff(this);
         }
     },
     "buff209201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {

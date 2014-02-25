@@ -375,6 +375,11 @@ var buff_script = {
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
+        var buffs = attack.buffs;
+        if(buffUtil.hasBuff("209201", buffs)) {
+            return 0;
+        }
+
         //检查是否有抵消攻击护盾
         var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
         if(flag) {
@@ -426,8 +431,43 @@ var buff_script = {
 
         return 1;
     },
+    /**
+     * 生命值低于40%以后，攻击力恢复，但是能攻击一个目标，如果目标生命值低于5% ，则直接斩杀
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff209201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        if(attack.fightValue.attackType == constsV2.attackType.ALL) {
+            attack.fightValue.attackType = constsV2.attackType.SINGLE;
+            attack.fightValue.attack = Math.ceil(attack.fightValue.attack / 0.5);
+        }
+        if(defense.fightValue.hp <= defense.fightValue.maxHp * this.buffData.value) {
+            defense.fightValue.hp = defense.hp = 0;
+            var target = {
+                action: constsV2.defenseAction.beClearedAway,
+                id: defense.id,
+                fId: defense.formationId,
+                hp: defense.hp,
+                reduceBlood: defense.hp,
+                buffs: defense.getBuffs()
+            };
+            fightUtil.checkDied(defense, defenseData);
+            fightData.target.push(target);
+            return 1;
+        } else {
+            return 0;
+        }
     },
     "buff210101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var theTarget = fightData.target;
