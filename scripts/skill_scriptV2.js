@@ -80,6 +80,8 @@ function getBuffCategory(buffType) {
         //buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.CLEAR_AWAY) {
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.STUNT) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -1616,8 +1618,49 @@ var skill_script = {
         attack.addBuff(buff);
         return 100;
     },
+    /**
+     * 死亡时，是敌方生命值最多的单位攻击力变为0，持续两次
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill210201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var opponent;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            opponent = fightUtil.getPlayerWithMaxHp(defenses);
+        } else {
+            player = defense;
+            playerData = defenseData;
+            opponent = fightUtil.getPlayerWithMaxHp(attacks);
+        }
 
+        var buffs = opponent.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 2
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.STUNT, this, buffData);
+        opponent.addBuff(buff);
+        return 100;
     },
     /**
      * 战斗中，每次攻击提供5%的攻击力，效果无限叠加
@@ -1652,6 +1695,22 @@ var skill_script = {
         attack.fight.addAttack += buff.buffData.value;
         return 100;
     },
+    /**
+     * 生命值低于20%之后，有30%的几率对攻击目标进行秒杀
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill211201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },

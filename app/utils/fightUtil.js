@@ -1202,3 +1202,21 @@ fightUtil.counter = function(attack_formation, defense_formation, attack, defens
 fightUtil.clearBadStatus = function(player, players) {
 
 }
+
+/**
+ * 获得生命值最多的单位
+ * @param players
+ */
+fightUtil.getPlayerWithMaxHp = function(players) {
+    var player = null;
+    var maxHp = 0;
+    for(var i in players) {
+        if(players[i].died)
+            continue;
+        if(players[i].fightValue.hp > maxHp) {
+            maxHp = players[i].fightValue.hp;
+            player = players[i];
+        }
+    }
+    return player;
+}

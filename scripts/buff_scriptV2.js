@@ -496,7 +496,34 @@ var buff_script = {
             fightData.target.push(target);
         }
     },
+    /**
+     * 死亡时，是敌方生命值最多的单位攻击力变为0，持续两次
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff210201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        if(this.buffData.value > 0) {
+            if(attack.fightValue.attack != 0) {
+                attack.fightValue.lastAttack = attack.fightValue.attack;
+                attack.fightValue.attack = 0;
+            }
+            this.buffData.value--;
+        }
+        if(this.buffData.value == 0) {
+            attack.fightValue.attack = attack.fightValue.lastAttack;
+            attack.removeBuff(this);
+        }
         return 0;
     },
     "buff211101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {

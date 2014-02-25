@@ -604,7 +604,7 @@ var triggerSkill_script = {
             player = defense;
         }
 
-        if(player.fightValue.hp == 0) {
+        if(player.fightValue.hp <= 0) {
             return true;
         } else {
             return false;
@@ -646,14 +646,68 @@ var triggerSkill_script = {
     "skill210101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 死亡时，是敌方生命值最多的单位攻击力变为0，持续两次
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill210201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+        } else if(attackSide == constsV2.characterFightType.DEFENSE) {
+            player = defense;
+        }
 
+        if(player.fightValue.hp <= 0) {
+            return true;
+        } else {
+            return false;
+        }
     },
     "skill211101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
+    /**
+     * 生命值低于20%之后，有30%的几率对攻击目标进行秒杀
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill211201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+        } else if(attackSide == constsV2.characterFightType.DEFENSE) {
+            player = defense;
+        }
 
+        if(player.fightValue.hp < player.maxHp * 0.2) {
+            return true;
+        } else {
+            return false;
+        }
     },
     "skill301101": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
