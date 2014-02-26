@@ -477,7 +477,8 @@ module.exports = {
         OFFSET_SHIELDS: "33",//抵消伤害护盾
         CLEAR_BAD_STATUS: "34",//清除不良状态
         CLEAR_AWAY: "35",//斩杀一个目标
-        STUNT: "36"//禁锢
+        STUNT: "36",//禁锢
+        STASIS: "37"//停滞
     },
 
     buffCategory: {

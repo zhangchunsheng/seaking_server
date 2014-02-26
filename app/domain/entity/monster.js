@@ -217,6 +217,7 @@ Enemy.prototype.calculateBuff = function() {
     this.fight.addDodgeValue = 0;
     this.fight.ice = false;
     this.fight.silence = false;
+    this.fight.stasis = false;
 }
 
 //Convert player' state to json and return

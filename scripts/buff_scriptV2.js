@@ -567,7 +567,9 @@ var buff_script = {
         return 0;
     },
     "buff301201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        attack.fight.stasis = true;
+        attack.removeBuff(this);
+        return 1;
     },
     "buff302101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addHp += this.buffData.value;

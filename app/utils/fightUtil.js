@@ -89,6 +89,9 @@ fightUtil.updateAttackData = function(attack, attackData) {
     if(attack.fight.addDamage > 0) {
         attackData.addDamage = attack.fight.addDamage;
     }
+    if(attack.fight.stasis) {
+        attackData.stasis = attack.fight.stasis;
+    }
 }
 
 fightUtil.updateDefenseData = function(defense, defenseData) {
@@ -275,6 +278,9 @@ fightUtil.changeFightData = function(fightData, attackData) {
     }
     if(attackData.addDamage) {
         fightData.addDamage = attackData.addDamage;
+    }
+    if(attackData.stasis) {
+        fightData.stasis = attackData.stasis;
     }
 }
 

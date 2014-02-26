@@ -50,7 +50,7 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACKING;
     } else if(buffType == constsV2.buffTypeV2.PROMOTEHP) {//提升血量
         buffCategory = constsV2.buffCategory.ATTACKING;
-    } else if(buffType == constsV2.buffTypeV2.ADDDODGE) {
+    } else if(buffType == constsV2.buffTypeV2.ADDDODGE) {//提升闪避
         buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.ICE) {//冰冻
         buffCategory = constsV2.buffCategory.ATTACK;
@@ -81,6 +81,8 @@ function getBuffCategory(buffType) {
     } else if(buffType == constsV2.buffTypeV2.CLEAR_AWAY) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.STUNT) {
+        buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.STASIS) {
         buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
@@ -1767,8 +1769,49 @@ var skill_script = {
         attack.addBuff(buff);
         return 100;
     },
+    /**
+     * 战斗中杀死该单位的战斗角色，停滞一回合
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill301201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var opponent;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            opponent = defense;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            opponent = attack;
+        }
 
+        var buffs = opponent.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.STASIS, this, buffData);
+        opponent.addBuff(buff);
+        return 100;
     },
     /**
      * 主动攻击有75%的几率给己方附加一个吸血buff，使其下次攻击附加10%的攻击吸血
