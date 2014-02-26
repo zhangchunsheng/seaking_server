@@ -1250,6 +1250,7 @@ fightUtil.addBuff = function(players, buffId, buff) {
         buffs = players[i].buffs;
         for(var j = 0, l = buffs.length ; j < l ; j++) {
             if(buffs[j].buffId == buffId) {
+                buffs[j].buffData = buff.buffData;
                 flag = true;
                 break;
             }

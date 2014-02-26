@@ -622,6 +622,9 @@ var buff_script = {
         return 0;
     },
     "buff304201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var addDefense = 0;
+        addDefense = Math.pow((1 + this.buffData.value), this.buffData.time);
+        defense.fight.addDefense += addDefense;
         return 0;
     },
     "buff305101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {

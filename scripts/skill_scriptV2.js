@@ -2028,6 +2028,7 @@ var skill_script = {
         var player;
         var playerData;
         var players;
+        var value = 0.02;
         if(attackSide == constsV2.characterFightType.ATTACK) {
             player = attack;
             playerData = attackData;
@@ -2038,11 +2039,14 @@ var skill_script = {
             players = defenses;
         }
 
+        var time = Math.floor(((player.fightValue.maxHp - player.fightValue.hp) / player.fightValue.maxHp) * 10);
+
         var buffId = this.skillId.replace("SK", "");
         var buffData = {
-            value: 0.02
+            value: value,
+            time: time
         };
-        var buff = getSkillBuff(constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE, this, buffData);
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDDEFENSE, this, buffData);
 
         fightUtil.addBuff(players, buffId, buff);
 
