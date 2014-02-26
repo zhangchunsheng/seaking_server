@@ -451,10 +451,10 @@ module.exports = {
         REDUCE_SCOPE_DAMAGE: "7",//减范围伤害
         CHANGETO_SCOPE_DAMAGE: "8",//改变为范围伤害
         ADDATTACK: "9",//加攻击力
-        ADDSUNDERARMOR: "10",//加护甲
+        ADDSUNDERARMOR: "10",//加破甲
         POISON: "11",//施毒
         ADDHP: "12",//加血
-        REDUCEATTACK_ADDSUNDERARMOR: "13",//减攻击力加护甲
+        REDUCEATTACK_ADDSUNDERARMOR: "13",//减攻击力加破甲
         EXTRATARGET: "14",//额外目标
         CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15",//改变为范围伤害并且加血
         PARALLELDAMAGE: "16",//溅射
@@ -478,7 +478,8 @@ module.exports = {
         CLEAR_BAD_STATUS: "34",//清除不良状态
         CLEAR_AWAY: "35",//斩杀一个目标
         STUNT: "36",//禁锢
-        STASIS: "37"//停滞
+        STASIS: "37",//停滞
+        ADDDEFENSE: "38"//加护甲
     },
 
     buffCategory: {

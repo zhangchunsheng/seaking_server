@@ -297,7 +297,7 @@ var buff_script = {
             for(var i in defenses) {
                 fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             }
-            fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+            fightUtil.calculateScopeDamage(opts, this, attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else {
             opts = {
                 damage: 0,
@@ -412,7 +412,7 @@ var buff_script = {
             for(var i in defenses) {
                 fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             }
-            fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+            fightUtil.calculateScopeDamage(opts, this, attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else {
             opts = {
                 damage: 0,
@@ -588,8 +588,34 @@ var buff_script = {
         attack.removeBuff(this);
         return 0;
     },
+    /**
+     * 生命值进入低于40%的状态，下次攻击牺牲所有生命值，对敌方全体造成当前生命值的一半的伤害
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff303201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        attack.fightValue.attackType = constsV2.attackType.ALL;
+        attack.fight.swanWeave = this.buffData.value;
+
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OPPONENT;//作用目标
+
+        fightUtil.scopeDamage(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+        attack.fightValue.hp = attack.hp = 0;
+        fightUtil.checkDied(attack, attackData);
+        return 1;
     },
     "buff304101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addAttack += this.buffData.value;

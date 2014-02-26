@@ -84,6 +84,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.STASIS) {
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.ADDDEFENSE) {
+        buffCategory = constsV2.buffCategory.DEFENSE;
     }
     return buffCategory;
 }
@@ -1923,8 +1925,45 @@ var skill_script = {
         attack.addBuff(buff);
         return 100;
     },
+    /**
+     * 生命值进入低于40%的状态，下次攻击牺牲所有生命值，对敌方全体造成当前生命值的一半的伤害
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill303201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var players;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            players = attacks;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            players = defenses;
+        }
 
+        var buffId = this.skillId.replace("SK", "");
+        var buffData = {
+            value: 0.5
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE, this, buffData);
+
+        fightUtil.addBuff(players, buffId, buff);
+
+        return 100;
     },
     /**
      * 每次主动攻击，都给己方全体增加1%的攻击力，最多叠加十次
@@ -1969,8 +2008,45 @@ var skill_script = {
         fightUtil.addPlayermateBuff(attacks, buff);
         return 100;
     },
+    /**
+     * 每损失10%的生命值，己方所有单位护甲提升2%
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill304201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var players;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            players = attacks;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            players = defenses;
+        }
 
+        var buffId = this.skillId.replace("SK", "");
+        var buffData = {
+            value: 0.02
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE, this, buffData);
+
+        fightUtil.addBuff(players, buffId, buff);
+
+        return 100;
     },
     /**
      * 主动攻击变成给己方生命值百分比最少的单位回复生命值

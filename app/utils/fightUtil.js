@@ -652,7 +652,7 @@ fightUtil.scopeDamage = function(attackSide, attack_formation, defense_formation
         for(var i in defenses) {
             fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         }
-        fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+        fightUtil.calculateScopeDamage(opts, this, attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     } else {
         opts = {
             damage: 0,
@@ -902,12 +902,12 @@ fightUtil.checkReduceScopeDamage = function(defenses) {
 }
 
 /**
- * calculateScopeDamage
+ * calculateScopeDamage 承受所有伤害
  * @param opts
  * @param defense
  * @param fightData
  */
-fightUtil.calculateScopeDamage = function(opts, buff, defense, defenseData, fightData) {
+fightUtil.calculateScopeDamage = function(opts, buff, attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var damage = opts.damage;
     if(damage > defense.fightValue.hp * buff.value) {
         damage = defense.fightValue.hp * buff.value;
@@ -928,6 +928,13 @@ fightUtil.calculateScopeDamage = function(opts, buff, defense, defenseData, figh
             }
             target[i].hp = defense.fightValue.hp;
             target[i].reduceBlood = damage;
+
+            //触发觉醒技能
+            var awakenCondition = {
+                type: consts.skillTriggerConditionType.AWAKEN
+            };
+            defense.awakenSkill(consts.characterFightType.DEFENSE, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+
             fightUtil.checkDied(defense, defenseData);
             break;
         }

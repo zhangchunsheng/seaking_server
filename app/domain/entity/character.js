@@ -142,7 +142,8 @@ var Character = function(opts) {
         ice: false,
         silence: false,
         ignore_skill: false,
-        addDamage: 0
+        addDamage: 0,
+        swanWeave: 0
     };
 
     this.hasUpgrade = false;
