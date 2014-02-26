@@ -1850,8 +1850,45 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 死亡之后，己方所有单位获得5%的吸血效果
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill302201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var players;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            players = attacks;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            players = defenses;
+        }
 
+        var buffId = this.skillId.replace("SK", "");
+        var buffData = {
+            value: 0.05
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.ADDHP, this, buffData);
+
+        fightUtil.addBuff(players, buffId, buff);
+
+        return 100;
     },
     /**
      * 每次主动攻击，觉醒技触发时的生命值提升1%

@@ -25,7 +25,7 @@ var id = 1;
 var Entity = function(opts) {
     EventEmitter.call(this);
     this.entityId = id++;
-    this.kindId = Number(opts.kindId);
+    this.kindId = opts.kindId;
     this.kindName = opts.kindName;
     this.englishName = opts.englishName;
     this.type = opts.type;

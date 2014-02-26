@@ -769,7 +769,7 @@ var triggerSkill_script = {
             player = defense;
         }
 
-        if(player.fightValue.hp == 0) {
+        if(player.fightValue.hp <= 0) {
             return true;
         } else {
             return false;

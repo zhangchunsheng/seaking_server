@@ -755,6 +755,7 @@ Fight.createTestPlayer = function(opts) {
     var data = {
         id: heroId,
         kindId: heroId,
+        cId: heroId,
         formationId: formationId,
         type: type,
         hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
@@ -782,6 +783,7 @@ Fight.createTestPlayer = function(opts) {
         counter: formulaV2.calculateCounter(hero.counter, level),
         level: level,
         ghost: {level:0},
+        ghostNum: 1,
         aptitude: {1:{"level":0,"count":50}},
         skills: skills
     };

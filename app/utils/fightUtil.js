@@ -1226,3 +1226,29 @@ fightUtil.getPlayerWithMaxHp = function(players) {
     }
     return player;
 }
+
+/**
+ * addBuff
+ * @param players
+ * @param buffId
+ * @param buff
+ */
+fightUtil.addBuff = function(players, buffId, buff) {
+    var buffs = [];
+    var flag = false;
+    for(var i in players) {
+        if(players[i].died)
+            continue;
+        flag = false;
+        buffs = players[i].buffs;
+        for(var j = 0, l = buffs.length ; j < l ; j++) {
+            if(buffs[j].buffId == buffId) {
+                flag = true;
+                break;
+            }
+        }
+        if(!flag) {
+            players[i].addBuff(buff);
+        }
+    }
+}
