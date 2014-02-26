@@ -9,6 +9,7 @@ var gmService = require('../app/services/gmService');
 var userService = require('../app/services/userService');
 var taskService = require('../app/services/taskService');
 var equipmentsService = require('../app/services/equipmentsService');
+var packageService = require('../app/services/packageService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -61,7 +62,14 @@ exports.resetTask = function(req, res) {
 
     var data = {};
     userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {//S1_T2_w106451_C10212
-        if(err) {
+        if(err || reply == null) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
             data = {
                 code: Code.FAIL
             };
@@ -126,11 +134,19 @@ exports.updateMoney = function(req, res) {
 
     var data = {};
     userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
-        if(err) {
+        if(err || reply == null) {
             data = {
                 code: Code.FAIL
             };
             utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
         }
 
         var registerType = 0;
@@ -144,6 +160,78 @@ exports.updateMoney = function(req, res) {
 
         userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
             character.updateMoney(money);
+
+            async.parallel([
+                function(callback) {
+                    userService.updatePlayerAttribute(character, callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    code: Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        });
+    });
+}
+
+/**
+ * 更新金币
+ * @param req
+ * @param res
+ */
+exports.updateGold = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var gameCurrency = msg.gameCurrency;
+    var nickname = msg.nickname;
+    var serverId = region.serverId;
+
+    if(typeof gameCurrency == "undefined" || gameCurrency == "" || gameCurrency == 0) {
+        data = {
+            code: Code.FAIL
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    if(typeof nickname == "undefined" || nickname == "" || nickname == 0) {
+        data = {
+            code: Code.FAIL
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var data = {};
+    userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
+        if(err || reply == null) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var registerType = 0;
+        var loginName = "";
+        var characterId = 0;
+
+        var array = reply.split("_");
+        registerType = array[1].replace("T", "");
+        loginName = array[2];
+        characterId = array[3].replace("C", "");
+
+        userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
+            character.updateGameCurrency(gameCurrency);
 
             async.parallel([
                 function(callback) {
@@ -190,11 +278,19 @@ exports.updateExp = function(req, res) {
 
     var data = {};
     userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
-        if(err) {
+        if(err || reply == null) {
             data = {
                 code: Code.FAIL
             };
             utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
         }
 
         var registerType = 0;
@@ -220,6 +316,68 @@ exports.updateExp = function(req, res) {
                 data = {
                     code: Code.OK,
                     exp: exp
+                };
+                utils.send(msg, res, data);
+            });
+        });
+    });
+}
+
+/**
+ * clearPackage
+ * @param req
+ * @param res
+ */
+exports.clearPackage = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var nickname = msg.nickname;
+    var serverId = region.serverId;
+
+    if(typeof nickname == "undefined" || nickname == "" || nickname == 0) {
+        data = {
+            code: Code.FAIL
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var data = {};
+    userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
+        if(err || reply == null) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var registerType = 0;
+        var loginName = "";
+        var characterId = 0;
+
+        var array = reply.split("_");
+        registerType = array[1].replace("T", "");
+        loginName = array[2];
+        characterId = array[3].replace("C", "");
+
+        userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
+            character.packageEntity.clearPackage();
+            async.parallel([
+                function(callback) {
+                    packageService.update(character.packageEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    code: Code.OK
                 };
                 utils.send(msg, res, data);
             });

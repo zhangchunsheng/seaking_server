@@ -43,6 +43,38 @@ exports.test = function(req, res) {
 
     });
 }
+exports.clean = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        player.packageEntity.items={};
+        var data = {};
+        async.parallel([
+            function(callback) {
+                userService.updatePlayerAttribute(player, callback);
+            },
+            function(callback) {
+                packageService.update(player.packageEntity.strip(), callback);
+            },
+            function(callback) {
+                equipmentsService.update(player.equipmentsEntity.strip(), callback);
+            },
+            function(callback) {
+                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
+            }
+        ], function(err, reply) {
+            utils.send(msg, res, data);
+        });
+    });
+}
 /**
  * 添加物品
  * @param req
@@ -205,8 +237,9 @@ exports.sellItem = function(req, res) {
             itemInfo = dataApi.weapons.findById(itemId);
         } else if(itemId.indexOf("B") >= 0) {
             type = PackageType.DIAMOND;
-            itemInfo = dataApi.item.findById(itemId);
+            itemInfo = dataApi.diamonds.findById(itemId);
         }
+        
         if(!itemInfo) {
             data = {
                 code:Code.PACKAGE.NOT_EXIST_ITEM
@@ -214,13 +247,15 @@ exports.sellItem = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        if(itemInfo.canSell) {
+        
+        /*if(!itemInfo.canSell) {
             data = {
-                code:Code.FAIL
+                code:Code.FAIL,
+                err: "不能卖"
             };
             utils.send(msg, res, data);
             return;
-        }
+        }*/
         if(typeof itemInfo.price == "undefined") {
             data = {
                 code: Code.SHOP.NOT_EXIST_PRICE
@@ -688,7 +723,7 @@ exports.unlock = function(req, res) {
         , serverId = session.serverId
         , registerType = session.registerType
         , loginName = session.loginName;
-    if(end <= 0) {
+    if(!end || end <= 0) {
         return utils.send(msg, res , {
             code: Code.FAIL,
             err: "参数有点问题"
@@ -701,10 +736,10 @@ exports.unlock = function(req, res) {
          var costMoney = 0, costGameCurrency =0;
          if(end < 32) {
             costMoney = (32 - items.itemCount)*(2000*(items.itemCount+1-16)+2000*(end-16))/2;
-         } else if(end <= 48 &&end >= 32 && items.itemCount <= 32 ) {
+         } else if(end <= 64 &&end >= 32 && items.itemCount <= 32 ) {
             costMoney = (32 - items.itemCount) * (2000*(items.itemCount -16 +1)+2000*(32-16))/2;
             costGameCurrency = (end - 32)*((end-32)+1)/2;
-         }else if(items.itemCount >= 32 && end <= 48 ){
+         }else if(items.itemCount >= 32 && end <= 64 ){
              costGameCurrency = (end-items.itemCount)*((end-32)+(items.itemCount-32+1))/2;
          }else{
             return utils.send(msg, res, {

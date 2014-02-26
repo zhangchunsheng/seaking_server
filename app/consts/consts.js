@@ -100,6 +100,11 @@ module.exports = {
     },
 
     pushMessageType: {
+        UPGRADE: 1,
+        FORMATION_UNLOCK: 2
+    },
+
+    publishMessageType: {
         ARENA_PK: 1,
         TIP_MESSAGE: 2
     },
@@ -429,6 +434,17 @@ module.exports = {
         REDUCESPEED: "reducespeed"
     },
 
+    buffCategory: {
+        ATTACK: 1,
+        DEFENSE: 2,
+        AFTER_ATTACK: 3,
+        AFTER_DEFENSE: 4,
+        ROUND: 5,
+        ATTACKING: 6,
+        AWAKEN: 7,
+        AFTER_DIE: 8
+    },
+
     characterFightStatus: {
         COMMON: 1,//正常
         FREEZEN: 2//冻结
@@ -436,11 +452,7 @@ module.exports = {
 
     characterFightType: {
         ATTACK: 1,
-        DEFENSE: 2,
-        AFTER_ATTACK: 3,
-        AFTER_DEFENSE: 4,
-        ROUND: 5,
-        ATTACKING: 6
+        DEFENSE: 2
     },
 
     attackType: {
@@ -539,7 +551,9 @@ module.exports = {
         dodge: 2,
         counter: 3,
         block: 4,
-        addHp: 5
+        addHp: 5,
+        offsetDamage: 6,
+        beClearedAway: 7
     },
 
     requirementType: {

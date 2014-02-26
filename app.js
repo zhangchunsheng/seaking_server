@@ -43,7 +43,7 @@ app.use(express.logger({
 
 //app.use(express.bodyParser());
 // keepExtensions: true
-
+app.use(express.compress());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('html5'));

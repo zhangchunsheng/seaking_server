@@ -108,7 +108,7 @@ function generalPartner(serverId, registerType, loginName, characterId, partnerI
         level: level,
         replies: replies
     });
-    //character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
+    //character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId, character);
     playerUtil.createPKEntity(character, serverId, registerType, loginName, characterId + "P" + partnerId);
     var Partner = require('../domain/entity/partner');
     var partner = new Partner(character);
@@ -157,7 +157,7 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
                     });
                 } else {
                     partnerDao.getPartnerId(client, function(err, partnerId) {
-                        var character = partnerUtil.initPartner({
+                        var character = partnerUtil.initPartnerV2({
                             cId: cId,
                             serverId: serverId,
                             characterId: characterId,
@@ -187,7 +187,7 @@ partnerDao.createPartner = function(serverId, userId, registerType, loginName, c
 
                         dbUtil.getMultiCommand(array, key, character);
                         client.multi(array).exec(function(err, replies) {
-                            //character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId);
+                            //character.equipmentsEntity = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId + "P" + partnerId, character);
                             playerUtil.createPKEntity(character, serverId, registerType, loginName, characterId + "P" + partnerId);
                             var Partner = require('../domain/entity/partner');
                             var partner = new Partner(character);

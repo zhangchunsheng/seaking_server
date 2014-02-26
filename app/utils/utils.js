@@ -13,6 +13,15 @@ var Token = require('../../shared/token')
 
 var utils = module.exports;
 
+utils.getDbKey = function(session) {
+    var playerId = session.playerId
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var characterId = utils.getRealCharacterId(playerId);
+    return 'S'+serverId+'_T'+ registerType+'_'+ loginName+'_C'+ characterId;
+}
 /**
  * Check and invoke callback function
  * @param cb
@@ -92,6 +101,14 @@ utils.validPassword = function(password) {
     return {
         validNum: 1
     };
+}
+
+utils.validIntNum = function(num) {
+    var reg = new RegExp("^[1-9][0-9]*$");
+    if(!reg.test(num)) {
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -328,7 +345,7 @@ utils.getUserInfo = function(msg, req, res) {
  */
 utils.send = function(msg, res, data) {
     if(typeof msg.jsoncallback == "undefined") {
-        res.send(data);
+        res.send(JSON.stringify(data));
     } else {
         res.send(msg.jsoncallback + "(" + JSON.stringify(data) + ")");
     }

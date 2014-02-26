@@ -7,6 +7,7 @@
  */
 var utils = require('../app/utils/utils');
 var fightUtil = require('../app/utils/fightUtil');
+var buffUtil = require('../app/utils/buffUtil');
 var constsV2 = require('../app/consts/constsV2');
 
 var buff_script = {
@@ -33,16 +34,59 @@ var buff_script = {
         defense.removeBuff(this);
         return 0;
     },
+    /**
+     * 生命值低于30%之后，会产生一个持久性的护盾，该护盾使受到的攻击伤害减免25%
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "buff102201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        //defense.fight.reduceDamagePerpetual = this.buffData.value;
+        defense.fight.reduceDamage += this.buffData.value;//reset
+        return 0;
     },
     "buff103101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.reduceDamageOverlay = this.buffData.value;
         defense.fight.reduceDamage += this.buffData.value;
         return 0;
     },
+    /**
+     * 生命值低于20%之后，攻击该单位的目标有50%的几率被冻结一回合
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "buff103201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        //check immute_freeze
+        var buffs = defense.buffs;
+        var immuteFreezeBuff = buffUtil.getBuff("203201", buffs);//skillId  SK101201
+        if(typeof immuteFreezeBuff.buffData != "undefined") {
+            return 0;
+        }
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= 50) {
+            return 1;
+        } else {
+            return 0;
+        }
     },
     /**
      * 抵消伤害
@@ -52,15 +96,52 @@ var buff_script = {
         defenseFightTeam.removeBuff(this);
         return -1;
     },
+    /**
+     * 生命值进入低于15%的状态，立即对己方施放一个可以抵挡3次任何攻击的护盾
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff104201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(this.buffData.value > 0) {
+            this.buffData.value--;
+        }
+        if(this.buffData.value <= 0) {
+            defenseFightTeam.removeBuff(this);
+        }
+        return 1;
     },
     "buff105101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.addDefense += this.buffData.value;
         return 0;
     },
+    /**
+     * 生命值进入低于20%的状态，立即消耗所有的额外的护甲，给自己加为对应点数*10的生命值（只能触发一次）
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "buff105201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff106101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.isBlock = true;
@@ -68,7 +149,7 @@ var buff_script = {
         return 0;
     },
     "buff106201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff107101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.isDodge = true;
@@ -76,7 +157,7 @@ var buff_script = {
         return 0;
     },
     "buff107201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff108101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.asylumTransfer = this.buffData.asylumTransfer;
@@ -84,7 +165,26 @@ var buff_script = {
         return 0;
     },
     "buff108201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        if(this.buffData.value <= 0) {
+            return 0;
+        }
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        if(this.buffData.value > 0) {
+            this.buffData.value--;
+        }
+        player.fightValue.hp = 1;
+        player.died = playerData.died = false;
+        player.costTime = player.fight.costTime;
+        return 0;
     },
     "buff109101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         if(defense.died) {
@@ -97,7 +197,7 @@ var buff_script = {
         return 0;
     },
     "buff109201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff110101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         if(attack.fightValue.attackType != constsV2.attackType.ALL) {
@@ -105,7 +205,7 @@ var buff_script = {
         }
     },
     "buff110201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff201101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addAttack += this.buffData.value;
@@ -116,24 +216,25 @@ var buff_script = {
 
     },
     "buff202101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff202201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        attack.fight.addDamage = this.buffData.value;
+        return 0;
     },
     "buff203101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addHp += this.buffData.value;
         return 0;
     },
     "buff203201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff204101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addSunderArmor += this.buffData.value;
         return 0;
     },
     "buff204201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff205101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addSunderArmor += this.buffData.value;
@@ -141,7 +242,7 @@ var buff_script = {
         return 0;
     },
     "buff205201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff206101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.reduceAttack += this.buffData.reduceAttack;
@@ -149,17 +250,42 @@ var buff_script = {
         return 0;
     },
     "buff206201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff207101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        //如果存在觉醒技能,则优先使用觉醒技能
+        var buffs = attack.buffs;
+        if(buffUtil.hasBuff("207201", buffs)) {
+            return 0;
+        }
         attack.fightValue.attackType = constsV2.attackType.ALL;
-        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;//重新计算攻击力
 
         attackData.attack = attack.fightValue.attack;
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
-        var player = fightUtil.checkReduceScopeDamage(defenses);
+        //检查是否有抵消攻击护盾
+        var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
+        if(flag) {
+            for(var i in defenses) {
+                if(defenses[i].died)
+                    continue;
+                var target = {
+                    action: constsV2.defenseAction.offsetDamage,
+                    id: defenses[i].id,
+                    fId: defenses[i].formationId,
+                    hp: defenses[i].hp,
+                    reduceBlood: 0,
+                    buffs: defenses[i].getBuffs()
+                };
+                fightData.target.push(target);
+            }
+            //更新防守buff
+            fightUtil.removeOffsetShield(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            return 1;
+        }
+        var player = fightUtil.checkReduceScopeDamage(defenses);//减群体伤害
         var opts;
         if(player != null) {
             opts = {
@@ -184,8 +310,32 @@ var buff_script = {
 
         return 1;
     },
+    /**
+     * 生命值低于40%以后，攻击减半，但是攻击全部变为群体攻击，并且每次攻击都分为3次进行
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff207201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        attack.fightValue.attackType = constsV2.attackType.ALL;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;//重新计算攻击力
 
+        attackData.attack = attack.fightValue.attack;
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OPPONENT;
+
+        fightUtil.scopeDamage(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        return 1;
     },
     "buff208101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var theTarget = fightData.target;
@@ -212,7 +362,7 @@ var buff_script = {
         fightData.target.push(target);
     },
     "buff208201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff209101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fightValue.attackType = constsV2.attackType.ALL;
@@ -225,6 +375,31 @@ var buff_script = {
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
+        var buffs = attack.buffs;
+        if(buffUtil.hasBuff("209201", buffs)) {
+            return 0;
+        }
+
+        //检查是否有抵消攻击护盾
+        var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
+        if(flag) {
+            for(var i in defenses) {
+                if(defenses[i].died)
+                    continue;
+                var target = {
+                    action: constsV2.defenseAction.offsetDamage,
+                    id: defenses[i].id,
+                    fId: defenses[i].formationId,
+                    hp: defenses[i].hp,
+                    reduceBlood: 0,
+                    buffs: defenses[i].getBuffs()
+                };
+                fightData.target.push(target);
+            }
+            //更新防守buff
+            fightUtil.removeOffsetShield(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            return 1;
+        }
         var player = fightUtil.checkReduceScopeDamage(defenses);
         var opts = {};
         if(player != null) {
@@ -256,8 +431,43 @@ var buff_script = {
 
         return 1;
     },
+    /**
+     * 生命值低于40%以后，攻击力恢复，但是能攻击一个目标，如果目标生命值低于5% ，则直接斩杀
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff209201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(attack.fightValue.attackType == constsV2.attackType.ALL) {
+            attack.fightValue.attackType = constsV2.attackType.SINGLE;
+            attack.fightValue.attack = Math.ceil(attack.fightValue.attack / 0.5);
+        }
+        if(defense.fightValue.hp <= defense.fightValue.maxHp * this.buffData.value) {
+            defense.fightValue.hp = defense.hp = 0;
+            var target = {
+                action: constsV2.defenseAction.beClearedAway,
+                id: defense.id,
+                fId: defense.formationId,
+                hp: defense.hp,
+                reduceBlood: defense.hp,
+                buffs: defense.getBuffs()
+            };
+            fightUtil.checkDied(defense, defenseData);
+            fightData.target.push(target);
+            return 1;
+        } else {
+            return 0;
+        }
     },
     "buff210101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var theTarget = fightData.target;
@@ -286,15 +496,58 @@ var buff_script = {
             fightData.target.push(target);
         }
     },
+    /**
+     * 死亡时，是敌方生命值最多的单位攻击力变为0，持续两次
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff210201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        if(this.buffData.value > 0) {
+            if(attack.fightValue.attack != 0) {
+                attack.fightValue.lastAttack = attack.fightValue.attack;
+                attack.fightValue.attack = 0;
+            }
+            this.buffData.value--;
+        }
+        if(this.buffData.value == 0) {
+            attack.fightValue.attack = attack.fightValue.lastAttack;
+            attack.removeBuff(this);
+        }
+        return 0;
     },
     "buff211101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addAttack += this.buffData.value;
         return 0;
     },
     "buff211201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= this.buffData.value) {
+            defense.fightValue.hp = defense.hp = 0;
+            var target = {
+                action: constsV2.defenseAction.beClearedAway,
+                id: defense.id,
+                fId: defense.formationId,
+                hp: defense.hp,
+                reduceBlood: defense.hp,
+                buffs: defense.getBuffs()
+            };
+            fightUtil.checkDied(defense, defenseData);
+            fightData.target.push(target);
+            return 1;
+        } else {
+            return 0;
+        }
     },
     "buff301101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var key = "attackTeam";
@@ -314,7 +567,7 @@ var buff_script = {
         return 0;
     },
     "buff301201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff302101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addHp += this.buffData.value;
@@ -322,7 +575,7 @@ var buff_script = {
         return 0;
     },
     "buff302201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff303101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.promoteHp += this.buffData.value;
@@ -333,20 +586,20 @@ var buff_script = {
         return 0;
     },
     "buff303201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff304101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addAttack += this.buffData.value;
         return 0;
     },
     "buff304201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff305101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
     "buff305201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff306101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.addDodge += this.buffData.value;
@@ -354,7 +607,7 @@ var buff_script = {
         return 0;
     },
     "buff306201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff307101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.ice = true;
@@ -362,7 +615,7 @@ var buff_script = {
         return 1;
     },
     "buff307201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     },
     "buff308101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.silence = true;
@@ -370,7 +623,7 @@ var buff_script = {
         return 1;
     },
     "buff308201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
+        return 0;
     }
 }
 

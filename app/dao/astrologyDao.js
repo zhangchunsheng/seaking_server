@@ -95,7 +95,7 @@ astrologyDao.main = function(player, callback) {
 }
 
 astrologyDao.maxCacheItems = 14;
-astrologyDao.maxItems = 48;
+astrologyDao.maxItems = 64;
 astrologyDao.getUseMoney = function(index) {
 	switch(index) {
 		case 0:
@@ -295,12 +295,9 @@ astrologyDao.pickUpAll = function(Key , callback) {
 			if(err){redis.release(client);callback(err);return;}
 			if(!res){redis.release(client);callback("Operator error");return;}
 			var astrology = JSON.parse(res);
-			if(astrology.items.length >= astrologyDao.maxItems) {
-				redis.release(client);callback("items is full");return;
-			}
 			//var badItems = [];
 			//var goodItems = [];
-			var hasGood = false;
+			var isFull = 0;
 			/*var snum = astrologyDao.maxItems - astrology.items.length  ;
 			for(var i = 0,l = astrology.cacheItems.length; i < l;i++) {
 				var item = astrology.cacheItems[i];
@@ -328,7 +325,7 @@ astrologyDao.pickUpAll = function(Key , callback) {
 
 					}else{
 						if(nullNum <= 0) {
-							hasGood = true;
+							isFull = 1;
 							break;
 						}else{
 							item.level = item.level || 1;
@@ -342,21 +339,14 @@ astrologyDao.pickUpAll = function(Key , callback) {
 				}
 			}
 			cleanArray(astrology.cacheItems);
-			var data = {};
-			/*if(goodItems.length > 0 ) {
-				data.isfull = 1;
-			}*/
-			if(hasGood) {
-				data.isfull = 1;
-			}
-			data.astrology = astrology;
+			
 			var array = [
 				["select", redisConfig.database.SEAKING_REDIS_DB],
 				["hset", Key, "astrology", JSON.stringify(astrology)]
 			];
 			client.multi(array).exec(function(err, res) {
 				redis.release(client);
-				callback(err, {astrology: astrology});
+				callback(err, {astrology: astrology, isFull: isFull});
 			});
 		});
 	});
@@ -580,7 +570,8 @@ var addExperience = function(item, experience , info) {
 	if(!info){
 		info =  getAstrologyInfo(item);
 	} 
-	var update = (Math.pow(2, item.level - 0)) * (info.experience - 0) ;
+	var update = (Math.pow(2, item.level - 1)) * (info.experience - 0) ;
+	item.level = item.level || 1;
 	item.exp = ( item.exp || 0 )+ experience;
 	console.log("update:", update);
 	if(item.exp > update) {
@@ -628,6 +619,9 @@ astrologyDao.merger = function(data, player, callback) {
 			items.sort(sortFunc);
 			var mainIndex = 0;
 			var main = items[mainIndex];
+			if(!main) {
+				return callback("bag is null");
+			}
 			cleanArray(items);
 			
 			while(items.length > _items.length + 1){
@@ -658,6 +652,42 @@ astrologyDao.merger = function(data, player, callback) {
 		});
 	});
 }
+astrologyDao.onceMerger2 = function(data, player, callback) {
+	var main = data.main;
+	var index = data.index;
+	var mainItem = player.ZX.i[main];
+	console.log("before ZX:", player.ZX);
+	if(!mainItem) {
+		return callback("not the mainItem");		
+	}
+	redis.command(function(client) {
+		astrologyDao.get(data.Key, function(err, res) {
+			if(err) {redis.release(client); callback(err);}
+			if(!res) {redis.release(client);callback("Operator error");return;}
+			var astrology = JSON.parse(res);
+			var items = astrology.items;
+			var otherItem = items[index];
+			if(!otherItem) {
+				return callback("not item");
+			}
+			var experience = getExperience(otherItem);
+			addExperience(mainItem, experience);
+			items[index]=null;
+			cleanArray(items);
+			var array = [
+				["select", redisConfig.database.SEAKING_REDIS_DB],
+				["hset", data.Key, "astrology", JSON.stringify(astrology)],
+				["hset", data.PKey, "ZX", JSON.stringify(player.ZX)]
+			];
+			console.log("after ZX:", player.ZX);
+			console.log(array);
+			client.multi(array).exec(function(err, res) {
+				redis.release(client);
+				callback(err, {gold: player.gameCurrency, money: player.money, ZX:player.ZX,astrology: astrology});
+			});
+		});
+	});
+}
 astrologyDao.onceMerger  = function(data, player, callback) {
 	var main = data.main
 		,index = data.index;
@@ -683,13 +713,11 @@ astrologyDao.onceMerger  = function(data, player, callback) {
 				["select", redisConfig.database.SEAKING_REDIS_DB],
 				["hset", data.Key, "astrology", JSON.stringify(astrology)]
 			];
-			console.log(array);
-			throw new Error("...");
 			client.multi(array).exec(function(err, res) {
 				redis.release(client);
 				callback(err, {gold: player.gameCurrency, money: player.money, ZX:player.ZX,astrology: astrology});
 			});
-		});
+		},client);
 	});
 }
 

@@ -24,6 +24,8 @@ var routes = require('./routes')
     , aptitude = require('./routes/character/aptitude')
     , ghost = require('./routes/character/ghost')
     , misc = require('./routes/character/misc')
+    , altar = require('./routes/character/altar')
+    , soul = require('./routes/character/soul')
     , resource = require('./routes/resource')
     , shop = require('./routes/shop')
     , skill = require('./routes/skill')
@@ -31,7 +33,9 @@ var routes = require('./routes')
     , gm = require('./routes/gm')
     , message = require('./routes/message')
     , authRequired = require('./middlewares/auth_required')
-    , astrology = require("./routes/astrology");
+    , astrology = require("./routes/astrology")
+    , clifford = require("./routes/clifford")
+    , pet = require("./routes/pet");
 
 module.exports = function (app) {
     app.get('/', authRequired, routes.index);
@@ -68,6 +72,10 @@ module.exports = function (app) {
     app.get('/casino/gambling', authRequired, casino.gambling);
     app.get("/casino/gmRepair", authRequired, casino.gmRepair);
 
+    app.get("/clifford/do", authRequired, clifford.do);
+    app.get("/clifford/test", authRequired, clifford.test);
+    app.get("/clifford/gmAdd", authRequired, clifford.gmAdd);
+
     //装备
     app.get('/equip/wearWeapon', authRequired, equip.wearWeapon);
     app.get('/equip/unWearWeapon', authRequired, equip.unWearWeapon);
@@ -80,6 +88,14 @@ module.exports = function (app) {
     app.get('/equip/changeDiamond', authRequired, equip.changeDiamond);
 
     app.get('/formation/change', authRequired, formation.change);
+    app.get('/formation/setDefault', authRequired, formation.setDefault);
+    app.get('/formation/save', authRequired, formation.setDefault);
+    app.get('/formation/resetFormation', authRequired, formation.resetFormation);
+    app.get('/formation/forteAttack', authRequired, formation.forteAttack);
+    app.get('/formation/forteDefense', authRequired, formation.forteDefense);
+    app.get('/formation/setTactical', authRequired, formation.setTactical);
+    app.get('/formation/upgradeTactical', authRequired, formation.upgradeTactical);
+    app.get('/formation/unlock', authRequired, formation.unlock);
 
     app.get('/friend/get', authRequired, friend.get);
     app.get('/friend/add', authRequired, friend.add);
@@ -114,6 +130,8 @@ module.exports = function (app) {
     app.get("/astrology/collectAllCi", authRequired, astrology.pickUpAll);
     app.get("/astrology/convert", authRequired, astrology.exchange);
     app.get("/astrology/synthAllBi", authRequired, astrology.merger);
+    app.get("/astrology/synth", authRequired, astrology.onceMerger);
+    app.get("/astrology/synth2", authRequired, astrology.onceMerger2);
     app.get("/astrology/gmRepair", authRequired, astrology.gmRepair);
 
     app.get("/package/_Set", authRequired, package._Set);
@@ -124,6 +142,7 @@ module.exports = function (app) {
     app.get('/package/sellItem', authRequired, package.sellItem);
     app.get('/package/userItem', authRequired, package.userItem);
     app.get("/package/unlock", authRequired, package.unlock);
+    app.get("/package/gmClean", authRequired, package.clean);
 
     app.get('/player/enterScene', authRequired, player.enterScene);
     app.get('/player/changeAndGetSceneData', authRequired, player.changeAndGetSceneData);
@@ -153,9 +172,14 @@ module.exports = function (app) {
 
     app.get('/aptitude/upgrade', authRequired, aptitude.upgrade);
     app.get('/aptitude/checkFreeTime', authRequired, aptitude.checkFreeTime);
+    app.get('/aptitude/checkAllFreeTime', authRequired, aptitude.checkAllFreeTime);
     app.get('/ghost/upgrade', authRequired, ghost.upgrade);
 
     app.get('/misc/getMiscs', authRequired, misc.getMiscs);
+    app.get('/altar/extraction', authRequired, altar.extraction);
+    app.get('/altar/exchange', authRequired, altar.exchange);
+    app.get('/soul/fusion', authRequired, soul.fusionWithPackageIndex);
+    app.get('/soul/fusionWithHeroId', authRequired, soul.fusion);
 
     app.get('/resource/loadResource', authRequired, resource.loadResource);
 
@@ -168,7 +192,9 @@ module.exports = function (app) {
 
     app.get('/gm/resetTask', gm.resetTask);
     app.get('/gm/updateMoney', gm.updateMoney);
+    app.get('/gm/updateGold', gm.updateGold);
     app.get('/gm/updateExp', gm.updateExp);
+    app.get("/gm/clearPackage", gm.clearPackage);
 
     app.get('/message/addMessage', authRequired, message.addMessage);
     app.get('/message/getMessage', authRequired, message.getMessage);
@@ -180,4 +206,17 @@ module.exports = function (app) {
     app.get('/message/getBattleReport', authRequired, message.getBattleReport);
     app.get('/message/removeBattleReport', authRequired, message.removeBattleReport);
     app.get('/message/publishMessage', message.publishMessage);
+
+    app.get("/pet/gmUpgrade", authRequired, pet.gmUpgrade);
+    app.get("/pet/gmAdd", authRequired, pet.gmAdd);
+    app.get("/pet/gmAddUpgradeItem", authRequired, pet.gmAddUpgradeItem);
+    app.get("/pet/gmAddUpgradeItem2", authRequired, pet.gmAddUpgradeItem2);
+    app.get("/pet/gmAddFeedItem", authRequired, pet.gmAddFeedItem);
+    app.get("/pet/setName", authRequired, pet.setName);
+    app.get("/pet/upgradeSkill", authRequired, pet.upgradeSkill);
+    app.get("/pet/play", authRequired, pet.play);
+    app.get("/pet/feed", authRequired, pet.feed);
+    app.get("/pet/usePet", authRequired, pet.usePet);
+    app.get("/pet/release", authRequired, pet.release);
+    app.get("/pet/update", authRequired, pet.update);
 }

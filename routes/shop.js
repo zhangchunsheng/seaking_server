@@ -66,6 +66,7 @@ exports.buyItem = function(req, res) {
         }
         var items = shops.shopData;
         var itemData = items[index];
+        console.log(itemData);
         if(!itemData) {
             data = {
                 code: Code.SHOP.NOT_EXIST_ITEM
@@ -105,7 +106,7 @@ exports.buyItem = function(req, res) {
             itemInfo = dataApi.weapons.findById(itemId);
         } else if(itemId.indexOf("B") >= 0) {
             type = PackageType.DIAMOND;
-            itemInfo = dataApi.item.findById(itemId);
+            itemInfo = dataApi.diamonds.findById(itemId);
         }
         if(typeof itemInfo == "undefined" || itemInfo == null || itemInfo == {}) {
             data = {

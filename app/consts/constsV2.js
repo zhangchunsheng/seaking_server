@@ -100,6 +100,11 @@ module.exports = {
     },
 
     pushMessageType: {
+        UPGRADE: 1,
+        FORMATION_UNLOCK: 2
+    },
+
+    publishMessageType: {
         ARENA_PK: 1,
         TIP_MESSAGE: 2
     },
@@ -437,28 +442,42 @@ module.exports = {
     },
 
     buffTypeV2: {
-        SHIELDS: "1",
-        EXTRAARMOR: "2",
-        BLOCK: "3",
-        DODGE: "4",
-        ASYLUM: "5",
-        ADDMAXHP: "6",
-        REDUCE_SCOPE_DAMAGE: "7",
-        CHANGETO_SCOPE_DAMAGE: "8",
-        ADDATTACK: "9",
-        ADDSUNDERARMOR: "10",
-        POISON: "11",
-        ADDHP: "12",
-        REDUCEATTACK_ADDSUNDERARMOR: "13",
-        EXTRATARGET: "14",
-        CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15",
-        PARALLELDAMAGE: "16",
-        RECOVERYHP: "17",
-        PROMOTEHP: "18",
-        ADDDODGE: "19",
-        ICE: "20",
-        SILENCE: "21",
-        AWAKEN_ENHANCE_TRIGGERSKILL: "22"
+        SHIELDS: "1",//护盾
+        EXTRAARMOR: "2",//额外护甲
+        BLOCK: "3",//格挡
+        DODGE: "4",//闪避
+        ASYLUM: "5",//庇护
+        ADDMAXHP: "6",//增加血量上限
+        REDUCE_SCOPE_DAMAGE: "7",//减范围伤害
+        CHANGETO_SCOPE_DAMAGE: "8",//改变为范围伤害
+        ADDATTACK: "9",//加攻击力
+        ADDSUNDERARMOR: "10",//加护甲
+        POISON: "11",//施毒
+        ADDHP: "12",//加血
+        REDUCEATTACK_ADDSUNDERARMOR: "13",//减攻击力加护甲
+        EXTRATARGET: "14",//额外目标
+        CHANGETO_SCOPE_DAMAGE_AND_ADDHP: "15",//改变为范围伤害并且加血
+        PARALLELDAMAGE: "16",//溅射
+        RECOVERYHP: "17",//恢复血量
+        PROMOTEHP: "18",//提升血量
+        ADDDODGE: "19",//加闪避
+        ICE: "20",//冰冻
+        SILENCE: "21",//沉默
+        AWAKEN_ENHANCE_TRIGGERSKILL: "22",//唤醒触发技能
+        FREEZE: "23",//冻结
+        TURN_DAMAGE: "24",//反伤
+        ADDBLOCK: "25",//增加格挡
+        KING_WILL: "26",//君王意志
+        IGNORE_SKILL: "27",//忽视技能影响
+        ADDDAMAGE: "28",//伤害提升
+        IMMUNE_FREEZE: "29",//免疫冻结
+        NODAMAGE_EXCEPT_ATTACK: "30",//不承受主动攻击之外的任何伤害
+        EXCHANGE_HP_ATTACK: "31",//置换生命值和攻击力
+        CHANGETO_SCOPE_DAMAGE_THREETIME: "32",//群体攻击
+        OFFSET_SHIELDS: "33",//抵消伤害护盾
+        CLEAR_BAD_STATUS: "34",//清除不良状态
+        CLEAR_AWAY: "35",//斩杀一个目标
+        STUNT: "36"//禁锢
     },
 
     buffCategory: {
@@ -468,7 +487,8 @@ module.exports = {
         AFTER_DEFENSE: 4,
         ROUND: 5,
         ATTACKING: 6,
-        AWAKEN: 7
+        AWAKEN: 7,
+        AFTER_DIE: 8
     },
 
     characterFightStatus: {
@@ -478,11 +498,7 @@ module.exports = {
 
     characterFightType: {
         ATTACK: 1,
-        DEFENSE: 2,
-        AFTER_ATTACK: 3,
-        AFTER_DEFENSE: 4,
-        ROUND: 5,
-        ATTACKING: 6
+        DEFENSE: 2
     },
 
     attackType: {
@@ -614,7 +630,9 @@ module.exports = {
         dodge: 2,
         counter: 3,
         block: 4,
-        addHp: 5
+        addHp: 5,
+        offsetDamage: 6,
+        beClearedAway: 7
     },
 
     requirementType: {

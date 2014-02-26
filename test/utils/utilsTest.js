@@ -26,14 +26,19 @@ describe('utils test', function() {
         heroId = heroId.substr(0, 2) + 0 + heroId.substr(3);
         console.log(heroId);
 
-        console.log(playerUtil.initAptitude(1));
-        console.log(JSON.parse(playerUtil.initAptitude(1, "string")));
+        console.log(playerUtil.initAptitude("H1101"));
+        console.log(JSON.parse(playerUtil.initAptitude("H1101", "string")));
         console.log(utils.getEqTypeV2("E10112"));
         console.log(utils.getDate(1));
         console.log(utils.getHeroIdByWeaponId("W1011001"));
         console.log(utils.getFormByEquipmentId("E10121"));
         console.log(0 == "0");
+        console.log(playerUtil.initTacticals());
         utils.getFormByEquipmentId("E10121").should.equal("2");
+
+        console.log(playerUtil.calculatorStarLevel({
+            trait: 3
+        }, 55));
     });
 
     it('fightData', function() {

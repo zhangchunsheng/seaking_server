@@ -32,7 +32,9 @@ var Character = function(opts) {
     this.enemies = {};
 
     this.died = false;
+    this.trait = opts.trait;
     this.starLevel = opts.starLevel;
+    this.starLevelExperience = opts.starLevelExperience;
     this.heroType = opts.heroType;//英雄类型
     this.sunderArmor = opts.sunderArmor;//破甲
     this.hp = parseInt(opts.hp);
@@ -109,6 +111,8 @@ var Character = function(opts) {
         6: null
     };
 
+    this.fightTeam = {};
+
     this.fight = {
         fightStatus: consts.characterFightStatus.COMMON,
         reduceDamage: 0,//减免伤害
@@ -136,7 +140,9 @@ var Character = function(opts) {
         addDodge: 0,
         addDodgeValue: 0,
         ice: false,
-        silence: false
+        silence: false,
+        ignore_skill: false,
+        addDamage: 0
     };
 
     this.hasUpgrade = false;
@@ -315,6 +321,7 @@ Character.prototype.removeBuff = function(buff) {
     for(var i = 0, l = this.buffs.length ; i < l ; i++) {
         if(this.buffs[i].buffId == buff.buffId) {
             this.buffs.splice(i, 1);
+            break;
         }
     }
 };
@@ -563,15 +570,15 @@ Character.prototype.useAwakenSkill = function(attackSide, condition, attack_form
     return anger;
 }
 
-Character.prototype.useSkillBuffs = function(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+Character.prototype.useSkillBuffs = function(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
     var dataTypes = [];
     var dataType = 0;
-    if(fightType == consts.characterFightType.ATTACK) {
+    if(buffCategory == consts.buffCategory.ATTACK) {
         var skillBuffs = attack.getSkillBuffs();
         var buffs = skillBuffs;
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffCategory == consts.buffCategory.ATTACK) {
-                dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                dataType = buffs[i].invokeScript(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 dataTypes.push(dataType);
             }
         }
@@ -581,16 +588,16 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
                 break;
             }
         }
-    } else if(fightType == consts.characterFightType.DEFENSE) {
+    } else if(buffCategory == consts.buffCategory.DEFENSE) {
         var skillBuffs = defense.getSkillBuffs();
-        var teamBuffs = defenseFightTeam.getSkillBuffs();
+        var teamBuffs = defenseFightTeam.getSkillBuffs();//护盾
         var buffs = skillBuffs;
         for(var i = 0 , l = teamBuffs.length ; i < l ; i++) {
             buffs.push(teamBuffs[i]);
         }
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffCategory == consts.buffCategory.DEFENSE) {
-                dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                dataType = buffs[i].invokeScript(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 if(dataType == -1) {//不减血
                     dataType = 0;
                     dataTypes.push(dataType);
@@ -605,11 +612,59 @@ Character.prototype.useSkillBuffs = function(fightType, attack_formation, defens
                 break;
             }
         }
-    } else if(fightType == consts.characterFightType.AFTER_DEFENSE) {
-        var buffCategory = fightUtil.getBuffCategory(fightType);
+    } else if(buffCategory == consts.buffCategory.AFTER_DEFENSE) {
         fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
-    } else if(fightType == consts.characterFightType.ATTACKING) {
-        var buffCategory = fightUtil.getBuffCategory(fightType);
+    } else if(buffCategory == consts.buffCategory.ATTACKING) {
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    } else if(buffCategory == consts.buffCategory.AFTER_DIE) {
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    }
+    return dataType;
+}
+
+Character.prototype.useSkillBuffsWithNoTeam = function(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var dataTypes = [];
+    var dataType = 0;
+    if(buffCategory == consts.buffCategory.ATTACK) {
+        var skillBuffs = attack.getSkillBuffs();
+        var buffs = skillBuffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.ATTACK) {
+                dataType = buffs[i].invokeScript(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                dataTypes.push(dataType);
+            }
+        }
+        for(var i = 0 ; i < dataTypes.length ; i++) {
+            if(dataTypes[i] > 0) {
+                dataType = dataTypes[i];
+                break;
+            }
+        }
+    } else if(buffCategory == consts.buffCategory.DEFENSE) {
+        var skillBuffs = defense.getSkillBuffs();
+        var buffs = skillBuffs;
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffCategory == consts.buffCategory.DEFENSE) {
+                dataType = buffs[i].invokeScript(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+                if(dataType == -1) {//不减血
+                    dataType = 0;
+                    dataTypes.push(dataType);
+                    break;
+                }
+                dataTypes.push(dataType);
+            }
+        }
+        for(var i = 0 ; i < dataTypes.length ; i++) {
+            if(dataTypes[i] > 0) {
+                dataType = dataTypes[i];
+                break;
+            }
+        }
+    } else if(buffCategory == consts.buffCategory.AFTER_DEFENSE) {
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    } else if(buffCategory == consts.buffCategory.ATTACKING) {
+        fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+    } else if(buffCategory == consts.buffCategory.AFTER_DIE) {
         fightUtil.useSkillBuffs(dataTypes, dataType, buffCategory, fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
     return dataType;

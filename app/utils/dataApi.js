@@ -11,7 +11,11 @@ var experience = require('../../config/data/experience');
 var skillList = require('../../config/data/skillList');
 var skillsV2 = require('../../config/data/skillsV2');
 var tacticals = require('../../config/data/tacticals');
+var formations = require('../../config/data/formations');
 var aptitudes = require('../../config/data/aptitudes');
+var altars = require('../../config/data/altars');
+var altar_exchange = require('../../config/data/altar_exchange');
+var soulFusion = require('../../config/data/soulFusion');
 var item = require('../../config/data/item');
 var npc = require('../../config/data/npc');
 var task = require('../../config/data/task');
@@ -34,6 +38,12 @@ var astrology = require("../../config/data/astrology");
 var weapons = require("../../config/data/weapons");
 var astrologyRandom = require("../../config/data/astrologyRandom");
 var astrologyExchange = require("../../config/data/astrologyExchange");
+var cliffordRandom = require("../../config/data/cliffordRandom");
+var pets = require("../../config/data/pets");
+var petsSkillsUpgrade = require("../../config/data/petsSkillsUpgrade");
+var petsUpgrade = require("../../config/data/petsUpgrade");
+var feedItem = require("../../config/data/feedItem");
+var petsRandom = require("../../config/data/petsRandom");
 /**
  * Data model `new Data()`
  *
@@ -158,7 +168,11 @@ module.exports = {
     skillList: new Data(skillList),
     skillsV2: new Data(skillsV2),
     tacticals: new Data(tacticals),
+    formations: new Data(formations),
     aptitudes: new Data(aptitudes),
+    altars: new Data(altars),
+    altar_exchange: new Data(altar_exchange),
+    soulFusion: new Data(soulFusion),
     task: new Data(task),
     heros: new Data(heros),
     herosV2: new Data(herosV2),
@@ -178,5 +192,11 @@ module.exports = {
     astrology : new Data(astrology),
     astrologyRandom: new Data(astrologyRandom),
     weapons : new Data(weapons),
-    astrologyExchange: new Data(astrologyExchange)
+    astrologyExchange: new Data(astrologyExchange),
+    cliffordRandom: new Data(cliffordRandom),
+    pets: new Data(pets),
+    petsUpgrade: new Data(petsUpgrade),
+    feedItem: new Data(feedItem),
+    petsRandom: new Data(petsRandom),
+    petsSkillsUpgrade: new Data(petsSkillsUpgrade)
 };

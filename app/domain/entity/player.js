@@ -14,7 +14,6 @@ var formula = require('../../consts/formula');
 var formulaV2 = require('../../consts/formulaV2');
 var consts = require('../../consts/consts');
 var EntityType = require('../../consts/consts').EntityType;
-var TaskType = require('../../consts/consts').TaskType;
 var TaskStatus = require('../../consts/consts').TaskStatus;
 var Character = require('./character');
 var userDao = require('../../dao/userDao');
@@ -38,6 +37,7 @@ var skillUtil = require('../../utils/skillUtil');
  */
 var Player = function(opts) {
     Character.call(this, opts);
+    this.pets = opts.pets;
     this.ZX = opts.ZX;
     this.id = opts.id;
     this.type = EntityType.PLAYER;
@@ -48,6 +48,7 @@ var Player = function(opts) {
     this.equipments = opts.equipments;
     this.package = opts.package;
     this.formation = opts.formation;
+    this.lastFormation = opts.lastFormation;
     this.tacticals = opts.tacticals;
     this.partners = opts.partners;
     this.allPartners = opts.allPartners;
@@ -72,20 +73,26 @@ var Player = function(opts) {
 
     this.miscs = opts.miscs || [];
     this.soulPackage = opts.soulPackage;
+    this.altar = opts.altar;
 
     this.curTasksEntity = opts.curTasksEntity;
     this.equipmentsEntity = opts.equipmentsEntity;
     this.packageEntity = opts.packageEntity;
     this.aptitudeEntity = opts.aptitudeEntity;
     this.ghostEntity = opts.ghostEntity;
+    this.altarEntity = opts.altarEntity;
     this.skillsEntity = opts.skillsEntity;
     this.miscsEntity = opts.miscsEntity;
+    this.soulPackageEntity = opts.soulPackageEntity;
+    this.formationEntity = opts.formationEntity;
+    this.pushMessageEntity = opts.pushMessageEntity;
 
     this.friends = opts.friends || [];
 
     this.showCIds = opts.showCIds || {"stage":opts.cId};
 
     this.pushMessage = opts.pushMessage || [];
+    this.pushOnceMessage = opts.pushOnceMessage || [];
 
     this.fightValue = {
         attackType: this.attackType,
@@ -1543,7 +1550,7 @@ Player.prototype.getNextTask = function(type, task) {
         "startTime": date.getTime()
     };
     var characterId = utils.getRealCharacterId(this.id);
-    task = taskDao.createNewTask(task, this.sid, this.registerType, this.loginName, characterId);
+    task = taskDao.createNewTask(task, this.sid, this.registerType, this.loginName, characterId, this);
     this.curTasksEntity[type] = task;
     return true;
 }
@@ -1625,7 +1632,9 @@ Player.prototype.logTaskData = function(type) {
 
 //Convert player' state to json and return
 Player.prototype.strip = function() {
+    //pets  修改返回数据
     return {
+        pets: this.pets.strip(),
         ZX: this.ZX,
         id: this.id,
         entityId: this.entityId,
@@ -1640,6 +1649,9 @@ Player.prototype.strip = function() {
         maxHp: this.maxHp,
         anger: this.anger,
         level: this.level,
+        trait: this.trait,
+        starLevel: this.starLevel,
+        starLevelExperience: this.starLevelExperience,
         experience: this.experience,
         attack: this.attack,
         defense: this.defense,
@@ -1665,10 +1677,16 @@ Player.prototype.strip = function() {
         currentSkills: this.currentSkills,
         allSkills: this.allSkills,
         buffs: this.buffs,
-        formation: this.formation,
-        tacticals: this.tacticals,
+        //formation: this.formationEntity.getInfo().formation,
+        //lastFormation: this.formationEntity.getInfo().lastFormation,
+        //tacticals: this.formationEntity.getInfo().tacticals,
+        formations: this.formationEntity.getAbbreviation(),
         partners: this.getPartners(),
+        miscs: this.miscsEntity.getInfo(),
+        soulPackage: this.soulPackageEntity.getInfo(),
+        altar: this.altarEntity.getInfo(),
         gift: this.gift,
+        pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
@@ -1696,6 +1714,7 @@ Player.prototype.updateColumn = function() {
         columns : {
             experience: this.experience,
             money: this.money,
+            gameCurrency: this.gameCurrency,
             hp: this.hp,
             buffs: this.buffs
         }
@@ -1764,13 +1783,24 @@ Player.prototype.resetTask = function(type, taskId) {
 }
 
 /**
- * 更新金币
+ * 更新money
  * @param money
  */
 Player.prototype.updateMoney = function(money) {
     this.money += parseInt(money);
     if(this.money < 0)
         this.money = 0;
+    this.save();
+};
+
+/**
+ * 更新gameCurrency
+ * @param gameCurrency
+ */
+Player.prototype.updateGameCurrency = function(gameCurrency) {
+    this.gameCurrency += parseInt(gameCurrency);
+    if(this.gameCurrency < 0)
+        this.gameCurrency = 0;
     this.save();
 };
 
@@ -1816,6 +1846,9 @@ Player.prototype.toJSON = function() {
         maxHp: this.maxHp,
         anger: this.anger,
         level: this.level,
+        trait: this.trait,
+        starLevel: this.starLevel,
+        starLevelExperience: this.starLevelExperience,
         experience: this.experience,
         attack: this.attack,
         defense: this.defense,
@@ -1841,10 +1874,16 @@ Player.prototype.toJSON = function() {
         currentSkills: this.currentSkills,
         allSkills: this.allSkills,
         buffs: this.buffs,
-        formation: this.formation,
-        tacticals: this.tacticals,
+        //formation: this.formationEntity.getInfo().formation,
+        //lastFormation: this.formationEntity.getInfo().lastFormation,
+        //tacticals: this.formationEntity.getInfo().tacticals,
+        formations: this.formationEntity.getAbbreviation(),
         partners: this.getPartners(),
+        miscs: this.miscsEntity.getInfo(),
+        soulPackage: this.soulPackageEntity.getInfo(),
+        altar: this.altarEntity.getInfo(),
         gift: this.gift,
+        pushMessage: this.pushMessageEntity.getInfo(),
         friends: this.friends,
         ghost: this.ghostEntity.getInfo(),
         ghostNum: this.ghostNum,
@@ -1868,6 +1907,9 @@ Player.prototype.getBaseInfo = function() {
         maxHp: this.maxHp,
         anger: this.anger,
         level: this.level,
+        trait: this.trait,
+        starLevel: this.starLevel,
+        starLevelExperience: this.starLevelExperience,
         experience: this.experience,
         attack: this.attack,
         defense: this.defense,
@@ -1890,9 +1932,12 @@ Player.prototype.getBaseInfo = function() {
         currentSkills: this.currentSkills,
         allSkills: this.allSkills,
         buffs: this.buffs,
-        formation: this.formation,
-        tacticals: this.tacticals,
+        //formation: this.formationEntity.getInfo().formation,
+        //lastFormation: this.formationEntity.getInfo().lastFormation,
+        //tacticals: this.formationEntity.getInfo().tacticals,
+        formations: this.formations,
         gift: this.gift,
+        pushMessage: this.pushMessage,
         friends: this.friends,
         ghost: this.ghost,
         ghostNum: this.ghostNum,

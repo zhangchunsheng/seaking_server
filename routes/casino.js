@@ -36,9 +36,14 @@ var callbackGet = function(result) {
             delete value.probability;
         }
     });
+    var _items = [];
+    console.log(_items);
+    for(var i = 0, len = _data.index; i<len;i++) {
+        _items.push(_data.items.items[i]);
+    }
     return {
        allPrice: _data.items.allPrice,
-       items: _data.items.items,
+       items: _items,
        refreshNum: _data.refreshNum,
        riskNum: _data.riskNum,
        gamblingNum: _data.gamblingNum
@@ -134,7 +139,7 @@ var callbackGambling = function(result) {
        items: _items,
        refreshNum: _data.refreshNum,
        riskNum: _data.riskNum,
-       gamblingNum: _data.gamblingNum < 0? 0: _data.gamblingNum,
+       gamblingNum: (_data.gamblingNum <= 0? 0: _data.gamblingNum),
        gameCurrency : result.gold,
        result : result.result,
        changeItems: result.changeItems
@@ -142,6 +147,10 @@ var callbackGambling = function(result) {
 }
 exports.gambling = function(req, res) {
     var msg = req.query;
+    console.log("msg money", msg.money == null);
+    if(msg.money == null) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "param error no money"});
+    }
     var session = req.session;
 
     var uid = session.uid

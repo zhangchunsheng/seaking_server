@@ -329,11 +329,20 @@ var gamblingGameCurrency = 2;
 		
 	});
 }*/
+var findNull = function(items, count) {
+	var nulls = [];
+	for(var i = 0, len = count; i < len ; i++ ) {
+		if(!items[i]) {
+			nulls.push(i);
+		}
+	}
+	return nulls;
+}
 var riskGameCurrency = 5;
 casinoDao.gambling = function(data, player, callback) {
 	//加了几次注
-	var num = data.num || 0;
-	var lock = data.lock || false;
+	var allMoney = data.money ;
+	var lock = data.lock || 0;
 	redis.command(function(client) {
 		casinoDao.getCasino(data.Key, function(err, res){
 			if(err){redis.release(client);return callback(err);}
@@ -345,6 +354,7 @@ casinoDao.gambling = function(data, player, callback) {
 			];
 			var gameCurrency = 0;
 			casino.gamblingNum--;
+			var num = (allMoney/(casino.items.allPrice)-1)*5;
 			if(casino.gamblingNum < 0) {
 				//需要钱？
 				gameCurrency-=casino.gamblingNum*2;
@@ -353,10 +363,14 @@ casinoDao.gambling = function(data, player, callback) {
 			if(lock) {
 				gameCurrency += riskGameCurrency;
 			}
-			console.log(casino);
+			var nulls = findNull(player.packageEntity.items, player.packageEntity.itemCount);
+			if(nulls.length == 0) {
+				return callback("bag is fulled");
+			}
 			
 			if(num> 0) {
-				var money = (0.2*num)* casino.items.allPrice;
+				//var money = (0.2*num)* casino.items.allPrice;
+				var money = allMoney-casino.items.allPrice;
 				if(player.money < money) {
 					return callback("you money not enough");
 				}
@@ -388,7 +402,11 @@ casinoDao.gambling = function(data, player, callback) {
 					itemNum: item.itemNum || 1
 				};
 				//var index = player.packageEntity.add(_item);
-				var _changeItems = player.packageEntity.addItemWithNoType(player, _item).index;
+				var addResult = player.packageEntity.addItemWithNoType(player, _item);
+				if(!addResult) {
+					redis.release(client);return callback("bag is fulled");					
+				}
+				var _changeItems = addResult.index;
 				console.log(_changeItems);
 				for(var i = 0, len = _changeItems.length; i < len ;i++) {
 					var _item = _changeItems[i];
@@ -409,7 +427,7 @@ casinoDao.gambling = function(data, player, callback) {
 			}else{
 				var item = items.pop();
 				run(item);
-				if(lock) {
+				if(lock != 0 ) {
 					casino.index--;
 					if(casino.index == 0) {
 						refreshRun();			
@@ -435,6 +453,7 @@ casinoDao.gambling = function(data, player, callback) {
 			cbResult.casino = casino;
 			cbResult.gold = player.gameCurrency;
 			cbResult.changeItems = changeItems;
+			console.log(array);
 			client.multi(array).exec(function(err, res) {
 				redis.release(client);
 				callback(err, cbResult);

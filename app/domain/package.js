@@ -14,7 +14,7 @@ var Package = function(opts){
     this.registerType = opts.registerType;
     this.loginName = opts.loginName;
     this.items = opts.items;
-    this.itemCount = opts.itemCount || 12;
+    this.itemCount = (opts.itemCount - 0) || 12;
 }
 util.inherits(Package, Persistent);
 module.exports = Package;
@@ -68,7 +68,12 @@ Package.prototype.checkItem = function(index, itemId) {
 }
 
 Package.prototype.removeItem = function(index, itemNum) {
+    console.log(index);
     var item =  this.items[index];
+    console.log("item:",item);
+    if(item.itemNum < itemNum) {
+        return null;
+    }
     item.itemNum = item.itemNum - itemNum;
     if(item.itemNum <= 0) {
         delete this.items[index];
@@ -90,20 +95,57 @@ Package.prototype.hasItem = function(_item) {
 				flag.push(item);
 			} else {
 				flag.push({
-					itemId: item.itemId,
-					itemNum: num,
-					level: item.level
+                    index: i,
+                    item:{
+                        itemId: item.itemId,
+                        itemNum: num,
+                        level: item.level        
+                    }
 				});
 				num = 0;
+                return flag;
 			}			
-			if(num == 0) {
-				return flag;
-			}
 		}
 	}
 	return null;
 }
-
+Package.prototype._removeItems = function(items, mode) {
+    var _items = [];
+    for(var i = 0, l = items.length; i < l ; i++) {
+        var a = [];
+        for(var n = 0, nl = items[i].length ; n < nl; n++) {
+            var item = items[i][n];
+            var _item = this.removeItem(item.index, item.itemNum);
+            if(!_item) {
+                return null;
+            }
+            a.push({
+                index: item.index,
+                item: _item
+            });
+        }
+        if(!mode) {
+            _items = _items.concat(a);
+        }else{
+            _items.push(a);
+        }
+    }
+    return _items;
+}
+Package.prototype.removeItems = function(items) {
+    var _items = [];
+    for(var i  = 0, l = items.length ; i < l; i++) {
+        for(var n = 0 , nl = items[i].length ; n < nl ; n++ ) {
+            var item = items[i][n];
+            var _item = this.removeItem(item.index, item.itemNum);
+            if(!_item){
+                return null;
+            }
+            _items.push(_item);
+        }
+    }
+    return _items;
+}
 /**
  * 检索材料
  * @param materials []
@@ -199,7 +241,7 @@ Package.prototype.checkItems = function(items) {
             return [];
         }
     }
-    if(flag.length == items.length) {
+    if(flag.length >= items.length) {
         return flag;
     } else {
         return [];
@@ -246,7 +288,14 @@ function sort1(array, max) {
                         array[l+1].itemNum= 0;
                     } 
                 }else {
-                    var itemInfo = dataApi.item.findById(array[l].itemId);
+                    var  itemInfo;
+                    if(array[l].itemId.indexOf("D") >= 0) {
+                        itemInfo = dataApi.item.findById(array[l].itemId);
+                    }else if(array[l].itemId.indexOf("B") >= 0) {
+                        itemInfo = dataApi.diamonds.findById(array[l].itemId);
+                    } 
+                    console.log("itemIn",itemInfo);
+                    if(!itemInfo){itemInfo.pileNum = 99;}
                     var _max = itemInfo.pileNum - 0 ||99;
                     if(array[l].itemNum > _max) {
                         array[l+1].itemNum = array[l].itemNum - _max;
@@ -263,7 +312,6 @@ function sort1(array, max) {
     return array;
 } ;
 
-var sort
 
 Package.prototype.arrange = function(callback) {
     var items = this.items;
@@ -429,6 +477,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         //返回{}并没有返回null 容易判断
         return null;
     }
+
     if(rIndex) {
         if(this.items[rIndex]) {
             var _item =  this.items[rIndex];
@@ -439,9 +488,10 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         }
     }
     var items = this;
+     console.log(items.itemCount  + packageStart);
     if(type == PackageType.WEAPONS || type == PackageType.EQUIPMENTS) {
         var flag = false;
-        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+        for (var i = packageStart; i < items.itemCount  + packageStart ; i++) {
             if (!items.items[i]) {
                 flag = true;
                 items.items[i] = {
@@ -464,7 +514,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             };
     } else if(!itemInfo.pileNum || itemInfo.pileNum == 1) {
         var flag = false;
-        for (var i = packageStart; i < items.itemCount + packageStart; i++) {
+        for (var i = packageStart; i < items.itemCount  + packageStart; i++) {
             if (!items.items[i]) {
                 flag = true;
                 items.items[i] = {
@@ -622,6 +672,10 @@ Package.prototype.addEquipment = function(player, type, item, rIndex) {
         r.task = task;
     }
     return r;
+}
+
+Package.prototype.clearPackage = function() {
+    this.items = {};
 }
 
 Package.prototype.strip = function() {

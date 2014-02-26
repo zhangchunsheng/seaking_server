@@ -7,6 +7,7 @@
  */
 var userDao = require('../dao/userDao');
 var utils = require('../utils/utils');
+var dbUtil = require('../utils/dbUtil');
 var eventManager = require('../domain/event/eventManager');
 
 var userService = module.exports;
@@ -74,10 +75,65 @@ userService.updatePlayerAttribute = function(player, cb) {
     userDao.updatePlayerAttribute(player, cb);
 }
 
-userService.getUpdateArray = function() {
-
+userService.getUpdateArray = function(array, player, key, columns) {
+    var obj = {};
+    var o = "";
+    for(var i = 0 ; i < columns.length ; i++) {
+        obj = {};
+        o = columns[i];
+        if(typeof player[o] == "object") {
+            if(Object.prototype.toString.call(player[o]) === '[object Array]') {
+                obj[o] = player[o];
+                array.push(["hset", key, o, JSON.stringify(obj)]);
+            } else if(o == "skills" || o == "curTasks") {
+                for(var o1 in player[o]) {
+                    array.push(["hset", key, o1, JSON.stringify(player[o][o1])]);
+                }
+            } else {
+                array.push(["hset", key, o, JSON.stringify(player[o])]);
+            }
+        } else {
+            array.push(["hset", key, o, player[o]]);
+        }
+    }
+    return array;
 }
 
 userService.getCharacterInfoByNickname = function(serverId, nickname, cb) {
     userDao.getCharacterInfoByNickname(serverId, nickname, cb);
+}
+
+/**
+ * getUpdatePlayerAttributeArray
+ * @param array
+ * @param player
+ */
+userService.getUpdatePlayerAttributeArray = function(array, player) {
+    var column = player.updateColumn().columns;
+
+    var characterId = utils.getRealCharacterId(player.id);
+    var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
+
+    for(var o in column) {
+        dbUtil.getCommand(array, key, o, player);
+    }
+}
+
+/**
+ * getUpdatePlayerArray
+ * @param array
+ * @param player
+ * @param columns
+ */
+userService.getUpdatePlayerArray = function(array, mainPlayer, player, columns) {
+    var key = "";
+    var characterId = utils.getRealCharacterId(mainPlayer.id);
+    if(player.id.indexOf("P") >= 0) {
+        var partnerId = utils.getRealPartnerId(player.id);
+        key = dbUtil.getPartnerKey(player.sid, player.registerType, player.loginName, characterId, partnerId);
+    } else {
+        key = dbUtil.getPlayerKey(mainPlayer.sid, mainPlayer.registerType, mainPlayer.loginName, characterId);
+    }
+
+    userService.getUpdateArray(array, player, key, columns);
 }
