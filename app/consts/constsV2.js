@@ -479,7 +479,8 @@ module.exports = {
         CLEAR_AWAY: "35",//斩杀一个目标
         STUNT: "36",//禁锢
         STASIS: "37",//停滞
-        ADDDEFENSE: "38"//加护甲
+        ADDDEFENSE: "38",//加护甲
+        REVIVE: "40"//复活
     },
 
     buffCategory: {

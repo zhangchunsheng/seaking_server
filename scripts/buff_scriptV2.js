@@ -164,6 +164,22 @@ var buff_script = {
         defense.removeBuff(this);
         return 0;
     },
+    /**
+     * 承受到致命伤害时，不会死亡同时也会免疫治疗效果，持续3次被攻击
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff108201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         if(this.buffData.value <= 0) {
             return 0;
@@ -462,7 +478,7 @@ var buff_script = {
                 reduceBlood: defense.hp,
                 buffs: defense.getBuffs()
             };
-            fightUtil.checkDied(defense, defenseData);
+            fightUtil.checkDied(defense, defenseFightTeam, defenseData);
             fightData.target.push(target);
             return 1;
         } else {
@@ -542,7 +558,7 @@ var buff_script = {
                 reduceBlood: defense.hp,
                 buffs: defense.getBuffs()
             };
-            fightUtil.checkDied(defense, defenseData);
+            fightUtil.checkDied(defense, defenseFightTeam, defenseData);
             fightData.target.push(target);
             return 1;
         } else {
@@ -614,7 +630,7 @@ var buff_script = {
         fightUtil.scopeDamage(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         attack.fightValue.hp = attack.hp = 0;
-        fightUtil.checkDied(attack, attackData);
+        fightUtil.checkDied(attack, attackFightTeam, attackData);
         return 1;
     },
     "buff304101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -628,10 +644,53 @@ var buff_script = {
         return 0;
     },
     "buff305101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
-    },
-    "buff305201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         return 0;
+    },
+    /**
+     * 生命值进入低于20%的状态时，下次攻击将消耗所有生命值，复活上一个死亡的角色，并赋予10%的生命值
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
+    "buff305201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player = attackFightTeam.getLastDiedPlayer();
+        if(player == null) {
+            return 0;
+        }
+
+        player.fightValue.hp = player.hp = player.maxHp * this.buffData.value;
+        player.died = false;
+        player.costTime = player.fight.costTime;
+        player.attackers = attack.attackers;
+        attackFightTeam.removeDiedPlayer(player);
+
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OWNER;//作用目标
+
+        attack.removeBuff(this);
+        attack.fightValue.hp = attack.hp = 0;
+        fightUtil.checkDied(attack, attackFightTeam, attackData);
+
+        var target = {
+            action: constsV2.defenseAction.addHp,
+            id: player.id,
+            fId: player.formationId,
+            hp: player.hp,
+            addHp: player.hp,
+            buffs: player.getBuffs()
+        };
+        fightData.target.push(target);
+        return 1;
     },
     "buff306101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.addDodge += this.buffData.value;

@@ -173,12 +173,14 @@ fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType,
  * @param player
  * @param data
  */
-fightUtil.checkDied = function(player, data) {
+fightUtil.checkDied = function(player, fightTeam, data) {
     if(player.fightValue.hp <= 0) {
         player.fightValue.hp = 0;
         player.died = data.died = true;
         player.fight.costTime = player.costTime;
         player.costTime = 10000;
+
+        fightTeam.addDiedPlayer(player);
     }
 }
 
@@ -553,7 +555,7 @@ fightUtil.attack = function(opts, attackSide, attack_formation, defense_formatio
 
         fightUtil.reduceHp(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         fightUtil.updateDefenseData(defense, defenseData);
-        fightUtil.checkDied(defense, defenseData);
+        fightUtil.checkDied(defense, defenseFightTeam, defenseData);
 
         defense.useSkillBuffsWithNoTeam(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
@@ -935,7 +937,7 @@ fightUtil.calculateScopeDamage = function(opts, buff, attackSide, attack_formati
             };
             defense.awakenSkill(consts.characterFightType.DEFENSE, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
-            fightUtil.checkDied(defense, defenseData);
+            fightUtil.checkDied(defense, defenseFightTeam, defenseData);
             break;
         }
     }
@@ -1204,7 +1206,7 @@ fightUtil.counter = function(attack_formation, defense_formation, attack, defens
     attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
     //反击触发觉醒技能
     attack.hp = attack.fightValue.hp;
-    fightUtil.checkDied(attack, attackData);
+    fightUtil.checkDied(attack, attackFightTeam, attackData);
 }
 
 /**

@@ -86,6 +86,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.ADDDEFENSE) {
         buffCategory = constsV2.buffCategory.DEFENSE;
+    } else if(buffType == constsV2.buffTypeV2.REVIVE) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -571,7 +573,7 @@ var skill_script = {
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == buffId) {
                 attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffs[i].buffData.value / 100);
-                fightUtil.checkDied(attack, attackData);
+                fightUtil.checkDied(attack, attackFightTeam, attackData);
                 return 100;
             }
         }
@@ -580,7 +582,7 @@ var skill_script = {
         };
         attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffData.value / 100);
         attack.hp = attack.fightValue.hp;
-        fightUtil.checkDied(attack, attackData);
+        fightUtil.checkDied(attack, attackFightTeam, attackData);
         var buff = getSkillBuff(constsV2.buffTypeV2.TURN_DAMAGE, this, buffData);
         player.addBuff(buff);
         return 100;
@@ -1955,13 +1957,19 @@ var skill_script = {
             players = defenses;
         }
 
+        var buffs = player.buffs;
         var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
         var buffData = {
             value: 0.5
         };
         var buff = getSkillBuff(constsV2.buffTypeV2.CHANGETO_SCOPE_DAMAGE, this, buffData);
 
-        fightUtil.addBuff(players, buffId, buff);
+        player.addBuff(buff);
 
         return 100;
     },
@@ -2073,8 +2081,48 @@ var skill_script = {
         fightUtil.recoverHp(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         return 1;
     },
+    /**
+     * 生命值进入低于20%的状态时，下次攻击将消耗所有生命值，复活上一个死亡的角色，并赋予10%的生命值
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill305201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+        } else {
+            player = defense;
+            playerData = defenseData;
+        }
 
+        var buffs = player.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 0.1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.REVIVE, this, buffData);
+
+        player.addBuff(buff);
+
+        return 100;
     },
     /**
      * 被攻击时，随机给己方目标添加一个闪避提升10%的状态，持续一回合
@@ -2110,6 +2158,22 @@ var skill_script = {
         player.addBuff(buff);
         return 100;
     },
+    /**
+     * 死亡瞬间，立即使己方攻击力最高的单位发动一次攻击
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill306201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
@@ -2150,6 +2214,22 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 当己方有一个单位死亡时，冻结所有敌方单位，持续1次
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill307201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     },
@@ -2190,6 +2270,22 @@ var skill_script = {
             return 0;
         }
     },
+    /**
+     * 死亡时，给杀死该单位的目标附加诅咒，该单位下次攻击之后死亡
+     * @param attackSide
+     * @param condition
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     */
     "skill308201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
 
     }

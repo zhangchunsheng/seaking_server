@@ -471,7 +471,7 @@ Fight.prototype.attack = function(battleData, players, index) {
 
                     fightUtil.reduceHp(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
                     fightUtil.updateDefenseData(defense, defenseData);
-                    fightUtil.checkDied(defense, defenseData);
+                    fightUtil.checkDied(defense, defenseFightTeam, defenseData);
 
                     defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
