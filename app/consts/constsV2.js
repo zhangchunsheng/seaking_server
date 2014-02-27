@@ -441,6 +441,20 @@ module.exports = {
         REDUCESPEED: "reducespeed"
     },
 
+    triggerCondition: {
+        ATTACK: 1,
+        BEATTACKED: 2,
+        HP: 3,
+        BLOCK: 4,
+        DODGE: 5,
+        CRITICALHIT: 6,
+        COUNTER: 7,
+        BATTLE: 8,
+        DIE: 9,
+        REDUCEBLOOD: 10,
+        PASSIVE: 11
+    },
+
     buffTypeV2: {
         SHIELDS: "1",//护盾
         EXTRAARMOR: "2",//额外护甲
@@ -519,8 +533,9 @@ module.exports = {
         COUNTER: 7,
         BATTLE: 8,
         DEATH: 9,
-        GETDAMAGE: 10,
-        AWAKEN: 11
+        GETDAMAGE: 10,//减血
+        HASONEDEATH: 11,
+        AWAKEN: 12
     },
 
     /**

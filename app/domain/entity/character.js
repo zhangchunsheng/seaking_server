@@ -541,6 +541,29 @@ Character.prototype.awakenSkill = function(fightType, condition, attack_formatio
     return anger;
 }
 
+Character.prototype.initAwakeSkill = function(attack_formation, defense_formation, attack, attacks, attackFightTeam, defenseFightTeam) {
+    var awakenCondition = {
+        type: consts.skillTriggerConditionType.AWAKEN
+    };
+
+    var skills = this.skills;
+
+    var attackSide = 0;
+    var defense = {};
+    var defenses = {};
+    var fightData = {};
+    var attackData = {};
+    var defenseData = {};
+
+    for(var i in skills) {
+        if(i == consts.skillV2Type.AWAKEN_SKILL) {
+            if(skills[i].skillData.triggerCondition == consts.triggerCondition.PASSIVE) {
+                this.useAwakenSkill(attackSide, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+        }
+    }
+}
+
 /**
  * 使用触发技能
  */

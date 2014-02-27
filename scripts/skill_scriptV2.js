@@ -2175,7 +2175,61 @@ var skill_script = {
      * @param defenseData
      */
     "skill306201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var players;
+        var playerFightTeam;
 
+        var attackSide_counter = 0;
+        var attack_formation_counter = {};
+        var defense_formation_counter = {};
+        var attack_counter = {};
+        var defense_counter = {};
+        var attacks_counter = {};
+        var defenses_counter = {};
+        var attackFightTeam_counter = {};
+        var defenseFightTeam_counter = {};
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            players = attacks;
+            playerFightTeam = attackFightTeam;
+
+            attack_formation_counter = attack_formation;
+            defense_formation_counter = defense_formation;
+            defense_counter = defense;
+            attacks_counter = attacks;
+            defenses_counter = defenses;
+            attackFightTeam_counter = attackFightTeam;
+            defenseFightTeam_counter = defenseFightTeam;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            players = defenses;
+            playerFightTeam = defenseFightTeam;
+
+            attack_formation_counter = defense_formation;
+            defense_formation_counter = attack_formation;
+            defense_counter = attack;
+            attacks_counter = defenses;
+            defenses_counter = attacks;
+            attackFightTeam_counter = defenseFightTeam;
+            defenseFightTeam_counter = attackFightTeam;
+        }
+        if(fightData.attackSide == constsV2.attackSide.OWNER) {
+            attackSide_counter = constsV2.attackSide.OPPONENT;
+        } else {
+            attackSide_counter = constsV2.attackSide.OWNER;
+        }
+
+        fightUtil.checkDied(player, playerFightTeam, playerData);
+        var attacker = fightUtil.getHighAttackPlayer(players);
+        var data = null;
+        data = fightUtil.attackOnce(attackSide_counter, attack_formation_counter, defense_formation_counter, attacker, defense_counter, attacks_counter, defenses_counter, attackFightTeam_counter, defenseFightTeam_counter);
+        console.log(data);
+        playerData.fightData = data;
+
+        return 100;
     },
     /**
      * 主动攻击时，有30%的几率放弃伤害转而冰冻对方，持续一次

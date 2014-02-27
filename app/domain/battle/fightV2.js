@@ -64,9 +64,11 @@ Fight.prototype.fight = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
+        owners[i].initAwakeSkill(this.owner_formation, this.monster_formation, owners[i], owners, this.ownerTeam, this.monsterTeam);
         owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
+        monsters[i].initAwakeSkill(this.monster_formation, this.owner_formation, monsters[i], monsters, this.monsterTeam, this.ownerTeam);
         monsters[i].updateFightValueV2();
     }
 
@@ -154,9 +156,11 @@ Fight.prototype.pk = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
+        owners[i].initAwakeSkill(this.owner_formation, this.monster_formation, owners[i], owners, this.ownerTeam, this.monsterTeam);
         owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
+        monsters[i].initAwakeSkill(this.monster_formation, this.owner_formation, monsters[i], monsters, this.monsterTeam, this.ownerTeam);
         monsters[i].updateFightValueV2();
     }
 
