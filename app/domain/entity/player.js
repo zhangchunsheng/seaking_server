@@ -841,7 +841,7 @@ Player.prototype.calculateBuff = function() {
     this.fight.ice = false;
     this.fight.silence = false;
     this.fight.stasis = false;
-    this.fight.swanWeave = 0;
+    this.fight.swanWeave = false;
 }
 
 /**
