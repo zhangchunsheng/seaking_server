@@ -524,6 +524,9 @@ Character.prototype.awakenSkill = function(fightType, condition, attack_formatio
         var skills = defense.skills;
         for(var i in skills) {
             if(i == consts.skillV2Type.AWAKEN_SKILL) {
+                if(skills[i].skillData.triggerCondition == consts.triggerCondition.PASSIVE) {
+                    continue;
+                }
                 anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }

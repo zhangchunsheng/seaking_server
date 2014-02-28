@@ -10,6 +10,7 @@ var EntityType = require('../consts/consts').EntityType;
 var formulaV2 = require('../consts/formulaV2');
 var utils = require('./utils');
 var buffUtil = require('./buffUtil');
+var BuffV2 = require('../domain/buffV2');
 var dataApi = require('./dataApi');
 var ghosts = require('../../config/data/ghosts');
 
@@ -151,7 +152,7 @@ fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType,
     }
     for(var i = 0, l = buffs.length ; i < l ; i++) {
         if(buffs[i].buffCategory == buffCategory) {
-            dataType = buffs[i].invokeScript(fightType, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            dataType = buffs[i].invokeScript(fightType, buffCategory, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             if(dataType == -1) {
                 dataType = 0;
                 dataTypes.push(dataType);
@@ -173,7 +174,19 @@ fightUtil.useSkillBuffs = function(dataTypes, dataType, buffCategory, fightType,
  * @param player
  * @param data
  */
-fightUtil.checkDied = function(player, fightTeam, data) {
+fightUtil.checkDied = function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+    var player;
+    var fightTeam;
+    var data;
+    if(attackSide == consts.characterFightType.ATTACK) {
+        player = attack;
+        fightTeam = attackFightTeam;
+        data = attackData;
+    } else {
+        player = defense;
+        fightTeam = defenseFightTeam;
+        data = defenseData;
+    }
     if(player.fightValue.hp <= 0) {
         player.fightValue.hp = 0;
         player.died = data.died = true;
@@ -181,6 +194,8 @@ fightUtil.checkDied = function(player, fightTeam, data) {
         player.costTime = 10000;
 
         fightTeam.addDiedPlayer(player);
+
+        player.useSkillBuffs(attackSide, consts.buffCategory.AFTER_DIE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
     }
 }
 
@@ -561,7 +576,7 @@ fightUtil.attack = function(opts, attackSide, attack_formation, defense_formatio
 
         fightUtil.reduceHp(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         fightUtil.updateDefenseData(defense, defenseData);
-        fightUtil.checkDied(defense, defenseFightTeam, defenseData);
+        fightUtil.checkDied(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         defense.useSkillBuffsWithNoTeam(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
@@ -941,9 +956,9 @@ fightUtil.calculateScopeDamage = function(opts, buff, attackSide, attack_formati
             var awakenCondition = {
                 type: consts.skillTriggerConditionType.AWAKEN
             };
-            defense.awakenSkill(consts.characterFightType.DEFENSE, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+            defense.awakenSkill(consts.characterFightType.DEFENSE, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
-            fightUtil.checkDied(defense, defenseFightTeam, defenseData);
+            fightUtil.checkDied(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             break;
         }
     }
@@ -1212,7 +1227,7 @@ fightUtil.counter = function(attack_formation, defense_formation, attack, defens
     attack.fightValue.hp = Math.ceil(attack.fightValue.hp - damage);
     //反击触发觉醒技能
     attack.hp = attack.fightValue.hp;
-    fightUtil.checkDied(attack, attackFightTeam, attackData);
+    fightUtil.checkDied(consts.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 }
 
 /**
@@ -1435,7 +1450,7 @@ fightUtil.attackOnce = function(attackSide, attack_formation, defense_formation,
 
         fightUtil.reduceHp(attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         fightUtil.updateDefenseData(defense, defenseData);
-        fightUtil.checkDied(defense, defenseFightTeam, defenseData);
+        fightUtil.checkDied(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
@@ -1490,4 +1505,103 @@ fightUtil.attackOnce = function(attackSide, attack_formation, defense_formation,
     fightUtil.changeFightData(fightData, attackData);
 
     return fightData;
+}
+
+fightUtil.getBuffCategory = function(buffType) {
+    var buffCategory = 0;
+    if(buffType == consts.buffTypeV2.SHIELDS) {//护盾
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.EXTRAARMOR) {//额外护甲
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.BLOCK) {//格挡
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.DODGE) {//闪避
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.ASYLUM) {//庇护
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.ADDMAXHP) {//提升生命上限
+        buffCategory = consts.buffCategory.AFTER_DEFENSE;
+    } else if(buffType == consts.buffTypeV2.REDUCE_SCOPE_DAMAGE) {//减范围伤害
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.CHANGETO_SCOPE_DAMAGE) {//范围伤害
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.ADDATTACK) {//加攻击力
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.ADDSUNDERARMOR) {//加破甲
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.POISON) {//施毒
+        buffCategory = consts.buffCategory.ROUND;
+    } else if(buffType == consts.buffTypeV2.ADDHP) {//加血
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.REDUCEATTACK_ADDSUNDERARMOR) {//减伤
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.EXTRATARGET) {//额外目标
+        buffCategory = consts.buffCategory.ATTACKING;
+    } else if(buffType == consts.buffTypeV2.CHANGETO_SCOPE_DAMAGE_AND_ADDHP) {//范围伤害并加血
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.PARALLELDAMAGE) {//溅射
+        buffCategory = consts.buffCategory.ATTACKING;
+    } else if(buffType == consts.buffTypeV2.RECOVERYHP) {
+        buffCategory = consts.buffCategory.ATTACKING;
+    } else if(buffType == consts.buffTypeV2.PROMOTEHP) {//提升血量
+        buffCategory = consts.buffCategory.ATTACKING;
+    } else if(buffType == consts.buffTypeV2.ADDDODGE) {//提升闪避
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.ICE) {//冰冻
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.SILENCE) {//沉默
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.FREEZE) {//冻结
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.TURN_DAMAGE) {
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.ADDBLOCK) {
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.KING_WILL) {
+        buffCategory = consts.buffCategory.AFTER_DIE;
+    } else if(buffType == consts.buffTypeV2.ADDDAMAGE) {
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.IMMUNE_FREEZE) {
+        //buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.NODAMAGE_EXCEPT_ATTACK) {
+        //buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.EXCHANGE_HP_ATTACK) {
+        //buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.CHANGETO_SCOPE_DAMAGE_THREETIME) {
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.OFFSET_SHIELDS) {
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.CLEAR_BAD_STATUS) {
+        //buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.CLEAR_AWAY) {
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.STUNT) {//禁锢
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.STASIS) {
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.ADDDEFENSE) {
+        buffCategory = consts.buffCategory.DEFENSE;
+    } else if(buffType == consts.buffTypeV2.REVIVE) {
+        buffCategory = consts.buffCategory.ATTACK;
+    } else if(buffType == consts.buffTypeV2.ALLFREEZE) {
+        buffCategory = consts.buffCategory.AFTER_DIE;
+    }
+    return buffCategory;
+}
+
+fightUtil.getSkillBuff = function(buffType, skill, buffData) {
+    var effectId = "XG" + skill.skillId.replace("SK","");
+    var buff = new BuffV2({
+        buffId: skill.skillId.replace("SK", ""),
+        useEffectId: effectId,
+        type: buffType,
+        skillId: skill.skillId,
+        skillType: skill.type,
+        skillLevel: skill.level,
+        skillData: skill.skillData,
+        buffData: buffData,
+        buffType: buffType,
+        buffCategory: fightUtil.getBuffCategory(buffType)
+    });
+    return buff;
 }

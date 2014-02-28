@@ -494,7 +494,8 @@ module.exports = {
         STUNT: "36",//禁锢
         STASIS: "37",//停滞
         ADDDEFENSE: "38",//加护甲
-        REVIVE: "40"//复活
+        REVIVE: "40",//复活
+        ALLFREEZE: "41"
     },
 
     buffCategory: {

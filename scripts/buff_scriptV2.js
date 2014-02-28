@@ -9,6 +9,7 @@ var utils = require('../app/utils/utils');
 var fightUtil = require('../app/utils/fightUtil');
 var buffUtil = require('../app/utils/buffUtil');
 var constsV2 = require('../app/consts/constsV2');
+var dataApi = require('../app/utils/dataApi');
 
 var buff_script = {
     /**
@@ -478,7 +479,7 @@ var buff_script = {
                 reduceBlood: defense.hp,
                 buffs: defense.getBuffs()
             };
-            fightUtil.checkDied(defense, defenseFightTeam, defenseData);
+            fightUtil.checkDied(constsV2.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             fightData.target.push(target);
             return 1;
         } else {
@@ -558,7 +559,7 @@ var buff_script = {
                 reduceBlood: defense.hp,
                 buffs: defense.getBuffs()
             };
-            fightUtil.checkDied(defense, defenseFightTeam, defenseData);
+            fightUtil.checkDied(constsV2.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             fightData.target.push(target);
             return 1;
         } else {
@@ -630,7 +631,7 @@ var buff_script = {
         fightUtil.scopeDamage(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         attack.fightValue.hp = attack.hp = 0;
-        fightUtil.checkDied(attack, attackFightTeam, attackData);
+        fightUtil.checkDied(constsV2.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         return 1;
     },
     "buff304101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -679,7 +680,7 @@ var buff_script = {
 
         attack.removeBuff(this);
         attack.fightValue.hp = attack.hp = 0;
-        fightUtil.checkDied(attack, attackFightTeam, attackData);
+        fightUtil.checkDied(constsV2.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
 
         var target = {
             action: constsV2.defenseAction.addHp,
@@ -705,7 +706,58 @@ var buff_script = {
         attack.removeBuff(this);
         return 1;
     },
+    /**
+     * 当己方有一个单位死亡时，冻结所有敌方单位，持续1次
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff307201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var players;
+        var playerFightTeam;
+        var opponents;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            players = attacks;
+            playerFightTeam = attackFightTeam;
+            opponents = defenses;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            players = defenses;
+            playerFightTeam = defenseFightTeam;
+            opponents = attacks;
+        }
+
+        var buffData = {
+            value: true
+        };
+        var skill = {
+            skillId: "SK307101",
+            type: 1,
+            level: 1,
+            skillData: dataApi.skillsV2.findById("SK307101")
+        };
+        playerData.skillId = skill.skillId;
+        var buffId = skill.skillId.replace("SK", "");
+        var buff = fightUtil.getSkillBuff(constsV2.buffTypeV2.ICE, skill, buffData);
+        fightUtil.addBuff(opponents, buffId, buff);
+
+        playerFightTeam.removeBuff(this);
+
         return 0;
     },
     "buff308101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {

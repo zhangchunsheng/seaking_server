@@ -80,7 +80,7 @@ function getBuffCategory(buffType) {
         //buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.CLEAR_AWAY) {
         buffCategory = constsV2.buffCategory.ATTACK;
-    } else if(buffType == constsV2.buffTypeV2.STUNT) {
+    } else if(buffType == constsV2.buffTypeV2.STUNT) {//禁锢
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.STASIS) {
         buffCategory = constsV2.buffCategory.ATTACK;
@@ -88,6 +88,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.DEFENSE;
     } else if(buffType == constsV2.buffTypeV2.REVIVE) {
         buffCategory = constsV2.buffCategory.ATTACK;
+    } else if(buffType == constsV2.buffTypeV2.ALLFREEZE) {
+        buffCategory = constsV2.buffCategory.AFTER_DIE;
     }
     return buffCategory;
 }
@@ -573,7 +575,7 @@ var skill_script = {
         for(var i = 0, l = buffs.length ; i < l ; i++) {
             if(buffs[i].buffId == buffId) {
                 attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffs[i].buffData.value / 100);
-                fightUtil.checkDied(attack, attackFightTeam, attackData);
+                fightUtil.checkDied(constsV2.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 return 100;
             }
         }
@@ -582,7 +584,7 @@ var skill_script = {
         };
         attack.fightValue.hp -= Math.round(defenseData.reduceBlood * buffData.value / 100);
         attack.hp = attack.fightValue.hp;
-        fightUtil.checkDied(attack, attackFightTeam, attackData);
+        fightUtil.checkDied(constsV2.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         var buff = getSkillBuff(constsV2.buffTypeV2.TURN_DAMAGE, this, buffData);
         player.addBuff(buff);
         return 100;
@@ -2222,11 +2224,10 @@ var skill_script = {
             attackSide_counter = constsV2.attackSide.OWNER;
         }
 
-        fightUtil.checkDied(player, playerFightTeam, playerData);
+        fightUtil.checkDied(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         var attacker = fightUtil.getHighAttackPlayer(players);
         var data = null;
         data = fightUtil.attackOnce(attackSide_counter, attack_formation_counter, defense_formation_counter, attacker, defense_counter, attacks_counter, defenses_counter, attackFightTeam_counter, defenseFightTeam_counter);
-        console.log(data);
         playerData.fightData = data;
 
         return 100;
@@ -2285,7 +2286,25 @@ var skill_script = {
      * @param defenseData
      */
     "skill307201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player = attack;
+        var playerData = attackData;
+        var playerFightTeam = attackFightTeam;
 
+        var buffs = playerFightTeam.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.ALLFREEZE, this, buffData);
+
+        playerFightTeam.addBuff(buff);
+
+        return 100;
     },
     /**
      * 主动攻击时，有30%的几率沉默目标，持续一次
