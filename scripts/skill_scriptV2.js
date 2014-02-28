@@ -90,6 +90,8 @@ function getBuffCategory(buffType) {
         buffCategory = constsV2.buffCategory.ATTACK;
     } else if(buffType == constsV2.buffTypeV2.ALLFREEZE) {
         buffCategory = constsV2.buffCategory.AFTER_DIE;
+    } else if(buffType == constsV2.buffTypeV2.CURSE) {
+        buffCategory = constsV2.buffCategory.ATTACK;
     }
     return buffCategory;
 }
@@ -2360,7 +2362,37 @@ var skill_script = {
      * @param defenseData
      */
     "skill308201": function(attackSide, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var players;
+        var opponent;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            players = attacks;
+            opponent = defense;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            players = defenses;
+            opponent = attack;
+        }
 
+        var buffs = opponent.buffs;
+        var buffId = this.skillId.replace("SK", "");
+        for(var i = 0, l = buffs.length ; i < l ; i++) {
+            if(buffs[i].buffId == buffId) {
+                return 0;
+            }
+        }
+        var buffData = {
+            value: 1
+        };
+        var buff = getSkillBuff(constsV2.buffTypeV2.CURSE, this, buffData);
+
+        opponent.addBuff(buff);
+
+        return 100;
     }
 }
 

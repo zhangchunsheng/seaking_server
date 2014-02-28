@@ -766,7 +766,13 @@ var buff_script = {
         return 1;
     },
     "buff308201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        if(this.buffData.value <= 0) {
+            attack.fightValue.hp = attack.hp = 0;
+            fightUtil.checkDied(constsV2.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        } else {
+            this.buffData.value--;
+            return 0;
+        }
     }
 }
 
