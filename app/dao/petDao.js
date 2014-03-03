@@ -482,7 +482,7 @@ exports.usePet = function(data, player, callback) {
 	callResult.pets = pets.update().pets;
 	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
 	console.log(callResult);
-	mailDao.setTimeSendMail(mail,pet.skillCDTime);
+	mailDao.setTimeSendMail(data, mail, pet.skillCDTime);//pet.skillCDTime
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err, result) {
 				redis.release(client);

@@ -338,7 +338,7 @@ mailDao.collectItem = function(msg, callback) {
 	});
 }
 
-mailDao.setTimeSendMail = function(mail, time,  callback) {
+mailDao.setTimeSendMail = function(msg, mail, time,  callback) {
 	setTimeout(function() {
 		mail.time = Date.now();
 		redis.command(function(client) {
@@ -350,7 +350,7 @@ mailDao.setTimeSendMail = function(mail, time,  callback) {
 					array.push(["lpush",msg.Key+"_"+MailKeyType.MAILIN, getString(mail)]);
 					client.multi(array).exec(function(err, res) {
 						redis.release(client);
-						callback(err,mail);
+						callback && callback(err,mail);
 					});
 				});
 			});

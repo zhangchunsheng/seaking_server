@@ -141,6 +141,7 @@ mail.collectItem = function(req, res) {
                 changeItems.push(change);
             }
             data.changeItems = changeItems;
+            data.changeMail = r.mail;
             var array = [];
             if(rdata.money) {
                 player.money += rdata.money;
@@ -154,16 +155,14 @@ mail.collectItem = function(req, res) {
             }
             array.push(["hset",Key,"package", JSON.stringify(player.packageEntity.getInfo())]);
             //领取事件
+
             array.push(r.sql);
             console.log(array);
             redis.command(function(client) {
                 client.multi(array).exec(function(err){
                     redis.release(client);
                     if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
-                    utils.send(msg, res, {code: Code.OK, data: {
-                        changeItems: changeItems, 
-                        changeMail: r.mail
-                    }});
+                    utils.send(msg, res, {code: Code.OK, data: data});
                 });
             });
             
