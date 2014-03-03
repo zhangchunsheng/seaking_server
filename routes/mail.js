@@ -131,6 +131,7 @@ mail.collectItem = function(req, res) {
             if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
             var changeItems = [];
             var rdata = r.mail;
+            var data = {};
             for(var i in rdata.items){
                 var item = rdata.items[i];
                 var change = player.packageEntity.addItemWithNoType(player, item);
@@ -139,15 +140,30 @@ mail.collectItem = function(req, res) {
                 }
                 changeItems.push(change);
             }
+            data.changeItems = changeItems;
             var array = [];
+            if(rdata.money) {
+                player.money += rdata.money;
+                array.push(["hset", Key, "money", player.money]);
+                data.money = player.money;
+            } 
+            if(rdata.experience) {
+                player.experience += rdata.experience;
+                array.push(["hset", Key, "experience", player.experience]);
+                data.experience = player.experience;
+            }
             array.push(["hset",Key,"package", JSON.stringify(player.packageEntity.getInfo())]);
+            //领取事件
             array.push(r.sql);
             console.log(array);
             redis.command(function(client) {
                 client.multi(array).exec(function(err){
                     redis.release(client);
                     if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
-                    utils.send(msg, res, {code: Code.OK, data: {changeItems: changeItems, changeMail: r.mail}});
+                    utils.send(msg, res, {code: Code.OK, data: {
+                        changeItems: changeItems, 
+                        changeMail: r.mail
+                    }});
                 });
             });
             
