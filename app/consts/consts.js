@@ -551,7 +551,9 @@ module.exports = {
         dodge: 2,
         counter: 3,
         block: 4,
-        addHp: 5
+        addHp: 5,
+        offsetDamage: 6,
+        beClearedAway: 7
     },
 
     requirementType: {

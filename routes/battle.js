@@ -370,6 +370,7 @@ exports.battle2 = function(req, res) {
         monsterTeam: monsterTeam
     });
 
+    utils.addOrigin(res, req);
     fight.fight(function(err, eventResult) {
         utils.send(msg, res, eventResult);
     });

@@ -832,7 +832,7 @@ Player.prototype.calculateBuff = function() {
     this.fight.addAttackValue = 0;
     this.fight.addSunderArmor = 0;
     this.fight.addSunderArmorValue = 0;
-    this.fight.addHp = 0;
+    this.fight.addHp = 0;//吸血
     this.fight.addHpValue = 0;
     this.fight.promoteHp = 0;
     this.fight.promoteHpValue = 0;
@@ -840,6 +840,8 @@ Player.prototype.calculateBuff = function() {
     this.fight.addDodgeValue = 0;
     this.fight.ice = false;
     this.fight.silence = false;
+    this.fight.stasis = false;
+    this.fight.swanWeave = false;
 }
 
 /**

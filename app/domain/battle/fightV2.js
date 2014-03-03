@@ -64,9 +64,11 @@ Fight.prototype.fight = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
+        owners[i].initAwakeSkill(this.owner_formation, this.monster_formation, owners[i], owners, this.ownerTeam, this.monsterTeam);
         owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
+        monsters[i].initAwakeSkill(this.monster_formation, this.owner_formation, monsters[i], monsters, this.monsterTeam, this.ownerTeam);
         monsters[i].updateFightValueV2();
     }
 
@@ -154,9 +156,11 @@ Fight.prototype.pk = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
+        owners[i].initAwakeSkill(this.owner_formation, this.monster_formation, owners[i], owners, this.ownerTeam, this.monsterTeam);
         owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
+        monsters[i].initAwakeSkill(this.monster_formation, this.owner_formation, monsters[i], monsters, this.monsterTeam, this.ownerTeam);
         monsters[i].updateFightValueV2();
     }
 
@@ -471,12 +475,12 @@ Fight.prototype.attack = function(battleData, players, index) {
 
                     fightUtil.reduceHp(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
                     fightUtil.updateDefenseData(defense, defenseData);
-                    fightUtil.checkDied(defense, defenseData);
+                    fightUtil.checkDied(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
                     defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
                     if(defense.died) {
-                        defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DIE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+                        //defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DIE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
                     }
 
                     // 守方
@@ -755,6 +759,7 @@ Fight.createTestPlayer = function(opts) {
     var data = {
         id: heroId,
         kindId: heroId,
+        cId: heroId,
         formationId: formationId,
         type: type,
         hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
@@ -782,6 +787,7 @@ Fight.createTestPlayer = function(opts) {
         counter: formulaV2.calculateCounter(hero.counter, level),
         level: level,
         ghost: {level:0},
+        ghostNum: 1,
         aptitude: {1:{"level":0,"count":50}},
         skills: skills
     };

@@ -9,6 +9,7 @@ var utils = require('../app/utils/utils');
 var fightUtil = require('../app/utils/fightUtil');
 var buffUtil = require('../app/utils/buffUtil');
 var constsV2 = require('../app/consts/constsV2');
+var dataApi = require('../app/utils/dataApi');
 
 var buff_script = {
     /**
@@ -164,6 +165,22 @@ var buff_script = {
         defense.removeBuff(this);
         return 0;
     },
+    /**
+     * 承受到致命伤害时，不会死亡同时也会免疫治疗效果，持续3次被攻击
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff108201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         if(this.buffData.value <= 0) {
             return 0;
@@ -253,6 +270,11 @@ var buff_script = {
         return 0;
     },
     "buff207101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        //如果存在觉醒技能,则优先使用觉醒技能
+        var buffs = attack.buffs;
+        if(buffUtil.hasBuff("207201", buffs)) {
+            return 0;
+        }
         attack.fightValue.attackType = constsV2.attackType.ALL;
         attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;//重新计算攻击力
 
@@ -260,6 +282,26 @@ var buff_script = {
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
+        //检查是否有抵消攻击护盾
+        var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
+        if(flag) {
+            for(var i in defenses) {
+                if(defenses[i].died)
+                    continue;
+                var target = {
+                    action: constsV2.defenseAction.offsetDamage,
+                    id: defenses[i].id,
+                    fId: defenses[i].formationId,
+                    hp: defenses[i].hp,
+                    reduceBlood: 0,
+                    buffs: defenses[i].getBuffs()
+                };
+                fightData.target.push(target);
+            }
+            //更新防守buff
+            fightUtil.removeOffsetShield(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            return 1;
+        }
         var player = fightUtil.checkReduceScopeDamage(defenses);//减群体伤害
         var opts;
         if(player != null) {
@@ -272,7 +314,7 @@ var buff_script = {
             for(var i in defenses) {
                 fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             }
-            fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+            fightUtil.calculateScopeDamage(opts, this, attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else {
             opts = {
                 damage: 0,
@@ -285,8 +327,32 @@ var buff_script = {
 
         return 1;
     },
+    /**
+     * 生命值低于40%以后，攻击减半，但是攻击全部变为群体攻击，并且每次攻击都分为3次进行
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff207201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        attack.fightValue.attackType = constsV2.attackType.ALL;
+        attack.fightValue.attack = attack.fightValue.attack * this.buffData.value;//重新计算攻击力
+
+        attackData.attack = attack.fightValue.attack;
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OPPONENT;
+
+        fightUtil.scopeDamage(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        return 1;
     },
     "buff208101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var theTarget = fightData.target;
@@ -326,6 +392,31 @@ var buff_script = {
         attackData.buffs = attack.getBuffs();
         fightData.targetType = constsV2.effectTargetType.OPPONENT;
 
+        var buffs = attack.buffs;
+        if(buffUtil.hasBuff("209201", buffs)) {
+            return 0;
+        }
+
+        //检查是否有抵消攻击护盾
+        var flag = fightUtil.checkOffsetScopeDamage(defenseFightTeam);//抵消群体伤害
+        if(flag) {
+            for(var i in defenses) {
+                if(defenses[i].died)
+                    continue;
+                var target = {
+                    action: constsV2.defenseAction.offsetDamage,
+                    id: defenses[i].id,
+                    fId: defenses[i].formationId,
+                    hp: defenses[i].hp,
+                    reduceBlood: 0,
+                    buffs: defenses[i].getBuffs()
+                };
+                fightData.target.push(target);
+            }
+            //更新防守buff
+            fightUtil.removeOffsetShield(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            return 1;
+        }
         var player = fightUtil.checkReduceScopeDamage(defenses);
         var opts = {};
         if(player != null) {
@@ -338,7 +429,7 @@ var buff_script = {
             for(var i in defenses) {
                 fightUtil.calculateDamage(opts, attackSide, attack_formation, defense_formation, attack, defenses[i], attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             }
-            fightUtil.calculateScopeDamage(opts, this, defense, defenseData, fightData);
+            fightUtil.calculateScopeDamage(opts, this, attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
         } else {
             opts = {
                 damage: 0,
@@ -357,8 +448,43 @@ var buff_script = {
 
         return 1;
     },
+    /**
+     * 生命值低于40%以后，攻击力恢复，但是能攻击一个目标，如果目标生命值低于5% ，则直接斩杀
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff209201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        if(attack.fightValue.attackType == constsV2.attackType.ALL) {
+            attack.fightValue.attackType = constsV2.attackType.SINGLE;
+            attack.fightValue.attack = Math.ceil(attack.fightValue.attack / 0.5);
+        }
+        if(defense.fightValue.hp <= defense.fightValue.maxHp * this.buffData.value) {
+            defense.fightValue.hp = defense.hp = 0;
+            var target = {
+                action: constsV2.defenseAction.beClearedAway,
+                id: defense.id,
+                fId: defense.formationId,
+                hp: defense.hp,
+                reduceBlood: defense.hp,
+                buffs: defense.getBuffs()
+            };
+            fightUtil.checkDied(constsV2.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            fightData.target.push(target);
+            return 1;
+        } else {
+            return 0;
+        }
     },
     "buff210101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var theTarget = fightData.target;
@@ -387,7 +513,34 @@ var buff_script = {
             fightData.target.push(target);
         }
     },
+    /**
+     * 死亡时，是敌方生命值最多的单位攻击力变为0，持续两次
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff210201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        if(this.buffData.value > 0) {
+            if(attack.fightValue.attack != 0) {
+                attack.fightValue.lastAttack = attack.fightValue.attack;
+                attack.fightValue.attack = 0;
+            }
+            this.buffData.value--;
+        }
+        if(this.buffData.value == 0) {
+            attack.fightValue.attack = attack.fightValue.lastAttack;
+            attack.removeBuff(this);
+        }
         return 0;
     },
     "buff211101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -395,7 +548,23 @@ var buff_script = {
         return 0;
     },
     "buff211201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        var random = utils.random(1, 100);
+        if(random >= 1 && random <= this.buffData.value) {
+            defense.fightValue.hp = defense.hp = 0;
+            var target = {
+                action: constsV2.defenseAction.beClearedAway,
+                id: defense.id,
+                fId: defense.formationId,
+                hp: defense.hp,
+                reduceBlood: defense.hp,
+                buffs: defense.getBuffs()
+            };
+            fightUtil.checkDied(constsV2.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            fightData.target.push(target);
+            return 1;
+        } else {
+            return 0;
+        }
     },
     "buff301101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         var key = "attackTeam";
@@ -415,7 +584,9 @@ var buff_script = {
         return 0;
     },
     "buff301201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        attack.fight.stasis = true;
+        attack.removeBuff(this);
+        return 1;
     },
     "buff302101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addHp += this.buffData.value;
@@ -423,6 +594,7 @@ var buff_script = {
         return 0;
     },
     "buff302201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        attack.fight.addHp += this.buffData.value;
         return 0;
     },
     "buff303101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -433,21 +605,93 @@ var buff_script = {
         attack.removeBuff(this);
         return 0;
     },
+    /**
+     * 生命值进入低于40%的状态，下次攻击牺牲所有生命值，对敌方全体造成当前生命值的一半的伤害
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff303201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        attack.fightValue.attackType = constsV2.attackType.ALL;
+        attack.fight.swanWeave = this.buffData.value;
+
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OPPONENT;//作用目标
+
+        fightUtil.scopeDamage(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+        attack.fightValue.hp = attack.hp = 0;
+        fightUtil.checkDied(constsV2.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        return 1;
     },
     "buff304101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         attack.fight.addAttack += this.buffData.value;
         return 0;
     },
     "buff304201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var addDefense = 0;
+        addDefense = Math.pow((1 + this.buffData.value), this.buffData.time);
+        defense.fight.addDefense += addDefense;
         return 0;
     },
     "buff305101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-
-    },
-    "buff305201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         return 0;
+    },
+    /**
+     * 生命值进入低于20%的状态时，下次攻击将消耗所有生命值，复活上一个死亡的角色，并赋予10%的生命值
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
+    "buff305201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player = attackFightTeam.getLastDiedPlayer();
+        if(player == null) {
+            return 0;
+        }
+
+        player.fightValue.hp = player.hp = player.maxHp * this.buffData.value;
+        player.died = false;
+        player.costTime = player.fight.costTime;
+        player.attackers = attack.attackers;
+        attackFightTeam.removeDiedPlayer(player);
+
+        attackData.buffs = attack.getBuffs();
+        fightData.targetType = constsV2.effectTargetType.OWNER;//作用目标
+
+        attack.removeBuff(this);
+        attack.fightValue.hp = attack.hp = 0;
+        fightUtil.checkDied(constsV2.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+
+        var target = {
+            action: constsV2.defenseAction.addHp,
+            id: player.id,
+            fId: player.formationId,
+            hp: player.hp,
+            addHp: player.hp,
+            buffs: player.getBuffs()
+        };
+        fightData.target.push(target);
+        return 1;
     },
     "buff306101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
         defense.fight.addDodge += this.buffData.value;
@@ -462,7 +706,58 @@ var buff_script = {
         attack.removeBuff(this);
         return 1;
     },
+    /**
+     * 当己方有一个单位死亡时，冻结所有敌方单位，持续1次
+     * @param attackSide
+     * @param attack_formation
+     * @param defense_formation
+     * @param attack
+     * @param defense
+     * @param attacks
+     * @param defenses
+     * @param attackFightTeam
+     * @param defenseFightTeam
+     * @param fightData
+     * @param attackData
+     * @param defenseData
+     * @returns {number}
+     */
     "buff307201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
+        var player;
+        var playerData;
+        var players;
+        var playerFightTeam;
+        var opponents;
+        if(attackSide == constsV2.characterFightType.ATTACK) {
+            player = attack;
+            playerData = attackData;
+            players = attacks;
+            playerFightTeam = attackFightTeam;
+            opponents = defenses;
+        } else {
+            player = defense;
+            playerData = defenseData;
+            players = defenses;
+            playerFightTeam = defenseFightTeam;
+            opponents = attacks;
+        }
+
+        var buffData = {
+            value: true
+        };
+        var skill = {
+            skillId: "SK307101",
+            type: 1,
+            level: 1,
+            skillData: dataApi.skillsV2.findById("SK307101")
+        };
+        playerData.skillId = skill.skillId;
+        var buffId = skill.skillId.replace("SK", "");
+        var buff = fightUtil.getSkillBuff(constsV2.buffTypeV2.ICE, skill, buffData);
+        fightUtil.addBuff(opponents, buffId, buff);
+
+        playerFightTeam.removeBuff(this);
+
         return 0;
     },
     "buff308101": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
@@ -471,7 +766,13 @@ var buff_script = {
         return 1;
     },
     "buff308201": function(attackSide, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData) {
-        return 0;
+        if(this.buffData.value <= 0) {
+            attack.fightValue.hp = attack.hp = 0;
+            fightUtil.checkDied(constsV2.characterFightType.ATTACK, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+        } else {
+            this.buffData.value--;
+            return 0;
+        }
     }
 }
 

@@ -12,6 +12,8 @@ var FightTeam = function(opts) {
     this.members = [];
     this.type = opts.type;
     this.buffs = [];
+
+    this.diedPlayers = [];
 }
 
 FightTeam.prototype.addBuff = function(buff) {
@@ -54,6 +56,7 @@ FightTeam.prototype.removeBuff = function(buff) {
     for(var i = 0, l = this.buffs.length ; i < l ; i++) {
         if(this.buffs[i].buffId == buff.buffId) {
             this.buffs.splice(i, 1);
+            break;
         }
     }
 };
@@ -64,6 +67,50 @@ FightTeam.prototype.addMember = function(player) {
 
 FightTeam.prototype.calculateBuff = function(player) {
 
+}
+
+/**
+ * addDiedPlayer
+ * @param player
+ */
+FightTeam.prototype.addDiedPlayer = function(player) {
+    for(var i = 0 ; i < this.diedPlayers.length ; i++) {
+        if(this.diedPlayers[i].id == player.id) {
+            return;
+        }
+    }
+    this.diedPlayers.push(player);
+}
+
+/**
+ * getLastDiedPlayer
+ */
+FightTeam.prototype.getLastDiedPlayer = function() {
+    if(this.diedPlayers.length == 0) {
+        return null;
+    }
+    return this.diedPlayers[this.diedPlayers.length - 1];
+}
+
+/**
+ * removeDiedPlayer
+ * @param player
+ */
+FightTeam.prototype.removeDiedPlayer = function(player) {
+    for(var i = 0 ; i < this.diedPlayers.length ; i++) {
+        if(this.diedPlayers[i].id == player.id) {
+            this.diedPlayers.splice(i, 1);
+            break;
+        }
+    }
+}
+
+/**
+ * removeDiedPlayerByIndex
+ * @param index
+ */
+FightTeam.prototype.removeDiedPlayerByIndex = function(index) {
+    this.diedPlayers.splice(index, 1);
 }
 
 module.exports = FightTeam;
