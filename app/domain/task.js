@@ -254,6 +254,8 @@ Task.prototype.initTask = function(task) {
     this.status = task.status;
     this.taskRecord = task.taskRecord;
     this.startTime = task.startTime;
+    this.finishTime = task.finishTime;
+    this.handOverTime = task.handOverTime;
 };
 
 /**
