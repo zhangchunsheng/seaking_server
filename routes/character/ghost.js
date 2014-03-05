@@ -81,6 +81,7 @@ exports.upgrade = function(req, res) {
 
         ghost.level = parseInt(ghost.level) + 1;
         var heroId = utils.getCategoryHeroId(character.cId);
+
         var ghostData = ghosts[heroId][ghost.level - 1];
         if(utils.empty(ghostData)) {
             data = {
@@ -89,6 +90,9 @@ exports.upgrade = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
+
+        var probability = ghostData.probability;
+
         if(utils.empty(player.ghostNum) || parseInt(player.ghostNum) < parseInt(ghostData.costGhostNum)) {
             data = {
                 code: Code.CHARACTER.NOMORE_GHOSTNUM
@@ -96,17 +100,57 @@ exports.upgrade = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        player.ghostNum = parseInt(player.ghostNum) - parseInt(ghostData.costGhostNum);
-        character.ghostEntity.set(ghost);
-        var attrValue = character.ghostEntity.getValue();
-        ghostService.upgrade(array, player, character, function(err, reply) {
+
+        var random = 0;
+        var status = 1;
+        var level = 0;
+        if(probability >= 100) {
+            status = 1;
+            player.ghostNum = parseInt(player.ghostNum) - parseInt(ghostData.costGhostNum);
+            character.ghostEntity.set(ghost);
+            var attrValue = character.ghostEntity.getValue();
+
+            if(probability > 100) {
+                var num = probability - 100;
+                random = utils.random(1, 100);
+                if(random >= 1 && random <= num) {
+                    level = ghost.level;
+                    level++;
+                    ghostData = ghosts[heroId][level - 1];
+                    if(utils.empty(ghostData)) {
+                        //top level
+                    } else {
+                        ghost.level++;
+                    }
+                }
+            }
+        } else {
+            random = utils.random(1, 100);
+            if(random >= 1 && random <= probability) {
+                status = 1;
+                player.ghostNum = parseInt(player.ghostNum) - parseInt(ghostData.costGhostNum);
+                character.ghostEntity.set(ghost);
+                var attrValue = character.ghostEntity.getValue();
+            } else {
+                status = 0;
+            }
+        }
+
+        if(status == 1) {
+            ghostService.upgrade(array, player, character, function(err, reply) {
+                data = {
+                    code: Code.OK,
+                    level: reply,
+                    ghostNum: player.ghostNum
+                };
+                //data.attrValue = attrValue;
+                utils.send(msg, res, data);
+            });
+        } else {
             data = {
-                code: Code.OK,
-                level: reply,
-                ghostNum: player.ghostNum
+                code: Code.CHARACTER.NOT_LUCKEY
             };
-            //data.attrValue = attrValue;
             utils.send(msg, res, data);
-        });
+        }
     });
 }

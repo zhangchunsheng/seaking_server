@@ -98,7 +98,8 @@ module.exports = {
         NO_FREETIME_LEFT: 1804,
         TOP_LEVEL: 1805,
         NO_APTITUDEDATA: 1806,
-        NO_GHOSTDATA: 1807
+        NO_GHOSTDATA: 1807,
+        NOT_LUCKEY: 1808
     },
 
     PARTNER: {
