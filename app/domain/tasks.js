@@ -24,10 +24,38 @@ module.exports = Tasks;
  */
 Tasks.prototype.initTask = function() {
     var date = new Date();
-    this.currentMainTask = {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()};
-    this.currentBranchTask = {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()};
-    this.currentDayTask = [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}];
-    this.currentExerciseTask = {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()};
+    this.currentMainTask.initTask({
+        "taskId": "Task10101",
+        "status": 0,
+        "taskRecord": {"itemNum": 0},
+        "startTime": date.getTime(),
+        "finishTime": 0,
+        "handOverTime": 0
+    });
+    this.currentBranchTask.initTask({
+        "taskId": "Task20201",
+        "status": 0,
+        "taskRecord": {"itemNum": 0},
+        "startTime": date.getTime(),
+        "finishTime": 0,
+        "handOverTime": 0
+    });
+    this.currentDayTask.initTask({
+        "taskId": "Task30201",
+        "status": 0,
+        "taskRecord": {"itemNum": 0},
+        "startTime": date.getTime(),
+        "finishTime": 0,
+        "handOverTime": 0
+    });
+    this.currentExerciseTask.initTask({
+        "taskId": "Task40201",
+        "status": 0,
+        "taskRecord": {"itemNum": 0},
+        "startTime": date.getTime(),
+        "finishTime": 0,
+        "handOverTime": 0
+    });
 };
 
 /**

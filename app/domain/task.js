@@ -249,6 +249,13 @@ Task.prototype.taskInfo = function() {
     }
 };
 
+Task.prototype.initTask = function(task) {
+    this.taskId = task.taskId;
+    this.status = task.status;
+    this.taskRecord = task.taskRecord;
+    this.startTime = task.startTime;
+};
+
 /**
  * logTask
  */
