@@ -20,6 +20,19 @@ var Tasks = function(opts) {
 module.exports = Tasks;
 
 /**
+ * initTask
+ */
+Tasks.prototype.initTask = function() {
+    var date = new Date();
+    return {
+        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
+        currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}
+    };
+};
+
+/**
  * getInfo
  */
 Tasks.prototype.getInfo = function() {

@@ -213,3 +213,12 @@ exports.getNewTask = function(req, res) {
 exports.getHistoryTasks = function(req, res) {
 
 }
+
+/**
+ *
+ * @param req
+ * @param res
+ */
+exports.initTasks = function(req, res) {
+
+}
