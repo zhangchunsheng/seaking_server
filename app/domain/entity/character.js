@@ -80,7 +80,7 @@ var Character = function(opts) {
     this.defenseParam = 1;
     this.equipmentParam = 1;
     this.characterData = dataApi.character.findById(this.cId);
-    this.skills = opts.skills;
+    this.skills = opts.skills || opts.currentSkills;
 
     this.activeSkill = {};
     this.activeSkills = [];
@@ -421,6 +421,18 @@ Character.prototype.addValue = function(attrName, value) {
 
 Character.prototype.reduceValue = function(attrName, value) {
     this[attrName] -= parseInt(value);
+};
+
+/**
+ * initSkill
+ */
+Character.prototype.initSkill = function() {
+    //type >= 3
+    for(var i = 3 ; i <= 6 ; i++) {
+        if(typeof this.skills[i] != "undefined" || this.skills[i] != null) {
+
+        }
+    }
 };
 
 /**

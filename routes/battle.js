@@ -270,6 +270,15 @@ exports.battle2 = function(req, res) {
         if(owner_heros[i].skillId3 != 0) {
             owner_formationData[owner_heros[i].formationId - 1].skills[3] = owner_heros[i].skillId3;
         }
+        if(owner_heros[i].skillId4 != 0) {
+            owner_formationData[owner_heros[i].formationId - 1].skills[4] = owner_heros[i].skillId4;
+        }
+        if(owner_heros[i].skillId5 != 0) {
+            owner_formationData[owner_heros[i].formationId - 1].skills[5] = owner_heros[i].skillId5;
+        }
+        if(owner_heros[i].skillId6 != 0) {
+            owner_formationData[owner_heros[i].formationId - 1].skills[6] = owner_heros[i].skillId6;
+        }
     }
 
     for(var i = 0 ; i < opponent_heros.length ; i++) {
@@ -285,6 +294,15 @@ exports.battle2 = function(req, res) {
         }
         if(opponent_heros[i].skillId3 != 0) {
             monster_formationData[opponent_heros[i].formationId - 1].skills[3] = opponent_heros[i].skillId3;
+        }
+        if(opponent_heros[i].skillId4 != 0) {
+            monster_formationData[opponent_heros[i].formationId - 1].skills[4] = opponent_heros[i].skillId4;
+        }
+        if(opponent_heros[i].skillId5 != 0) {
+            monster_formationData[opponent_heros[i].formationId - 1].skills[5] = opponent_heros[i].skillId5;
+        }
+        if(opponent_heros[i].skillId6 != 0) {
+            monster_formationData[opponent_heros[i].formationId - 1].skills[6] = opponent_heros[i].skillId6;
         }
     }
 
