@@ -156,18 +156,19 @@ Player.prototype.updateHP = function(cb) {
 Player.prototype.upgrade = function() {
     var upgradeColumn = {};
     this.hasUpgrade = true;
-    while (this.experience >= this.nextLevelExp) {
-        upgradeColumn = this._upgrade();
+    while(this.experience >= this.nextLevelExp) {
+        upgradeColumn = this.calculateUpgradeV2();
     }
+    this.upgradeColumns = upgradeColumn;
     var that = this;
-    userDao.upgrade(this, upgradeColumn, function(err, reply) {
+    //userDao.upgrade(this, upgradeColumn, function(err, reply) {
         //that.updateAttribute();
         that.emit('upgrade');//pushMessage
-    });
+    //});
 };
 
 //Upgrade, update player's state
-Player.prototype._upgrade = function() {
+Player.prototype.calculateUpgrade = function() {
     this.level += 1;
     var level = this.level;
     var hero = dataApi.heros.findById(this.cId);
@@ -193,7 +194,7 @@ Player.prototype._upgrade = function() {
     return upgradeColumn;
 };
 
-Player.prototype._upgradeV2 = function() {
+Player.prototype.calculateUpgradeV2 = function() {
     this.level += 1;
     var level = this.level;
     var hero = dataApi.herosV2.findById(this.cId);

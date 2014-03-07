@@ -99,6 +99,9 @@ var Character = function(opts) {
     this.ghostNum = parseInt(opts.ghostNum);
     this.aptitude = opts.aptitude;
 
+    this.updateColumns = {};//计算更新列
+    this.upgradeColumns = {};//升级更新列
+
     this.fightType = 0;
     this.attackType = opts.attackType || consts.attackType.SINGLE;
     //上一次使用技能
