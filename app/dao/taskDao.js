@@ -152,6 +152,49 @@ taskDao.updateTask = function(player, tasks, cb) {
         if(typeof value.taskRecord == "undefined" || value.taskRecord == null) {
             value.taskRecord = {};
         }
+        if(typeof value.handOverTime == "undefined" || value.handOverTime == null) {
+            value.handOverTime = 0;
+        }
+        if(type == consts.curTaskType.CURRENT_DAY_TASK) {
+            var temp = player.curTasks[type];
+            temp[0] = value;
+            value = temp;
+        }
+        array.push(["hset", key, type, JSON.stringify(value)]);
+    }
+    redis.command(function(client) {
+        client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
+            client.multi(array).exec(function(err, replies) {
+                if(typeof cb == "function")
+                    cb(!!err);
+                redis.release(client);
+            });
+        }).exec(function (err, replies) {
+                console.log(replies);
+            });
+    });
+}
+
+taskDao.initTask = function(player, tasks, cb) {
+    var task = {};
+    var key = "";
+    var value = {};
+    var array = [];
+    for (var type in tasks) {
+        task = tasks[type].strip();
+        key = dbUtil.getPlayerKey(task.serverId, task.registerType, task.loginName, task.characterId);
+        value = {
+            taskId: task.taskId,
+            status: task.status,
+            startTime: task.startTime,
+            taskRecord: task.taskRecord
+        };
+        if(typeof value.startTime == "undefined" || value.startTime == null) {
+            value.startTime = 0;
+        }
+        if(typeof value.taskRecord == "undefined" || value.taskRecord == null) {
+            value.taskRecord = {};
+        }
         if(type == consts.curTaskType.CURRENT_DAY_TASK) {
             var temp = player.curTasks[type];
             temp[0] = value;

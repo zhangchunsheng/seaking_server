@@ -24,3 +24,7 @@ taskService.updateTask = function(player, tasks, cb) {
 taskService.getUpdateArray = function() {
 
 }
+
+taskService.update = function(player, tasks, cb) {
+    taskDao.updateTask(player, tasks, cb);
+}
