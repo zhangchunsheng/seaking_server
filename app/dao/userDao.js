@@ -865,10 +865,10 @@ userDao.enterIndu = function(serverId, registerType, loginName, induId, cb) {
                     client.hget(key, "currentIndu", function(err, reply) {
                         var currentIndu = JSON.parse(reply);
 
-                        if(currentIndu.induId == induId) {
+                        /*if(currentIndu.induId == induId) {
                             redis.release(client);
                             utils.invokeCallback(cb, null, currentIndu);
-                        } else {
+                        } else {*/
                             var induData = dataApi.instancedungeon.findById(induId);
                             if(induData) {
                                 var date = new Date();
@@ -886,7 +886,7 @@ userDao.enterIndu = function(serverId, registerType, loginName, induId, cb) {
                                     errCode: 101
                                 });
                             }
-                        }
+                        //}
                     });
                 } else {
                     redis.release(client);
