@@ -1566,7 +1566,6 @@ Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
     var task = {};
     for(var type in this.curTasksEntity.strip()) {
         task = this.curTasksEntity[type];
-        console.log(task);
         if(task.taskGoal.type == TaskGoalType) {
             task.updateRecord(this, TaskGoalType, items);
         }
@@ -1625,7 +1624,7 @@ Player.prototype.completeTask = function(type) {
 
 Player.prototype.taskProgress = function(type) {
     var task = this.curTasksEntity[type];
-    this.pushOnceMessage = utils.getPushMessage(consts.pushMessageType.TASK, "", task.taskInfo(), task.taskRecord);
+    this.pushOnceMessage.push(utils.getPushMessage(consts.pushMessageType.TASK, "", task.taskInfo(), task.taskRecord));
     this.emit('taskProgress', task.taskInfo());//pushMessage
 };
 
