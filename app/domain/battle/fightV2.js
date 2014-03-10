@@ -76,6 +76,9 @@ Fight.prototype.fight = function(cb) {
     // 计算最大速度
     var max_speed = 0;
     for(var i in owners) {
+        if(i == 0) {
+            owners[i].fightValue.speedLevel = 2;
+        }
         max_speed = Math.max(max_speed, owners[i].fightValue.speedLevel);
     }
     for(var i in monsters) {

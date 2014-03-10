@@ -272,7 +272,8 @@ formula.calculateSunderArmor = function(value, level) {
 }
 
 formula.calculateSpeedLevel = function(speed, level) {
-    return speed * (1 + level * 0.01);
+    //return speed * (1 + level * 0.01);
+    return 1;
 }
 
 formula.calculateSpeed = function(value, level) {
