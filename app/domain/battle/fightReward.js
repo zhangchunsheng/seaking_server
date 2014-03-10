@@ -37,7 +37,7 @@ fightReward.reward = function(mainPlayer, players, monsters, isWin, cb) {
         exp = 0,
         items = [];
     var monster = {};
-    var index = 0;
+    var index = [];
     for(var i = 0, l = _monsters.length ; i < l ; i++) {
         monster = dataApi.monster.findById(_monsters[i].id);
         if(monster.experience != 0) {
@@ -46,9 +46,11 @@ fightReward.reward = function(mainPlayer, players, monsters, isWin, cb) {
         if(monster.money != 0) {
             money += monster.money;
         }
-        if(monster.items != "") {
-            items.push(monster.items);
-            index = mainPlayer.packageEntity.addItemWithNoType(mainPlayer, monster.items);
+        if(monster.items != [] && monster.items.length != 0 && monster.items != "") {
+            for(var j = 0 ; j < monster.items.length ; j++) {
+                items.push(monster.items[j]);
+                index.push(mainPlayer.packageEntity.addItemWithNoType(mainPlayer, monster.items[j]));
+            }
         }
     }
     //mainPlayer.addExp(exp);
@@ -62,7 +64,8 @@ fightReward.reward = function(mainPlayer, players, monsters, isWin, cb) {
         var rewards = {
             exp: exp,
             money: money,
-            items: items
+            items: items,
+            index: index
         };
         utils.invokeCallback(cb, null, rewards);
     });
