@@ -80,7 +80,7 @@ var Character = function(opts) {
     this.defenseParam = 1;
     this.equipmentParam = 1;
     this.characterData = dataApi.character.findById(this.cId);
-    this.skills = opts.skills || opts.currentSkills;
+    this.skills = opts.skills;
 
     this.activeSkill = {};
     this.activeSkills = [];
@@ -455,9 +455,9 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
     var angers = [];
     var anger = 0;
     if(fightType == consts.characterFightType.ATTACK) {//攻击者
-        var skills = attack.skills;
+        var skills = attack.skills.currentSkillsEntity;
         for(var i in skills) {
-            if(i == consts.skillV2Type.TRIGGER_SKILL) {
+            if(i == consts.skillV2Type.TRIGGER_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
                 anger = this.useTriggerSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
@@ -475,9 +475,9 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
                 attackData.action = consts.attackAction.common;
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {//防守者
-        var skills = defense.skills;
+        var skills = defense.skills.currentSkillsEntity;
         for(var i in skills) {
-            if(i == consts.skillV2Type.TRIGGER_SKILL) {
+            if(i == consts.skillV2Type.TRIGGER_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
                 anger = this.useTriggerSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
@@ -519,9 +519,9 @@ Character.prototype.awakenSkill = function(fightType, condition, attack_formatio
     var angers = [];
     var anger = 0;
     if(fightType == consts.characterFightType.ATTACK) {//攻击者
-        var skills = attack.skills;
+        var skills = attack.skills.currentSkillsEntity;
         for(var i in skills) {
-            if(i == consts.skillV2Type.AWAKEN_SKILL) {
+            if(i == consts.skillV2Type.AWAKEN_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
                 anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
@@ -536,9 +536,9 @@ Character.prototype.awakenSkill = function(fightType, condition, attack_formatio
             attackData.awakeSkill = 1;
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {//防守者
-        var skills = defense.skills;
+        var skills = defense.skills.currentSkillsEntity;
         for(var i in skills) {
-            if(i == consts.skillV2Type.AWAKEN_SKILL) {
+            if(i == consts.skillV2Type.AWAKEN_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
                 if(skills[i].skillData.triggerCondition == consts.triggerCondition.PASSIVE) {
                     continue;
                 }
@@ -564,7 +564,7 @@ Character.prototype.initAwakeSkill = function(attack_formation, defense_formatio
         type: consts.skillTriggerConditionType.AWAKEN
     };
 
-    var skills = this.skills;
+    var skills = this.skills.currentSkillsEntity;
 
     var attackSide = 0;
     var defense = {};
@@ -574,7 +574,7 @@ Character.prototype.initAwakeSkill = function(attack_formation, defense_formatio
     var defenseData = {};
 
     for(var i in skills) {
-        if(i == consts.skillV2Type.AWAKEN_SKILL) {
+        if(i == consts.skillV2Type.AWAKEN_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
             if(skills[i].skillData.triggerCondition == consts.triggerCondition.PASSIVE) {
                 this.useAwakenSkill(attackSide, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
             }

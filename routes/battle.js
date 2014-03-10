@@ -227,7 +227,10 @@ var fullName = {
     f: "formationId",
     s1: "skillId1",
     s2: "skillId2",
-    s3: "skillId3"
+    s3: "skillId3",
+    s4: "skillId4",
+    s5: "skillId5",
+    s6: "skillId6"
 }
 /**
  * 战斗
@@ -389,7 +392,7 @@ exports.battle2 = function(req, res) {
     });
 
     utils.addOrigin(res, req);
-    fight.fight(function(err, eventResult) {
+    fight.pk(function(err, eventResult) {
         utils.send(msg, res, eventResult);
     });
 }

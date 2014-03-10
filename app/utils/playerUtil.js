@@ -701,7 +701,7 @@ playerUtil.createEntity = function(character, serverId, registerType, loginName,
     character.aptitudeEntity = aptitude;
     character.ghostEntity = ghost;
     character.altarEntity = altar;
-    character.skillsEntity = skills;
+    character.skillsEntity = character.skills = skills;
     character.miscsEntity = miscs;
     character.soulPackageEntity = soulPackage;
     character.formationEntity = formation;
@@ -724,7 +724,7 @@ playerUtil.createPKEntity = function(player, serverId, registerType, loginName, 
     var ghost = ghostService.createNewGhost(player.ghost, serverId, registerType, loginName, characterId, player);
     player.ghostEntity = ghost;
     var skills = skillService.createNewSkills({}, serverId, registerType, loginName, characterId, player);
-    player.skillsEntity = skills;
+    player.skillsEntity = player.skills = skills;
     var formation = formationService.createNewFormation({}, serverId, registerType, loginName, characterId, player);
     player.formationEntity = formation;
 };

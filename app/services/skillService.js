@@ -10,6 +10,7 @@ var dbUtil = require('../utils/dbUtil');
 var redisService = require('./redisService');
 var skillDao = require('../dao/skillDao');
 var Skills = require('../domain/skill/skills');
+var SkillV2 = require('../domain/skill/skillV2');
 var dataApi = require('../utils/dataApi');
 
 var skillService = module.exports;
@@ -62,8 +63,17 @@ skillService.createNewSkills = function(skillInfo, serverId, registerType, login
     skillInfo.characterId = characterId;
     skillInfo.currentSkills = character.currentSkills;
     skillInfo.allSkills = character.allSkills;
+    skillInfo.currentSkillsEntity = {};
     for(var i in character.currentSkills) {
         skillInfo[i] = character.currentSkills[i];
+        if(skillInfo[i].skillId != null && skillInfo[i].skillId != 0) {
+            skillInfo.currentSkillsEntity[i] = new SkillV2({
+                id: character.currentSkills[i].skillId,
+                skillId: character.currentSkills[i].skillId,
+                level: character.currentSkills[i].level
+            });
+        }
+
     }
     var skills = new Skills(skillInfo);
     return skills;

@@ -19,6 +19,7 @@ var EntityType = require('../app/consts/consts').EntityType;
 var Monster = require('../app/domain/entity/monster');
 var dataApi = require('../app/utils/dataApi');
 var Fight = require('../app/domain/battle/fight');
+var FightV2 = require('../app/domain/battle/fightV2');
 var FightTeam = require('../app/domain/battle/fightTeam');
 var indu = require('../app/domain/area/indu');
 var async = require('async');
@@ -77,7 +78,8 @@ exports.triggerEvent = function(req, res) {
         }
 
         if(eid.indexOf("MG") >= 0) {
-            var owner_formationData = character.formation;//[{"playerId":"S1C10"},{"playerId":"S1C10P1"},{"playerId":"S1C10P2"},null,null,null,null]// array index - 阵型位置 array value - character id
+            //var owner_formationData = character.formation;//[{"playerId":"S1C10"},{"playerId":"S1C10P1"},{"playerId":"S1C10P2"},null,null,null,null]// array index - 阵型位置 array value - character id
+            var owner_formationData = character.formationEntity.getInfo();
             var induMonstergroup = dataApi.induMonstergroup.findById(eid);
             var monster_formationData = induMonstergroup.formation;//["M10101","M10102",0,"M10103",0,0,0];// 0,1,2,3,4,5,6
 
@@ -99,16 +101,23 @@ exports.triggerEvent = function(req, res) {
 
             // 阵型中角色数据
             // get player info from db
-            for(var i = 0 ; i < owner_formationData.length ; i++) {
-                if(owner_formationData[i] != null && owner_formationData[i] != 0) {
-                    if(owner_formationData[i].playerId.indexOf("P") >= 0) {
-                        player = character.getPartner(owner_formationData[i].playerId);
-                        player.formationId = i;
-                        owners[i] = player;
+            /* { formation:
+                { '1': { playerId: 'S1C1' },
+                '2': { playerId: 'S1C1P4' },
+                '3': null },
+                tactical: { id: 'F102', level: 4 }
+            }*/
+            var owner_formation = owner_formationData.formation.formation;
+            for(var i in owner_formation) {
+                if(owner_formation[i] != null && owner_formation[i] != 0) {
+                    if(owner_formation[i].playerId.indexOf("P") >= 0) {
+                        player = character.getPartner(owner_formation[i].playerId);
+                        player.formationId = i - 1;
+                        owners[i - 1] = player;
                     } else {
                         player = character;
-                        player.formationId = i;
-                        owners[i] = player;
+                        player.formationId = i - 1;
+                        owners[i - 1] = player;
                     }
                     ownerTeam.addMember(player);
                     players.push({
@@ -116,7 +125,7 @@ exports.triggerEvent = function(req, res) {
                         "maxHP" : player.maxHp,
                         "HP" : player.hp,
                         "anger" : player.anger,
-                        "formation" : i
+                        "formation" : i - 1
                     });
                     playersInfo.push(player.strip());
                 }
@@ -125,7 +134,7 @@ exports.triggerEvent = function(req, res) {
             var monster = {};
             for(var i = 0 ; i < monster_formationData.length ; i++) {
                 if(monster_formationData[i] != null && monster_formationData[i] != 0) {
-                    player = new Monster(Fight.createMonster({
+                    player = new Monster(FightV2.createMonster({
                         id: monster_formationData[i],
                         formationId: i,
                         type: EntityType.MONSTER
@@ -145,7 +154,7 @@ exports.triggerEvent = function(req, res) {
                 }
             }
 
-            var fight = new Fight({
+            var fight = new FightV2({
                 mainPlayer: character,
                 owner_formation: owner_formationData,
                 monster_formation: monster_formationData,
