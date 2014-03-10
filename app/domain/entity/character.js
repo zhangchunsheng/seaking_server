@@ -559,6 +559,15 @@ Character.prototype.awakenSkill = function(fightType, condition, attack_formatio
     return anger;
 }
 
+/**
+ * 初始化觉醒技能
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param attacks
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ */
 Character.prototype.initAwakeSkill = function(attack_formation, defense_formation, attack, attacks, attackFightTeam, defenseFightTeam) {
     var awakenCondition = {
         type: consts.skillTriggerConditionType.AWAKEN

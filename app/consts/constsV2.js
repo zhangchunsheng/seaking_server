@@ -101,7 +101,8 @@ module.exports = {
 
     pushMessageType: {
         UPGRADE: 1,
-        FORMATION_UNLOCK: 2
+        FORMATION_UNLOCK: 2,
+        TASK: 3
     },
 
     publishMessageType: {

@@ -491,3 +491,14 @@ utils.getPageInfo = function(pageInfo, entities) {
     }
     return pageInfo;
 }
+
+utils.getPushMessage = function(type, message, data, num) {
+    var pushMessage = {
+        type: type,
+        message: message,
+        data: data,
+        num: num,
+        date: new Date().getTime()
+    };
+    return pushMessage;
+}

@@ -455,7 +455,6 @@ Fight.prototype.attack = function(battleData, players, index) {
                         //伤害 = (100 + 破甲) * 攻击力 /（100 + 护甲）
                         defenseData.reduceBlood = formulaV2.calDamage(attack, defense);
                     }
-                    console.log(defenseData);
 
                     if(defenseData.reduceBlood < 0) {
                         defenseData.reduceBlood = 0;
