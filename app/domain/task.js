@@ -106,7 +106,11 @@ Task.prototype.updateRecord = function(player, type, items) {
         }
         this.save();
     } else if(type == consts.TaskGoalType.GET_ITEM) {// 获得道具
-        this.updateStatus(player, items.itemNum);
+        if(this.taskGoal.itemId.indexOf("|") > 0) {
+            this.updateMultiStatus(player, items);
+        } else {
+            this.updateStatus(player, items.itemNum);
+        }
     } else if(type == consts.TaskGoalType.PASS_INDU) {// 通关副本
         if(this.taskGoal.itemId == items.itemId) {
             this.updateStatus(player, 1);
@@ -174,7 +178,7 @@ Task.prototype.pretreatmentTask = function(player) {
 }
 
 /**
- *
+ * updateStatus
  * @param player
  */
 Task.prototype.updateStatus = function(player, itemNum, flag) {
@@ -199,7 +203,46 @@ Task.prototype.updateStatus = function(player, itemNum, flag) {
 };
 
 /**
- *
+ * updateMultiStatus
+ * @param player
+ * @param items
+ */
+Task.prototype.updateMultiStatus = function(player, items) {
+    if(this.status == TaskStatus.COMPLETED)
+        return;
+    if(this.status == consts.TaskStatus.START_TASK) {
+        this.status = consts.TaskStatus.NOT_COMPLETED;
+        this.taskRecord = {};
+        this.taskRecord.itemNum = "0|0";
+    }
+
+    var itemIds = this.taskGoal.itemId.split("|");
+    var itemNums = this.taskGoal.itemNum.split("|");
+    var recordItemNums = this.taskRecord.itemNum.split("|");
+    for(var i = 0 ; i < itemIds.length ; i++) {
+        if(itemIds[i] == items.itemId) {
+            recordItemNums[i] = parseInt(recordItemNums[i]) + parseInt(items.itemNum);
+        }
+    }
+    this.taskRecord.itemNum = recordItemNums.join("|");
+
+    var flag = [];
+    for(var i = 0 ; i < itemIds.length ; i++) {
+        if(parseInt(recordItemNums[i]) >= parseInt(itemNums[i])) {
+            flag.push(true);
+        } else {
+            flag = [];
+            break;
+        }
+    }
+    if(flag.length == itemIds.length) {
+        player.completeTask(consts.correspondingCurTaskType[this.type]);
+    }
+    player.taskProgress(consts.correspondingCurTaskType[this.type]);
+};
+
+/**
+ * complete
  * @param player
  */
 Task.prototype.complete = function(player) {
@@ -259,7 +302,8 @@ Task.prototype.taskInfo = function() {
         status: this.status,
         startTime: this.startTime,
         finishTime: this.finishTime,
-        taskRecord: this.taskRecord
+        taskRecord: this.taskRecord,
+        taskGoal: this.taskGoal
     }
 };
 
