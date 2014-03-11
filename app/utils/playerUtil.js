@@ -36,7 +36,7 @@ playerUtil.initCharacter = function(opts) {
     var hero = dataApi.heros.findById(opts.cId);
 
     var curTasks = {
-        currentMainTask: {"taskId": "Task10101", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
+        currentMainTask: {"taskId": "Task10101", "status": 1, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
         currentBranchTask: {"taskId": "Task20201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()},
         currentDayTask: [{"taskId": "Task30201","status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}],
         currentExerciseTask: {"taskId": "Task40201", "status": 0, "taskRecord": {"itemNum": 0}, "startTime": date.getTime()}

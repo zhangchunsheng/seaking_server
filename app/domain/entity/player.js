@@ -1517,11 +1517,9 @@ Player.prototype.updatePlayerAttribute = function(players, cb) {
 }
 
 /**
- * Start task.
- * Start task after accept a task, and update the task' state, such as taskState, taskData, startTime
- *
- * @param {Task} task, new task to be implement
- * @api public
+ * startTask
+ * @param type
+ * @param task
  */
 Player.prototype.startTask = function(type, task) {
     task.status = TaskStatus.START_TASK;
@@ -1536,11 +1534,15 @@ Player.prototype.startTask = function(type, task) {
 
 Player.prototype.getNextTask = function(type, task) {
     var nextTaskId = task.nextTaskId;
+    var status = consts.TaskStatus.NOT_START;
     if(type == consts.curTaskType.CURRENT_DAY_TASK) {
         if(this.curTasks[type].length > 1) {
             this.curTasks[type].shift();
             nextTaskId = this.curTasks[type][0].taskId;
         }
+    }
+    if(type == consts.curTaskType.CURRENT_MAIN_TASK) {
+        status = consts.TaskStatus.START_TASK;
     }
     if(nextTaskId == null || nextTaskId == 0) {
         return false;
@@ -1548,13 +1550,16 @@ Player.prototype.getNextTask = function(type, task) {
     var date = new Date();
     var nextTask = {
         "taskId": nextTaskId,
-        "status": 0,
+        "status": status,
         "taskRecord": {"itemNum": 0},
         "startTime": date.getTime()
     };
     var characterId = utils.getRealCharacterId(this.id);
     nextTask = taskDao.createNewTask(nextTask, this.sid, this.registerType, this.loginName, characterId, this.curTasks, this);
     this.curTasksEntity[type] = nextTask;
+    if(type == consts.curTaskType.CURRENT_MAIN_TASK) {
+        this.startTask(type, nextTask);
+    }
     return true;
 }
 

@@ -26,7 +26,7 @@ Tasks.prototype.initTask = function() {
     var date = new Date();
     this.currentMainTask.initTask({
         "taskId": "Task10101",
-        "status": 0,
+        "status": 1,
         "taskRecord": {"itemNum": 0},
         "startTime": date.getTime(),
         "finishTime": 0,
