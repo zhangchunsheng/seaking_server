@@ -186,12 +186,17 @@ astrology.pickUpAll = function(req, res) {
 	    astrologyDao.pickUpAll(Key, function(err, r) {
 	    	if(err){return utils.send(msg, res, {code: Code.FAIL, err:err});}
 	    	var ci = getCi(r.astrology);
+            if(r.isFull){
+                utils.send(msg, res, {
+                    code: Code.FAIL,
+                    err: "背包满了"
+                });return;
+            }
             utils.send(msg, res, {
 	    		code: Code.OK,
 	    		data: {
                     ci: ci,
-                    bi: r.astrology.items,
-                    f: r.isFull
+                    bi: r.astrology.items
                 }
 	    	});
 	    });
