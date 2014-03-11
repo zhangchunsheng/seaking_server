@@ -57,7 +57,11 @@ module.exports = Task;
 
 Task.prototype._initTaskInfo = function() {
     if(typeof this.taskRecord.itemNum != "undefined") {
-        this.taskRecord.itemNum = parseInt(this.taskRecord.itemNum);
+        if(typeof this.taskRecord.itemNum == "string" && this.taskRecord.itemNum.indexOf("|") > 0) {
+
+        } else {
+            this.taskRecord.itemNum = parseInt(this.taskRecord.itemNum);
+        }
     }
     var info = taskData.findById(this.kindId);
     if (!!info) {
