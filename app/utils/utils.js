@@ -351,6 +351,17 @@ utils.send = function(msg, res, data) {
     }
 }
 
+/**
+ * additionalData
+ * @param data
+ * @param character
+ */
+utils.additionalData = function(data, character) {
+    if(character.pushOnceMessage.length > 0) {
+        data.pushMessage = character.pushOnceMessage;
+    }
+}
+
 utils.log = function(msg) {
     console.log(msg);
 }

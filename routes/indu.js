@@ -210,9 +210,7 @@ exports.triggerEvent = function(req, res) {
                                     playerInfo: playerInfo,
                                     eventResult: eventResult
                                 }
-                                if(character.pushOnceMessage.length > 0) {
-                                    result.pushMessage = character.pushOnceMessage;
-                                }
+                                utils.additionalData(result, character);
                                 utils.send(msg, res, result);
                             });
                         } else {
