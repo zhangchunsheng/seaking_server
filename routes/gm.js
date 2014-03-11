@@ -446,3 +446,65 @@ exports.initTasks = function(req, res) {
         });
     });
 }
+
+/**
+ * initForgeForEquipment
+ * @param req
+ * @param res
+ */
+exports.initForgeForEquipment = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var nickname = msg.nickname;
+    var serverId = region.serverId;
+
+    if(typeof nickname == "undefined" || nickname == "" || nickname == 0) {
+        data = {
+            code: Code.FAIL
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var data = {};
+    userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
+        if(err || reply == null) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var registerType = 0;
+        var loginName = "";
+        var characterId = 0;
+
+        var array = reply.split("_");
+        registerType = array[1].replace("T", "");
+        loginName = array[2];
+        characterId = array[3].replace("C", "");
+
+        userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
+            character.equipmentsEntity.initForgeForEquipment();
+            async.parallel([
+                function(callback) {
+                    equipmentsService.update(character.equipmentsEntity.strip(), callback);
+                }
+            ], function(err, reply) {
+                data = {
+                    code: Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        });
+    });
+}
