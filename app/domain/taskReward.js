@@ -12,6 +12,7 @@ var Item = require('./entity/item');
 var Equipment = require('./entity/equipment');
 var dataApi = require('../utils/dataApi');
 var utils = require('../utils/utils');
+var consts = require('../consts/consts');
 
 /**
  * Expose 'taskReward'
@@ -33,6 +34,7 @@ taskReward.reward = function(mainPlayer, players, ids, cb) {
         items = [];
     var task = {};
     var index = 0;
+    var message = {};
     for(var i = 0, l = ids.length ; i < l ; i++) {
         task = mainPlayer.curTasksEntity[ids[i]];
         if(task.getExp != 0) {
@@ -45,6 +47,8 @@ taskReward.reward = function(mainPlayer, players, ids, cb) {
             items.push(task.rewardItems);
             index = mainPlayer.packageEntity.addItemWithNoType(mainPlayer, task.rewardItems);
         }
+        message = utils.getPushMessage(consts.pushMessageType.TASK, "", task.taskInfo(), task.taskRecord);
+        mainPlayer.pushMessageEntity.removePushMessage(message);
     }
     //mainPlayer.addExp(exp);
     mainPlayer.addMoney(money);

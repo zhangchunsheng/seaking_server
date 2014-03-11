@@ -133,3 +133,22 @@ PushMessage.prototype.addPushMessage = function(message) {
         }
     }
 }
+
+/**
+ * removePushMessage
+ * @param message
+ */
+PushMessage.prototype.removePushMessage = function(message) {
+    var pushMessage = this.pushMessage;
+    for(var i = 0 ; i < pushMessage.length ; i++) {
+        if(pushMessage[i].type == message.type) {
+            if(pushMessage[i].type == consts.pushMessageType.TASK) {
+                if(pushMessage[i].data.taskId == message.data.taskId) {
+                    pushMessage.splice(i, 1);
+                }
+            } else {
+                pushMessage.splice(i, 1);
+            }
+        }
+    }
+}

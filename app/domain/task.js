@@ -87,6 +87,8 @@ Task.prototype.updateRecord = function(player, type, items) {
         return;
     if(this.status == consts.TaskStatus.CANNOT_ACCEPT)
         return;
+    if(this.status == consts.TaskStatus.NOT_START)
+        return;
     if(type == consts.TaskGoalType.KILL_MONSTER) {// 击杀怪物数量
         for(var i in items) {
             if(this.taskGoal.itemId == items[i].id) {
