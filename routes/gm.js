@@ -494,7 +494,7 @@ exports.initForgeForEquipment = function(req, res) {
         characterId = array[3].replace("C", "");
 
         userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
-            character.equipmentsEntity.initForgeForEquipment();
+            character.equipmentsEntity.initForgeForEquipment(character);
             async.parallel([
                 function(callback) {
                     equipmentsService.update(character.equipmentsEntity.strip(), callback);
