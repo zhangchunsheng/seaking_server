@@ -1624,7 +1624,11 @@ Player.prototype.completeTask = function(type) {
 
 Player.prototype.taskProgress = function(type) {
     var task = this.curTasksEntity[type];
-    this.pushOnceMessage.push(utils.getPushMessage(consts.pushMessageType.TASK, "", task.taskInfo(), task.taskRecord));
+    var message = utils.getPushMessage(consts.pushMessageType.TASK, "", task.taskInfo(), task.taskRecord);
+    this.pushOnceMessage.push(message);
+    if(task.status == TaskStatus.COMPLETED) {
+        this.pushMessageEntity.addPushMessage(message);
+    }
     this.emit('taskProgress', task.taskInfo());//pushMessage
 };
 
@@ -1710,6 +1714,7 @@ Player.prototype.getUserInfo = function() {
 };
 
 Player.prototype.updateColumn = function() {
+    this.pushMessage = this.pushMessageEntity.pushMessage;
     return {
         id: this.id,
         serverId: this.sid,
@@ -1720,7 +1725,8 @@ Player.prototype.updateColumn = function() {
             money: this.money,
             gameCurrency: this.gameCurrency,
             hp: this.hp,
-            buffs: this.buffs
+            buffs: this.buffs,
+            pushMessage: this.pushMessage
         }
     };
 };
