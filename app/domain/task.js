@@ -149,11 +149,23 @@ Task.prototype.pretreatmentTask = function(player) {
     if(this.taskGoal.type == consts.TaskGoalType.DIALOG) {//接取即完成
         this.complete(player);
     } else if(this.taskGoal.type == consts.TaskGoalType.GET_ITEM) {// 判断包裹物品
-        if(player.packageEntity.hasItems(this.taskGoal)) {
+        var items = [];
+        items.push({
+            itemId: this.taskGoal.itemId,
+            itemNum: this.taskGoal.itemNum
+        });
+        var flag = player.packageEntity.checkItems(items);
+        if(flag.length == items.length) {
             this.complete(player);
         }
     } else if(this.taskGoal.type == consts.TaskGoalType.BUY_ITEM) {
-        if(player.packageEntity.hasItems(this.taskGoal)) {
+        var items = [];
+        items.push({
+            itemId: this.taskGoal.itemId,
+            itemNum: this.taskGoal.itemNum
+        });
+        var flag = player.packageEntity.checkItems(items);
+        if(flag.length == items.length) {
             this.complete(player);
         }
     }
