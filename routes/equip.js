@@ -802,9 +802,15 @@ exports.forgeUpgrade = function(req, res) {
         var materials = [];
         var index = -1;
         for(var i = 0 ; i < forgeUpgradeMaterial.length ; i++) {
-            array = forgeUpgradeMaterial[i].split("|");
-            itemId = array[0];
-            itemNum = array[1];
+            if(forgeUpgradeMaterial[i].indexOf("|") > 0) {
+                array = forgeUpgradeMaterial[i].split("|");
+                itemId = array[0];
+                itemNum = array[1];
+            } else {
+                itemId = forgeUpgradeMaterial[i];
+                itemNum = 1;
+            }
+
             index = -1;
             for(var j = 0 ; j < materials.length ; j++) {
                 if(itemId == materials[j].itemId) {
