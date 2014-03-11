@@ -156,6 +156,10 @@ exports.handOverTask = function(req, res) {
 
         var players = [];
         players.push(player);
+        var partners = player.partners;
+        for(var i = 0 ; i < partners.length ; i++) {
+            players.push(partners[i]);
+        }
         taskReward.reward(player, players, taskIds, function(err, rewards) { //奖励
             var nextTasks = player.handOverTask(taskIds); //下一次任务
             data = {

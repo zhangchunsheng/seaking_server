@@ -257,6 +257,22 @@ Equipments.prototype.forgeUpgradeByMoney = function(player, type, equipment_leve
 }
 
 /**
+ * initForgeForEquipment
+ * @param player
+ * @returns {number}
+ */
+Equipments.prototype.initForgeForEquipment = function(player) {
+    var status = 0;
+    status = 1;
+    for(var i = 0 ; i < dict.length ; i++) {
+        this[dict[i]].forgeLevel = 0;
+    }
+    this.save();
+    player.save();
+    return status;
+}
+
+/**
  * 打造升级
  * @param player
  * @param type
