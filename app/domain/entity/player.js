@@ -1546,15 +1546,15 @@ Player.prototype.getNextTask = function(type, task) {
         return false;
     }
     var date = new Date();
-    var task = {
+    var nextTask = {
         "taskId": nextTaskId,
         "status": 0,
         "taskRecord": {"itemNum": 0},
         "startTime": date.getTime()
     };
     var characterId = utils.getRealCharacterId(this.id);
-    task = taskDao.createNewTask(task, this.sid, this.registerType, this.loginName, characterId, this);
-    this.curTasksEntity[type] = task;
+    nextTask = taskDao.createNewTask(nextTask, this.sid, this.registerType, this.loginName, characterId, this.curTasks, this);
+    this.curTasksEntity[type] = nextTask;
     return true;
 }
 
@@ -1599,7 +1599,7 @@ Player.prototype.handOverTask = function(taskIds) {
         task.save();
         this.logTaskData(type);
         if(this.getNextTask(type, task)) {
-            nextTasks[type] = task.getInfo();
+            nextTasks[type] = this.curTasksEntity[type].getInfo();
         }
     }
     return nextTasks;

@@ -196,6 +196,7 @@ module.exports = function (app) {
     app.get('/gm/updateExp', gm.updateExp);
     app.get("/gm/clearPackage", gm.clearPackage);
     app.get("/gm/initTasks", gm.initTasks);
+    app.get("/gm/initForgeForEquipment", gm.initForgeForEquipment);
 
     app.get('/message/addMessage', authRequired, message.addMessage);
     app.get('/message/getMessage', authRequired, message.getMessage);
