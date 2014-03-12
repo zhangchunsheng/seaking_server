@@ -215,7 +215,9 @@ gmService.initFormation = function(array, player) {
     array.push(["hset", key, field, value]);
 
     field = "tacticals";
-    data = player.formationEntity.initTacticals();
+    data = {
+        tacticals: player.formationEntity.initTacticals()
+    };
     value = JSON.stringify(data);
     array.push(["hset", key, field, value]);
 }
