@@ -206,7 +206,7 @@ gmService.initFormation = function(array, player) {
     var key = dbUtil.getPlayerKey(player.sid, player.registerType, player.loginName, characterId);
 
     var field = "formation";
-    var data = player.formationEntity.initFormation();
+    var data = {formation:{1:{playerId:"S" + player.sid + "C" + characterId}},tactical:{id:"F101",level:1}};
     var value = JSON.stringify(data);
     array.push(["hset", key, field, value]);
 
