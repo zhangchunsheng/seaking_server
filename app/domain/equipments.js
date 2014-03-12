@@ -257,6 +257,22 @@ Equipments.prototype.forgeUpgradeByMoney = function(player, type, equipment_leve
 }
 
 /**
+ * initStrengthen
+ * @param player
+ * @returns {number}
+ */
+Equipments.prototype.initStrengthen = function(player) {
+    var status = 0;
+    status = 1;
+    for(var i = 0 ; i < dict.length ; i++) {
+        this[dict[i]].level = 0;
+    }
+    this.save();
+    player.save();
+    return status;
+}
+
+/**
  * initForgeForEquipment
  * @param player
  * @returns {number}
@@ -266,6 +282,22 @@ Equipments.prototype.initForgeForEquipment = function(player) {
     status = 1;
     for(var i = 0 ; i < dict.length ; i++) {
         this[dict[i]].forgeLevel = 0;
+    }
+    this.save();
+    player.save();
+    return status;
+}
+
+/**
+ * initInlayForEquipment
+ * @param player
+ * @returns {number}
+ */
+Equipments.prototype.initInlayForEquipment = function(player) {
+    var status = 0;
+    status = 1;
+    for(var i = 0 ; i < dict.length ; i++) {
+        this[dict[i]].inlay = {};
     }
     this.save();
     player.save();
