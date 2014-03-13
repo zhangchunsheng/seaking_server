@@ -1,7 +1,7 @@
 [
 	["id","taskId","type","taskName","taskBeginTime","taskEndTime","taskExpireTime","minLevel","maxLevel","needSociaty","sociatyValue","questNpcId","completeNpcId","taskProp","taskGoal","taskDescription","taskTalkNum","taskTalk","notCompleteText","completeText","getExp","getMoney","rewardName","rewardItems","isBroadcast","nextTaskId","showNpcId","hideNpcId","_id"],
 	["id","taskId","type","taskName","taskBeginTime","taskEndTime","taskExpireTime","minLevel","maxLevel","needSociaty","sociatyValue","questNpcId","completeNpcId","taskProp","taskGoal","taskDescription","taskTalkNum","taskTalk","notCompleteText","completeText","getExp","getMoney","rewardName","rewardItems","isBroadcast","nextTaskId","showNpcId","hideNpcId","_id"],
-	["Task10101","Task10101",1,"",0,0,0,0,0,0,0,"","NPC0101","",{"type":"1","itemId":"M10101","itemNum":"3"},"",0,"","","",100,100,"","",0,"Task10102","","",1],
+	["Task10101","Task10101",1,"",0,0,0,0,0,0,0,"","NPC0101","",{"type":"1","itemId":"M10101|M10102","itemNum":"3|1"},"",0,"","","",100,100,"","",0,"Task10102","","",1],
 	["Task10102","Task10102",1,"",0,0,0,0,0,0,0,"","NPC0101","",{"type":"2","itemId":"D110101|D110102","itemNum":"5|5"},"",0,"","","",100,100,"","",0,"Task10103","","",2],
 	["Task10103","Task10103",1,"",0,0,0,0,0,0,0,"","NPC0101","",{"type":0,"itemId":"","itemNum":""},"",0,"","","",100,100,"","",0,"Task10104","NPC0103","",3],
 	["Task10104","Task10104",1,"",0,0,0,0,0,0,0,"","NPC0103","",{"type":0,"itemId":"","itemNum":""},"",0,"","","",100,100,"","",0,"Task10105","","",4],

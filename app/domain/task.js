@@ -94,18 +94,22 @@ Task.prototype.updateRecord = function(player, type, items) {
     if(this.status == consts.TaskStatus.NOT_START)
         return;
     if(type == consts.TaskGoalType.KILL_MONSTER) {// 击杀怪物数量
-        for(var i in items) {
-            if(this.taskGoal.itemId == items[i].id) {
-                if(this.status == consts.TaskStatus.START_TASK) {
-                    this.status = consts.TaskStatus.NOT_COMPLETED;
-                    this.taskRecord = {};
-                    this.taskRecord.itemNum = 0;
+        if(this.taskGoal.itemId.indexOf("|") > 0) {
+            this.updateMultiStatusWithArray(player, items);
+        } else {
+            for(var i in items) {
+                if(this.taskGoal.itemId == items[i].id) {
+                    if(this.status == consts.TaskStatus.START_TASK) {
+                        this.status = consts.TaskStatus.NOT_COMPLETED;
+                        this.taskRecord = {};
+                        this.taskRecord.itemNum = 0;
+                    }
+                    this.taskRecord.itemNum++;
+                    if(this.taskRecord.itemNum == this.taskGoal.itemNum) {
+                        player.completeTask(consts.correspondingCurTaskType[this.type]);
+                    }
+                    player.taskProgress(consts.correspondingCurTaskType[this.type]);
                 }
-                this.taskRecord.itemNum++;
-                if(this.taskRecord.itemNum == this.taskGoal.itemNum) {
-                    player.completeTask(consts.correspondingCurTaskType[this.type]);
-                }
-                player.taskProgress(consts.correspondingCurTaskType[this.type]);
             }
         }
         this.save();
@@ -214,20 +218,73 @@ Task.prototype.updateStatus = function(player, itemNum, flag) {
 Task.prototype.updateMultiStatus = function(player, items) {
     if(this.status == TaskStatus.COMPLETED)
         return;
-    if(this.status == consts.TaskStatus.START_TASK) {
-        this.status = consts.TaskStatus.NOT_COMPLETED;
-        this.taskRecord = {};
-        this.taskRecord.itemNum = "0|0";
-    }
 
     var itemIds = this.taskGoal.itemId.split("|");
     var itemNums = this.taskGoal.itemNum.split("|");
+
+    if(this.status == consts.TaskStatus.START_TASK) {
+        var array = [];
+        for(var i = 0 ; i < itemIds.length ; i++) {
+            array.push(0);
+        }
+        this.status = consts.TaskStatus.NOT_COMPLETED;
+        this.taskRecord = {};
+        this.taskRecord.itemNum = array.join("|");
+    }
+
     var recordItemNums = this.taskRecord.itemNum.split("|");
     for(var i = 0 ; i < itemIds.length ; i++) {
         if(itemIds[i] == items.itemId) {
             recordItemNums[i] = parseInt(recordItemNums[i]) + parseInt(items.itemNum);
         }
     }
+    this.taskRecord.itemNum = recordItemNums.join("|");
+
+    var flag = [];
+    for(var i = 0 ; i < itemIds.length ; i++) {
+        if(parseInt(recordItemNums[i]) >= parseInt(itemNums[i])) {
+            flag.push(true);
+        } else {
+            flag = [];
+            break;
+        }
+    }
+    if(flag.length == itemIds.length) {
+        player.completeTask(consts.correspondingCurTaskType[this.type]);
+    }
+    player.taskProgress(consts.correspondingCurTaskType[this.type]);
+};
+
+/**
+ * updateMultiStatusWithArray
+ * @param player
+ * @param items
+ */
+Task.prototype.updateMultiStatusWithArray = function(player, items) {
+    if(this.status == TaskStatus.COMPLETED)
+        return;
+    var itemIds = this.taskGoal.itemId.split("|");
+    var itemNums = this.taskGoal.itemNum.split("|");
+
+    if(this.status == consts.TaskStatus.START_TASK) {
+        var array = [];
+        for(var i = 0 ; i < itemIds.length ; i++) {
+            array.push(0);
+        }
+        this.status = consts.TaskStatus.NOT_COMPLETED;
+        this.taskRecord = {};
+        this.taskRecord.itemNum = array.join("|");
+    }
+    var recordItemNums = this.taskRecord.itemNum.split("|");
+
+    for(var i in items) {
+        for(var j = 0 ; j < itemIds.length ; j++) {
+            if(itemIds[j] == items[i].id) {
+                recordItemNums[j] = parseInt(recordItemNums[j]) + 1;
+            }
+        }
+    }
+
     this.taskRecord.itemNum = recordItemNums.join("|");
 
     var flag = [];
