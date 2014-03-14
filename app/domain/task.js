@@ -120,8 +120,24 @@ Task.prototype.updateRecord = function(player, type, items) {
             this.updateStatus(player, items.itemNum);
         }
     } else if(type == consts.TaskGoalType.PASS_INDU) {// 通关副本
-        if(this.taskGoal.itemId == items.itemId) {
-            this.updateStatus(player, 1);
+        if(typeof items.induId != "undefined") {
+            var induData = items.induData;
+            var flag = true;
+            for(var i = 0 ; i < induData.length ; i++) {
+                if(induData[i] == null)
+                    continue;
+                if(typeof induData[i].died == "undefined" || induData[i].died == false) {
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag) {
+                this.updateStatus(player, 1);
+            }
+        } else {
+            if(this.taskGoal.itemId == items.itemId) {
+                this.updateStatus(player, 1);
+            }
         }
     } else if(type == consts.TaskGoalType.PVP) {// PVP战斗
         if(this.taskGoal.needWin) {

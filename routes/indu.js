@@ -202,6 +202,8 @@ exports.triggerEvent = function(req, res) {
                                     taskService.updateTask(character, character.curTasksEntity.strip(), callback);
                                 }
                             ], function(err, reply) {
+                                var currentIndu = reply[0];
+                                character.updateTaskRecord(consts.TaskGoalType.PASS_INDU, currentIndu);
                                 var result = {
                                     induData: {
                                         eid: eid,
