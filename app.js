@@ -18,7 +18,8 @@ var express = require('express')
     , config = require('./config')
     , fs = require('fs')
     , redis = require('./app/dao/redis/redis')
-    , RedisStore = require('connect-redis')(express);
+    , session = require("express-session")
+    , RedisStore = require('connect-redis')(session);
 
 var redisConfig = require('./shared/config/redis');
 
