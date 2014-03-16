@@ -1284,7 +1284,8 @@ exports.changeDiamond = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-
+        console.log(type);
+        console.log(newDiamonds);
         if(!character.equipmentsEntity.checkInlayCells(type, newDiamonds)) {
             data = {
                 code: Code.EQUIPMENT.WRONG_CELLID

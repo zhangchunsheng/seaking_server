@@ -68,13 +68,12 @@ Package.prototype.checkItem = function(index, itemId) {
 }
 
 Package.prototype.removeItem = function(index, itemNum) {
-    console.log(index);
     var item =  this.items[index];
-    console.log("item:",item);
+    console.log("itemNum:",itemNum);
     if(item.itemNum < itemNum) {
         return null;
     }
-    item.itemNum = item.itemNum - itemNum;
+    item.itemNum = item.itemNum - (itemNum - 0);
     if(item.itemNum <= 0) {
         delete this.items[index];
     }
@@ -109,12 +108,43 @@ Package.prototype.hasItem = function(_item) {
 	}
 	return null;
 }
-Package.prototype._removeItems = function(items, mode) {
+Package.prototype.__removeItems = function(items, mode ) {
+    console.log("_removeItems:", JSON.stringify(items));
     var _items = [];
     for(var i = 0, l = items.length; i < l ; i++) {
         var a = [];
+        var itemId ;
         for(var n = 0, nl = items[i].length ; n < nl; n++) {
             var item = items[i][n];
+            var _item = this.removeItem(item.index, item.item.itemNum);
+            if(!_item) {
+                return null;
+            }
+            a.push({
+                index: item.index,
+                item: _item
+            });
+        }
+        if(!mode) {
+            _items = _items.concat(a);
+        }else{
+            _items.push(a);
+        }
+
+    }
+    return  _items;
+}
+
+//remove 中 update
+Package.prototype._removeItems = function(items, mode ) {
+    console.log("_removeItems:", JSON.stringify(items));
+    var _items = [];
+    for(var i = 0, l = items.length; i < l ; i++) {
+        var a = [];
+        var itemId ;
+        for(var n = 0, nl = items[i].length ; n < nl; n++) {
+            var item = items[i][n];
+            itemId = item.itemId;
             var _item = this.removeItem(item.index, item.itemNum);
             if(!_item) {
                 return null;
@@ -129,8 +159,9 @@ Package.prototype._removeItems = function(items, mode) {
         }else{
             _items.push(a);
         }
+
     }
-    return _items;
+    return  _items;
 }
 Package.prototype.removeItems = function(items) {
     var _items = [];
@@ -469,7 +500,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
             default:
                 itemInfo.pileNum = 99;
         }
-        console.log("###itemInfo:",itemInfo);
+       // console.log("###itemInfo:",itemInfo);
     }
     var changes = [];
     var _items = utils.clone(item);
@@ -609,8 +640,9 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
         var r = {index: changes};
         if(changes.length > 0) {
             this.save();
-            task = player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
-            r.task = task;
+            //task = player.updateTaskRecord(consts.TaskGoalType.GET_ITEM, _items);
+            //r.task = task;
+            r.changesTasks = player.tasks.updateItem(item.itemId,this);
         }
         return r;
 }
@@ -696,4 +728,14 @@ Package.prototype.getInfo = function() {
 		itemCount:this.itemCount,
 		items: this.items
 	};
+}
+
+Package.prototype.findAll  = function(itemId) {
+    var num = 0;
+    for(var i in this.items) {
+        if(this.items[i].itemId == itemId){
+            num += (this.items[i].itemNum -0);
+        }
+    }
+    return num;
 }

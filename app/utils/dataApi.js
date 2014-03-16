@@ -21,7 +21,7 @@ var npc = require('../../config/data/npc');
 var task = require('../../config/data/task');
 var heros = require('../../config/data/heros');
 var herosV2 = require('../../config/data/herosV2');
-var monster = require('../../config/data/monster');
+var monster = require('../../config/data/monster_');
 var induMonstergroup = require('../../config/data/induMonstergroup');
 var instancedungeon = require('../../config/data/instancedungeon');
 var equipment = require('../../config/data/equipment');
@@ -44,6 +44,7 @@ var petsSkillsUpgrade = require("../../config/data/petsSkillsUpgrade");
 var petsUpgrade = require("../../config/data/petsUpgrade");
 var feedItem = require("../../config/data/feedItem");
 var petsRandom = require("../../config/data/petsRandom");
+var event = require("../../config/data/event");
 /**
  * Data model `new Data()`
  *
@@ -198,5 +199,6 @@ module.exports = {
     petsUpgrade: new Data(petsUpgrade),
     feedItem: new Data(feedItem),
     petsRandom: new Data(petsRandom),
-    petsSkillsUpgrade: new Data(petsSkillsUpgrade)
+    petsSkillsUpgrade: new Data(petsSkillsUpgrade),
+    event: new Data(event)
 };

@@ -16,6 +16,12 @@ var PackageType = require('../app/consts/consts').PackageType;
 var dataApi = require('../app/utils/dataApi');
 var Buff = require('../app/domain/buff');
 var async = require('async');
+var redis = require('../app/dao/redis/redis')
+    , redisConfig = require('../shared/config/redis');
+var env = process.env.NODE_ENV || 'development';
+if(redisConfig[env]) {
+    redisConfig = redisConfig[env];
+}
 
 exports.index = function(req, res) {
     res.send("index");
@@ -55,23 +61,24 @@ exports.clean = function(req, res) {
     var playerId = session.playerId;
     var characterId = utils.getRealCharacterId(playerId);
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var Key = utils.getDbKey(session);
         player.packageEntity.items={};
         var data = {};
-        async.parallel([
-            function(callback) {
-                userService.updatePlayerAttribute(player, callback);
-            },
-            function(callback) {
-                packageService.update(player.packageEntity.strip(), callback);
-            },
-            function(callback) {
-                equipmentsService.update(player.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-            }
-        ], function(err, reply) {
-            utils.send(msg, res, data);
+        var setArray = [
+            ["select", redisConfig.database.SEAKING_REDIS_DB]
+        ];
+        var package = {
+            itemCount :player.packageEntity.itemCount,
+            items: player.packageEntity.items
+        }
+        setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+        redis.command(function(client) {
+            client.multi(setArray).exec(function(err, result) {
+                utils.send(msg, res, {
+                    code:Code.OK,
+                    data: data
+                });
+            });
         });
     });
 }
@@ -123,28 +130,33 @@ exports.addItem = function(req, res) {
     }
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var result = player.packageEntity.addItem(player, type, item);
-
+        var Key = utils.getDbKey(session);
         data = {
             code: consts.MESSAGE.RES,
             packageIndex: result.index
         };
-
-        async.parallel([
-            function(callback) {
-                userService.updatePlayerAttribute(player, callback);
-            },
-            function(callback) {
-                packageService.update(player.packageEntity.strip(), callback);
-            },
-            function(callback) {
-                equipmentsService.update(player.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-            }
-        ], function(err, reply) {
-            utils.send(msg, res, data);
+        var setArray = [
+            ["select", redisConfig.database.SEAKING_REDIS_DB]
+        ];
+        var package = {
+            itemCount :player.packageEntity.itemCount,
+            items: player.packageEntity.items
+        }
+        setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+        var r = player.tasks.updateItem(itemId);
+        if(r) {
+            setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
+            data.tasks = r;
+        }
+        redis.command(function(client) {
+            client.multi(setArray).exec(function(err, result) {
+                utils.send(msg, res, {
+                    code:Code.OK,
+                    data: data
+                });
+            });
         });
+
     });
 }
 
@@ -176,21 +188,28 @@ exports.dropItem = function(req, res) {
             code: consts.MESSAGE.RES,
             status: 1
         };
-        async.parallel([
-            function(callback) {
-                userService.updatePlayerAttribute(player, callback);
-            },
-            function(callback) {
-                packageService.update(player.packageEntity.strip(), callback);
-            },
-            function(callback) {
-                equipmentsService.update(player.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-            }
-        ], function(err, reply) {
-            utils.send(msg, res, data);
+        var Key = utils.getDbKey(session);
+        var setArray = [
+            ["select", redisConfig.database.SEAKING_REDIS_DB]
+        ];
+        var package = {
+            itemCount :player.packageEntity.itemCount,
+            items: player.packageEntity.items
+        }
+        setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+        //判断item
+        /*var r = player.tasks.updateItem(itemId);
+        if(r) {
+            setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
+            data.tasks = r;
+        }*/
+        redis.command(function(client) {
+            client.multi(setArray).exec(function(err, result) {
+                utils.send(msg, res, {
+                    code:Code.OK,
+                    data: data
+                })
+            });
         });
     });
 }
@@ -268,9 +287,13 @@ exports.sellItem = function(req, res) {
         var incomeMoney = price * itemNum;
         var result = removeItem(req, res, msg, player);
         if(!!result) {
+            var setArray = [
+                ["select", redisConfig.database.SEAKING_REDIS_DB]
+            ];
             player.money += incomeMoney;
             player.save();
 
+            setArray.push(["hset", Key, "money", player.money]);
             data = {
                 code: consts.MESSAGE.RES,
                 data:{
@@ -280,26 +303,25 @@ exports.sellItem = function(req, res) {
                 
                 //,itemInfo: itemInfo
             };
-            async.parallel([
-                function(callback) {
-                    userService.updatePlayerAttribute(player, callback);
-                },
-                function(callback) {
-                    packageService.update(player.packageEntity.strip(), callback);
-                },
-                function(callback) {
-                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-                }
-            ], function(err, reply) {
-                /*if(err){utils.send(msg, res, {
-                    code: Code.FAIL,
-                    err: err
-                });return;}*/
-            console.log(err);
-                utils.send(msg, res, data);
+            var Key = utils.getDbKey(session);
+            
+            var package = {
+                itemCount :player.packageEntity.itemCount,
+                items: player.packageEntity.items
+            }
+            setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+            /*var r = player.tasks.updateItem(itemId);
+            if(r) {
+                setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
+                data.tasks = r;
+            }*/
+            redis.command(function(client) {
+                client.multi(setArray).exec(function(err, result) {
+                    utils.send(msg, res, {
+                        code:Code.OK,
+                        data: data
+                    })
+                });
             });
         }else{
             utils.send(msg, res, {code: code.FAIL});
@@ -355,6 +377,9 @@ exports.discardItem = function(req, res) {
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
         var result = removeItem(req, res, msg, player);
         if(result >= 0) {
+            var setArray = [
+                ["select", redisConfig.database.SEAKING_REDIS_DB]
+            ];
             data = {
                 code:consts.MESSAGE.RES,
                 data: {
@@ -363,21 +388,25 @@ exports.discardItem = function(req, res) {
                     itemId: msg.itemId
                 }
             };
-            async.parallel([
-                function(callback) {
-                    userService.updatePlayerAttribute(player, callback);
-                },
-                function(callback) {
-                    packageService.update(player.packageEntity.strip(), callback);
-                },
-                function(callback) {
-                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-                }
-            ], function(err, reply) {
-                utils.send(msg, res, data);
+            var Key = utils.getDbKey(session);
+            
+            var package = {
+                itemCount :player.packageEntity.itemCount,
+                items: player.packageEntity.items
+            }
+            setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+           /* var r = player.tasks.updateItem(itemId);
+            if(r) {
+                setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
+                data.tasks = r;
+            }*/
+            redis.command(function(client) {
+                client.multi(setArray).exec(function(err, result) {
+                    utils.send(msg, res, {
+                        code:Code.OK,
+                        data: data
+                    })
+                });
             });
         }
     });
@@ -427,21 +456,27 @@ exports.resetItem = function(req, res) {
                 item: startItem
             }]
         };
-        async.parallel([
-            function(callback) {
-                userService.updatePlayerAttribute(player, callback);
-            },
-            function(callback) {
-                packageService.update(player.packageEntity.strip(), callback);
-            },
-            function(callback) {
-                equipmentsService.update(player.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-            }
-        ], function(err, reply) {
-            utils.send(msg, res, data);
+        var Key = utils.getDbKey(session);
+        var setArray = [
+            ["select", redisConfig.database.SEAKING_REDIS_DB]
+        ];    
+        var package = {
+            itemCount :player.packageEntity.itemCount,
+            items: player.packageEntity.items
+        }
+        setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+        /*var r = player.tasks.updateItem(itemId);
+        if(r) {
+            setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
+            data.tasks = r;
+        }*/
+        redis.command(function(client) {
+            client.multi(setArray).exec(function(err, result) {
+                utils.send(msg, res, {
+                    code:Code.OK,
+                    data: data
+                })
+            });
         });
     });
 }
@@ -468,7 +503,7 @@ exports.userItem = function(req, res) {
 
     var data = {};
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var Item = player.packageEntity[type].items[index];
+        var Item = player.packageEntity.items[index];
 
         if(Item == null) {
             data = {
@@ -510,7 +545,108 @@ exports.userItem = function(req, res) {
         }
         var itemClass = Item.itemId.substr(3, 2);
         var package = player.packageEntity;
-        switch(itemClass) {
+        var setArray = [
+            ["select", redisConfig.database.SEAKING_REDIS_DB]
+        ]
+        if(Item.itemId >= "D010101" && Item.itemId < "D02") {
+
+        } else
+        if(Item.itemId >= "D020101" && Item.itemId < "D03") {
+            if(Item.itemId < "D0202") {
+                var indu;
+                switch(Item.itemId) {
+                    case "D020101":
+                        indu = "";
+                    break;
+                    case "D020102":
+                        indu = "";
+                    break;
+                    case "D020103":
+                        indu = "";
+                    break;
+                    case "D020104":
+                        indu = "";
+                    break;
+                }
+
+            }else {
+
+            }
+        } else 
+        if(Item.itemId >= "D030101" && Item.itemId < "D04") {
+            var item2 =  player.packageEntity.items[msg.index2]; 
+            if(item2.itemId >= "D030201" && item2.itemId < "D04") {
+                var a = Item.itemId.substr(-3) - 0 + 100;
+                if(a == item2.itemId.substr(-3)) {
+                    //"开启宝箱"
+                }else{
+                    data = {code: Code.FAIL,err: "箱子和钥匙配不上"};
+                    utils.send(msg, res, data);
+                }
+            } else{
+                data = {code: Code.FAIL,err: "数据不对"};
+                utils.send(msg, res, data);
+            }
+        }else 
+        if(Item.itemId >= "D040101" && Item.itemId < "D05") {
+            var game;
+            switch(Item.itemId) {
+                case "D040101":
+                    game = 1;
+                break;
+                case "D040102":
+                    game = 2;
+                break;
+                case "D040103":
+                    game = 3;
+                break;
+                case "D040104":
+                    game = 4;
+                break;
+                case "D040105":
+                    game = 5;
+                break;
+            }
+            packageEntity.removeItem(index, 1);
+            player.gameCurrency += game;
+            var package = {
+                itemCount :player.packageEntity.itemCount,
+                items: player.packageEntity.items
+            }
+            setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
+        } else 
+        if(Item.itemId >= "D050101" && Item.itemId < "D06") {
+            utils.send(msg, res, {
+                code: Code.FAIL,
+                err: "祈福的时候才能用"
+            });
+        } else 
+        if(Item.itemId >= "D060101" && Item.itemId < "D07") {
+            if(Item.itemId < "D0602") {
+
+            } else if(Item.itemId) {
+
+            }
+        } else 
+        if(Item.itemId >= "D080101" && Item.itemId < "D09") {
+
+        } else 
+        if(Item.itemId >= "D090101" && Item.itemId < "D10") {
+            
+        } else 
+        if(Item.itemId >= "D100101" && Item.itemId < "D11") {
+            
+        }
+        redis.command(function(client) {
+            client.multi(setArray).exec(function(err) {
+                redis.release(client);
+                if(err){
+                    utils.send(msg, res, {code: Code.FAIL, err: err});
+                }
+                utils.send(msg, res, data);
+            });
+        });
+       /* switch(itemClass) {
             case consts.ItemCategory.Increase:
                 var buff = new Buff({
                     useEffectId: itemInfo.useEffectId,
@@ -518,7 +654,7 @@ exports.userItem = function(req, res) {
                 });
                 player.buffs.push(buff);
 
-                package.removeItem(type, index, 1);
+                package.removeItem( index, 1);
                 package.save();
 
                 data = {
@@ -555,7 +691,7 @@ exports.userItem = function(req, res) {
                         }
 
                         userService.updatePlayer(player, "hp", function(err, reply) {
-                            package.removeItem(type, index, 1);
+                            package.removeItem( index, 1);
                             package.save();
                             data = {
                                 code: Code.OK
@@ -605,7 +741,7 @@ exports.userItem = function(req, res) {
             case consts.ItemCategory.UpgradeMaterial://升级材料
             case consts.ItemCategory.TreasureChest: //设计图纸
             case consts.ItemCategory.Keys://钥匙
-                package.removeItem(type,index,1);
+                package.removeItem(index,1);
                 package.save();
                 data = {
                     code:Code.OK
@@ -633,7 +769,7 @@ exports.userItem = function(req, res) {
                 break;
             case consts.ItemCategory.Activity://活动物品
                 break;
-        }
+        }*/
     });
 }
 
@@ -652,22 +788,28 @@ exports._Set = function(req, res) {
         package.itemCount = msg.itemCount;
         package.items = JSON.parse(msg.items);
         package.save();
-        async.parallel([
-                function(callback) {
-                    userService.updatePlayerAttribute(player, callback);
-                },
-                function(callback) {
-                    packageService.update(player.packageEntity.strip(), callback);
-                },
-                function(callback) {
-                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-                }
-            ], function(err, reply) {
-                utils.send(msg, res, {code: Code.OK, data:msg.items});
+        var Key = utils.getDbKey(session);
+        var setArray = [
+            ["select", redisConfig.database.SEAKING_REDIS_DB]
+        ];    
+        var package = {
+            itemCount :player.packageEntity.itemCount,
+            items: player.packageEntity.items
+        }
+        setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+        var r = player.tasks.updateItem(itemId);
+        if(r) {
+            setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
+            data.tasks = r;
+        }
+        redis.command(function(client) {
+            client.multi(setArray).exec(function(err, result) {
+                utils.send(msg, res, {
+                    code:Code.OK,
+                    data: data
+                })
             });
+        });
      });
 }
 
@@ -695,21 +837,22 @@ exports.arrange = function(req, res) {
                 });
                 return;
             }
-            async.parallel([
-                function(callback) {
-                    userService.updatePlayerAttribute(player, callback);
-                },
-                function(callback) {
-                    packageService.update(player.packageEntity.strip(), callback);
-                },
-                function(callback) {
-                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-                }
-            ], function(err, reply) {
-                utils.send(msg, res,{code: Code.OK, data: r});
+            var Key = utils.getDbKey(session);
+            var setArray = [
+                ["select", redisConfig.database.SEAKING_REDIS_DB]
+            ];    
+            var package = {
+                itemCount :player.packageEntity.itemCount,
+                items: player.packageEntity.items
+            }
+            setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+            redis.command(function(client) {
+                client.multi(setArray).exec(function(err, result) {
+                    utils.send(msg, res, {
+                        code:Code.OK,
+                        data: data
+                    })
+                });
             });
         });
     });
@@ -766,21 +909,22 @@ exports.unlock = function(req, res) {
             }
             
          }
-        async.parallel([
-                function(callback) {
-                    userService.updatePlayerAttribute(player, callback);
-                },
-                function(callback) {
-                    packageService.update(player.packageEntity.strip(), callback);
-                },
-                function(callback) {
-                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-                }
-        ], function(err, reply) {
-                utils.send(msg, res, data);
+        var Key = utils.getDbKey(session);
+        var setArray = [
+            ["select", redisConfig.database.SEAKING_REDIS_DB]
+        ];    
+        var package = {
+            itemCount :player.packageEntity.itemCount,
+            items: player.packageEntity.items
+        }
+        setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+        redis.command(function(client) {
+            client.multi(setArray).exec(function(err, result) {
+                utils.send(msg, res, {
+                    code:Code.OK,
+                    data: data
+                })
+            });
         });
          
      });

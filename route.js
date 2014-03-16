@@ -29,13 +29,16 @@ var routes = require('./routes')
     , resource = require('./routes/resource')
     , shop = require('./routes/shop')
     , skill = require('./routes/skill')
-    , task = require('./routes/task')
+    , task = require('./routes/_task')
     , gm = require('./routes/gm')
     , message = require('./routes/message')
     , authRequired = require('./middlewares/auth_required')
     , astrology = require("./routes/astrology")
     , clifford = require("./routes/clifford")
-    , pet = require("./routes/pet");
+    , pet = require("./routes/pet")
+    , _battle = require("./routes/_battle")
+    , gameEvent = require("./routes/gameEvent")
+    , duplicate = require("./routes/duplicate");
 
 module.exports = function (app) {
     app.get('/', authRequired, routes.index);
@@ -65,6 +68,10 @@ module.exports = function (app) {
     //战斗
     app.get('/battle/battle', authRequired, battle.battle);
     app.get('/battle/battle2', battle.battle2);
+
+    app.get("/battle/battle10", _battle.battle10);
+    app.get("/battle/battle11", _battle.battle11);
+    app.get("/battle/battle3", _battle.battle3);
 
     //赌场
     app.get('/casino/get', authRequired, casino.get);
@@ -107,6 +114,9 @@ module.exports = function (app) {
     app.get('/guide/save', authRequired, guide.save);
 
     app.get('/indu/triggerEvent', authRequired, indu.triggerEvent);
+    app.get("/duplicate/start", authRequired, duplicate.start);
+    app.get("/duplicate/trigger", authRequired, duplicate.trigger);
+    app.get("/duplicate/get", authRequired, duplicate.get);
 
     app.get("/mail/getIn", authRequired, mail.getIn);
     app.get("/mail/getOut", authRequired, mail.getOut);
@@ -187,8 +197,14 @@ module.exports = function (app) {
 
     app.get('/skill/initSkill', authRequired, skill.initSkill);
 
-    app.get('/task/startTask', authRequired, task.startTask);
-    app.get('/task/handOverTask', authRequired, task.handOverTask);
+    //app.get('/task/startTask', authRequired, task.startTask);
+    //app.get('/task/handOverTask', authRequired, task.handOverTask);
+    app.get("/task/startTask", authRequired, task.startTask);
+    app.get("/task/endTask", authRequired, task.endTask);
+    app.get("/task/gmGetTask", authRequired, task.gmGetTask);
+    app.get("/task/gmAddTask", authRequired, task.gmAddTask);
+
+    app.get("/event/trigger", authRequired, gameEvent.trigger);
 
     app.get('/gm/resetTask', gm.resetTask);
     app.get('/gm/updateMoney', gm.updateMoney);

@@ -348,6 +348,7 @@ Equipments.prototype.checkInlayCells = function(type, newDiamonds) {
     var inlay = this[type].inlay;
     var diamonds = inlay.diamonds;
     var flag = false;
+    console.log(inlay);
     for(var i in diamonds) {
         if(typeof newDiamonds[i] == "undefined") {
             return false;

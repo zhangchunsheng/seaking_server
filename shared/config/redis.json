@@ -1,6 +1,6 @@
 {
     "development": {
-        "host" : "192.168.1.22",
+        "host" : "211.155.86.237",
         "port" : "6379",
         "database" : {
             "UC_USER_REDIS_DB": 0,
@@ -14,7 +14,7 @@
     },
 
     "production": {
-        "host" : "192.168.1.22",
+        "host" : "211.155.86.237",
         "port" : "6379",
         "database" : {
             "UC_USER_REDIS_DB": 0,

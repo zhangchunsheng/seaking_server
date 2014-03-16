@@ -37,8 +37,11 @@ var skillUtil = require('../../utils/skillUtil');
  */
 var Player = function(opts) {
     Character.call(this, opts);
+    this.duplicate = opts.duplicate;
     this.pets = opts.pets;
     this.ZX = opts.ZX;
+    this.tl = opts.tl;
+    this.tasks = opts.tasks;
     this.id = opts.id;
     this.type = EntityType.PLAYER;
     this.userId = opts.userId;
@@ -131,12 +134,12 @@ Player.prototype.addExperience = function(exp) {
 };
 
 //Add experience
-Player.prototype.addExp = function(exp) {
+/*Player.prototype.addExp = function(exp) {
     this.experience += parseInt(exp);
     if (this.experience >= this.nextLevelExp) {
         this.upgrade();
     }
-};
+};*/
 
 /**
  * 更新血量
@@ -1640,8 +1643,10 @@ Player.prototype.logTaskData = function(type) {
 
 //Convert player' state to json and return
 Player.prototype.strip = function() {
+    this.tasks.update();
     //pets  修改返回数据
     return {
+        duplicate: this.duplicate,
         pets: this.pets.strip(),
         ZX: this.ZX,
         id: this.id,
@@ -1666,7 +1671,7 @@ Player.prototype.strip = function() {
         speedLevel: this.speedLevel,
         speed: this.speed,
         currentScene: this.currentScene,
-        currentIndu: this.currentIndu,
+        //currentIndu: this.currentIndu,
         focus: this.focus,
         sunderArmor: this.sunderArmor,
         dodge: this.dodge,
@@ -1678,7 +1683,8 @@ Player.prototype.strip = function() {
         critDamage: this.critDamage,
         block: this.block,//格挡
         counter: this.counter,//反击
-        curTasks: this.curTasksEntity.getInfo(),
+       // curTasks: this.curTasksEntity.getInfo(),
+        tasks: this.tasks.strip(this.level),
         equipments: this.equipmentsEntity.getInfo(),
         package: this.packageEntity.getInfo(),
         //skills: this.skills,
@@ -1731,10 +1737,28 @@ Player.prototype.updateColumn = function() {
     };
 };
 
-Player.prototype.addMoney = function(money) {
+Player.prototype.addMoney = function(money, Key, setArray, data) {
     this.money += parseInt(money);
+    if(Key && setArray) {
+        setArray.push(["hset", Key, "money", this.money]);
+        data.money = this.money;
+    }
 }
 
+Player.prototype.addExp = function(exp, Key, setArray, data) {
+    this.experience += parseInt(exp);
+    var heroInfo = {};
+    if(this.experience >= heroInfo.exp) {
+        this.experience -= heroInfo.exp;
+        this.level ++;
+        setArray.push(["hset", Key, "level", this.level]);
+    }
+    if(Key && setArray) {
+        setArray.push(["hset", Key, "experience", this.experience]);
+        data.experience = this.experience;
+    }
+
+}
 /**
  * Get the whole information of player, contains tasks, package, equipments information.
  *
