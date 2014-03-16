@@ -161,7 +161,11 @@ mail.collectItem = function(req, res) {
             redis.command(function(client) {
                 client.multi(array).exec(function(err){
                     redis.release(client);
-                    if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
+                    if(err) {
+                        utils.send(msg, res, {code: Code.FAIL, err: err});
+                        return;
+                    }
+                    utils.additionalData(data, player);
                     utils.send(msg, res, {code: Code.OK, data: data});
                 });
             });

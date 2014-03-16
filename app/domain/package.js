@@ -569,7 +569,7 @@ Package.prototype.addItem = function(player, type, item, rIndex) {
     } else {
          for(var i in items.items) {
             if(items.items[i].itemId == item.itemId && items.items[i].itemNum < itemInfo.pileNum) {
-                _items.itemNum += this.items[i].itemNum;
+                //_items.itemNum = parseInt(_items.itemNum) + parseInt(this.items[i].itemNum);
                 var mitem = items.items[i];
                 if(parseInt(mitem.itemNum) + parseInt(item.itemNum) > itemInfo.pileNum) {
                     item.itemNum =parseInt(item.itemNum) + parseInt(mitem.itemNum) - itemInfo.pileNum;

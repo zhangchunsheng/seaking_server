@@ -7,9 +7,13 @@
  */
 var gmService = require('../app/services/gmService');
 var userService = require('../app/services/userService');
+var ghostService = require('../app/services/character/ghostService');
+var aptitudeService = require('../app/services/character/aptitudeService');
+var formationService = require('../app/services/formationService');
 var taskService = require('../app/services/taskService');
 var equipmentsService = require('../app/services/equipmentsService');
 var packageService = require('../app/services/packageService');
+var redisService = require('../app/services/redisService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -500,6 +504,65 @@ exports.initForgeForEquipment = function(req, res) {
                     equipmentsService.update(character.equipmentsEntity.strip(), callback);
                 }
             ], function(err, reply) {
+                data = {
+                    code: Code.OK
+                };
+                utils.send(msg, res, data);
+            });
+        });
+    });
+}
+
+/**
+ * initCharacter
+ * @param req
+ * @param res
+ */
+exports.initCharacter = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+
+    var nickname = msg.nickname;
+    var serverId = region.serverId;
+
+    if(typeof nickname == "undefined" || nickname == "" || nickname == 0) {
+        data = {
+            code: Code.FAIL
+        };
+        utils.send(msg, res, data);
+        return;
+    }
+
+    var data = {};
+    userService.getCharacterInfoByNickname(serverId, nickname, function(err, reply) {
+        if(err || reply == null) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+        if(utils.empty(reply)) {
+            data = {
+                code: Code.FAIL
+            };
+            utils.send(msg, res, data);
+            return;
+        }
+
+        var registerType = 0;
+        var loginName = "";
+        var characterId = 0;
+
+        var array = reply.split("_");
+        registerType = array[1].replace("T", "");
+        loginName = array[2];
+        characterId = array[3].replace("C", "");
+
+        userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, character) {
+            var array = [];
+            gmService.initCharacter(array, character);
+            redisService.setData(array, function(err, reply) {
                 data = {
                     code: Code.OK
                 };

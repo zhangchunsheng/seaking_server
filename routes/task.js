@@ -85,6 +85,7 @@ exports.startTask = function(req, res) {
                 taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
+            utils.additionalData(data, player);
             utils.send(msg, res, data);
         });
     });
