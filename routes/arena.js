@@ -6,10 +6,8 @@
  * Description: arena
  */
 var arenaService = require('../app/services/arenaService');
-var battleService = require('../app/services/battleService');
 var userService = require('../app/services/userService');
 var messageService = require('../app/services/messageService');
-var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var session = require('../app/http/session');
@@ -59,7 +57,7 @@ exports.pk = function(req, res) {
     });
 }
 
-function pk(req, res, msg, session, opponent) {
+/*function pk(req, res, msg, session, opponent) {
     var uid = session.uid
         , serverId = session.serverId
         , registerType = session.registerType
@@ -230,7 +228,7 @@ function pk(req, res, msg, session, opponent) {
                 });
         });
     });
-}
+}*/
 
 /**
  * 加入竞技场

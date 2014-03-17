@@ -8,7 +8,6 @@
 var packageService = require('../app/services/packageService');
 var userService = require('../app/services/userService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var consts = require('../app/consts/consts');
@@ -160,59 +159,6 @@ exports.addItem = function(req, res) {
     });
 }
 
-/**
- * 丢弃物品
- * @param req
- * @param res
- */
-exports.dropItem = function(req, res) {
-    var msg = req.query;
-    var session = req.session;
-
-    var uid = session.uid
-        , serverId = session.serverId
-        , registerType = session.registerType
-        , loginName = session.loginName;
-
-    var playerId = session.playerId;
-    var characterId = utils.getRealCharacterId(playerId);
-
-    var type = msg.type;
-    var index = msg.index;
-
-    var data = {};
-    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        player.packageEntity.removeItem(type, index);
-
-        data = {
-            code: consts.MESSAGE.RES,
-            status: 1
-        };
-        var Key = utils.getDbKey(session);
-        var setArray = [
-            ["select", redisConfig.database.SEAKING_REDIS_DB]
-        ];
-        var package = {
-            itemCount :player.packageEntity.itemCount,
-            items: player.packageEntity.items
-        }
-        setArray.push(["hset", Key, "package", JSON.stringify(package)]);
-        //判断item
-        /*var r = player.tasks.updateItem(itemId);
-        if(r) {
-            setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
-            data.tasks = r;
-        }*/
-        redis.command(function(client) {
-            client.multi(setArray).exec(function(err, result) {
-                utils.send(msg, res, {
-                    code:Code.OK,
-                    data: data
-                })
-            });
-        });
-    });
-}
 
 /**
  * 卖出物品
@@ -445,7 +391,7 @@ exports.resetItem = function(req, res) {
         }
         player.packageEntity.items[start] = endItem;
         player.packageEntity.items[end] = startItem;
-        player.packageEntity.save();
+        //player.packageEntity.save();
         data = {
             code:Code.OK,
             data:[{
@@ -465,11 +411,6 @@ exports.resetItem = function(req, res) {
             items: player.packageEntity.items
         }
         setArray.push(["hset", Key, "package", JSON.stringify(package)]);
-        /*var r = player.tasks.updateItem(itemId);
-        if(r) {
-            setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
-            data.tasks = r;
-        }*/
         redis.command(function(client) {
             client.multi(setArray).exec(function(err, result) {
                 utils.send(msg, res, {
@@ -773,45 +714,6 @@ exports.userItem = function(req, res) {
     });
 }
 
-exports._Set = function(req, res) {
-    var msg = req.query;
-    var session = req.session;
-       var uid = session.uid
-        , serverId = session.serverId
-        , registerType = session.registerType
-        , loginName = session.loginName;
-
-    var playerId = session.playerId;
-    var characterId = utils.getRealCharacterId(playerId);
-     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
-        var package = player.packageEntity;
-        package.itemCount = msg.itemCount;
-        package.items = JSON.parse(msg.items);
-        package.save();
-        var Key = utils.getDbKey(session);
-        var setArray = [
-            ["select", redisConfig.database.SEAKING_REDIS_DB]
-        ];    
-        var package = {
-            itemCount :player.packageEntity.itemCount,
-            items: player.packageEntity.items
-        }
-        setArray.push(["hset", Key, "package", JSON.stringify(package)]);
-        var r = player.tasks.updateItem(itemId);
-        if(r) {
-            setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
-            data.tasks = r;
-        }
-        redis.command(function(client) {
-            client.multi(setArray).exec(function(err, result) {
-                utils.send(msg, res, {
-                    code:Code.OK,
-                    data: data
-                })
-            });
-        });
-     });
-}
 
 /**
  * 整理背包
@@ -845,6 +747,7 @@ exports.arrange = function(req, res) {
                 itemCount :player.packageEntity.itemCount,
                 items: player.packageEntity.items
             }
+            var data =package.items;
             setArray.push(["hset", Key, "package", JSON.stringify(package)]);
             redis.command(function(client) {
                 client.multi(setArray).exec(function(err, result) {
@@ -899,7 +802,6 @@ exports.unlock = function(req, res) {
          player.money = player.money - costMoney;
          player.gameCurrency = player.gameCurrency - costGameCurrency;
          player.packageEntity.unlock( end);
-         player.save();
          var data = {
             code: consts.MESSAGE.RES,
             data:{

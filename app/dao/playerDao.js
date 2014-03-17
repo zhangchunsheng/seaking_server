@@ -14,7 +14,6 @@ var userDao = require('./userDao');
 var equipmentsDao = require('./equipmentsDao');
 var packageDao = require('./packageDao');
 var skillDao = require('./skillDao');
-var taskDao = require('./taskDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');

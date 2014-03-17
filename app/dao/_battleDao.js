@@ -46,7 +46,7 @@ exports.battleMonster = function(msg) {
             if(info.monsterType == 0){
 				jl.items = jl.items.concat(info.items);
             }else{
-            	jl.bossItems = jl.items.bossItems.concat(info.items);
+            	jl.bossItems = jl.bossItems.concat(info.items);
             }             
 		}
 	}

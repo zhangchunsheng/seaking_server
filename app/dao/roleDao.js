@@ -13,7 +13,6 @@ var consts = require('../consts/consts');
 var equipmentsDao = require('./equipmentsDao');
 var packageDao = require('./packageDao');
 var induDao = require('./induDao');
-var taskDao = require('./taskDao');
 var partnerDao = require('./partnerDao');
 var playerDao = require('./playerDao');
 var async = require('async');

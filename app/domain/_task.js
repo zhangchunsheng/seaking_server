@@ -47,13 +47,20 @@ Task.updateItem = function(task, package) {
 	if(task.type != Types[2]) {
 		return;
 	}
+	var info = dataApi.task.findById(task.taskId);
 	var itemId = task.taskProgress.itemId;
 	var num = package.findAll(itemId);
-	task.taskProgress.number = num;
-	if(task.taskProgress.number >= task.taskProgress.requireNum) {
+	task.taskProgress = num;
+	if(task.taskProgress >= info.eventNum) {
 		task.status = "completed";
 	}else{
 		task.status = "doing";
+	}
+}
+Task.update = function(task, player) {
+	var info = dataApi.task.findById(task.taskId);
+	if(info.taskGoal.indexOf("H")>=0){
+		console.log(player.soulPackage);
 	}
 }
 var getNextDayTime = function() {
@@ -132,12 +139,29 @@ Tasks.prototype = {
 	get: function(index) {
 		return this.undone[index];
 	},
-	add: function(task) {
+	add: function(task,player) {
 		var dInfo = dataApi.task.findById(task.taskId);
-		console.log(dInfo);
 		if(dInfo.eventType != Types[0]) {
-			task.status = "doing";	
-		}else {
+			if(dInfo.taskGoal.indexOf("H") >= 0) {
+				task.taskProgress =player.soulPackageEntity.findAll(dInfo.taskGoal) ;
+				if(task.taskProgress >= dInfo.eventNum) {
+					task.status = "completed";
+				}else{
+					task.status = "doing";
+				}
+			}else if(task.type == Types[2]){
+				var itemId = task.taskProgress.itemId;
+				var num = package.findAll(itemId);
+				task.taskProgress = num;
+				if(task.taskProgress >= dInfo.eventNum) {
+					task.status = "completed";
+				}else{
+					task.status = "doing";
+				}
+			}else{
+				task.status = "doing";
+			}		
+		} else {
 			task.status = "completed";
 			task.taskProgress =1;
 		}

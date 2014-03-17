@@ -7,7 +7,6 @@ var Code = require('../shared/code');
 var packageService = require('../app/services/packageService');
 var userService = require('../app/services/userService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 //关于升级：
 //升级修改数据库中  星蕴的开启的个数   
 var getCi = function(astrology) {

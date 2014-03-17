@@ -15,7 +15,6 @@ var packageUtil = require("./packageUtil");
 var formula = require('../consts/formula');
 var formulaV2 = require('../consts/formulaV2');
 var equipmentsDao = require('../dao/equipmentsDao');
-var taskDao = require('../dao/taskDao');
 var packageDao = require('../dao/packageDao');
 var aptitudeService = require('../services/character/aptitudeService');
 var ghostService = require('../services/character/ghostService');
@@ -747,15 +746,15 @@ playerUtil.createPKEntity = function(player, serverId, registerType, loginName, 
 playerUtil.createEPTInfo = function(character, serverId, registerType, loginName, characterId) {
     var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId, character);
     var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId, character);
-    var curTasks = new Tasks({
+    /*var curTasks = new Tasks({
         currentMainTask: taskDao.createNewTask(character.curTasks.currentMainTask, serverId, registerType, loginName, characterId, character.curTasks, character),
         currentBranchTask: taskDao.createNewTask(character.curTasks.currentBranchTask, serverId, registerType, loginName, characterId, character.curTasks, character),
         currentDayTask: taskDao.createNewTask(character.curTasks.currentDayTask[0], serverId, registerType, loginName, characterId, character.curTasks, character),
         currentExerciseTask: taskDao.createNewTask(character.curTasks.currentExerciseTask, serverId, registerType, loginName, characterId, character.curTasks, character)
-    });
+    });*/
     character.packageEntity = package;
     character.equipmentsEntity = equipments;
-    character.curTasksEntity = curTasks || {};
+    //character.curTasksEntity = curTasks || {};
 }
 
 /**

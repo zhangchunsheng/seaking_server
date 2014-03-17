@@ -9,7 +9,6 @@ var authService = require('../app/services/authService');
 var userService = require('../app/services/userService');
 var packageService = require('../app/services/packageService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var partnerUtil = require('../app/utils/partnerUtil');
@@ -125,9 +124,6 @@ exports.wearWeapon = function(req, res) {
                 },
                 function(callback) {
                     equipmentsService.update(character.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {
@@ -260,9 +256,6 @@ exports.unWearWeapon = function(req, res) {
             },
             function(callback) {
                 equipmentsService.update(character.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
             data = {
@@ -403,9 +396,6 @@ exports.equip = function(req, res) {
             },
             function(callback) {
                 equipmentsService.update(character.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
             data = {
@@ -535,9 +525,6 @@ exports.unEquip = function(req, res) {
             },
             function(callback) {
                 equipmentsService.update(character.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
             data = {
@@ -671,9 +658,6 @@ exports.upgrade = function(req, res) {
                 },
                 function(callback) {
                     equipmentsService.update(character.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {
@@ -849,9 +833,6 @@ exports.forgeUpgrade = function(req, res) {
                 },
                 function(callback) {
                     equipmentsService.update(character.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {
@@ -1019,9 +1000,6 @@ exports.inlay = function(req, res) {
             },
             function(callback) {
                 equipmentsService.update(character.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
             data = {
@@ -1157,9 +1135,6 @@ exports.unInlay = function(req, res) {
             },
             function(callback) {
                 equipmentsService.update(character.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
             data = {
@@ -1388,9 +1363,6 @@ exports.changeDiamond = function(req, res) {
             },
             function(callback) {
                 equipmentsService.update(character.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
             data = {

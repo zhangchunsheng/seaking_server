@@ -13,7 +13,6 @@ var miscsService = require('../../app/services/character/miscsService');
 var soulPackageService = require('../../app/services/character/soulPackageService');
 var packageService = require('../../app/services/packageService');
 var equipmentsService = require('../../app/services/equipmentsService');
-var taskService = require('../../app/services/taskService');
 var redisService = require('../../app/services/redisService');
 var Code = require('../../shared/code');
 var utils = require('../../app/utils/utils');

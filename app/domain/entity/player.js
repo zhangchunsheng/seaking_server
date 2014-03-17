@@ -19,7 +19,6 @@ var Character = require('./character');
 var userDao = require('../../dao/userDao');
 var playerDao = require('../../dao/playerDao');
 var skillDao = require('../../dao/skillDao');
-var taskDao = require('../../dao/taskDao');
 var utils = require('../../utils/utils');
 var dbUtil = require('../../utils/dbUtil');
 var ucenter = require('../../lib/ucenter/ucenter');
@@ -1038,6 +1037,7 @@ Player.prototype.changeEquipDiamonds = function(pkgType, player, type, packageDi
 
 Player.prototype.buyItem = function(type, item, costMoney) {
     var packageChange = this.packageEntity.addItemWithNoType(this, item);
+    var changeTasks = packageChange.changeTasks;
     if(!packageChange) {
         return null;
     }else{
@@ -1046,11 +1046,11 @@ Player.prototype.buyItem = function(type, item, costMoney) {
 
     if(packageChange.length != 0) {
         this.money = this.money - costMoney;
-        this.save();
     }
     return {
         money: this.money,
-        packageChange: packageChange
+        packageChange: packageChange,
+        changeTask: changeTasks
     }
 }
 
@@ -1524,6 +1524,7 @@ Player.prototype.updatePlayerAttribute = function(players, cb) {
  * @param type
  * @param task
  */
+ /*
 Player.prototype.startTask = function(type, task) {
     task.status = TaskStatus.START_TASK;
     task.taskRecord = {
@@ -1578,7 +1579,7 @@ Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
             task.updateRecord(this, TaskGoalType, items);
         }
     }
-}
+}*/
 
 /**
  *

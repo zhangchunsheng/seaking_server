@@ -175,7 +175,7 @@ exports.trigger = function(req, res) {
             
             var tasks = player.tasks.updateDu(player.duplicate.id);
             if(tasks.length > 0) {
-                data.tasks = tasks;
+                data.changeTasks = tasks;
                 setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
             }
            //完成清空？还是等下次进入副本清空

@@ -11,7 +11,6 @@
 var consts = require('../consts/consts');
 var messageService = require('./messageService');
 var taskData = require('../utils/dataApi').task;
-var taskDao = require('../dao/taskDao');
 var async = require('async');
 
 /**

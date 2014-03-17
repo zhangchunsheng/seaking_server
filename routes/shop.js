@@ -8,7 +8,6 @@
 var packageService = require('../app/services/packageService');
 var userService = require('../app/services/userService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 var shopService = require('../app/services/shopService');
 var userService = require('../app/services/userService');
 var Code = require('../shared/code');
@@ -17,7 +16,15 @@ var dataApi = require('../app/utils/dataApi');
 var PackageType = require('../app/consts/consts').PackageType;
 var consts = require('../app/consts/consts');
 var async = require("async");
-
+var redis =  require('../app/dao/redis/redis')
+ , redisConfig = require('../shared/config/redis');
+var env = process.env.NODE_ENV || 'development';
+if(redisConfig[env]) {
+    redisConfig = redisConfig[env];
+}
+var Types = {
+    getItem: 1
+}
 exports.index = function(req, res) {
     res.send("index");
 }
@@ -93,6 +100,10 @@ exports.buyItem = function(req, res) {
 //          });
 //          return;
 //      }
+        var Key = utils.getDbKey(session);
+        var setArray = [
+            ["select", redisConfig.database.SEAKING_REDIS_DB]
+        ];
         var itemInfo = {};
         var type ;
         if(itemId.indexOf("D") >= 0) {
@@ -167,38 +178,43 @@ exports.buyItem = function(req, res) {
             };
             utils.send(msg, res, data);
         }*/
+        
         if(!result || result.packageChange.length == 0) {
             data = {
                 code: Code.PACKAGE.NOT_ENOUGHT_SPACE
             };
             utils.send(msg, res, data);
         } else {
+            var package = {
+                itemCount :player.packageEntity.itemCount,
+                items: player.packageEntity.items
+            };
+            setArray.push(["hset", Key, "package", JSON.stringify(package)]);
+            if(result.changeTask && result.changeTask.length > 0) {
+                setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
+            }
             data = {
                 code: consts.MESSAGE.RES,
-                data:{
-                    money: result.money,
-                    packageChange: result.packageChange
-                }
-                
+                data: result
                 //costMoney: costMoney
             };
-            async.parallel([
-                function(callback) {
-                    userService.updatePlayerAttribute(player, callback);
-                },
-                function(callback) {
-                    packageService.update(player.packageEntity.strip(), callback);
-                },
-                function(callback) {
-                    equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
-                }
-            ], function(err, reply) {
-                utils.additionalData(data, player);
-                utils.send(msg, res, data);
-            });
+            console.log(setArray);
+            redis.command(function(client) {
+                client.multi(setArray).exec(function(err, result) {
+                    redis.release(client);
+                    if(err){
+                        utils.send(msg, res, {
+                            code: Code.FAIL,
+                            err: err
+                        });
+                    }else{
+                        utils.send(msg, res, data); 
+                   }
+                });
+            })
+               // utils.additionalData(data, player);
+
+            
         }
     });
 }

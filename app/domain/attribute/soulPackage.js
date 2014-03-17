@@ -38,6 +38,15 @@ module.exports = SoulPackage;
 SoulPackage.create = function(opts) {
 
 }
+SoulPackage.findAll = function(id) {
+    var num = 0;
+    for(var i in this.items) {
+        if(this.items[i].itemId == id) {
+            num += (this.items[i].itemNum - 0);
+        }
+    }
+    return num;
+}
 
 SoulPackage.prototype.isFull = function() {
     var count = 0;

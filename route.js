@@ -10,13 +10,11 @@ var routes = require('./routes')
     , role = require('./routes/role')
     , area = require('./routes/area')
     , arena = require('./routes/arena')
-    , battle = require('./routes/battle')
     , casino = require('./routes/casino')
     , equip = require('./routes/equip')
     , formation = require('./routes/formation')
     , friend = require('./routes/friend')
     , guide = require('./routes/guide')
-    , indu = require('./routes/indu')
     , mail = require('./routes/mail')
     , package = require('./routes/package')
     , player = require('./routes/player')
@@ -66,12 +64,7 @@ module.exports = function (app) {
     app.get('/arena/getPKData', authRequired, arena.getPKData);
 
     //战斗
-    app.get('/battle/battle', authRequired, battle.battle);
-    app.get('/battle/battle2', battle.battle2);
-
-    app.get("/battle/battle10", _battle.battle10);
-    app.get("/battle/battle11", _battle.battle11);
-    app.get("/battle/battle3", _battle.battle3);
+    app.get("/battle/battle3", authRequired,_battle.battle3);
 
     //赌场
     app.get('/casino/get', authRequired, casino.get);
@@ -113,7 +106,6 @@ module.exports = function (app) {
     app.get('/guide/get', authRequired, guide.get);
     app.get('/guide/save', authRequired, guide.save);
 
-    app.get('/indu/triggerEvent', authRequired, indu.triggerEvent);
     app.get("/duplicate/start", authRequired, duplicate.start);
     app.get("/duplicate/trigger", authRequired, duplicate.trigger);
     app.get("/duplicate/get", authRequired, duplicate.get);
@@ -144,7 +136,6 @@ module.exports = function (app) {
     app.get("/astrology/synth2", authRequired, astrology.onceMerger2);
     app.get("/astrology/gmRepair", authRequired, astrology.gmRepair);
 
-    app.get("/package/_Set", authRequired, package._Set);
     app.get('/package/_AddItem', authRequired, package.addItem);
     app.get("/package/arrange", authRequired, package.arrange);
     app.get('/package/moveItem', authRequired, package.resetItem);
@@ -152,6 +143,7 @@ module.exports = function (app) {
     app.get('/package/sellItem', authRequired, package.sellItem);
     app.get('/package/userItem', authRequired, package.userItem);
     app.get("/package/unlock", authRequired, package.unlock);
+    
     app.get("/package/gmClean", authRequired, package.clean);
 
     app.get('/player/enterScene', authRequired, player.enterScene);

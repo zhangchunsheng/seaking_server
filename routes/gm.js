@@ -10,7 +10,6 @@ var userService = require('../app/services/userService');
 var ghostService = require('../app/services/character/ghostService');
 var aptitudeService = require('../app/services/character/aptitudeService');
 var formationService = require('../app/services/formationService');
-var taskService = require('../app/services/taskService');
 var equipmentsService = require('../app/services/equipmentsService');
 var packageService = require('../app/services/packageService');
 var redisService = require('../app/services/redisService');
@@ -95,7 +94,7 @@ exports.resetTask = function(req, res) {
 
             async.parallel([
                 function(callback) {
-                    taskService.updateTask(character, character.curTasksEntity.strip(), callback);
+                    //taskService.updateTask(character, character.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {
@@ -439,7 +438,7 @@ exports.initTasks = function(req, res) {
             character.curTasksEntity.initTask();
             async.parallel([
                 function(callback) {
-                    taskService.update(character, character.curTasksEntity.strip(), callback);
+                    //taskService.update(character, character.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {

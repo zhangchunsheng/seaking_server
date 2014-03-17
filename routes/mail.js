@@ -4,7 +4,6 @@ var userService = require('../app/services/userService');
 var packageService = require('../app/services/packageService');
 var userService = require('../app/services/userService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 var async = require("async");
 var MailKeyType = require('../app/consts/consts').MailKeyType;
 var Code = require('../shared/code');

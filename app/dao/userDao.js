@@ -15,7 +15,6 @@ var equipmentsDao = require('./equipmentsDao');
 var packageDao = require('./packageDao');
 var packageUtil = require('../utils/packageUtil');
 var induDao = require('./induDao');
-var taskDao = require('./taskDao');
 var partnerDao = require('./partnerDao');
 var playerDao = require('./playerDao');
 var friendDao = require('./friendDao');
@@ -492,6 +491,7 @@ userDao.getCharacterAllInfo = function (serverId, registerType, loginName, chara
  * @param loginName
  * @param characterId
  */
+ /*
 function createEPTInfo(character, serverId, registerType, loginName, characterId) {
     var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId, character);
     var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId, character);
@@ -505,7 +505,7 @@ function createEPTInfo(character, serverId, registerType, loginName, characterId
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
 }
-
+*/
 /**
  * Get all the information of a character, include equipments, package, skills, tasks.
  * @param {String} characterId

@@ -55,10 +55,10 @@ exports.startTask = function(req, res) {
             ["select", redisConfig.database.SEAKING_REDIS_DB]
         ];
         tasks.add(task);
-        Task.updateItem(task,player.packageEntity);
+        //Task.updateItem(task,player.packageEntity);
         setArray.push(["hset", Key, "tasks", JSON.stringify(tasks)]);
         console.log(setArray);
-       /* redis.command(function(client) {
+        redis.command(function(client) {
             client.multi(setArray).exec(function(err, result) {
                 redis.release(client);
                 if(err){
@@ -66,14 +66,14 @@ exports.startTask = function(req, res) {
                         code: Code.FAIL,
                         err: err
                     });
-                } else {*/
+                } else {
                     utils.send(msg, res, {
                         code: Code.OK,
                         data: task
                     });
-        /*        }
+                }
             });
-        });*/
+        });
 
     });
 }
@@ -162,8 +162,8 @@ exports.endTask = function(req, res) {
             var nextTaskInfo = dataApi.task.findById(nextTaskId);
             var nextTask = Task.init(nextTaskInfo);
             task.nextTask = nextTask;
-            player.tasks.add(nextTask);
-            Task.updateItem(nextTask,player.packageEntity);
+            player.tasks.add(nextTask,player);
+            //Task.updateItem(nextTask,player.packageEntity);
         }
         if(taskInfo.showNpcId) {
             task.showNpcId = taskInfo.showNpcId;
@@ -199,6 +199,7 @@ exports.endTask = function(req, res) {
         }
         player.tasks.update();
         player.tasks.addDoneTask(taskInfo);
+        data.changeTasks = changeTasks;
         setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
         console.log(setArray);
         redis.command(function(client) {
@@ -295,23 +296,26 @@ exports.gmAddTask = function(req, res) {
             duplicateId:  "Ins10101"
         }}]*/
     });
-    tasks.add(Task.init(taskInfo));
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        
+    tasks.add(Task.init(taskInfo),player);
     setArray.push(["hset", Key, "tasks", JSON.stringify(tasks)]);
     
     
-    redis.command(function(client) {
-        client.multi(setArray).exec(function(err, result) {
-            redis.release(client);
-            if(err){
-                utils.send(msg, res, {
-                    code: Code.FAIL,
-                    err: err
-                });
-            }else{
-                utils.send(msg, res, {
-                    code: Code.OK
-                }); 
-            }
+        redis.command(function(client) {
+            client.multi(setArray).exec(function(err, result) {
+                redis.release(client);
+                if(err){
+                    utils.send(msg, res, {
+                        code: Code.FAIL,
+                        err: err
+                    });
+                }else{
+                    utils.send(msg, res, {
+                        code: Code.OK
+                    }); 
+                }
+            });
         });
     });
 }
