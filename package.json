@@ -7,23 +7,8 @@
         "start": "node app.js"
     },
     "dependencies": {
-        "express": "*",
-        "connect": "*",
-        "urlrouter": "*",
-        "forward": "*",
-        "async": "*",
-        "log4js": "*",
-        "generic-pool": "*",
- 	  "hiredis":"*",
-        "redis": "*",
-        "pm": "*",
-        "mysql": "*",
-        "connect-redis": "*",
-        "mongoskin": "*",
-        "express-domain-middleware":"*",
-        "websocket": "*",
-	  "cookie-signature":"*",
-	  "express-session": "*"
+        "express-session":"*"
+        
     },
     "devDependencies": {
     },

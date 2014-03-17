@@ -33,13 +33,14 @@ Task.init = function(info) {
 	task.taskId  = info.taskId;
 	console.log(info.taskGoal);
 	task.status = "acceptable";
-	task.type = info.eventType;
-	if(info.taskGoal) {
+	//task.type = info.eventType;
+	/*if(info.taskGoal) {
 		task.taskProgress = {};
 		task.taskProgress.requireNum = info.eventNum;
 		task.taskProgress.number = 0;
 		task.taskProgress[Ps[info.eventType]] = info.taskGoal;
-	}
+	}*/
+	task.taskProgress = 0;
 	return task;
 };
 Task.updateItem = function(task, package) {
@@ -74,33 +75,34 @@ Tasks.prototype = {
 		var tasks = [];
 		for(var i in this.undone) {
 			var d = this.undone[i];
-			if(d.taskProgress && d.taskProgress.duplicateId == duId) {
-				tasks.push(d);
-				d.taskProgress.number = 1;
+			var dInfo = dataApi.task.findById(d.taskId);
+			if(dInfo.taskGoal == duId) {				
+				d.taskProgress = 1;
 				d.status = "completed";
+				tasks.push(d);
 			}
 		}
 		return tasks;
 	},
 	updateItem: function(itemId, package) {
 		var tasks = [];
+		var num = package.findAll(itemId);
 		for(var i in this.undone) {
 			var d = this.undone[i];
-			if(d.taskProgress&&d.taskProgress.itemId == itemId) {
+			var dInfo = dataApi.task.findById(d.taskId);
+			console.log(dInfo);
+			if(dInfo.taskGoal == itemId){
 				tasks.push(d);
+				d.taskProgress = num;
+				if(dInfo.eventNum <= d.taskProgress) {
+					d.status = "completed";
+				}else{
+					d.status = "doing";
+				}
 			}
-		}
-		if(tasks.length == 0) {
-			return null;
-		}
-		var num = package.findAll(itemId);
-		for(var t in tasks) {
-			tasks[t].taskProgress.number = num;
-			if(tasks[t].taskProgress.number >= tasks[t].taskProgress.requireNum) {
-				tasks[t].status = "completed";
-			}else{
-				tasks[t].status = "doing";
-			}
+			/*if(d.taskProgress&&d.taskProgress.itemId == itemId) {
+				tasks.push(d);
+			}*/
 		}
 		return tasks;
 	},
@@ -131,10 +133,13 @@ Tasks.prototype = {
 		return this.undone[index];
 	},
 	add: function(task) {
-		if(task.type != Types[0]) {
+		var dInfo = dataApi.task.findById(task.taskId);
+		console.log(dInfo);
+		if(dInfo.eventType != Types[0]) {
 			task.status = "doing";	
 		}else {
 			task.status = "completed";
+			task.taskProgress =1;
 		}
 		this.undone.push(task);		
 	},

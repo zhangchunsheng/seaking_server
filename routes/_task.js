@@ -90,9 +90,16 @@ exports.endTask = function(req, res) {
     var characterId = utils.getRealCharacterId(playerId);
     var taskId = msg.taskId ;
     var taskInfo = dataApi.task.findById(taskId);
+    if(!taskInfo) {
+        return utils.send(msg, res, {
+            code: Code.FAIL,
+            err: "没有该任务"
+        });
+    }
+    console.log("taskInfo:", taskInfo);
     userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        var taskInfo = dataApi.task.findById(taskId);
         var taskIndex = player.tasks.find(taskId);
-        console.log("taskIndex:", taskIndex);
         var task = player.tasks.get(taskIndex);
         if(!task) {
             return utils.send(msg, res, {
@@ -106,19 +113,26 @@ exports.endTask = function(req, res) {
                 err: "没有达到完成条件"
             });
         }
-        if(task.taskProgress && task.taskProgress.requireNum > task.taskProgress.number) {
+        console.log("taskInfo:", taskInfo);
+        if(task.taskProgress && task.taskProgress < taskInfo.eventNum) {
             return utils.send(msg, res, {
                 code: Code.FAIL,
                 err: "其他程序有漏洞"
             });
         }
+        /*if(task.taskProgress && task.taskProgress.requireNum > task.taskProgress.number) {
+            return utils.send(msg, res, {
+                code: Code.FAIL,
+                err: "其他程序有漏洞"
+            });
+        }*/
         var changeItems = [],
         changeTasks = [];
         if(task.type == "getItem") {
             //提交升级了开孔的装备怎么办
             var hasItems = player.packageEntity.hasItem({
-                itemId: task.taskProgress.itemId ,
-                itemNum: task.taskProgress.requireNum,
+                itemId: taskInfo.taskGoal ,
+                itemNum: task.taskProgress,
                 level:1
             });
             if(!hasItems){
@@ -184,7 +198,6 @@ exports.endTask = function(req, res) {
             task.changeItems = changeItems;
         }
         player.tasks.update();
-        task.tasks = player.tasks.strip();
         player.tasks.addDoneTask(taskInfo);
         setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
         console.log(setArray);
@@ -199,7 +212,8 @@ exports.endTask = function(req, res) {
                 } else {
                     utils.send(msg, res, {
                         code: Code.OK,
-                        data: task
+                        data: task,
+                        tasks : player.tasks.strip()
                     });
                 }
                 
