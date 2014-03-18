@@ -151,9 +151,9 @@ Tasks.prototype = {
 				}*/
 				task.taskProgress = 1;
 				task.status = "completed";
-			}else if(task.type == Types[2]){
-				var itemId = task.taskProgress.itemId;
-				var num = package.findAll(itemId);
+			}else if(dInfo.eventType == Types[2]){
+				var itemId = dInfo.taskGoal;
+				var num = player.packageEntity.findAll(itemId);
 				task.taskProgress = num;
 				if(task.taskProgress >= dInfo.eventNum) {
 					task.status = "completed";

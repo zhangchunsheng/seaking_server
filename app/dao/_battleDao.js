@@ -142,18 +142,24 @@ exports.battleMonster = function(msg) {
 		result.win = false;
 	}
 	if(result.changeItems && result.changeItems.length > 0) {
+		console.log(result.changeItems);
 		for(var i in result.changeItems) {
-			for(var it in result.changeItems) {
+			/*for(var it in result.changeItems) {
 				if(result.changeItems[i][it].item&&result.changeItems[i][it].item.itemId){
 					var changeTask = player.tasks.updateItem(result.changeItems[i][it].item.itemId, player.packageEntity);
 		 			if(changeTask && changeTask.length > 0){
 						changeTasks = changeTasks.concat(changeTask);
 					}
  				}
+			}*/
+			var items =result.changeItems[i];
+			if(items && items[0]) {
+				var changeTask = player.tasks.updateItem(items[0].item.itemId, player.packageEntity);
+				//console.log("changeTask:",changeTask);
+				if(changeTask && changeTask.length > 0){
+					changeTasks = changeTasks.concat(changeTask);
+				}
 			}
-			
-			
-			//console.log("changeTask:",changeTask);
 			
 			
 		}
