@@ -413,6 +413,7 @@ playerUtil.getCharacter = function(opts) {
     var skills = new Skills(opts);
     var pets = new Pets(opts.replies.pets).update();
     var character = {
+        onces: (opts.replies.onces? JSON.parse(opts.replies.onces): {}),
         duplicate: opts.replies.duplicate? JSON.parse(opts.replies.duplicate):opts.replies.duplicate,
         tasks: new Tasks(opts.replies.tasks),
         tl: opts.replies.tl ?JSON.parse(opts.replies.tl): opts.replies.tl,
@@ -457,11 +458,11 @@ playerUtil.getCharacter = function(opts) {
         money: parseInt(opts.replies.money),
         equipments: JSON.parse(opts.replies.equipments),
         package: JSON.parse(opts.replies.package),
-        /*skills: {
+        skills: {
             currentSkill: JSON.parse(opts.replies.currentSkill),
             activeSkills: JSON.parse(opts.replies.activeSkills),
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
-        },*/
+        },
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         formation: JSON.parse(opts.replies.formation || playerUtil.initFormation(opts, "string")),
@@ -474,12 +475,12 @@ playerUtil.getCharacter = function(opts) {
         altar: JSON.parse(opts.replies.altar || playerUtil.initAltar("string")),
         gift: JSON.parse(opts.replies.gift).gift,
         pushMessage: JSON.parse(opts.replies.pushMessage || playerUtil.initPushMessage("string")).pushMessage,
-        curTasks: {
+        /*curTasks: {
             currentMainTask: JSON.parse(opts.replies.currentMainTask),
             currentBranchTask: JSON.parse(opts.replies.currentBranchTask),
             currentDayTask: JSON.parse(opts.replies.currentDayTask),
             currentExerciseTask: JSON.parse(opts.replies.currentExerciseTask)
-        },
+        },*/
         ghost: JSON.parse(opts.replies.ghost || playerUtil.initGhost("string")),
         ghostNum: opts.replies.ghostNum || 0,
         aptitude: JSON.parse(opts.replies.aptitude || playerUtil.initAptitude(opts.cId, "string")),
@@ -530,11 +531,11 @@ playerUtil.getPKCharacter = function(opts) {
         gameCurrency: parseInt(opts.replies.gameCurrency),
         money: parseInt(opts.replies.money),
         equipments: JSON.parse(opts.replies.equipments),
-        /*skills: {
+        skills: {
             currentSkill: JSON.parse(opts.replies.currentSkill),
             activeSkills: JSON.parse(opts.replies.activeSkills),
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
-        },*/
+        },
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         formation: JSON.parse(opts.replies.formation || playerUtil.initFormation(opts, "string")),
@@ -550,6 +551,7 @@ playerUtil.getPKCharacter = function(opts) {
 
 playerUtil.getPlayer = function(character) {
     var player = new Player({
+        onces: character.onces,
         duplicate: character.duplicate,
         tasks: character.tasks,
         tl: character.tl,

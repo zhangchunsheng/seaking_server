@@ -190,7 +190,7 @@ exports.buyItem = function(req, res) {
                 items: player.packageEntity.items
             };
             setArray.push(["hset", Key, "package", JSON.stringify(package)]);
-            if(result.changeTask && result.changeTask.length > 0) {
+            if(result.changeTasks && result.changeTasks.length > 0) {
                 setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
             }
             data = {

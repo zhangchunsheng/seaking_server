@@ -156,6 +156,7 @@ exports.trigger = function(req, res) {
                 break;
             }
         }
+        var duplicateData= {};
         if(r) {
             var info = dataApi.instancedungeon.findById(duplicate.id);
             player.addExp(info.getExp, Key, setArray, data);
@@ -180,9 +181,10 @@ exports.trigger = function(req, res) {
             }
            //完成清空？还是等下次进入副本清空
             player.duplicate = {};
+            duplicateData.finished = true;
         }
         setArray.push(["hset", Key, "duplicate", JSON.stringify(player.duplicate)]);
-        data.duplicate = player.duplicate;
+        duplicateData.data = player.duplicate;
         redis.command(function(client) {
             client.multi(setArray).exec(function(err, result) {
                 redis.release(client);
@@ -194,7 +196,8 @@ exports.trigger = function(req, res) {
                 }else {
                     utils.send(msg, res, {
                         code:Code.OK,
-                        data: data
+                        data: data,
+                        duplicate: duplicateData
                     })
                 }
             });

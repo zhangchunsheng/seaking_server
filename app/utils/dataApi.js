@@ -45,6 +45,7 @@ var petsUpgrade = require("../../config/data/petsUpgrade");
 var feedItem = require("../../config/data/feedItem");
 var petsRandom = require("../../config/data/petsRandom");
 var event = require("../../config/data/event");
+var onces = require("../../config/onces");
 /**
  * Data model `new Data()`
  *
@@ -200,5 +201,6 @@ module.exports = {
     feedItem: new Data(feedItem),
     petsRandom: new Data(petsRandom),
     petsSkillsUpgrade: new Data(petsSkillsUpgrade),
-    event: new Data(event)
+    event: new Data(event),
+    onces: onces
 };

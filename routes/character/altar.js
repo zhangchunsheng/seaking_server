@@ -72,7 +72,22 @@ exports.extraction = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-
+        if(!player.onces.altarExtraction) {
+            var info = dataApi.onces.altarExtraction;
+            var cId = info.cId;
+            
+            return utils.send(msg, res, {
+                code: Code.OK,
+                loyalty: altar.loyalty,
+                lastExtractionTime: time,
+                leftTime: leftTime,
+                type: type,
+                cId: cId,
+                packageIndex: packageIndex,
+                money: player.money,
+                gameCurrency: player.gameCurrency
+            });
+        }
         var miscs = character.miscsEntity;
         var soulPackage = character.soulPackageEntity;
         //判断背包已满
@@ -284,6 +299,7 @@ exports.exchange = function(req, res) {
         miscsService.getUpdateArray(array, player);
         soulPackageService.getUpdateArray(array, player);
 
+        player.tasks.updateHero(heroId);
         redisService.setData(array, function(err, reply) {
             data = {
                 code: Code.OK,

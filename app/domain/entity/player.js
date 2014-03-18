@@ -36,6 +36,7 @@ var skillUtil = require('../../utils/skillUtil');
  */
 var Player = function(opts) {
     Character.call(this, opts);
+    this.onces = opts.onces;
     this.duplicate = opts.duplicate;
     this.pets = opts.pets;
     this.ZX = opts.ZX;
@@ -1050,7 +1051,7 @@ Player.prototype.buyItem = function(type, item, costMoney) {
     return {
         money: this.money,
         packageChange: packageChange,
-        changeTask: changeTasks
+        changeTasks: changeTasks
     }
 }
 

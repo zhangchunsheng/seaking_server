@@ -199,7 +199,7 @@ exports.endTask = function(req, res) {
         }
         player.tasks.update();
         player.tasks.addDoneTask(taskInfo);
-        data.changeTasks = changeTasks;
+        task.changeTasks = changeTasks;
         setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
         console.log(setArray);
         redis.command(function(client) {
