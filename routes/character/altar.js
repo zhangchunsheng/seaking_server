@@ -32,6 +32,14 @@ exports.index = function(req, res) {
  * @param req
  * @param res
  */
+ var redis =  require('../../app/dao/redis/redis')
+ , redisConfig = require('../../shared/config/redis');
+ var TL = require("../../app/domain/tl").TL;
+ var env = process.env.NODE_ENV || 'development';
+ var battleDao = require("../../app/dao/_battleDao");
+if(redisConfig[env]) {
+    redisConfig = redisConfig[env];
+}
 exports.extraction = function(req, res) {
     var msg = req.query;
     var session = req.session;
@@ -72,22 +80,30 @@ exports.extraction = function(req, res) {
             utils.send(msg, res, data);
             return;
         }
-        if(!player.onces.altarExtraction) {
+        /*if(!player.onces.altarExtraction) {
             var info = dataApi.onces.altarExtraction;
             var cId = info.cId;
-            
-            return utils.send(msg, res, {
-                code: Code.OK,
-                loyalty: altar.loyalty,
-                lastExtractionTime: time,
-                leftTime: leftTime,
-                type: type,
-                cId: cId,
-                packageIndex: packageIndex,
-                money: player.money,
-                gameCurrency: player.gameCurrency
+            //var altar = character.altar;//{"loyalty":"100","extractionTimes":{"1":{"lastExtractionTime":0},"2":{"lastExtractionTime":0},"3":{"lastExtractionTime":0}}}
+           // altar.loyalty = parseInt(altar.loyalty);
+            //var type = 1;//1 - 实体 2 - 魂魄
+            character.miscsEntity.checkHero(cId);
+            var setArray = [
+                ["select", redisConfig.database.SEAKING_REDIS_DB]
+            ];
+            var Key = utils.getDbKey(session);
+            player.onces.altarExtraction = true;
+            setArray.push(["hset", Key, "onces", JSON.stringify(player.onces)]);
+            var soulPackage = {
+                itemCount : player.soulPackageEntity.itemCount,
+                items: player.soulPackageEntity.items
+            }
+            setArray.push(["hset", Key, "soulPackage", JSON.stringify(soulPackage)]);
+            console.log(setArray);
+            utils.send(msg, res, {
+                code: Code.OK
             });
-        }
+            return;
+        }*/
         var miscs = character.miscsEntity;
         var soulPackage = character.soulPackageEntity;
         //判断背包已满
@@ -186,8 +202,9 @@ exports.extraction = function(req, res) {
         if(leftTime < 0) {
             leftTime = 0;
         }
-
-        redisService.setData(array, function(err, reply) {
+        console.log(array);
+        utils.send(msg, res, data);
+        /*redisService.setData(array, function(err, reply) {
             data = {
                 code: Code.OK,
                 loyalty: altar.loyalty,
@@ -200,7 +217,7 @@ exports.extraction = function(req, res) {
                 gameCurrency: player.gameCurrency
             };
             utils.send(msg, res, data);
-        });
+        });*/
     });
 }
 

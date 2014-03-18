@@ -142,7 +142,7 @@ Tasks.prototype = {
 	add: function(task,player) {
 		var dInfo = dataApi.task.findById(task.taskId);
 		if(dInfo.eventType != Types[0]) {
-			if(dInfo.taskGoal.indexOf("H") >= 0 || dInfo.taskGoal == "" || !dInfo.taskGoal) {
+			if(!dInfo.taskGoal || dInfo.taskGoal.indexOf("H") >= 0 || dInfo.taskGoal == ""  ) {
 				//task.taskProgress =player.soulPackageEntity.findAll(dInfo.taskGoal) ;
 				/*if(task.taskProgress >= dInfo.eventNum) {
 				//	task.status = "completed";

@@ -1,8 +1,11 @@
 var getData = function(info) {
-	var data = {};
+	var data = [];
 	for(var i in info.induData) {
+
 		if(info.induData[i]) {
-			data[info.induData[i].eventId] = false;
+			data[i]= {
+				eventId: info.induData[i].eventId
+			} ;
 		}	
 	}
 	return data;

@@ -170,6 +170,12 @@ exports.battle3 = function(req, res) {
                 setArray: setArray,
                 mInfo: mInfo
             });
+            console.log("data:", data);
+           /* console.log("setArray:",setArray);
+            utils.send(msg, res , {
+                code: Code.OK,
+                data: data
+            });*/
             redis.command(function(client) {
                 client.multi(setArray).exec(function(err, result) {
                     redis.release(client);
@@ -305,8 +311,9 @@ exports.battle3 = function(req, res) {
 }
 exports.gmTL  = function(req, res) {
     var msg = req.query;
-    var session = req.session;
-    msg.Key = utils.getDbKey(session);
+    var session = req.session,
+    Key = utils.getDbKey(session);
+    msg.Key = Key;
     var uid = session.uid
         , serverId = session.serverId
         , registerType = session.registerType

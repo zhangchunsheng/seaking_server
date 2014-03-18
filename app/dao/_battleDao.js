@@ -52,6 +52,7 @@ exports.battleMonster = function(msg) {
 	}
 	var battleData = Fight.fight(ms,gs);
 	var result = {};
+	var  changeTasks;
 	if(battleData.isWin) {
 		result.win = true;
 		if(jl.money > 0) {
@@ -70,23 +71,25 @@ exports.battleMonster = function(msg) {
 			var mailItem =[];
 			for(var i =0,len = jl.items.length; i < len; i++) {
 	            var itemInfo = jl.items[i].split("|");
-				var item = {
-	                itemId: itemInfo[0],
-	                itemNum: itemInfo[1],
-	                level: 1
-	            };
-				var changeItem = player.packageEntity.addItemWithNoType(player, item);
-				if(changeItem != null) {
-					item.itemNum = itemInfo[1];
-	                result.items.push(item);
-					result.changeItems.push(changeItem.index);
-				}
+	           if( Math.random() * 100 < itemInfo[2] ){
+	           		var item = {
+		                itemId: itemInfo[0],
+		                itemNum: itemInfo[1],
+		                level: 1
+		            };
+					var changeItem = player.packageEntity.addItemWithNoType(player, item);
+					if(changeItem != null) {
+						item.itemNum = itemInfo[1];
+		                result.items.push(item);
+						result.changeItems.push(changeItem.index);
+					}
+	           }
 			}
 			for(var i = 0, len = jl.bossItems.length; i < len; i++ ) {
 				var itemInfo = jl.bossItems[i].split("|");
 	            var item = {
 	                itemId: itemInfo[0],
-	                itemNum: itemInfo[1],
+	                itemNum: itemInfo[1] || 1,
 	                level: 1
 	            };
 				var changeItem = player.packageEntity.addItemWithNoType(player, item); 
@@ -109,15 +112,19 @@ exports.battleMonster = function(msg) {
 		} 
 		//刷新任务
 		var tasks = player.tasks;
-		var changeTasks = [];
+		changeTasks = [];
 		for(var i in tasks.undone) {
 			var task = tasks.undone[i];
-			if(task.type == "killMonster"){
+			var info = dataApi.task.findById(task.taskId);
+			console.log(info);
+			if(info.eventType == "killMonster"){
 				for(var g in gs) {
 					var m = gs[g];
-					if(m.id == task.taskProgress.monsterId){
-						task.taskProgress.number++;
-						if(task.taskProgress.requireNum <= task.taskProgress.number) {
+					console.log(m.id);
+					if(m.id == info.taskGoal){
+						task.taskProgress++;
+						
+						if(info.eventNum <= task.taskProgress) {
 							task.status = "completed";
 						}
 						changeTasks.push(task);
@@ -128,15 +135,32 @@ exports.battleMonster = function(msg) {
 		}
 		if(changeTasks.length > 0) {
 			setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
-			result.events={};
-			result.events.task = changeTasks;
+			data.changeTasks = changeTasks;
 		}
 		
 	} else {
 		result.win = false;
 	}
+	if(result.changeItems && result.changeItems.length > 0) {
+		for(var i in result.changeItems) {
+			for(var it in result.changeItems) {
+				if(result.changeItems[i][it].item&&result.changeItems[i][it].item.itemId){
+					var changeTask = player.tasks.updateItem(result.changeItems[i][it].item.itemId, player.packageEntity);
+		 			if(changeTask && changeTask.length > 0){
+						changeTasks = changeTasks.concat(changeTask);
+					}
+ 				}
+			}
+			
+			
+			//console.log("changeTask:",changeTask);
+			
+			
+		}
+	}
 	data =  battleData.battle;
 	result.tl = tl.value;
 	data.result = result;
+	data.changeTasks = changeTasks?(changeTasks.length>0?changeTasks:null):null;
 	return data;
 }

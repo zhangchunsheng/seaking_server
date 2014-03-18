@@ -107,12 +107,23 @@ exports.trigger = function(req, res) {
         var duplicate = player.duplicate;
         console.log(duplicate);
         var data = {} ;
-        if(duplicate.data[eventId] === undefined) {
+        var has = false;
+        for(var i in duplicate.data){
+            //duplicate.data[eventId] 
+            console.log(duplicate.data[i].eventId);
+            console.log(eventId);
+            if(duplicate.data[i].eventId == eventId){
+                has = true;
+                break;
+            }
+        }
+        if(!has) {
             return utils.send(msg, res, {
                 code: Code.FAIL,
                 err: "当前副本中没有该事件"
             });
         }
+        
         var setArray = [
             ["select", redisConfig.database.SEAKING_REDIS_DB]
         ];
@@ -126,7 +137,13 @@ exports.trigger = function(req, res) {
             });
             if(data.result.win){
                 //副本奖励
-                duplicate.data[eventId] = true;
+                for(var i in duplicate.data) {
+                    if( duplicate.data[i].eventId == eventId && !duplicate.data[i].finished) {
+                        duplicate.data[i].finished = true;
+                        break;
+                    }
+                }
+                //console.log("data:",data);
                 
                
             }else {
@@ -144,14 +161,17 @@ exports.trigger = function(req, res) {
             }catch(e) {
                 return utils.send(msg, res, e);
             }
-            
-            duplicate.data[eventId] = true;
+            for(var i in duplicate.data) {
+                if(duplicate.data[i].eventId == eventId & !duplicate.data[i].finished) {
+                    duplicate.data[i].finished = true;
+                    break;
+                }
+            }
     	}
         var r = true;
-        console.log(duplicate);
         //检验全部是否完成
         for(var i in duplicate.data) {
-            if(!duplicate.data[i]) {
+            if(!duplicate.data[i].finished) {
                 r = false;
                 break;
             }
