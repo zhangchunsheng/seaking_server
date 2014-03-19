@@ -91,7 +91,10 @@ Package.prototype.hasItem = function(_item) {
 			var item = this.items[i];
 			if(num > item.itemNum) {
 				num = num - item.itemNum;
-				flag.push(item);
+				flag.push({
+                    index: i,
+                    item: item
+                });
 			} else {
 				flag.push({
                     index: i,
@@ -116,6 +119,7 @@ Package.prototype.__removeItems = function(items, mode ) {
         var itemId ;
         for(var n = 0, nl = items[i].length ; n < nl; n++) {
             var item = items[i][n];
+            console.log(item);
             var _item = this.removeItem(item.index, item.item.itemNum);
             if(!_item) {
                 return null;

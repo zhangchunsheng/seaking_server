@@ -128,11 +128,11 @@ exports.endTask = function(req, res) {
         }*/
         var changeItems = [],
         changeTasks = [];
-        if(task.type == "getItem") {
+        if(taskInfo.eventType == "getItem") {
             //提交升级了开孔的装备怎么办
             var hasItems = player.packageEntity.hasItem({
                 itemId: taskInfo.taskGoal ,
-                itemNum: task.taskProgress,
+                itemNum: taskInfo.eventNum,
                 level:1
             });
             if(!hasItems){
