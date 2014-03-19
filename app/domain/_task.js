@@ -72,7 +72,11 @@ var getNextDayTime = function() {
 };
 var Tasks = function(opts) {
 	opts = (typeof opts == "string"? JSON.parse(opts) :opts || {});
-	this.undone = opts.undone || [];
+	this.undone = opts.undone || [{
+		taskId: "Task10101",
+		status:"doing",
+		taskProgress:0
+	}];
 	this.dayDone = opts.dayDone || {data:[] ,time: getNextDayTime()};
 	this.done = opts.done || [];
 };

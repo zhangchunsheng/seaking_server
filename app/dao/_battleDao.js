@@ -135,7 +135,7 @@ exports.battleMonster = function(msg) {
 		}
 		if(changeTasks.length > 0) {
 			setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
-			data.changeTasks = changeTasks;
+			//changeTasks = changeTasks;
 		}
 		
 	} else {
@@ -163,10 +163,15 @@ exports.battleMonster = function(msg) {
 			
 			
 		}
+		
 	}
 	data =  battleData.battle;
 	result.tl = tl.value;
 	data.result = result;
-	data.changeTasks = changeTasks?(changeTasks.length>0?changeTasks:null):null;
+	if(changeTasks.length > 0) {
+		setArray.push(["hset", Key, "tasks", JSON.stringify(player.tasks)]);
+		data.changeTasks = changeTasks;
+	}
+	//data.changeTasks = changeTasks?(changeTasks.length>0?changeTasks:null):null;
 	return data;
 }
