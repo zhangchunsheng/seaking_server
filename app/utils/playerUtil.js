@@ -458,11 +458,11 @@ playerUtil.getCharacter = function(opts) {
         money: parseInt(opts.replies.money),
         equipments: JSON.parse(opts.replies.equipments),
         package: JSON.parse(opts.replies.package),
-        skills: {
+        /*skills: {
             currentSkill: JSON.parse(opts.replies.currentSkill),
             activeSkills: JSON.parse(opts.replies.activeSkills),
             passiveSkills: JSON.parse(opts.replies.passiveSkills)
-        },
+        },*/
         currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
         allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
         formation: JSON.parse(opts.replies.formation || playerUtil.initFormation(opts, "string")),

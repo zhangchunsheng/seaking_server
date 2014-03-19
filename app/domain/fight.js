@@ -43,14 +43,14 @@ var fight = function(a,b) {
 	}
 	var times = [];
 	var l = 0;
-	var batte = true;
+	var battle = true;
 	var bresult = -1;
 	var max = 0;
 	var sequence = [];
 	//var last;
-	while(batte) {
+	while(battle) {
 		var r = shot(a,b);
-		r.batte.time = r.time;
+		r.battle.time = r.time;
 		var bdata;//战斗结果
 		var ba ;
 		if(r.type == 0) {
@@ -61,11 +61,11 @@ var fight = function(a,b) {
 			ba.type = 0;	
 		}
 		bdata = oneFight(r, ba);
-		sequence.push(r.batte.id);
+		sequence.push(r.battle.id);
 		//bdata.time = r.time;
 		r.num++;
 		if(r.num>max){max = r.num;if(max == 100){
-			batte = false;
+			battle = false;
 			bresult = 1;
 		}};
 		//last = bdata.data;
@@ -80,7 +80,7 @@ var fight = function(a,b) {
 				}
 				if(alld){
 					bresult = 0;
-					batte = false;
+					battle = false;
 				}
 			} else {
 				for(var i in b){
@@ -90,7 +90,7 @@ var fight = function(a,b) {
 				}
 				if(alld) {
 					bresult = 1;
-					batte = false;
+					battle = false;
 				}
 			}
 		}
@@ -98,17 +98,20 @@ var fight = function(a,b) {
 	//times.push(last);
 	data.battle = times;
 	data.sequence = sequence;
-	return {
+	/*return {
 		battle:data,
 		isWin: bresult
-	};
-
+	};*/
+	return {
+		battle: data, 
+		isWin: true
+	}
 
 }
 //战斗
 var oneFight  = function (r1, r2) {
-	var o1 = r1.batte;
-	var o2 = r2.batte;
+	var o1 = r1.battle;
+	var o2 = r2.battle;
 	/*var data = {
 		attacker: {
 			id: o1.id,
@@ -177,7 +180,7 @@ var oneFight  = function (r1, r2) {
 var shot = function(a,b) {
 	var m = {
 		time: 9999999,
-		batte: {},
+		battle: {},
 		type :0,
 		index: -1
 	};
@@ -188,7 +191,7 @@ var shot = function(a,b) {
 			var t  = ba.time + 100/ ba.speed;
 			if( t < m.time ) {
 				m.time = t;
-				m.batte = ba;
+				m.battle = ba;
 				m.type = 0;
 				(function(i){
 					m.index = i;
@@ -203,7 +206,7 @@ var shot = function(a,b) {
 			var t  = ba.time +100/ ba.speed;
 			if( t < m.time ) {
 				m.time = t;
-				m.batte = ba;
+				m.battle = ba;
 				m.type = 1;
 				(function(i){
 					m.index = i;
@@ -220,7 +223,7 @@ var findAttacked = function(list) {
 		if(list[i] && list[i].hp > 0){		
 			return {
 				index: i,
-				batte: list[i]
+				battle: list[i]
 			};
 		}
 	}

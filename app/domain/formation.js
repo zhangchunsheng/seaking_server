@@ -24,8 +24,9 @@ var Formation = function(opts) {
     this.loginName = opts.loginName;
     this.characterId = opts.characterId;
     this.cId = opts.cId;
-
+   // console.log("formation: ",this.playerId, this.serverId, this.registerType, this.loginName, this.characterId);
     this.formation = opts.formation;
+    //this.formation = this.initFormation;
     this.lastFormation = opts.lastFormation;
 
     this.tacticals = opts.tacticals;//阵法列表

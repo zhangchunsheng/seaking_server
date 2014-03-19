@@ -1701,7 +1701,7 @@ Player.prototype.strip = function() {
         //formation: this.formationEntity.getInfo().formation,
         //lastFormation: this.formationEntity.getInfo().lastFormation,
         //tacticals: this.formationEntity.getInfo().tacticals,
-        formations: this.formationEntity.getAbbreviation(),
+        formations: this.formationEntity.getAbbreviation() || {},
         partners: this.getPartners(),
         miscs: this.miscsEntity.getInfo(),
         soulPackage: this.soulPackageEntity.getInfo(),
