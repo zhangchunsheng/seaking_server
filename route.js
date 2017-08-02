@@ -10,13 +10,11 @@ var routes = require('./routes')
     , role = require('./routes/role')
     , area = require('./routes/area')
     , arena = require('./routes/arena')
-    , battle = require('./routes/battle')
     , casino = require('./routes/casino')
     , equip = require('./routes/equip')
     , formation = require('./routes/formation')
     , friend = require('./routes/friend')
     , guide = require('./routes/guide')
-    , indu = require('./routes/indu')
     , mail = require('./routes/mail')
     , package = require('./routes/package')
     , player = require('./routes/player')
@@ -29,13 +27,16 @@ var routes = require('./routes')
     , resource = require('./routes/resource')
     , shop = require('./routes/shop')
     , skill = require('./routes/skill')
-    , task = require('./routes/task')
+    , task = require('./routes/_task')
     , gm = require('./routes/gm')
     , message = require('./routes/message')
     , authRequired = require('./middlewares/auth_required')
     , astrology = require("./routes/astrology")
     , clifford = require("./routes/clifford")
-    , pet = require("./routes/pet");
+    , pet = require("./routes/pet")
+    , _battle = require("./routes/_battle")
+    , gameEvent = require("./routes/gameEvent")
+    , duplicate = require("./routes/duplicate");
 
 module.exports = function (app) {
     app.get('/', authRequired, routes.index);
@@ -63,8 +64,7 @@ module.exports = function (app) {
     app.get('/arena/getPKData', authRequired, arena.getPKData);
 
     //战斗
-    app.get('/battle/battle', authRequired, battle.battle);
-    app.get('/battle/battle2', battle.battle2);
+    app.get("/battle/battle3", authRequired,_battle.battle3);
 
     //赌场
     app.get('/casino/get', authRequired, casino.get);
@@ -106,7 +106,9 @@ module.exports = function (app) {
     app.get('/guide/get', authRequired, guide.get);
     app.get('/guide/save', authRequired, guide.save);
 
-    app.get('/indu/triggerEvent', authRequired, indu.triggerEvent);
+    app.get("/duplicate/start", authRequired, duplicate.start);
+    app.get("/duplicate/trigger", authRequired, duplicate.trigger);
+    app.get("/duplicate/get", authRequired, duplicate.get);
 
     app.get("/mail/getIn", authRequired, mail.getIn);
     app.get("/mail/getOut", authRequired, mail.getOut);
@@ -134,7 +136,6 @@ module.exports = function (app) {
     app.get("/astrology/synth2", authRequired, astrology.onceMerger2);
     app.get("/astrology/gmRepair", authRequired, astrology.gmRepair);
 
-    app.get("/package/_Set", authRequired, package._Set);
     app.get('/package/_AddItem', authRequired, package.addItem);
     app.get("/package/arrange", authRequired, package.arrange);
     app.get('/package/moveItem', authRequired, package.resetItem);
@@ -142,6 +143,7 @@ module.exports = function (app) {
     app.get('/package/sellItem', authRequired, package.sellItem);
     app.get('/package/userItem', authRequired, package.userItem);
     app.get("/package/unlock", authRequired, package.unlock);
+    
     app.get("/package/gmClean", authRequired, package.clean);
 
     app.get('/player/enterScene', authRequired, player.enterScene);
@@ -187,14 +189,21 @@ module.exports = function (app) {
 
     app.get('/skill/initSkill', authRequired, skill.initSkill);
 
-    app.get('/task/startTask', authRequired, task.startTask);
-    app.get('/task/handOverTask', authRequired, task.handOverTask);
+    //app.get('/task/startTask', authRequired, task.startTask);
+    //app.get('/task/handOverTask', authRequired, task.handOverTask);
+    app.get("/task/startTask", authRequired, task.startTask);
+    app.get("/task/endTask", authRequired, task.endTask);
+    app.get("/task/gmGetTask", authRequired, task.gmGetTask);
+    app.get("/task/gmAddTask", authRequired, task.gmAddTask);
+
+    app.get("/event/trigger", authRequired, gameEvent.trigger);
 
     app.get('/gm/resetTask', gm.resetTask);
     app.get('/gm/updateMoney', gm.updateMoney);
     app.get('/gm/updateGold', gm.updateGold);
     app.get('/gm/updateExp', gm.updateExp);
     app.get("/gm/clearPackage", gm.clearPackage);
+    app.get("/gm/initTasks", gm.initTasks);
 
     app.get('/message/addMessage', authRequired, message.addMessage);
     app.get('/message/getMessage', authRequired, message.getMessage);

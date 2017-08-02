@@ -22,6 +22,7 @@ var Message = function(opts) {
     this.type = opts.type;
     this.num = opts.num;
     this.message = opts.message;
+    this.data = opts.data || {};
     this.date = opts.date;
     this.pushDate = opts.pushDate;
 };
@@ -33,6 +34,7 @@ Message.prototype.strip = function() {
     return {
         type: this.type,
         num: this.num,
-        message: this.message
+        message: this.message,
+        data: this.data
     }
 }

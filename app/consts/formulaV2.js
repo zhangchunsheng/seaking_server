@@ -62,6 +62,9 @@ formula.calDamage = function(attack, defense) {
             defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
             //damage = damage - defense.fight.reduceDamageValue;
         }
+        if(attack.fight.swanWeave > 0) {
+            damage = 0;
+        }
     } else {
         if(defense.fight.reduceDamage > 0) {// 减免伤害
             defense.fight.reduceDamageValue = damage * defense.fight.reduceDamage;
@@ -74,6 +77,10 @@ formula.calDamage = function(attack, defense) {
 
         if(attack.fight.addDamage > 0) {
             damage = damage + damage * attack.fight.addDamage;
+        }
+
+        if(attack.fight.swanWeave > 0) {
+            damage = defense.fightValue.hp * attack.fight.swanWeave;
         }
     }
 
@@ -265,7 +272,8 @@ formula.calculateSunderArmor = function(value, level) {
 }
 
 formula.calculateSpeedLevel = function(speed, level) {
-    return speed * (1 + level * 0.01);
+    //return speed * (1 + level * 0.01);
+    return 1;
 }
 
 formula.calculateSpeed = function(value, level) {

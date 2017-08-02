@@ -20,6 +20,45 @@ var Tasks = function(opts) {
 module.exports = Tasks;
 
 /**
+ * initTask
+ */
+Tasks.prototype.initTask = function() {
+    var date = new Date();
+    this.currentMainTask.initTask({
+        "taskId": "Task10101",
+        "status": 1,
+        "taskRecord": {"itemNum": 0},
+        "startTime": date.getTime(),
+        "finishTime": 0,
+        "handOverTime": 0
+    });
+    this.currentBranchTask.initTask({
+        "taskId": "Task20201",
+        "status": 0,
+        "taskRecord": {"itemNum": 0},
+        "startTime": date.getTime(),
+        "finishTime": 0,
+        "handOverTime": 0
+    });
+    this.currentDayTask.initTask({
+        "taskId": "Task30201",
+        "status": 0,
+        "taskRecord": {"itemNum": 0},
+        "startTime": date.getTime(),
+        "finishTime": 0,
+        "handOverTime": 0
+    });
+    this.currentExerciseTask.initTask({
+        "taskId": "Task40201",
+        "status": 0,
+        "taskRecord": {"itemNum": 0},
+        "startTime": date.getTime(),
+        "finishTime": 0,
+        "handOverTime": 0
+    });
+};
+
+/**
  * getInfo
  */
 Tasks.prototype.getInfo = function() {

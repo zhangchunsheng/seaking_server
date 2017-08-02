@@ -278,6 +278,7 @@ partnerUtil.getPlayer = function(opts) {
         attack: parseInt(opts.replies.attack),
         defense: parseInt(opts.replies.defense),
         focus: parseFloat(opts.replies.focus),
+        sunderArmor: parseFloat(opts.replies.sunderArmor),
         speedLevel: parseInt(opts.replies.speedLevel),
         speed: parseFloat(opts.replies.speed),
         dodge: parseFloat(opts.replies.dodge),
@@ -301,5 +302,53 @@ partnerUtil.getPlayer = function(opts) {
 }
 
 partnerUtil.getPlayerV2 = function(opts) {
+    var hero = dataApi.herosV2.findById(opts.cId);
 
+    var skills = new Skills(opts);
+    var character = {
+        ZX: opts.replies.ZX ? JSON.parse(opts.replies.ZX) : defaultZX(opts.level),
+        id: "S" + opts.serverId + "C" + opts.characterId + "P" + opts.partnerId,
+        characterId: "S" + opts.serverId + "C" + opts.characterId,
+        kindId: opts.cId,
+        cId: opts.cId,
+        userId: opts.replies.userId,
+        serverId: opts.serverId,
+        registerType: opts.registerType,
+        loginName: opts.loginName,
+        nickname: opts.replies.nickname,
+        experience: parseInt(opts.replies.experience),
+        level: opts.level,
+        trait: parseInt(opts.replies.trait || hero.trait),
+        starLevel: parseInt(opts.replies.starLevel || 0),
+        starLevelExperience: parseInt(opts.replies.starLevelExperience || 0),
+        needExp: parseInt(opts.replies.needExp),
+        accumulated_xp: parseInt(opts.replies.accumulated_xp),
+        photo: opts.replies.photo,
+        hp: parseInt(opts.replies.hp),
+        maxHp: parseInt(opts.replies.maxHp),
+        anger: parseInt(opts.replies.anger),
+        attack: parseInt(opts.replies.attack),
+        defense: parseInt(opts.replies.defense),
+        focus: parseFloat(opts.replies.focus),
+        sunderArmor: parseFloat(opts.replies.sunderArmor),
+        speedLevel: parseInt(opts.replies.speedLevel),
+        speed: parseFloat(opts.replies.speed),
+        dodge: parseFloat(opts.replies.dodge),
+        criticalHit: parseFloat(opts.replies.criticalHit),
+        critDamage: parseFloat(opts.replies.critDamage),
+        block: parseFloat(opts.replies.block),
+        counter: parseFloat(opts.replies.counter),
+        equipments: JSON.parse(opts.replies.equipments),
+        /*skills: {
+         currentSkill: opts.replies.currentSkill ? JSON.parse(opts.replies.currentSkill) : {},
+         activeSkills: JSON.parse(opts.replies.activeSkills),
+         passiveSkills: JSON.parse(opts.replies.passiveSkills)
+         },*/
+        currentSkills: JSON.parse(opts.replies.currentSkills || skills.initCurrentSkills("string")),
+        allSkills: JSON.parse(opts.replies.allSkills || skills.initAllSkills("string")).allSkills,
+        buffs: opts.replies.buffs ? JSON.parse(opts.replies.buffs).buffs : buffUtil.getInitBuff(),
+        ghost: JSON.parse(opts.replies.ghost || partnerUtil.initGhost("string")),
+        aptitude: JSON.parse(opts.replies.aptitude || partnerUtil.initAptitude(opts.cId, "string"))
+    };
+    return character;
 }

@@ -14,7 +14,6 @@ var userDao = require('./userDao');
 var equipmentsDao = require('./equipmentsDao');
 var packageDao = require('./packageDao');
 var skillDao = require('./skillDao');
-var taskDao = require('./taskDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');
@@ -306,6 +305,12 @@ playerDao.updatePlayersAttribute = function(mainPlayer, players, field, cb) {
         dbUtil.getCommand(array, key, _field[o], mainPlayer);
         obj[mainPlayer.id][_field[o]] = mainPlayer[_field[o]];
     }
+    if(mainPlayer.hasUpgrade) {
+        for(var o in mainPlayer.upgradeColumns) {
+            dbUtil.getCommand(array, key, mainPlayer.upgradeColumns[o], mainPlayer);
+            obj[mainPlayer.id][mainPlayer.upgradeColumns[o]] = mainPlayer[mainPlayer.upgradeColumns[o]];
+        }
+    }
 
     // 更新partners
     for(var i = 0 ; i < players.length ; i++) {
@@ -315,6 +320,13 @@ playerDao.updatePlayersAttribute = function(mainPlayer, players, field, cb) {
             obj[players[i].id] = {};
             partnerId = utils.getRealPartnerId(players[i].id);
             key = dbUtil.getPartnerKey(serverId, registerType, loginName, characterId, partnerId);
+
+            if(players[i].hasUpgrade) {
+                for(var o in players[i].upgradeColumns) {
+                    dbUtil.getCommand(array, key, players[i].upgradeColumns[o], players[i]);
+                    obj[players[i].id][players[i].upgradeColumns[o]] = players[i][players[i].upgradeColumns[o]];
+                }
+            }
         }
 
         if(Object.prototype.toString.call(field) === '[object Array]') {

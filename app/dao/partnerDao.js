@@ -11,7 +11,6 @@ var User = require('../domain/user');
 var consts = require('../consts/consts');
 var equipmentsDao = require('./equipmentsDao');
 var skillDao = require('./skillDao');
-var taskDao = require('./taskDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');

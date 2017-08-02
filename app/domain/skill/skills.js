@@ -26,6 +26,7 @@ var Skills = function(opts) {
     this.passiveSkills = opts.passiveSkills || [];
 
     this.currentSkills = opts.currentSkills || {};
+    this.currentSkillsEntity = opts.currentSkillsEntity || {};
     this.allSkills = opts.allSkills = [];
 };
 

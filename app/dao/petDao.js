@@ -1,6 +1,7 @@
 var dataApi = require("../utils/dataApi");
 var redis = require('../dao/redis/redis')
     , redisConfig = require('../../shared/config/redis');
+var mailDao = require("./mailDao");
 
 var env = process.env.NODE_ENV || 'development';
 if(redisConfig[env]) {
@@ -298,7 +299,7 @@ exports.upgradeSkill = function(data, player, callback) {
 	if(!checkResult || checkResult.length == 0) {
 		return callback("item not enough");
 	}
-	var changeItems = player.packageEntity._removeItems(checkResult);
+	var changeItems = player.packageEntity._removeItems(checkResult, 0, player);
 	if(!changeItems) {
 		return callback("item remove error");
 	}
@@ -360,34 +361,45 @@ exports.usePet = function(data, player, callback) {
 	var skill0 = petInfo.skill0;
 	var skill0Level = pet.skillLevels[0];
 	console.log(skill0Level);
+	var mail = {
+		"from": "0",
+		"fromName":"系统",
+	    "to": player.playerId,
+	    "title": "你宠物捡回来的东西",
+	    "content": "来自你宠物的礼物！请收好",
+	    "type": 2,
+	    "toName": player.nickName
+	};
 	switch(skill0) {
 		case "PK0101":
 			var item = randomItem(skill0Level);
 			console.log(item);
 			var changeItem = player.packageEntity.addItemWithNoType(player, item);
-			callResult.changeItems = changeItem.index;
+			//callResult.changeItems = changeItem.index;
 			var package = {
 				itemCount :player.packageEntity.itemCount,
 				items: player.packageEntity.items
 			}
-			setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
+			//setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
+			mail.items = [item];
 		break;
 		case "PK0102":
 			var exp = Math.round((Math.random()*500 + 1000)*(pet.level || 1)*(skill0Level));
 			player.experience += exp;
 			//需要判断经验是否可以升级
-			setArray.push(["hset", data.Key, "experience", player.experience]);
-			callResult.experience = player.experience;
+			//setArray.push(["hset", data.Key, "experience", player.experience]);
+			mail.experience = exp;
+			//callResult.experience = player.experience;
 		break;
 		case "PK0103":
 			var money = Math.round((Math.random()*1500 + 500)*(pet.level || 1)*(skill0Level));
 			console.log(money);
 			player.money += money;
-			setArray.push(["hset", data.Key, "money", player.money]);
-			callResult.money = player.money;
+			//setArray.push(["hset", data.Key, "money", player.money]);
+			mail.money = money;
+			//callResult.money = player.money;
 		break;
 		case "PK0104":
-			getName = true;
 			var skill = {
 				level: Math.round(Math.random()*4+1),
 			}
@@ -399,20 +411,23 @@ exports.usePet = function(data, player, callback) {
 					itemCount :player.packageEntity.itemCount,
 					items: player.packageEntity.items
 				}
-				setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
-				callResult.changeItems = changeItem.index; 
+				//setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
+				mail.items = [item];
+				//callResult.changeItems = changeItem.index; 
 			}
 
 			var exp = Math.round((Math.random()*500 + 1000)*(pet.level || 1)*(skill.level)*0.4);
 			player.experience += exp;
 			//需要判断经验是否可以升级
-			setArray.push(["hset", data.Key, "experience", player.experience]);
-			callResult.experience = player.experience;
+			//setArray.push(["hset", data.Key, "experience", player.experience]);
+			//callResult.experience = player.experience;
+			mail.experience = exp;
 
 			var money = Math.round((Math.random()*1500 + 500)*(pet.level || 1)*(skill0Level)*0.4);
 			player.money += money;
-			setArray.push(["hset", data.Key, "money", player.money]);
-			callResult.money = player.money;
+			//setArray.push(["hset", data.Key, "money", player.money]);
+			//callResult.money = player.money;
+			mail.money = money;
 		break;
 	}
 	var skill1 = petInfo.skill1;
@@ -467,45 +482,62 @@ exports.usePet = function(data, player, callback) {
 	callResult.pets = pets.update().pets;
 	setArray.push(["hset", data.Key, "pets", JSON.stringify(pets.db())]);
 	console.log(callResult);
+	mailDao.setTimeSendMail(data, mail, pet.skillCDTime);//pet.skillCDTime
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err, result) {
-			if(!getName){
 				redis.release(client);
 				callback(err, callResult);
-			}else{
-				var getArray = [
-					["select", redisConfig.database.SEAKING_REDIS_DB],
-					["keys", "S*_N*"]
-				]
-				client.multi(getArray).exec(function(err, r) {
-					var names = r[1];
-					var len = names.length;
-					var n = names[Math.round (Math.random()*len)];
-					var index = n.indexOf("_N");
-					var name = n.substring(index+2);
-					callResult.name = name;
-					callback(err, callResult);
-				});
-			}
-			
 		});
 	});
 }
 
 exports.gmAddFeedItem = function(data, player, callback) {
+	var partnerUtil = require("../utils/partnerUtil");
+	character = partnerUtil.getPartner("S1C1P4", player);
+	var val = character.equipmentsEntity;
+	val.weapon.inlay.diamonds[1]=0;
+	var value = {
+        weapon: val.weapon,
+        necklace: val.necklace,
+        helmet: val.helmet,
+        armor: val.armor,
+        belt: val.belt,
+        legguard: val.legguard,
+        amulet: val.amulet,
+        shoes: val.shoes,
+        ring: val.ring
+    };
+    var setArray = [
+		["select", redisConfig.database.SEAKING_REDIS_DB]
+	];
+	setArray.push(["hset", "S1_T1_html5_C1_P4", "equipments", JSON.stringify(value)])
+	redis.command(function(client) {
+		client.multi(setArray).exec(function(err, result) {
+			redis.release(client);
+			callback(null, {
+				changeItems: value
+			});
+		});
+	});
+}
+exports._gmAddFeedItem = function(data, player, callback) {
 	var feedItems = ["D10080221","D10080222","D10080223"]
-	var changeItems = player.packageEntity.addItemWithNoType(player,{
+	/*var changeItems = player.packageEntity.addItemWithNoType(player,{
 		itemId : feedItems[data.index],
 		itemNum : 10,
 		level: 1 
-	});
+	});*/
 	var setArray = [
 		["select", redisConfig.database.SEAKING_REDIS_DB]
 	];
-	var package = {
+	/*var package = {
 		itemCount :player.packageEntity.itemCount,
 		items: player.packageEntity.items
-	};
+	};*/
+	var package = {
+		itemCount: 64,
+		items:{}
+	}
 	setArray.push(["hset", data.Key, "package", JSON.stringify(package)]);
 	redis.command(function(client) {
 		client.multi(setArray).exec(function(err, result) {

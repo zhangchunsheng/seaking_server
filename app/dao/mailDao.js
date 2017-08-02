@@ -106,7 +106,7 @@ mailDao.getAll = function(msg, callback) {
 			});
 		});
 		
-	}else{
+	} else {
 		redis.command(function(client){
 			mailDao.get(client, msg , function(err, r) {
 				if(err){redis.release(client);callback(err, null);return;}
@@ -124,7 +124,7 @@ mailDao.getAll = function(msg, callback) {
 }
 
 var thresholds = 40;
-mailDao.get = function(client, msg, callback, mode){
+mailDao.get = function(client, msg, callback, mode) {
 	console.log("mailId:" , msg.mailId);
 	var box = msg.box;
 	var array = [["select", redisConfig.database.SEAKING_REDIS_DB]];
@@ -318,6 +318,7 @@ mailDao.cleanInBoxMail	 = function(key, callback) {
 	})
 
 }
+
 mailDao.collectItem = function(msg, callback) {
 	var mailId = msg.mailId;
 	var mails = [mailId.substring(0,3), mailId.substring(3)];
@@ -337,6 +338,26 @@ mailDao.collectItem = function(msg, callback) {
 	});
 }
 
+mailDao.setTimeSendMail = function(msg, mail, time,  callback) {
+	setTimeout(function() {
+		mail.time = Date.now();
+		redis.command(function(client) {
+			client.select(redisConfig.database.SEAKING_REDIS_DB, function() {
+				client.incr("mailId", function(err, res) {
+					if(err){redis.release(client);callback(err, null); return;}
+					mail.mailId = "ERW"+res;
+					var array = [];
+					array.push(["lpush",msg.Key+"_"+MailKeyType.MAILIN, getString(mail)]);
+					client.multi(array).exec(function(err, res) {
+						redis.release(client);
+						callback && callback(err,mail);
+					});
+				});
+			});
+		});
+	},time);
+	
+}
 mailDao.collectMail = function(msg, callback) {
 	var mail ={
 		"from": "0",
@@ -413,11 +434,11 @@ mailDao.add = function(msg, callback , mode){
 				return;
 			}else{
 				array.unshift(["select", redisConfig.database.SEAKING_REDIS_DB]);
-				client.multi(array).exec(function(err, res) {
-				if(!mode){
-					redis.release(client);
-				}
-				callback(err, res[1]);
+					client.multi(array).exec(function(err, res) {
+					if(!mode){
+						redis.release(client);
+					}
+					callback(err, res[1]);
 				});
 				//callback(null, array);
 			}

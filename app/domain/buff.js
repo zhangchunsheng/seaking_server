@@ -81,7 +81,8 @@ Buff.prototype.getInfo = function() {
 
 Buff.prototype.baseInfo = function() {
     return {
-        skillId: this.skillId
+        skillId: this.skillId,
+        buffData: this.buffData
     }
 }
 

@@ -10,7 +10,6 @@ var userService = require('../app/services/userService');
 var partnerService = require('../app/services/partnerService');
 var packageService = require('../app/services/packageService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 var areaService = require('../app/services/areaService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
@@ -253,6 +252,7 @@ exports.leaveIndu = function(req, res) {
                 code: consts.MESSAGE.RES,
                 induInfo: induInfo
             };
+            utils.additionalData(data, player);
             utils.send(msg, res, data);
         });
     });

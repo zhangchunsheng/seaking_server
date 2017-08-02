@@ -57,7 +57,11 @@ module.exports = Task;
 
 Task.prototype._initTaskInfo = function() {
     if(typeof this.taskRecord.itemNum != "undefined") {
-        this.taskRecord.itemNum = parseInt(this.taskRecord.itemNum);
+        if(typeof this.taskRecord.itemNum == "string" && this.taskRecord.itemNum.indexOf("|") > 0) {
+
+        } else {
+            this.taskRecord.itemNum = parseInt(this.taskRecord.itemNum);
+        }
     }
     var info = taskData.findById(this.kindId);
     if (!!info) {
@@ -87,27 +91,53 @@ Task.prototype.updateRecord = function(player, type, items) {
         return;
     if(this.status == consts.TaskStatus.CANNOT_ACCEPT)
         return;
+    if(this.status == consts.TaskStatus.NOT_START)
+        return;
     if(type == consts.TaskGoalType.KILL_MONSTER) {// 击杀怪物数量
-        for(var i in items) {
-            if(this.taskGoal.itemId == items[i].id) {
-                if(this.status == consts.TaskStatus.START_TASK) {
-                    this.status = consts.TaskStatus.NOT_COMPLETED;
-                    this.taskRecord = {};
-                    this.taskRecord.itemNum = 0;
+        if(this.taskGoal.itemId.indexOf("|") > 0) {
+            this.updateMultiStatusWithArray(player, items);
+        } else {
+            for(var i in items) {
+                if(this.taskGoal.itemId == items[i].id) {
+                    if(this.status == consts.TaskStatus.START_TASK) {
+                        this.status = consts.TaskStatus.NOT_COMPLETED;
+                        this.taskRecord = {};
+                        this.taskRecord.itemNum = 0;
+                    }
+                    this.taskRecord.itemNum++;
+                    if(this.taskRecord.itemNum == this.taskGoal.itemNum) {
+                        player.completeTask(consts.correspondingCurTaskType[this.type]);
+                    }
+                    player.taskProgress(consts.correspondingCurTaskType[this.type]);
                 }
-                this.taskRecord.itemNum++;
-                if(this.taskRecord.itemNum == this.taskGoal.itemNum) {
-                    player.completeTask(consts.correspondingCurTaskType[this.type]);
-                }
-                player.taskProgress(consts.correspondingCurTaskType[this.type]);
             }
         }
         this.save();
     } else if(type == consts.TaskGoalType.GET_ITEM) {// 获得道具
-        this.updateStatus(player, items.itemNum);
+        if(this.taskGoal.itemId.indexOf("|") > 0) {
+            this.updateMultiStatus(player, items);
+        } else {
+            this.updateStatus(player, items.itemNum);
+        }
     } else if(type == consts.TaskGoalType.PASS_INDU) {// 通关副本
-        if(this.taskGoal.itemId == items.itemId) {
-            this.updateStatus(player, 1);
+        if(typeof items.induId != "undefined") {
+            var induData = items.induData;
+            var flag = true;
+            for(var i = 0 ; i < induData.length ; i++) {
+                if(induData[i] == null)
+                    continue;
+                if(typeof induData[i].died == "undefined" || induData[i].died == false) {
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag) {
+                this.updateStatus(player, 1);
+            }
+        } else {
+            if(this.taskGoal.itemId == items.itemId) {
+                this.updateStatus(player, 1);
+            }
         }
     } else if(type == consts.TaskGoalType.PVP) {// PVP战斗
         if(this.taskGoal.needWin) {
@@ -149,18 +179,30 @@ Task.prototype.pretreatmentTask = function(player) {
     if(this.taskGoal.type == consts.TaskGoalType.DIALOG) {//接取即完成
         this.complete(player);
     } else if(this.taskGoal.type == consts.TaskGoalType.GET_ITEM) {// 判断包裹物品
-        if(player.packageEntity.hasItems(this.taskGoal)) {
+        var items = [];
+        items.push({
+            itemId: this.taskGoal.itemId,
+            itemNum: this.taskGoal.itemNum
+        });
+        var flag = player.packageEntity.checkItems(items);
+        if(flag.length == items.length) {
             this.complete(player);
         }
     } else if(this.taskGoal.type == consts.TaskGoalType.BUY_ITEM) {
-        if(player.packageEntity.hasItems(this.taskGoal)) {
+        var items = [];
+        items.push({
+            itemId: this.taskGoal.itemId,
+            itemNum: this.taskGoal.itemNum
+        });
+        var flag = player.packageEntity.checkItems(items);
+        if(flag.length == items.length) {
             this.complete(player);
         }
     }
 }
 
 /**
- *
+ * updateStatus
  * @param player
  */
 Task.prototype.updateStatus = function(player, itemNum, flag) {
@@ -185,7 +227,99 @@ Task.prototype.updateStatus = function(player, itemNum, flag) {
 };
 
 /**
- *
+ * updateMultiStatus
+ * @param player
+ * @param items
+ */
+Task.prototype.updateMultiStatus = function(player, items) {
+    if(this.status == TaskStatus.COMPLETED)
+        return;
+
+    var itemIds = this.taskGoal.itemId.split("|");
+    var itemNums = this.taskGoal.itemNum.split("|");
+
+    if(this.status == consts.TaskStatus.START_TASK) {
+        var array = [];
+        for(var i = 0 ; i < itemIds.length ; i++) {
+            array.push(0);
+        }
+        this.status = consts.TaskStatus.NOT_COMPLETED;
+        this.taskRecord = {};
+        this.taskRecord.itemNum = array.join("|");
+    }
+
+    var recordItemNums = this.taskRecord.itemNum.split("|");
+    for(var i = 0 ; i < itemIds.length ; i++) {
+        if(itemIds[i] == items.itemId) {
+            recordItemNums[i] = parseInt(recordItemNums[i]) + parseInt(items.itemNum);
+        }
+    }
+    this.taskRecord.itemNum = recordItemNums.join("|");
+
+    var flag = [];
+    for(var i = 0 ; i < itemIds.length ; i++) {
+        if(parseInt(recordItemNums[i]) >= parseInt(itemNums[i])) {
+            flag.push(true);
+        } else {
+            flag = [];
+            break;
+        }
+    }
+    if(flag.length == itemIds.length) {
+        player.completeTask(consts.correspondingCurTaskType[this.type]);
+    }
+    player.taskProgress(consts.correspondingCurTaskType[this.type]);
+};
+
+/**
+ * updateMultiStatusWithArray
+ * @param player
+ * @param items
+ */
+Task.prototype.updateMultiStatusWithArray = function(player, items) {
+    if(this.status == TaskStatus.COMPLETED)
+        return;
+    var itemIds = this.taskGoal.itemId.split("|");
+    var itemNums = this.taskGoal.itemNum.split("|");
+
+    if(this.status == consts.TaskStatus.START_TASK) {
+        var array = [];
+        for(var i = 0 ; i < itemIds.length ; i++) {
+            array.push(0);
+        }
+        this.status = consts.TaskStatus.NOT_COMPLETED;
+        this.taskRecord = {};
+        this.taskRecord.itemNum = array.join("|");
+    }
+    var recordItemNums = this.taskRecord.itemNum.split("|");
+
+    for(var i in items) {
+        for(var j = 0 ; j < itemIds.length ; j++) {
+            if(itemIds[j] == items[i].id) {
+                recordItemNums[j] = parseInt(recordItemNums[j]) + 1;
+            }
+        }
+    }
+
+    this.taskRecord.itemNum = recordItemNums.join("|");
+
+    var flag = [];
+    for(var i = 0 ; i < itemIds.length ; i++) {
+        if(parseInt(recordItemNums[i]) >= parseInt(itemNums[i])) {
+            flag.push(true);
+        } else {
+            flag = [];
+            break;
+        }
+    }
+    if(flag.length == itemIds.length) {
+        player.completeTask(consts.correspondingCurTaskType[this.type]);
+    }
+    player.taskProgress(consts.correspondingCurTaskType[this.type]);
+};
+
+/**
+ * complete
  * @param player
  */
 Task.prototype.complete = function(player) {
@@ -245,8 +379,18 @@ Task.prototype.taskInfo = function() {
         status: this.status,
         startTime: this.startTime,
         finishTime: this.finishTime,
-        taskRecord: this.taskRecord
+        taskRecord: this.taskRecord,
+        taskGoal: this.taskGoal
     }
+};
+
+Task.prototype.initTask = function(task) {
+    this.taskId = task.taskId;
+    this.status = task.status;
+    this.taskRecord = task.taskRecord;
+    this.startTime = task.startTime;
+    this.finishTime = task.finishTime;
+    this.handOverTime = task.handOverTime;
 };
 
 /**

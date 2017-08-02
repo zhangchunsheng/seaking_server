@@ -11,7 +11,6 @@ var skillService = require('../app/services/skillService');
 var partnerService = require('../app/services/partnerService');
 var packageService = require('../app/services/packageService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
 var partnerUtil = require('../app/utils/partnerUtil');
@@ -123,9 +122,6 @@ exports.learnSkill = function(req, res) {
                 },
                 function(callback) {
                     equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {
@@ -206,9 +202,6 @@ exports.upgradeSkill = function(req, res) {
                 },
                 function(callback) {
                     equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {
@@ -381,9 +374,6 @@ exports.learnAndUpgradeSkill = function(req, res) {
                 },
                 function(callback) {
                     equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {
@@ -577,9 +567,6 @@ exports.forgetSkill = function(req, res) {
                 },
                 function(callback) {
                     equipmentsService.update(player.equipmentsEntity.strip(), callback);
-                },
-                function(callback) {
-                    taskService.updateTask(player, player.curTasksEntity.strip(), callback);
                 }
             ], function(err, reply) {
                 data = {

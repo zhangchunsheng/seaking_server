@@ -7,6 +7,7 @@
  */
 var messageDao = require('../dao/messageDao');
 var PushMessage = require('../domain/message/pushMessage');
+var consts = require('../consts/consts');
 
 var messageService = module.exports;
 
@@ -65,16 +66,26 @@ messageService.updatePushMessage = function(array, player, key, message) {
     var date = new Date();
     for(var i = 0 ; i < pushMessage.length ; i++) {
         if(pushMessage[i].type == message.type) {
-            flag = true;
-            if(message.num == 0) {
-                //pushMessage.splice(i, 1);
-                pushMessage[i].num = message.num;
-                pushMessage[i].message = message.message;
-                pushMessage[i].pushDate = date.getTime();
+            if(pushMessage[i].type == consts.pushMessageType.TASK) {
+                if(pushMessage[i].data.taskId == message.data.taskId) {
+                    flag = true;
+                    pushMessage[i].num = message.num;
+                    pushMessage[i].message = message.message;
+                    pushMessage[i].data = message.data;
+                    pushMessage[i].pushDate = date.getTime();
+                }
             } else {
-                pushMessage[i].num = message.num;
-                pushMessage[i].message = message.message;
-                pushMessage[i].pushDate = date.getTime();
+                flag = true;
+                if(message.num == 0) {
+                    //pushMessage.splice(i, 1);
+                    pushMessage[i].num = message.num;
+                    pushMessage[i].message = message.message;
+                    pushMessage[i].pushDate = date.getTime();
+                } else {
+                    pushMessage[i].num = message.num;
+                    pushMessage[i].message = message.message;
+                    pushMessage[i].pushDate = date.getTime();
+                }
             }
         }
     }
@@ -84,6 +95,7 @@ messageService.updatePushMessage = function(array, player, key, message) {
                 type: message.type,
                 message: message.message,
                 num: message.num,
+                data: message.data || {},
                 date: date.getTime(),
                 pushDate: date.getTime()
             });

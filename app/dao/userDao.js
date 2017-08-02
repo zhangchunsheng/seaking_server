@@ -15,7 +15,6 @@ var equipmentsDao = require('./equipmentsDao');
 var packageDao = require('./packageDao');
 var packageUtil = require('../utils/packageUtil');
 var induDao = require('./induDao');
-var taskDao = require('./taskDao');
 var partnerDao = require('./partnerDao');
 var playerDao = require('./playerDao');
 var friendDao = require('./friendDao');
@@ -492,6 +491,7 @@ userDao.getCharacterAllInfo = function (serverId, registerType, loginName, chara
  * @param loginName
  * @param characterId
  */
+ /*
 function createEPTInfo(character, serverId, registerType, loginName, characterId) {
     var equipments = equipmentsDao.createNewEquipment(character.equipments, serverId, registerType, loginName, characterId, character);
     var package = packageDao.createNewPackage(character.package, serverId, registerType, loginName, characterId, character);
@@ -505,7 +505,7 @@ function createEPTInfo(character, serverId, registerType, loginName, characterId
     character.equipmentsEntity = equipments;
     character.curTasksEntity = curTasks || {};
 }
-
+*/
 /**
  * Get all the information of a character, include equipments, package, skills, tasks.
  * @param {String} characterId
@@ -571,8 +571,7 @@ userDao.getCharacterInfo = function (serverId, registerType, loginName, cb) {
                     function(err, results) {
 
                         var partners = results[0];
-                        character.partners = partners;
-                            
+                        character.partners = partners; 
                         var player = playerUtil.getPlayer(character);
                         var fKey = dbUtil.getFriendKey(serverId, registerType, loginName, characterId);
                         userDao.logLogin(player, serverId, registerType, loginName, function(err, reply) {
@@ -865,10 +864,10 @@ userDao.enterIndu = function(serverId, registerType, loginName, induId, cb) {
                     client.hget(key, "currentIndu", function(err, reply) {
                         var currentIndu = JSON.parse(reply);
 
-                        if(currentIndu.induId == induId) {
+                        /*if(currentIndu.induId == induId) {
                             redis.release(client);
                             utils.invokeCallback(cb, null, currentIndu);
-                        } else {
+                        } else {*/
                             var induData = dataApi.instancedungeon.findById(induId);
                             if(induData) {
                                 var date = new Date();
@@ -886,7 +885,7 @@ userDao.enterIndu = function(serverId, registerType, loginName, induId, cb) {
                                     errCode: 101
                                 });
                             }
-                        }
+                        //}
                     });
                 } else {
                     redis.release(client);

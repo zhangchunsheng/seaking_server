@@ -17,6 +17,7 @@ var formulaV2 = require('../../consts/formulaV2');
 var EntityType = require('../../consts/consts').EntityType;
 var fightReward = require('./fightReward');
 var SkillV2 = require('../skill/skillV2');
+var Skills = require('../skill/skills');
 var consts = require('../../consts/consts');
 var constsV2 = require('../../consts/constsV2');
 
@@ -64,15 +65,20 @@ Fight.prototype.fight = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
+        owners[i].initAwakeSkill(this.owner_formation, this.monster_formation, owners[i], owners, this.ownerTeam, this.monsterTeam);
         owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
+        monsters[i].initAwakeSkill(this.monster_formation, this.owner_formation, monsters[i], monsters, this.monsterTeam, this.ownerTeam);
         monsters[i].updateFightValueV2();
     }
 
     // 计算最大速度
     var max_speed = 0;
     for(var i in owners) {
+        if(i == 0) {
+            owners[i].fightValue.speedLevel = 2;
+        }
         max_speed = Math.max(max_speed, owners[i].fightValue.speedLevel);
     }
     for(var i in monsters) {
@@ -113,7 +119,7 @@ Fight.prototype.fight = function(cb) {
             this.owner_players.push(this.players[i]);
         }
     }
-    //fightReward.reward(this.mainPlayer, this.owner_players, monsters, this.isWin, function(err, reply) {
+    fightReward.reward(this.mainPlayer, this.owner_players, monsters, this.isWin, function(err, reply) {
         var battleResult = {};
         battleResult.isWin = that.isWin;
         //battleResult.getItems = reply;
@@ -128,7 +134,7 @@ Fight.prototype.fight = function(cb) {
         };
 
         utils.invokeCallback(cb, null, result);
-    //});
+    });
 };
 
 /**
@@ -154,9 +160,11 @@ Fight.prototype.pk = function(cb) {
 
     // 更新角色数据
     for(var i in owners) {
+        owners[i].initAwakeSkill(this.owner_formation, this.monster_formation, owners[i], owners, this.ownerTeam, this.monsterTeam);
         owners[i].updateFightValueV2();
     }
     for(var i in monsters) {
+        monsters[i].initAwakeSkill(this.monster_formation, this.owner_formation, monsters[i], monsters, this.monsterTeam, this.ownerTeam);
         monsters[i].updateFightValueV2();
     }
 
@@ -471,12 +479,12 @@ Fight.prototype.attack = function(battleData, players, index) {
 
                     fightUtil.reduceHp(attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
                     fightUtil.updateDefenseData(defense, defenseData);
-                    fightUtil.checkDied(defense, defenseData);
+                    fightUtil.checkDied(consts.characterFightType.DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
                     defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DEFENSE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
 
                     if(defense.died) {
-                        defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DIE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
+                        //defense.useSkillBuffs(consts.characterFightType.DEFENSE, consts.buffCategory.AFTER_DIE, attack_formation, defense_formation, attack, defense, attacks, defences, attackFightTeam, defenseFightTeam, data, attackData, defenseData);
                     }
 
                     // 守方
@@ -674,6 +682,7 @@ Fight.createCharacter = function(opts) {
 Fight.createMonster = function(opts) {
     var monsters = dataApi.monster.data;
     var monster = monsters[opts.id];
+    var skills = new Skills({});
     var data = {
         id: opts.id,
         kindId: opts.id,
@@ -692,14 +701,16 @@ Fight.createMonster = function(opts) {
         attack: monster.attack,
         defense: monster.defense,
         focus: monster.focus,
-        speedLevel: monster.speed,
+        sunderArmor: monster.focus,
+        speedLevel: 1,
         speed: monster.speed,
         dodge: monster.dodge,
         criticalHit: 1,
         critDamage: monster.critDamage,
         block: monster.block,
         counter: monster.counter,
-        level: monster.level
+        level: monster.level,
+        skills: skills
     };
     data.fightValue = {};
     data.fightValue.attack = Math.floor(data.attack);
@@ -708,6 +719,7 @@ Fight.createMonster = function(opts) {
     data.fightValue.hp = data.hp;
     data.fightValue.maxHp = data.hp;
     data.fightValue.focus = data.focus;
+    data.fightValue.sunderArmor = data.sunderArmor;
     data.fightValue.criticalHit = data.criticalHit;
     data.fightValue.critDamage = data.critDamage;
     data.fightValue.dodge = data.dodge;
@@ -740,21 +752,25 @@ Fight.createTestPlayer = function(opts) {
     var heros = dataApi.herosV2.data;
     var hero = heros[opts.id];
 
-    var skills = {};
+    var skills = {
+        currentSkillsEntity: {}
+    };
     var skillId = "";
     for(var i in opts.skills) {
         //skillId = dataApi.skillsV2.findByMId(opts.skills[i]).skillId;
         skillId = opts.skills[i];
-        skills[i] = new SkillV2({
+        skills.currentSkillsEntity[i] = new SkillV2({
             id: opts.skills[i],
             skillId: skillId,
             level: 1
         });
     }
+    var skillsEntity = new Skills(skills);
 
     var data = {
         id: heroId,
         kindId: heroId,
+        cId: heroId,
         formationId: formationId,
         type: type,
         hp: formulaV2.calculateHp(hero.hp, hero.addHp, level),
@@ -782,8 +798,9 @@ Fight.createTestPlayer = function(opts) {
         counter: formulaV2.calculateCounter(hero.counter, level),
         level: level,
         ghost: {level:0},
+        ghostNum: 1,
         aptitude: {1:{"level":0,"count":50}},
-        skills: skills
+        skills: skillsEntity
     };
     data.fightValue = {};
     data.fightValue.attack = Math.floor(data.attack);
@@ -870,6 +887,7 @@ Fight.createTestMonster = function(opts) {
         attack: monster.attack,
         defense: monster.defense,
         focus: monster.focus,
+        sunderArmor: monster.focus,
         speedLevel: monster.speed,
         speed: monster.speed,
         dodge: monster.dodge,
@@ -886,6 +904,7 @@ Fight.createTestMonster = function(opts) {
     data.fightValue.hp = data.hp;
     data.fightValue.maxHp = data.hp;
     data.fightValue.focus = data.focus;
+    data.fightValue.sunderArmor = data.sunderArmor;
     data.fightValue.criticalHit = data.criticalHit;
     data.fightValue.critDamage = data.critDamage;
     data.fightValue.dodge = data.dodge;

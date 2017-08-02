@@ -56,13 +56,13 @@ packageDao.update = function(val, cb) {
         client.multi().select(redisConfig.database.SEAKING_REDIS_DB, function() {
 
         }).hset(key, "package", JSON.stringify(value), function(err, reply) {
-                if(typeof cb == "function")
-                    cb(!!err);
-                redis.release(client);
-            })
-            .exec(function (err, replies) {
-                console.log(replies);
-            });
+            if(typeof cb == "function")
+                cb(!!err);
+            redis.release(client);
+        })
+        .exec(function (err, replies) {
+            console.log(replies);
+        });
     });
 };
 

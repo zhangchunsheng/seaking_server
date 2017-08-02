@@ -12,7 +12,6 @@ var Player = require('../domain/entity/player');
 var Tasks = require('../domain/tasks');
 var User = require('../domain/user');
 var consts = require('../consts/consts');
-var taskDao = require('./taskDao');
 var async = require('async');
 var utils = require('../utils/utils');
 var dbUtil = require('../utils/dbUtil');

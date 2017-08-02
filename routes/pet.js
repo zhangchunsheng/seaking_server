@@ -1,62 +1,338 @@
+var casinoService = require('../app/services/casinoService');
 var userService = require('../app/services/userService');
-
-var packageService = require('../app/services/packageService');
-var userService = require('../app/services/userService');
-var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
-var async = require("async");
 var Code = require('../shared/code');
 var utils = require('../app/utils/utils');
-var redis =  require('../app/dao/redis/redis');
+var dataApi = require('../app/utils/dataApi');
+var petDao = require("../app/dao/petDao");
 
-var pet = {};
 
-pet.gmUpgrade = function(req, res) {
+exports.gmUpgrade = function(req, res) {
+	var msg = req.query;
+	var session = req.session;
+	msg.Key = utils.getDbKey(session);
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+	userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+		petDao.gmUpgrade(msg, player, function(err, result) {
+			if(err) {
+				return utils.send(msg , res,  {code:Code.FAIL,err:err});
+			}
+			utils.send(msg, res, {code:Code.OK, data:result});
+		});	
+	});
 }
 
-pet.gmAdd = function(req, res) {
+exports.gmAddUpgradeItem  = function(req, res) {
+	var msg = req.query, session = req.session;
+	var session = req.session;
+	msg.Key = utils.getDbKey(session);
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+	userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+		petDao.gmAddUpgradeItem(msg, player, function(err, result) {
+			if(err) {return utils.send(msg,  res, {code: Code.FAIL, err: err});}
+			utils.send(msg, res, {code: Code.OK, data: result});
+		});
+	});
 }
 
-pet.gmAddUpgradeItem = function(req, res) {
+exports.gmAddUpgradeItem2  = function(req, res) {
+    var msg = req.query, session = req.session;
+    var session = req.session;
+    msg.Key = utils.getDbKey(session);
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        petDao.gmAddUpgradeItem2(msg, player, function(err, result) {
+            if(err) {return utils.send(msg,  res, {code: Code.FAIL, err: err});}
+            utils.send(msg, res, {code: Code.OK, data: result});
+        });
+    });
 }
 
-pet.gmAddUpgradeItem2 = function(req, res) {
+exports.gmAdd = function(req, res) {
+	var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+
+    msg.Key = utils.getDbKey(session);
+	userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+		petDao.gmAdd(msg, player, function(err, result) {
+			if(err) {
+				return utils.send(msg, res, {code: Code.FAIL, err: err});
+			}
+			utils.send(msg, res, {code: Code.OK, data:result});
+		});
+	});
 }
 
-pet.gmAddFeedItem = function(req, res) {
+exports.setName = function(req, res) {
+	var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    msg.Key = utils.getDbKey(session);
+    if(!msg.name) {
+    	return utils.send(msg, res, {code:Code.FAIL ,err: "no name"});
+    }
+    if(!msg.index) {
+    	return utils.send(msg, res, {code: Code.FAIL, err: "no index"})
+    }
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+		petDao.setName(msg, player, function(err, result) {
+			if(err) {
+				return utils.send(msg, res, {code: Code.FAIL, err: err});
+			}
+			utils.send(msg, res, {code: Code.OK, data:result});
+		});
+	});
 }
 
-pet.setName = function(req, res) {
+exports.upgradeSkill = function(req, res) {
+	var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    msg.Key = utils.getDbKey(session);
+    if(!msg.index) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no index"})
+    }
+    if(!msg.skillIndex) {
+    	return utils.send(msg, res, {code:Code.FAIL ,err: "no skillIndex"});
+    }
+	
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+		petDao.upgradeSkill(msg, player, function(err, result) {
+			if(err) {
+				return utils.send(msg, res, {code: Code.FAIL, err: err});
+			}
+			utils.send(msg, res, {code: Code.OK, data:result});
+		});
+	});
 }
 
-pet.upgradeSkill = function(req, res) {
+exports.play = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    msg.Key = utils.getDbKey(session);
+    if(!msg.index) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no index"})
+    }
+    if(!msg.playerId) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no playerId"})
+    }
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        petDao.play(msg, player, function(err, result) {
+            if(err) {
+                return utils.send(msg, res, {code: Code.FAIL, err: err});
+            }
+            console.log(result);
+            utils.send(msg, res, {code: Code.OK, data:result});
+        });
+    });
+}
+exports.gmAddFeedItem = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    msg.Key = utils.getDbKey(session);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        petDao.gmAddFeedItem(msg, player, function(err, result) {
+            if(err) {
+                return utils.send(msg, res, {code: Code.FAIL, err: err});
+            }
+            utils.send(msg, res, {code: Code.OK, data:result});
+        });
+    });
+}
+exports.feed = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    msg.Key = utils.getDbKey(session);
+    if(!msg.index) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no index"})
+    }
+    if(!msg.itemId) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no itemId"});
+    }
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        petDao.feed(msg, player, function(err, result) {
+            if(err) {
+                return utils.send(msg, res, {code: Code.FAIL, err: err});
+            }
+            utils.send(msg, res, {code: Code.OK, data:result});
+        });
+    });
 }
 
-pet.play = function(req, res) {
+exports.usePet = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    msg.Key = utils.getDbKey(session);
+    if(!msg.index) {
+        return utils.send(msg, res, {code: Code.FAIL, err: "no index"})
+    }
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        petDao.usePet(msg, player, function(err, result) {
+            if(err) {
+                return utils.send(msg, res, {code: Code.FAIL, err: err});
+            }
+            utils.send(msg, res, {code: Code.OK, data:result});
+        });
+    });
 }
 
-pet.feed = function(req, res) {
+exports.release = function(req, res) {
+	var msg = req.query;
+    var session = req.session;
 
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
+
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    msg.Key = utils.getDbKey(session);
+	if(!msg.index) {
+    	return utils.send(msg, res, {code: Code.FAIL, err: "no index"})
+    }
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+		petDao.release(msg, player, function(err, result) {
+			if(err) {
+				return utils.send(msg, res, {code: Code.FAIL, err: err});
+			}
+			utils.send(msg, res, {code: Code.OK, data:result});
+		});
+	});
 }
+exports.update = function(req, res) {
+    var msg = req.query;
+    var session = req.session;
 
-pet.usePet = function(req, res) {
+    var uid = session.uid
+        , serverId = session.serverId
+        , registerType = session.registerType
+        , loginName = session.loginName;
 
+    var playerId = session.playerId;
+    var characterId = utils.getRealCharacterId(playerId);
+
+    var itemId = msg.itemId;
+    var itemNum = msg.itemNum;
+    var itemLevel = msg.itemLevel;
+    msg.Key = utils.getDbKey(session);
+    userService.getCharacterAllInfo(serverId, registerType, loginName, characterId, function(err, player) {
+        petDao.update(msg, player, function(err, result) {
+            if(err) {
+                return utils.send(msg, res, {code: Code.FAIL, err: err});
+            }
+            utils.send(msg, res, {code: Code.OK, data:result});
+        });
+    });
 }
-
-pet.release = function(req, res) {
-
-}
-
-pet.update = function(req, res) {
-
-}
-
-module.exports = pet;

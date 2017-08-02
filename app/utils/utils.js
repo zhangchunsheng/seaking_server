@@ -351,6 +351,17 @@ utils.send = function(msg, res, data) {
     }
 }
 
+/**
+ * additionalData
+ * @param data
+ * @param character
+ */
+utils.additionalData = function(data, character) {
+    if(character.pushOnceMessage.length > 0) {
+        data.pushMessage = character.pushOnceMessage;
+    }
+}
+
 utils.log = function(msg) {
     console.log(msg);
 }
@@ -490,4 +501,15 @@ utils.getPageInfo = function(pageInfo, entities) {
         currentPage = allPage;
     }
     return pageInfo;
+}
+
+utils.getPushMessage = function(type, message, data, num) {
+    var pushMessage = {
+        type: type,
+        message: message,
+        data: data,
+        num: num,
+        date: new Date().getTime()
+    };
+    return pushMessage;
 }

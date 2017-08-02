@@ -7,7 +7,6 @@ var Code = require('../shared/code');
 var packageService = require('../app/services/packageService');
 var userService = require('../app/services/userService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 //关于升级：
 //升级修改数据库中  星蕴的开启的个数   
 var getCi = function(astrology) {
@@ -186,12 +185,17 @@ astrology.pickUpAll = function(req, res) {
 	    astrologyDao.pickUpAll(Key, function(err, r) {
 	    	if(err){return utils.send(msg, res, {code: Code.FAIL, err:err});}
 	    	var ci = getCi(r.astrology);
+            if(r.isFull){
+                utils.send(msg, res, {
+                    code: Code.FAIL,
+                    err: "背包满了"
+                });return;
+            }
             utils.send(msg, res, {
 	    		code: Code.OK,
 	    		data: {
                     ci: ci,
-                    bi: r.astrology.items,
-                    f: r.isFull
+                    bi: r.astrology.items
                 }
 	    	});
 	    });

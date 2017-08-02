@@ -10,7 +10,6 @@ var userService = require('../../app/services/userService');
 var partnerService = require('../../app/services/partnerService');
 var packageService = require('../../app/services/packageService');
 var equipmentsService = require('../../app/services/equipmentsService');
-var taskService = require('../../app/services/taskService');
 var redisService = require('../../app/services/redisService');
 var Code = require('../../shared/code');
 var utils = require('../../app/utils/utils');
@@ -173,9 +172,6 @@ exports.inlay = function(req, res) {
             },
             function(callback) {
                 equipmentsService.update(character.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
             data = {
@@ -311,9 +307,6 @@ exports.unInlay = function(req, res) {
             },
             function(callback) {
                 equipmentsService.update(character.equipmentsEntity.strip(), callback);
-            },
-            function(callback) {
-                taskService.updateTask(player, player.curTasksEntity.strip(), callback);
             }
         ], function(err, reply) {
             data = {

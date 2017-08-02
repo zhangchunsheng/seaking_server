@@ -19,7 +19,6 @@ var Character = require('./character');
 var userDao = require('../../dao/userDao');
 var playerDao = require('../../dao/playerDao');
 var skillDao = require('../../dao/skillDao');
-var taskDao = require('../../dao/taskDao');
 var utils = require('../../utils/utils');
 var dbUtil = require('../../utils/dbUtil');
 var ucenter = require('../../lib/ucenter/ucenter');
@@ -37,8 +36,12 @@ var skillUtil = require('../../utils/skillUtil');
  */
 var Player = function(opts) {
     Character.call(this, opts);
+    this.onces = opts.onces;
+    this.duplicate = opts.duplicate;
     this.pets = opts.pets;
     this.ZX = opts.ZX;
+    this.tl = opts.tl;
+    this.tasks = opts.tasks;
     this.id = opts.id;
     this.type = EntityType.PLAYER;
     this.userId = opts.userId;
@@ -131,12 +134,12 @@ Player.prototype.addExperience = function(exp) {
 };
 
 //Add experience
-Player.prototype.addExp = function(exp) {
+/*Player.prototype.addExp = function(exp) {
     this.experience += parseInt(exp);
     if (this.experience >= this.nextLevelExp) {
         this.upgrade();
     }
-};
+};*/
 
 /**
  * 更新血量
@@ -156,18 +159,19 @@ Player.prototype.updateHP = function(cb) {
 Player.prototype.upgrade = function() {
     var upgradeColumn = {};
     this.hasUpgrade = true;
-    while (this.experience >= this.nextLevelExp) {
-        upgradeColumn = this._upgrade();
+    while(this.experience >= this.nextLevelExp) {
+        upgradeColumn = this.calculateUpgradeV2();
     }
+    this.upgradeColumns = upgradeColumn;
     var that = this;
-    userDao.upgrade(this, upgradeColumn, function(err, reply) {
+    //userDao.upgrade(this, upgradeColumn, function(err, reply) {
         //that.updateAttribute();
         that.emit('upgrade');//pushMessage
-    });
+    //});
 };
 
 //Upgrade, update player's state
-Player.prototype._upgrade = function() {
+Player.prototype.calculateUpgrade = function() {
     this.level += 1;
     var level = this.level;
     var hero = dataApi.heros.findById(this.cId);
@@ -193,7 +197,7 @@ Player.prototype._upgrade = function() {
     return upgradeColumn;
 };
 
-Player.prototype._upgradeV2 = function() {
+Player.prototype.calculateUpgradeV2 = function() {
     this.level += 1;
     var level = this.level;
     var hero = dataApi.herosV2.findById(this.cId);
@@ -832,7 +836,7 @@ Player.prototype.calculateBuff = function() {
     this.fight.addAttackValue = 0;
     this.fight.addSunderArmor = 0;
     this.fight.addSunderArmorValue = 0;
-    this.fight.addHp = 0;
+    this.fight.addHp = 0;//吸血
     this.fight.addHpValue = 0;
     this.fight.promoteHp = 0;
     this.fight.promoteHpValue = 0;
@@ -840,6 +844,8 @@ Player.prototype.calculateBuff = function() {
     this.fight.addDodgeValue = 0;
     this.fight.ice = false;
     this.fight.silence = false;
+    this.fight.stasis = false;
+    this.fight.swanWeave = false;
 }
 
 /**
@@ -1032,6 +1038,7 @@ Player.prototype.changeEquipDiamonds = function(pkgType, player, type, packageDi
 
 Player.prototype.buyItem = function(type, item, costMoney) {
     var packageChange = this.packageEntity.addItemWithNoType(this, item);
+    var changeTasks = packageChange.changeTasks;
     if(!packageChange) {
         return null;
     }else{
@@ -1040,11 +1047,11 @@ Player.prototype.buyItem = function(type, item, costMoney) {
 
     if(packageChange.length != 0) {
         this.money = this.money - costMoney;
-        this.save();
     }
     return {
         money: this.money,
-        packageChange: packageChange
+        packageChange: packageChange,
+        changeTasks: changeTasks
     }
 }
 
@@ -1514,12 +1521,11 @@ Player.prototype.updatePlayerAttribute = function(players, cb) {
 }
 
 /**
- * Start task.
- * Start task after accept a task, and update the task' state, such as taskState, taskData, startTime
- *
- * @param {Task} task, new task to be implement
- * @api public
+ * startTask
+ * @param type
+ * @param task
  */
+ /*
 Player.prototype.startTask = function(type, task) {
     task.status = TaskStatus.START_TASK;
     task.taskRecord = {
@@ -1533,25 +1539,32 @@ Player.prototype.startTask = function(type, task) {
 
 Player.prototype.getNextTask = function(type, task) {
     var nextTaskId = task.nextTaskId;
+    var status = consts.TaskStatus.NOT_START;
     if(type == consts.curTaskType.CURRENT_DAY_TASK) {
         if(this.curTasks[type].length > 1) {
             this.curTasks[type].shift();
             nextTaskId = this.curTasks[type][0].taskId;
         }
     }
+    if(type == consts.curTaskType.CURRENT_MAIN_TASK) {
+        status = consts.TaskStatus.START_TASK;
+    }
     if(nextTaskId == null || nextTaskId == 0) {
         return false;
     }
     var date = new Date();
-    var task = {
+    var nextTask = {
         "taskId": nextTaskId,
-        "status": 0,
+        "status": status,
         "taskRecord": {"itemNum": 0},
         "startTime": date.getTime()
     };
     var characterId = utils.getRealCharacterId(this.id);
-    task = taskDao.createNewTask(task, this.sid, this.registerType, this.loginName, characterId, this);
-    this.curTasksEntity[type] = task;
+    nextTask = taskDao.createNewTask(nextTask, this.sid, this.registerType, this.loginName, characterId, this.curTasks, this);
+    this.curTasksEntity[type] = nextTask;
+    if(type == consts.curTaskType.CURRENT_MAIN_TASK) {
+        this.startTask(type, nextTask);
+    }
     return true;
 }
 
@@ -1567,7 +1580,7 @@ Player.prototype.updateTaskRecord = function(TaskGoalType, items) {
             task.updateRecord(this, TaskGoalType, items);
         }
     }
-}
+}*/
 
 /**
  *
@@ -1596,7 +1609,7 @@ Player.prototype.handOverTask = function(taskIds) {
         task.save();
         this.logTaskData(type);
         if(this.getNextTask(type, task)) {
-            nextTasks[type] = task.getInfo();
+            nextTasks[type] = this.curTasksEntity[type].getInfo();
         }
     }
     return nextTasks;
@@ -1621,6 +1634,11 @@ Player.prototype.completeTask = function(type) {
 
 Player.prototype.taskProgress = function(type) {
     var task = this.curTasksEntity[type];
+    var message = utils.getPushMessage(consts.pushMessageType.TASK, "", task.taskInfo(), task.taskRecord);
+    this.pushOnceMessage.push(message);
+    if(task.status == TaskStatus.COMPLETED) {
+        this.pushMessageEntity.addPushMessage(message);
+    }
     this.emit('taskProgress', task.taskInfo());//pushMessage
 };
 
@@ -1632,8 +1650,10 @@ Player.prototype.logTaskData = function(type) {
 
 //Convert player' state to json and return
 Player.prototype.strip = function() {
+    this.tasks.update();
     //pets  修改返回数据
     return {
+        duplicate: this.duplicate,
         pets: this.pets.strip(),
         ZX: this.ZX,
         id: this.id,
@@ -1658,7 +1678,7 @@ Player.prototype.strip = function() {
         speedLevel: this.speedLevel,
         speed: this.speed,
         currentScene: this.currentScene,
-        currentIndu: this.currentIndu,
+        //currentIndu: this.currentIndu,
         focus: this.focus,
         sunderArmor: this.sunderArmor,
         dodge: this.dodge,
@@ -1670,7 +1690,8 @@ Player.prototype.strip = function() {
         critDamage: this.critDamage,
         block: this.block,//格挡
         counter: this.counter,//反击
-        curTasks: this.curTasksEntity.getInfo(),
+       // curTasks: this.curTasksEntity.getInfo(),
+        tasks: this.tasks.strip(this.level),
         equipments: this.equipmentsEntity.getInfo(),
         package: this.packageEntity.getInfo(),
         //skills: this.skills,
@@ -1680,7 +1701,7 @@ Player.prototype.strip = function() {
         //formation: this.formationEntity.getInfo().formation,
         //lastFormation: this.formationEntity.getInfo().lastFormation,
         //tacticals: this.formationEntity.getInfo().tacticals,
-        formations: this.formationEntity.getAbbreviation(),
+        formations: this.formationEntity.getAbbreviation() || {},
         partners: this.getPartners(),
         miscs: this.miscsEntity.getInfo(),
         soulPackage: this.soulPackageEntity.getInfo(),
@@ -1706,6 +1727,7 @@ Player.prototype.getUserInfo = function() {
 };
 
 Player.prototype.updateColumn = function() {
+    this.pushMessage = this.pushMessageEntity.pushMessage;
     return {
         id: this.id,
         serverId: this.sid,
@@ -1716,15 +1738,34 @@ Player.prototype.updateColumn = function() {
             money: this.money,
             gameCurrency: this.gameCurrency,
             hp: this.hp,
-            buffs: this.buffs
+            buffs: this.buffs,
+            pushMessage: this.pushMessage
         }
     };
 };
 
-Player.prototype.addMoney = function(money) {
+Player.prototype.addMoney = function(money, Key, setArray, data) {
     this.money += parseInt(money);
+    if(Key && setArray) {
+        setArray.push(["hset", Key, "money", this.money]);
+        data.money = this.money;
+    }
 }
 
+Player.prototype.addExp = function(exp, Key, setArray, data) {
+    this.experience += parseInt(exp);
+    var heroInfo = {};
+    if(this.experience >= heroInfo.exp) {
+        this.experience -= heroInfo.exp;
+        this.level ++;
+        setArray.push(["hset", Key, "level", this.level]);
+    }
+    if(Key && setArray) {
+        setArray.push(["hset", Key, "experience", this.experience]);
+        data.experience = this.experience;
+    }
+
+}
 /**
  * Get the whole information of player, contains tasks, package, equipments information.
  *

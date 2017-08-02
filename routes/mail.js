@@ -4,7 +4,6 @@ var userService = require('../app/services/userService');
 var packageService = require('../app/services/packageService');
 var userService = require('../app/services/userService');
 var equipmentsService = require('../app/services/equipmentsService');
-var taskService = require('../app/services/taskService');
 var async = require("async");
 var MailKeyType = require('../app/consts/consts').MailKeyType;
 var Code = require('../shared/code');
@@ -131,6 +130,7 @@ mail.collectItem = function(req, res) {
             if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
             var changeItems = [];
             var rdata = r.mail;
+            var data = {};
             for(var i in rdata.items){
                 var item = rdata.items[i];
                 var change = player.packageEntity.addItemWithNoType(player, item);
@@ -139,15 +139,33 @@ mail.collectItem = function(req, res) {
                 }
                 changeItems.push(change);
             }
+            data.changeItems = changeItems;
+            data.changeMail = r.mail;
             var array = [];
+            if(rdata.money) {
+                player.money += rdata.money;
+                array.push(["hset", Key, "money", player.money]);
+                data.money = player.money;
+            } 
+            if(rdata.experience) {
+                player.experience += rdata.experience;
+                array.push(["hset", Key, "experience", player.experience]);
+                data.experience = player.experience;
+            }
             array.push(["hset",Key,"package", JSON.stringify(player.packageEntity.getInfo())]);
+            //领取事件
+
             array.push(r.sql);
             console.log(array);
             redis.command(function(client) {
                 client.multi(array).exec(function(err){
                     redis.release(client);
-                    if(err){utils.send(msg, res, {code: Code.FAIL, err: err});return;}
-                    utils.send(msg, res, {code: Code.OK, data: {changeItems: changeItems, changeMail: r.mail}});
+                    if(err) {
+                        utils.send(msg, res, {code: Code.FAIL, err: err});
+                        return;
+                    }
+                    utils.additionalData(data, player);
+                    utils.send(msg, res, {code: Code.OK, data: data});
                 });
             });
             

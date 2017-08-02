@@ -57,7 +57,8 @@ PushMessage.prototype.strip = function() {
         pushMessage.push({
             type: this.pushMessage[i].type,
             message: this.pushMessage[i].message,
-            num: this.pushMessage[i].num
+            num: this.pushMessage[i].num,
+            data: this.pushMessage[i].data || {}
         });
     }
     return pushMessage;
@@ -72,7 +73,8 @@ PushMessage.prototype.getInfo = function() {
         pushMessage.push({
             type: this.pushMessage[i].type,
             message: this.pushMessage[i].message,
-            num: this.pushMessage[i].num
+            num: this.pushMessage[i].num,
+            data: this.pushMessage[i].data || {}
         });
     }
     return pushMessage;
@@ -82,4 +84,71 @@ PushMessage.prototype.getUpdateInfo = function() {
     return {
         pushMessage: this.pushMessage
     };
+}
+
+/**
+ * addPushMessage
+ * @param message
+ * @returns {{pushMessage: *}}
+ */
+PushMessage.prototype.addPushMessage = function(message) {
+    var pushMessage = this.pushMessage;
+    var flag = false;
+    var date = new Date();
+    for(var i = 0 ; i < pushMessage.length ; i++) {
+        if(pushMessage[i].type == message.type) {
+            if(pushMessage[i].type == consts.pushMessageType.TASK) {
+                if(pushMessage[i].data.taskId == message.data.taskId) {
+                    flag = true;
+                    pushMessage[i].num = message.num;
+                    pushMessage[i].message = message.message;
+                    pushMessage[i].data = message.data;
+                    pushMessage[i].pushDate = date.getTime();
+                }
+            } else {
+                flag = true;
+                if(message.num == 0) {
+                    //pushMessage.splice(i, 1);
+                    pushMessage[i].num = message.num;
+                    pushMessage[i].message = message.message;
+                    pushMessage[i].pushDate = date.getTime();
+                } else {
+                    pushMessage[i].num = message.num;
+                    pushMessage[i].message = message.message;
+                    pushMessage[i].pushDate = date.getTime();
+                }
+            }
+        }
+    }
+    if(!flag) {
+        if(message.num != 0) {
+            pushMessage.push({
+                type: message.type,
+                message: message.message,
+                num: message.num,
+                data: message.data || {},
+                date: date.getTime(),
+                pushDate: date.getTime()
+            });
+        }
+    }
+}
+
+/**
+ * removePushMessage
+ * @param message
+ */
+PushMessage.prototype.removePushMessage = function(message) {
+    var pushMessage = this.pushMessage;
+    for(var i = 0 ; i < pushMessage.length ; i++) {
+        if(pushMessage[i].type == message.type) {
+            if(pushMessage[i].type == consts.pushMessageType.TASK) {
+                if(pushMessage[i].data.taskId == message.data.taskId) {
+                    pushMessage.splice(i, 1);
+                }
+            } else {
+                pushMessage.splice(i, 1);
+            }
+        }
+    }
 }

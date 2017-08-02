@@ -99,6 +99,9 @@ var Character = function(opts) {
     this.ghostNum = parseInt(opts.ghostNum);
     this.aptitude = opts.aptitude;
 
+    this.updateColumns = {};//计算更新列
+    this.upgradeColumns = {};//升级更新列
+
     this.fightType = 0;
     this.attackType = opts.attackType || consts.attackType.SINGLE;
     //上一次使用技能
@@ -142,7 +145,8 @@ var Character = function(opts) {
         ice: false,
         silence: false,
         ignore_skill: false,
-        addDamage: 0
+        addDamage: 0,
+        swanWeave: 0
     };
 
     this.hasUpgrade = false;
@@ -423,6 +427,18 @@ Character.prototype.reduceValue = function(attrName, value) {
 };
 
 /**
+ * initSkill
+ */
+Character.prototype.initSkill = function() {
+    //type >= 3
+    for(var i = 3 ; i <= 6 ; i++) {
+        if(typeof this.skills[i] != "undefined" || this.skills[i] != null) {
+
+        }
+    }
+};
+
+/**
  * 触发技能
  * 触发条件:
  * 1 - 主动攻击
@@ -439,9 +455,9 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
     var angers = [];
     var anger = 0;
     if(fightType == consts.characterFightType.ATTACK) {//攻击者
-        var skills = attack.skills;
+        var skills = attack.skills.currentSkillsEntity;
         for(var i in skills) {
-            if(i == consts.skillV2Type.TRIGGER_SKILL) {
+            if(i == consts.skillV2Type.TRIGGER_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
                 anger = this.useTriggerSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
@@ -459,9 +475,9 @@ Character.prototype.triggerSkill = function(fightType, condition, attack_formati
                 attackData.action = consts.attackAction.common;
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {//防守者
-        var skills = defense.skills;
+        var skills = defense.skills.currentSkillsEntity;
         for(var i in skills) {
-            if(i == consts.skillV2Type.TRIGGER_SKILL) {
+            if(i == consts.skillV2Type.TRIGGER_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
                 anger = this.useTriggerSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
@@ -503,9 +519,9 @@ Character.prototype.awakenSkill = function(fightType, condition, attack_formatio
     var angers = [];
     var anger = 0;
     if(fightType == consts.characterFightType.ATTACK) {//攻击者
-        var skills = attack.skills;
+        var skills = attack.skills.currentSkillsEntity;
         for(var i in skills) {
-            if(i == consts.skillV2Type.AWAKEN_SKILL) {
+            if(i == consts.skillV2Type.AWAKEN_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
                 anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
@@ -520,9 +536,12 @@ Character.prototype.awakenSkill = function(fightType, condition, attack_formatio
             attackData.awakeSkill = 1;
         }
     } else if(fightType == consts.characterFightType.DEFENSE) {//防守者
-        var skills = defense.skills;
+        var skills = defense.skills.currentSkillsEntity;
         for(var i in skills) {
-            if(i == consts.skillV2Type.AWAKEN_SKILL) {
+            if(i == consts.skillV2Type.AWAKEN_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
+                if(skills[i].skillData.triggerCondition == consts.triggerCondition.PASSIVE) {
+                    continue;
+                }
                 anger = this.useAwakenSkill(fightType, condition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
                 angers.push(anger);
             }
@@ -538,6 +557,38 @@ Character.prototype.awakenSkill = function(fightType, condition, attack_formatio
         }
     }
     return anger;
+}
+
+/**
+ * 初始化觉醒技能
+ * @param attack_formation
+ * @param defense_formation
+ * @param attack
+ * @param attacks
+ * @param attackFightTeam
+ * @param defenseFightTeam
+ */
+Character.prototype.initAwakeSkill = function(attack_formation, defense_formation, attack, attacks, attackFightTeam, defenseFightTeam) {
+    var awakenCondition = {
+        type: consts.skillTriggerConditionType.AWAKEN
+    };
+
+    var skills = this.skills.currentSkillsEntity;
+
+    var attackSide = 0;
+    var defense = {};
+    var defenses = {};
+    var fightData = {};
+    var attackData = {};
+    var defenseData = {};
+
+    for(var i in skills) {
+        if(i == consts.skillV2Type.AWAKEN_SKILL && skills[i].skillId != null && skills[i].skillId != 0) {
+            if(skills[i].skillData.triggerCondition == consts.triggerCondition.PASSIVE) {
+                this.useAwakenSkill(attackSide, awakenCondition, attack_formation, defense_formation, attack, defense, attacks, defenses, attackFightTeam, defenseFightTeam, fightData, attackData, defenseData);
+            }
+        }
+    }
 }
 
 /**

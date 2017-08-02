@@ -7,27 +7,10 @@
         "start": "node app.js"
     },
     "dependencies": {
-        "express": "3.2.6",
-        "cookie-signature": "1.0.1",
-        "redis": "*",
-        "mysql": "*",
-        "forward": "*",
-        "connect": "*",
-        "pm": "*",
-        "urlrouter": "*",
-        "redis": "*",
-        "connect-redis": "*",
-        "generic-pool": "*",
-        "async": "*",
-        "mongoskin": "0.6.0",
-        "log4js":"*",
-        "pomelo-rpc": "0.2.1"
+        "express-session":"*"
+        
     },
     "devDependencies": {
-        "should": "*",
-        "mocha": "*",
-        "jscover": "*",
-        "supertest": "*"
     },
     "author": "Peter Zhang",
     "license": "MIT"
